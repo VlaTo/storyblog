@@ -1,0 +1,48 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model StoryBlog.Web.Services.Identity.API.Models.SignupViewModel
+@inject IViewLocalizer Localizer
+
+<div class="row h-100 align-items-center justify-content-center">
+    <div class="card col-5">
+        <div class="card-body mt-4 mb-4">
+            <h4 class="card-title text-center">@Localizer["FormTitleText"]</h4>
+            <p class="text-center">Lorem ipsum dolor sit amet</p>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <form asp-action="Create" asp-controller="Account" method="POST" novalidate>
+                <fieldset>
+                    <div class="form-label-group mt-4">
+                        <input asp-for="Email" class="form-control" readonly/>
+                        <label asp-for="Email"></label>
+                        <small id="password-field-description" class="form-text text-muted">@Localizer["EmailDescriptionText"]</small>
+                    </div>
+                    <div class="form-label-group mt-4">
+                        <input asp-for="Password" class="form-control" autofocus aria-describedby="password-field-description" autocomplete="off"/>
+                        <label asp-for="Password"></label>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-label-group">
+                        <input asp-for="ConfirmPassword" class="form-control" autocomplete="off"/>
+                        <label asp-for="ConfirmPassword"></label>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <div class="form-check mt-4">
+                        <label class="form-check-label" asp-for="PrivacyPolicyReaded">
+                            <input class="form-check-input" asp-for="PrivacyPolicyReaded"/>
+                            @Localizer["PrivacyPolicyText"]
+                            <a asp-action="Show" asp-controller="Policy">@Localizer["PrivacyPolicyLinkText"]</a>
+                        </label>
+                    </div>
+                    <div class="form-row align-items-center justify-content-end mt-5">
+                        <div class="col-6">
+                            <button type="submit" class="btn btn-block btn-primary">@Localizer["SubmitButtonText"]</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

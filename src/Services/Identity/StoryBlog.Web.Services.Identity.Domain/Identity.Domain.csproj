@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>StoryBlog.Web.Services.Identity.Domain</AssemblyName>
+    <RootNamespace>StoryBlog.Web.Services.Identity.Domain</RootNamespace>
+  </PropertyGroup>
+
+</Project>

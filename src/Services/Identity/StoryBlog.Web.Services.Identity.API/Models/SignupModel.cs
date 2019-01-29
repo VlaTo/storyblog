@@ -1,0 +1,37 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+
+namespace StoryBlog.Web.Services.Identity.API.Models
+{
+    [DataContract]
+    public class SignupModel : CredentialsModel
+    {
+        [Display(Name = "UserNameField", Prompt = "UserNamePrompt")]
+        [DataMember]
+        [DataType(DataType.Text)]
+        public string UserName
+        {
+            get;
+            set;
+        }
+
+        [Display(Name = "ConfirmPasswordField", Prompt = "ConfirmPasswordPrompt")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "ConfirmPasswordRequiredError")]
+        [DataMember]
+        [DataType(DataType.Password, ErrorMessage = "ConfirmPasswordInvalidError")]
+        [Compare(nameof(Password), ErrorMessage = "ConfirmPasswordMismatchError")]
+        public string ConfirmPassword
+        {
+            get;
+            set;
+        }
+
+        [Required]
+        [DataMember]
+        public bool PrivacyPolicyReaded
+        {
+            get;
+            set;
+        }
+    }
+}

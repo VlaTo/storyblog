@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyName>StoryBlog.Web.Services.Identity.Persistence</AssemblyName>
+    <RootNamespace>StoryBlog.Web.Services.Identity.Persistence</RootNamespace>
+  </PropertyGroup>
+
+</Project>

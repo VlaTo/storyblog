@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyName>StoryBlog.Web.Services.Identity.Application</AssemblyName>
+    <RootNamespace>StoryBlog.Web.Services.Identity.Application</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StoryBlog.Web.Services.Identity.Domain\Identity.Domain.csproj" />
+    <ProjectReference Include="..\StoryBlog.Web.Services.Identity.Persistence\Identity.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>

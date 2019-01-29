@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyName>StoryBlog.Web.Services.Blog.Infrastructure</AssemblyName>
+    <RootNamespace>StoryBlog.Web.Services.Blog.Infrastructure</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StoryBlog.Web.Services.Blog.Application\Blog.Application.csproj" />
+  </ItemGroup>
+
+</Project>

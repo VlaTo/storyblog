@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyName>StoryBlog.Web.Services.Blog.Application</AssemblyName>
+    <RootNamespace>StoryBlog.Web.Services.Blog.Application</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="8.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="MediatR" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StoryBlog.Web.Services.Blog.Domain\Blog.Domain.csproj" />
+    <ProjectReference Include="..\StoryBlog.Web.Services.Blog.Persistence\Blog.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>

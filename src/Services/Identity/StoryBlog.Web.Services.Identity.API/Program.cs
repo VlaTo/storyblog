@@ -1,0 +1,351 @@
+﻿using System;
+using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using System.Net;
+using System.Net.Mail;
+using System.Net.Mime;
+using IdentityServer4;
+using IdentityServer4.Configuration;
+using IdentityServer4.Services;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Logging;
+using Newtonsoft.Json.Serialization;
+using StoryBlog.Web.Services.Identity.API.Configuration;
+using StoryBlog.Web.Services.Identity.API.Data;
+using StoryBlog.Web.Services.Identity.API.Data.Models;
+using StoryBlog.Web.Services.Identity.API.Extensions;
+using StoryBlog.Web.Services.Identity.API.Services;
+using StoryBlog.Web.Services.Shared.Captcha.Extensions;
+
+namespace StoryBlog.Web.Services.Identity.API
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            var host = WebHost
+                .CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((context, config) =>
+                {
+                    var environment = context.HostingEnvironment;
+
+                    config
+                        .SetBasePath(environment.ContentRootPath)
+                        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                        .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true);
+
+                    if (environment.IsDevelopment())
+                    {
+                        config.AddUserSecrets<Program>();
+                    }
+
+                    config.AddEnvironmentVariables();
+
+                    if (null != args)
+                    {
+                        config.AddCommandLine(args);
+                    }
+                })
+                .ConfigureServices((context, services) =>
+                {
+                    var environment = context.HostingEnvironment;
+                    var connectionString = context.Configuration.GetConnectionString("StoryBlog");
+                    var migrationAssemblyName = typeof(Program).Assembly.GetName().Name;
+
+                    services
+                        .AddDbContext<StoryBlogIdentityDbContext>(options =>
+                        {
+                            options.UseSqlite(connectionString, database =>
+                            {
+                                database.MigrationsAssembly(migrationAssemblyName);
+                            });
+                        })
+                        .AddIdentity<Customer, CustomerRole>(options =>
+                        {
+                            options.User.RequireUniqueEmail = true;
+                            options.User.AllowedUserNameCharacters =
+                                "abcdefghijklmnopqrstuvwxyz" +
+                                "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                                "0123456789" +
+                                "-._@+" +
+                                "абвгдеёжзийклмнопрстуфхцчшщьъэюя" +
+                                "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧЬШЩЪЭЮЯ";
+                        })
+                        .AddEntityFrameworkStores<StoryBlogIdentityDbContext>()
+                        .AddDefaultTokenProviders();
+
+                    if (context.Configuration.GetValue<bool>("Environment:IsClustered"))
+                    {
+                        /*services.AddDataProtection(options =>
+                        {
+                            options.ApplicationDiscriminator = "storyblog.identity";
+                        });*/
+                    }
+
+                    services
+                        .AddResponseCompression(compression =>
+                        {
+                            compression.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
+                            {
+                                MediaTypeNames.Application.Octet
+                            });
+                        })
+                        .AddLocalization(options =>
+                        {
+                            options.ResourcesPath = "Resources";
+                        })
+                        //.AddCors()
+                        .AddMvc()
+                        .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                        .AddJsonOptions(options =>
+                        {
+                            options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                        })
+                        .AddViewLocalization(
+                            LanguageViewLocationExpanderFormat.Suffix,
+                            options =>
+                            {
+                                options.ResourcesPath = "Resources";
+                            }
+                        )
+                        .AddDataAnnotationsLocalization();
+
+                    services
+                        .AddIdentityServer(options =>
+                        {
+                            options.Endpoints = new EndpointsOptions
+                            {
+                                EnableAuthorizeEndpoint = true,
+                                EnableCheckSessionEndpoint = true,
+                                EnableEndSessionEndpoint = true,
+                                EnableUserInfoEndpoint = true
+                            };
+
+                            options.Authentication = new AuthenticationOptions
+                            {
+                                CookieLifetime = TimeSpan.FromSeconds(300.0d)
+                            };
+
+                            options.Events.RaiseErrorEvents = true;
+                            options.Events.RaiseFailureEvents = true;
+
+                            options.IssuerUri = null;
+                        })
+                        .AddDeveloperSigningCredential()
+                        //.AddSigningCredential(Certificate.Get())
+                        .AddAspNetIdentity<Customer>()
+                        .AddConfigurationStore(options =>
+                            options.ConfigureDbContext = builder =>
+                            {
+                                builder.UseSqlite(connectionString, database =>
+                                {
+                                    database.MigrationsAssembly(migrationAssemblyName);
+                                });
+                            }
+                        )
+                        .AddOperationalStore(options =>
+                            options.ConfigureDbContext = builder =>
+                            {
+                                builder.UseSqlite(connectionString, database =>
+                                {
+                                    database.MigrationsAssembly(migrationAssemblyName);
+                                });
+                            }
+                        );
+
+                    if (environment.IsDevelopment())
+                    {
+                        /*identityServerBuilder
+                            .AddSigningCredential(Certificate.Get())
+                            .AddInMemoryPersistedGrants()
+                            .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                            .AddInMemoryApiResources(Config.GetApiResources())
+                            .AddInMemoryClients(Config.GetClients())
+                            .AddAspNetIdentity<Customer>()
+                            ;*/
+                    }
+                    else
+                    {
+                        /*identityServerBuilder
+                            .AddSigningCredential((SigningCredentials)null)
+                            .AddAspNetIdentity<Customer>()
+                            .AddConfigurationStore(options =>
+                                options.ConfigureDbContext = builder =>
+                                {
+                                    builder.UseSqlite(connectionString, database =>
+                                    {
+                                        database.MigrationsAssembly(migrationAssemblyName);
+                                    });
+                                }
+                            )
+                            .AddOperationalStore(options =>
+                                options.ConfigureDbContext = builder =>
+                                {
+                                    builder.UseSqlite(connectionString, database =>
+                                    {
+                                        database.MigrationsAssembly(migrationAssemblyName);
+                                    });
+                                }
+                            );*/
+                    }
+
+                    services
+                        .AddDistributedMemoryCache()
+                        .AddOidcStateDataFormatterCache()
+                        .AddAuthentication()
+                        .AddGoogle(options =>
+                        {
+                            var google = context.Configuration.GetSection("Authentication:Google");
+
+                            options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                            options.CallbackPath = "/callback/google/authorize";
+                            options.ClientId = google.GetValue<string>("ClientId");
+                            options.ClientSecret = google.GetValue<string>("ClientSecret");
+                        });
+
+                    services
+                        .ConfigureApplicationCookie(options =>
+                        {
+                            options.Cookie.Name = "StoryBlog.Identity";
+                            options.Cookie.HttpOnly = true;
+                            options.Cookie.SameSite = SameSiteMode.Lax;
+                            options.ExpireTimeSpan = TimeSpan.FromHours(1.0d);
+                            options.SlidingExpiration = true;
+                        })
+                        .AddAntiforgery();
+
+                    // remove it
+                    IdentityModelEventSource.ShowPII = true;
+
+                    services
+                        .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
+                        .AddTransient<ILoginService<Customer>, EntityFrameworkLoginService>()
+                        .AddTransient<IProfileService, EntityFrameworkProfileService>()
+                        .AddSimpleEmailSender(options =>
+                        {
+                            var settings = context.Configuration.GetSection("EmailSender");
+
+                            options.From = new MailAddress(settings.GetValue<string>("From"));
+                            options.Credentials = new NetworkCredential(
+                                settings.GetValue<string>("Credentials:User"),
+                                settings.GetValue<string>("Credentials:Password")
+                            );
+                        })
+                        .AddOptions<StoryBlogIdentityOptions>()
+                        .Bind(context.Configuration.GetSection("StoryBlog:Options")); ;
+
+                    services
+                        .AddResponseCompression(compression =>
+                        {
+                            compression.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
+                            {
+                                MediaTypeNames.Application.Octet
+                            });
+                        });
+
+                    services
+                        .AddTransient<StoryBlogIdentitySetup>()
+                        .AddCaptcha(options =>
+                        {
+                            options.AllowedChars = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                            options.CaptchaLength = 5;
+
+                            options.RequestPath = new PathString("/api/v1/captcha");
+
+                            options.Image.Size = new Size(200, 60);
+
+                            options.Cookie.Name = "AspNetCoreCaptcha.Cookie";
+                            options.Cookie.Domain = "localhost";
+                            options.Cookie.SameSite = SameSiteMode.Lax;
+                        })
+                        /*
+                            .AddAutoMapper(config =>
+                            {
+                                config
+                                    .CreateMap<Customer, SigninResultModel>()
+                                    .ForMember(customer => customer.UserName,
+                                        mapping =>
+                                        {
+                                            mapping.ResolveUsing(source => $"{source.UserName} {source.ContactName}");
+                                        });
+                            });*/
+                        ;
+                })
+                .Configure(app =>
+                {
+                    var environment = app.ApplicationServices.GetRequiredService<IHostingEnvironment>();
+
+                    if (environment.IsDevelopment())
+                    {
+                        //var logging = app.ApplicationServices.GetRequiredService<ILoggerFactory>();
+                        var logger = app.ApplicationServices.GetRequiredService<ILogger<Program>>();
+
+                        logger.LogDebug("Application run in development mode");
+
+                        app.UseDeveloperExceptionPage();
+                    }
+
+                    app
+                        /*.UseForwardedHeaders()
+                        .UseCors(options =>
+                        {
+                            options
+                                .WithOrigins("http://localhost:29699")
+                                .AllowAnyHeader()
+                                .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put);
+                        })*/
+                        .UseRequestLocalization(options =>
+                        {
+                            var cultures = new[]
+                            {
+                                new CultureInfo("en-US"),
+                                new CultureInfo("ru-RU")
+                            };
+
+                            options.SupportedCultures = cultures;
+                            options.SupportedUICultures = cultures;
+                        })
+                        .UseStaticFiles()
+                        .UseAuthentication()
+                        .UseIdentityServer()
+                        .UseMvc()
+                        .UseCaptcha()
+                        .UseResponseCompression();
+                })
+                .Build();
+
+            Console.Title = "Identity Server";
+
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                var identitySetup = services.GetRequiredService<StoryBlogIdentitySetup>();
+
+                try
+                {
+                    identitySetup.SeedAsync().Wait();
+                }
+                catch (Exception exception)
+                {
+                    logger.LogError(exception, "Application Startup");
+                }
+
+            }
+
+            host.Run();
+        }
+    }
+}

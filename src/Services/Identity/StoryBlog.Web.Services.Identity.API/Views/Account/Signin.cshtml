@@ -1,0 +1,89 @@
+﻿@using Microsoft.AspNetCore.Authentication.Google
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Mvc.Localization
+@using StoryBlog.Web.Services.Shared.Captcha
+@model StoryBlog.Web.Services.Identity.API.Models.SigninViewModel
+@inject ICaptcha Captcha
+@inject IViewLocalizer Localizer
+
+@if (Model.EnableLocalLogin)
+{
+    <div class="row h-100 align-items-center justify-content-center">
+        <div class="card col-5">
+            <div class="card-body mt-4 mb-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <h4 class="card-title text-center">@Localizer["FormTitle"]</h4>
+                <p class="text-center">@Localizer["SocialSigninTitle"]</p>
+                @if (Model.VisibleProviders.Any())
+                {
+                    <p>
+                        @foreach (var provider in Model.VisibleProviders)
+                        {
+                            switch (provider.AuthenticationScheme)
+                            {
+                                case GoogleDefaults.AuthenticationScheme:
+                                {
+                                    <a class="btn btn-block btn-google-plus" asp-controller="External" asp-action="Challenge" asp-route-scheme="@provider.AuthenticationScheme" asp-route-returnUrl="@Model.ReturnUrl">
+                                        <span class="fa fa-google-plus mr-2"></span>@Localizer["SocialSigninFormat", provider.DisplayName]
+                                    </a>
+                                    break;
+                                }
+
+                                default:
+                                {
+                                    <li class="list-inline-item">
+                                        <a class="btn btn-social" asp-controller="External" asp-action="Challenge" asp-route-scheme="@provider.AuthenticationScheme" asp-route-returnUrl="@Model.ReturnUrl">
+                                            @provider.DisplayName
+                                        </a>
+                                    </li>
+                                    break;
+                                }
+                            }
+                        }
+                    </p>
+                    <p class="divider-text">
+                        <span class="text-uppercase">@Localizer["DelimiterText"]</span>
+                    </p>
+                }
+                <form asp-controller="Account" asp-action="Signin" method="POST" novalidate>
+                    <fieldset>
+                        <input type="hidden" asp-for="ReturnUrl" />
+                        <div class="form-label-group">
+                            <input asp-for="Email" class="form-control" autofocus aria-describedby="email-field-description" />
+                            <label asp-for="Email"></label>
+                            <small id="email-field-description" class="form-text text-muted">@Localizer["EmailFieldDescription"]</small>
+                            <span asp-validation-for="Email"></span>
+                        </div>
+                        <div class="form-label-group mt-4">
+                            <input asp-for="Password" class="form-control" autocomplete="off">
+                            <label asp-for="Password"></label>
+                            <a class="float-right" asp-controller="Account" asp-action="Signin">
+                                <small>@Localizer["ForgetPasswordLinkText"]</small>
+                            </a>
+                            <span asp-validation-for="Password"></span>
+                        </div>
+                        <div class="form-group mt-5">
+                                <div class="border p-3">
+                                    <img src="@Captcha.GetImageUrl(Context)" alt="captcha" />
+                                </div>
+                        </div>
+                        @if (Model.AllowRememberMe)
+                        {
+                            <div class="form-check mt-4">
+                                <label class="form-check-label" asp-for="RememberMe">
+                                    <input class="form-check-input" asp-for="RememberMe" />
+                                    @Html.DisplayNameFor(model => model.RememberMe)
+                                </label>
+                            </div>
+                        }
+                        <div class="form-row align-items-center justify-content-end mt-4">
+                            <div class="col-6">
+                                <button class="btn btn-block btn-primary" name="button" value="signin">@Localizer["SubmitButtonText"]</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+}
