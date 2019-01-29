@@ -10,7 +10,7 @@ namespace StoryBlog.Web.Services.Blog.Persistence
     {
         public StoryBlogDbContext CreateDbContext(string[] args)
         {
-            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../");
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../../StoryBlog.Web.Services.Blog.API/");
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(path)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -18,10 +18,10 @@ namespace StoryBlog.Web.Services.Blog.Persistence
             var context = new DbContextOptionsBuilder<StoryBlogDbContext>();
             var connectionString = configuration.GetConnectionString("StoryBlog");
 
-            /*context.UseSqlite(connectionString, options =>
+            context.UseSqlite(connectionString, options =>
             {
-                options.MigrationsAssembly(typeof(Program).Assembly.GetName().Name);
-            });*/
+                options.MigrationsAssembly(typeof(StoryBlogDbContext).Assembly.GetName().Name);
+            });
 
             return new StoryBlogDbContext(context.Options);
         }

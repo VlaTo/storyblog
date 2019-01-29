@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Services\Blog\StoryBlog.Web.Services.Blog.Domain\Blog.Domain.csproj" />
+    <ProjectReference Include="..\..\Services\Blog\StoryBlog.Web.Services.Blog.Common\Blog.Common.csproj" />
     <ProjectReference Include="..\StoryBlog.Web.Blazor.Shared\Blazor.Shared.csproj" />
   </ItemGroup>
 

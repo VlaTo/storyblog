@@ -14,11 +14,9 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 using StoryBlog.Web.Services.Blog.API.Infrastructure;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Filters;
+using StoryBlog.Web.Services.Blog.Application.Extensions;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
-using StoryBlog.Web.Services.Blog.Domain;
-using StoryBlog.Web.Services.Blog.Domain.Models;
 using StoryBlog.Web.Services.Blog.Persistence;
-using StoryBlog.Web.Services.Blog.Persistence.Models;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -32,7 +30,7 @@ namespace StoryBlog.Web.Services.Blog.API
         public static void Main(string[] args)
         {
             var host = WebHost
-                .CreateDefaultBuilder(args)
+                .CreateDefaultBuilder()
                 .ConfigureAppConfiguration((context, config) =>
                 {
                     var environment = context.HostingEnvironment;
@@ -63,7 +61,8 @@ namespace StoryBlog.Web.Services.Blog.API
 
                             options.UseSqlite(connectionString, database =>
                             {
-                                database.MigrationsAssembly(typeof(Program).Assembly.GetName().Name);
+                                //database.MigrationsAssembly(typeof(Program).Assembly.GetName().Name);
+                                database.MigrationsAssembly(typeof(StoryBlogDbContext).Assembly.GetName().Name);
                             });
                         });
 
@@ -90,9 +89,9 @@ namespace StoryBlog.Web.Services.Blog.API
                         })
                         .AddJwtBearer(options =>
                         {
-                            var section = context.Configuration.GetSection("Jwt");
+                            var section = context.Configuration.GetSection("Bearer");
 
-                            options.Authority = section.GetValue<string>("AuthorityUrl");
+                            options.Authority = section.GetValue<string>("Authority");
                             options.Audience = section.GetValue<string>("Audience");
                             options.RequireHttpsMetadata = false;
                         });
@@ -109,21 +108,40 @@ namespace StoryBlog.Web.Services.Blog.API
 
                     services
                         .AddSingleton<IDateTimeProvider, DateTimeProvider>()
+                        .AddSingleton<ISlugGenerator, SlugTextGenerator>()
                         .AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));
 
                     services.AddMediatR(typeof(Program).Assembly);
 
                     services
+                        .AppBlogApplicationDependencies()
                         .AddAutoMapper(config =>
                         {
                             config
-                                .CreateMap<Story, FeedStory>()
+                                .CreateMap<Application.Stories.Models.Author, Common.Models.AuthorModel>()
+                                .ForMember(
+                                    story => story.Id,
+                                    mapping => mapping.MapFrom(source => source.Id)
+                                );
+
+                            config
+                                .CreateMap<Application.Stories.Models.Story, Common.Models.StoryModel>()
+                                .ForMember(
+                                    story => story.Id,
+                                    mapping => mapping.MapFrom(source => source.Id)
+                                )
                                 .ForMember(
                                     story => story.Title,
-                                    mapping =>
-                                    {
-                                        mapping.MapFrom(source => $"{source.Title} {source.Slug}");
-                                    });
+                                    mapping => mapping.MapFrom(source => source.Title)
+                                )
+                                .ForMember(
+                                    story => story.Content,
+                                    mapping => mapping.MapFrom(source => source.Content)
+                                )
+                                .ForMember(
+                                    story => story.Author,
+                                    mapping => mapping.MapFrom(source => source.Author)
+                                );
                         });
 
                     services
@@ -167,9 +185,10 @@ namespace StoryBlog.Web.Services.Blog.API
                 try
                 {
                     //var environment = services.GetRequiredService<IHostingEnvironment>();
-                    var context = services.GetRequiredService<StoryBlogDbContext>();
+                    //var context = services.GetRequiredService<StoryBlogDbContext>();
 
-                    StoryBlogInitializer.Seed(context, logger);
+                    //context.Database.Migrate();
+                    //StoryBlogInitializer.Seed(context, logger);
                 }
                 catch (Exception exception)
                 {

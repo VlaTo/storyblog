@@ -1,10 +1,11 @@
+using System.Collections.Specialized;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using StoryBlog.Web.Services.Blog.Domain.Exceptions;
-using StoryBlog.Web.Services.Shared.Common.ActionResults;
 using System.Net;
+using System.Runtime.Serialization;
 
 namespace StoryBlog.Web.Services.Blog.API.Infrastructure.Filters
 {
@@ -30,10 +31,7 @@ namespace StoryBlog.Web.Services.Blog.API.Infrastructure.Filters
             this.logger = logger;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="context"></param>
+        /// <inheritdoc cref="IExceptionFilter.OnException" />
         public void OnException(ExceptionContext context)
         {
             logger.LogError(
@@ -50,7 +48,7 @@ namespace StoryBlog.Web.Services.Blog.API.Infrastructure.Filters
                 };
 
                 context.Result = new BadRequestObjectResult(json);
-                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                //context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             }
             else
             {
@@ -61,10 +59,10 @@ namespace StoryBlog.Web.Services.Blog.API.Infrastructure.Filters
 
                 if (environment.IsDevelopment())
                 {
-                    json.DeveloperMeesage = context.Exception;
+                    json.Exception = context.Exception;
                 }
 
-                context.Result = new InternalServerErrorObjectResult(json);
+                context.Result = new ObjectResult(json);
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             }
 
@@ -74,15 +72,18 @@ namespace StoryBlog.Web.Services.Blog.API.Infrastructure.Filters
         /// <summary>
         /// 
         /// </summary>
+        [DataContract]
         private class JsonErrorResponse
         {
+            [DataMember(Name = "messages")]
             public string[] Messages
             {
                 get;
                 set;
             }
 
-            public object DeveloperMeesage
+            [DataMember(Name = "exception")]
+            public object Exception
             {
                 get;
                 set;

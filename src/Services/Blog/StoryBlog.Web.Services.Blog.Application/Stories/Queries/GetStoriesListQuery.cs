@@ -8,7 +8,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetFeedStoryListQuery : IRequest<IReadOnlyCollection<StoryModel>>
+    public sealed class GetStoriesListQuery : IRequest<IReadOnlyCollection<Story>>
     {
         /// <summary>
         /// 
@@ -22,7 +22,8 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
         /// 
         /// </summary>
         /// <param name="user"></param>
-        public GetFeedStoryListQuery(IPrincipal user)
+        /// <param name="includes"></param>
+        public GetStoriesListQuery(IPrincipal user, int pageSize, params string[] includes)
         {
             User = user;
         }

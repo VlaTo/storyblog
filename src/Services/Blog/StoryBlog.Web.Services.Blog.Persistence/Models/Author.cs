@@ -36,5 +36,11 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
             get;
             internal set;
         }
+
+        public Author()
+        {
+            Addresses = new List<Address>();
+            Stories = new List<Story>();
+        }
     }
 }

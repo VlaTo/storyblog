@@ -1,31 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StoryBlog.Web.Services.Blog.Persistence.Models
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public enum StoryStatus
+    public enum CommentStatus
     {
-        /// <summary>
-        /// 
-        /// </summary>
         Draft,
-
-        /// <summary>
-        /// 
-        /// </summary>
+        Review,
         Published
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    [Table("Stories")]
-    public class Story
+    [Table("Comments")]
+    public class Comment
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -36,19 +23,6 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
         }
 
         [Required]
-        public string Title
-        {
-            get;
-            set;
-        }
-
-        [DataType(DataType.Text)]
-        public string Slug
-        {
-            get;
-            set;
-        }
-
         [DataType(DataType.MultilineText)]
         public string Content
         {
@@ -69,7 +43,20 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
             set;
         }
 
-        public StoryStatus Status
+        public long StoryId
+        {
+            get;
+            set;
+        }
+
+        [ForeignKey(nameof(StoryId))]
+        public Story Story
+        {
+            get;
+            set;
+        }
+
+        public bool IsPublic
         {
             get;
             set;
@@ -87,23 +74,6 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
         {
             get;
             set;
-        }
-
-        public bool IsPublic
-        {
-            get;
-            set;
-        }
-
-        public IList<Comment> Comments
-        {
-            get;
-            set;
-        }
-
-        public Story()
-        {
-            Comments = new List<Comment>();
         }
     }
 }

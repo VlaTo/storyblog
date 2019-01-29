@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace StoryBlog.Web.Services.Blog.Persistence.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialStructure : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -51,8 +52,12 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Title = table.Column<string>(nullable: false),
                     Slug = table.Column<string>(nullable: true),
-                    Text = table.Column<string>(nullable: false),
-                    AuthorId = table.Column<long>(nullable: false)
+                    Content = table.Column<string>(nullable: true),
+                    AuthorId = table.Column<long>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
+                    Created = table.Column<DateTime>(nullable: false),
+                    Modified = table.Column<DateTime>(nullable: true),
+                    IsPublic = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -65,10 +70,50 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Content = table.Column<string>(nullable: false),
+                    AuthorId = table.Column<long>(nullable: false),
+                    StoryId = table.Column<long>(nullable: false),
+                    IsPublic = table.Column<bool>(nullable: false),
+                    Created = table.Column<DateTime>(nullable: false),
+                    Modified = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_Authors_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "Authors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comments_Stories_StoryId",
+                        column: x => x.StoryId,
+                        principalTable: "Stories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_AuthorId",
                 table: "Addresses",
                 column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_AuthorId",
+                table: "Comments",
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_StoryId",
+                table: "Comments",
+                column: "StoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Stories_AuthorId",
@@ -80,6 +125,9 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Addresses");
+
+            migrationBuilder.DropTable(
+                name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "Stories");

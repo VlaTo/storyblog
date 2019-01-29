@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\StoryBlog.Web.Services.Shared.Common\Shared.Common.csproj" />
     <ProjectReference Include="..\StoryBlog.Web.Services.Blog.Application\Blog.Application.csproj" />
+    <ProjectReference Include="..\StoryBlog.Web.Services.Blog.Common\Blog.Common.csproj" />
     <ProjectReference Include="..\StoryBlog.Web.Services.Blog.Infrastructure\Blog.Infrastructure.csproj" />
   </ItemGroup>
 

@@ -1,10 +1,11 @@
 ﻿using System.Security.Principal;
 using MediatR;
+using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Commands
 {
-    public sealed class CreateStoryCommand : IRequest<StoryModel>
+    public sealed class CreateStoryCommand : IRequest<CommandResult<Story>>
     {
         public IPrincipal User
         {

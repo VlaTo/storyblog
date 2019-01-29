@@ -3,8 +3,15 @@
     /// <summary>
     /// 
     /// </summary>
-    public class StoryBlogSettings
+    public sealed class StoryBlogSettings
     {
-        
+        /// <summary>
+        /// Gets or sets page size amount.
+        /// </summary>
+        public int PageSize
+        {
+            get;
+            set;
+        }
     }
 }
