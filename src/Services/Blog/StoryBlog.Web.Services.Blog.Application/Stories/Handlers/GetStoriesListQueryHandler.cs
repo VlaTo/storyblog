@@ -51,8 +51,26 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
         {
             logger.LogDebug("{Name}", request.User.Identity.Name);
 
-            var models = await context.Stories
-                .AsNoTracking()
+            var stories = context.Stories.AsNoTracking();
+
+            if (request.IncludeAuthors)
+            {
+                stories = stories.Include(story => story.Author);
+            }
+
+            if (request.IncludeComments)
+            {
+                if (request.IncludeAuthors)
+                {
+                    stories = stories.Include(story => story.Comments).ThenInclude(comment => comment.Author);
+                }
+                else
+                {
+                    stories = stories.Include(story => story.Comments);
+                }
+            }
+
+            var models = await stories
                 .OrderBy(story => story.Id)
                 .Where(story => story.Status == StoryStatus.Published && story.IsPublic)
                 .Skip(0)

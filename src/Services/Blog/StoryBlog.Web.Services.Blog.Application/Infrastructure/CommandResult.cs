@@ -5,8 +5,14 @@ using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 
 namespace StoryBlog.Web.Services.Blog.Application.Infrastructure
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class CommandResult
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public IEnumerable<Exception> Exceptions
         {
             get;
@@ -22,6 +28,11 @@ namespace StoryBlog.Web.Services.Blog.Application.Infrastructure
             Exceptions = exceptions;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exceptions"></param>
+        /// <returns></returns>
         public static CommandResult Error(params Exception[] exceptions)
         {
             if (null == exceptions)
@@ -32,27 +43,41 @@ namespace StoryBlog.Web.Services.Blog.Application.Infrastructure
             return new CommandResult(exceptions);
         }
 
-        public static CommandResult Ok()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static CommandResult Success()
         {
             return new CommandResult();
         }
 
-        public static CommandResult<TResult> Ok<TResult>(TResult result)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        public static CommandResult<TResult> Success<TResult>(TResult result)
         {
             return new CommandResult<TResult>(result);
         }
     }
 
-    public sealed class CommandResult<TResult> : CommandResult
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TData"></typeparam>
+    public sealed class CommandResult<TData> : CommandResult
     {
-        public TResult Result
+        public TData Data
         {
             get;
         }
 
-        internal CommandResult(TResult result)
+        internal CommandResult(TData data)
         {
-            Result = result;
+            Data = data;
         }
     }
 }

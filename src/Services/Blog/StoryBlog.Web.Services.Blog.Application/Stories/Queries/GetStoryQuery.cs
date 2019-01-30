@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Security.Principal;
+﻿using System.Security.Principal;
 using MediatR;
 using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 
@@ -8,12 +7,20 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoriesListQuery : IRequest<IReadOnlyCollection<Story>>
+    public sealed class GetStoryQuery : IRequest<Story>
     {
         /// <summary>
         /// 
         /// </summary>
         public IPrincipal User
+        {
+            get;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Slug
         {
             get;
         }
@@ -40,10 +47,11 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
         /// 
         /// </summary>
         /// <param name="user"></param>
-        public GetStoriesListQuery(
-            IPrincipal user)
+        /// <param name="slug"></param>
+        public GetStoryQuery(IPrincipal user, string slug)
         {
             User = user;
+            Slug = slug;
         }
     }
 }

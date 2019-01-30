@@ -25,8 +25,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
             services
                 .AddScoped<IRequest<IReadOnlyCollection<Story>>, GetStoriesListQuery>()
                 .AddScoped<IRequest<CommandResult<Story>>, CreateStoryCommand>()
+                .AddScoped<IRequest<Story>, GetStoryQuery>()
                 .AddScoped<IRequestHandler<GetStoriesListQuery, IReadOnlyCollection<Story>>, GetStoriesListQueryHandler>()
-                .AddScoped<IRequestHandler<CreateStoryCommand, CommandResult<Story>>, CreateStoryCommandHandler>();
+                .AddScoped<IRequestHandler<CreateStoryCommand, CommandResult<Story>>, CreateStoryCommandHandler>()
+                .AddScoped<IRequestHandler<GetStoryQuery, Story>, GetStoryQueryHandler>();
 
             services.AddAutoMapper(config => {
                 config
@@ -40,12 +42,28 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                         mapping => mapping.MapFrom(source => source.Id)
                     )
                     .ForMember(
+                        story => story.Slug,
+                        mapping => mapping.MapFrom(source => source.Slug)
+                    )
+                    .ForMember(
                         story => story.Title,
                         mapping => mapping.MapFrom(source => source.Title)
                     )
                     .ForMember(
                         story => story.Content,
                         mapping => mapping.MapFrom(source => source.Content)
+                    )
+                    .ForMember(
+                        story => story.IsPublic,
+                        mapping => mapping.MapFrom(source => source.IsPublic)
+                    )
+                    .ForMember(
+                        story => story.Created,
+                        mapping => mapping.MapFrom(source => source.Created)
+                    )
+                    .ForMember(
+                        story => story.Modified,
+                        mapping => mapping.MapFrom(source => source.Modified)
                     )
                     .ForMember(
                         story => story.Author,

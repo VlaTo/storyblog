@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
 {
@@ -7,6 +8,12 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
         public long Id
         {
             get;
+        }
+
+        public string Slug
+        {
+            get;
+            set;
         }
 
         public string Title
@@ -30,6 +37,24 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
         public IList<Comment> Comments
         {
             get;
+        }
+
+        public bool IsPublic
+        {
+            get;
+            set;
+        }
+
+        public DateTime Created
+        {
+            get;
+            set;
+        }
+
+        public DateTime? Modified
+        {
+            get;
+            set;
         }
 
         public Story(long id)

@@ -1,10 +1,13 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using MediatR;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Application.Stories.Commands;
 using StoryBlog.Web.Services.Blog.Persistence;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using StoryBlog.Web.Services.Blog.Persistence.Models;
 using Story = StoryBlog.Web.Services.Blog.Application.Stories.Models.Story;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
@@ -31,29 +34,30 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
             this.dateTimeProvider = dateTimeProvider;
         }
 
-        public Task<CommandResult<Story>> Handle(CreateStoryCommand request, CancellationToken cancellationToken)
+        public async Task<CommandResult<Story>> Handle(CreateStoryCommand request, CancellationToken cancellationToken)
         {
-            var name = request.User.Identity.Name;
-            Story result;
+            //var name = request.User.Identity.Name;
+            var author = await context.Authors
+                .Where(user => user.Id == 1)
+                .FirstOrDefaultAsync(cancellationToken);
 
-            using (var transaction = context.Database.BeginTransaction())
+            var story = new Persistence.Models.Story
             {
-                var story = new Persistence.Models.Story
-                {
-                    Title = request.Title,
-                    Slug = slugGenerator.CreateFrom(request.Title),
-                    Content = request.Content,
-                    Created = dateTimeProvider.Now
-                };
+                Title = request.Title,
+                Slug = slugGenerator.CreateFrom(request.Title),
+                Content = request.Content,
+                Status = StoryStatus.Draft,
+                IsPublic = request.IsPublic,
+                Created = dateTimeProvider.Now,
+                Author = author
+            };
 
-                context.Stories.Add(story);
+            await context.Stories.AddAsync(story, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
 
-                transaction.Commit();
+            var result = mapper.Map<Story>(story);
 
-                result = mapper.Map<Story>(story);
-            }
-
-            return Task.FromResult(CommandResult.Ok(result));
+            return CommandResult.Success(result);
         }
     }
 }

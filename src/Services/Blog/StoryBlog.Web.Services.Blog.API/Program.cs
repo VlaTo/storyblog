@@ -73,7 +73,7 @@ namespace StoryBlog.Web.Services.Blog.API
                             options.Filters.Add<HttpGlobalExceptionFilter>();
                         })
                         .AddControllersAsServices()
-                        .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                        .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                         .AddJsonOptions(options =>
                         {
                             options.SerializerSettings.ContractResolver = new DefaultContractResolver();
@@ -111,7 +111,9 @@ namespace StoryBlog.Web.Services.Blog.API
                         .AddSingleton<ISlugGenerator, SlugTextGenerator>()
                         .AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));
 
-                    services.AddMediatR(typeof(Program).Assembly);
+                    services.AddMediatR(
+                        typeof(Program).Assembly
+                    );
 
                     services
                         .AppBlogApplicationDependencies()
@@ -135,12 +137,28 @@ namespace StoryBlog.Web.Services.Blog.API
                                     mapping => mapping.MapFrom(source => source.Title)
                                 )
                                 .ForMember(
+                                    story => story.Slug,
+                                    mapping => mapping.MapFrom(source => source.Slug)
+                                )
+                                .ForMember(
                                     story => story.Content,
                                     mapping => mapping.MapFrom(source => source.Content)
                                 )
                                 .ForMember(
+                                    story => story.IsPublic,
+                                    mapping => mapping.MapFrom(source => source.IsPublic)
+                                )
+                                .ForMember(
                                     story => story.Author,
                                     mapping => mapping.MapFrom(source => source.Author)
+                                )
+                                .ForMember(
+                                    story => story.Created,
+                                    mapping => mapping.MapFrom(source => source.Created)
+                                )
+                                .ForMember(
+                                    story => story.Modified,
+                                    mapping => mapping.MapFrom(source => source.Modified)
                                 );
                         });
 

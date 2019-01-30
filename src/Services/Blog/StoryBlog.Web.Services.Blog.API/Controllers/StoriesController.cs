@@ -22,7 +22,6 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
     /// <summary>
     /// Feed of stories controller.
     /// </summary>
-    //[Authorize]
     [Produces(MediaTypeNames.Application.Json)]
     [Route("api/v1/[controller]")]
     [ApiController]
@@ -33,6 +32,13 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         private readonly StoryBlogSettings blogSettings;
         private readonly ILogger logger;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mediator"></param>
+        /// <param name="mapper"></param>
+        /// <param name="storyBlogSettings"></param>
+        /// <param name="loggerFactory"></param>
         public StoriesController(
             IMediator mediator,
             IMapper mapper,
@@ -42,37 +48,51 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
             this.mediator = mediator;
             this.mapper = mapper;
 
-            blogSettings = storyBlogSettings.Get(String.Empty);
+            blogSettings = storyBlogSettings.Value;
             logger = loggerFactory.CreateLogger<StoriesController>();
         }
 
-        // GET api/v1/stories
+        // POST api/v1/stories
+        [Authorize]
         [HttpPost]
         [ProducesResponseType(typeof(StoryModel), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Create([FromBody] CreateStoryModel model)
         {
-            if (ModelState.IsValid)
+            if (false == ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await mediator.Send(new CreateStoryCommand(User, model.Title, String.Empty));
+            var result = await mediator.Send(
+                new CreateStoryCommand(User, model.Title, model.Content, model.IsPublic)
+            );
 
             if (false == result.IsSuccess())
             {
-                ;
+                return BadRequest(result.Exceptions);
             }
 
-            return Ok();
+            return Created(
+                Url.Action("Get", "Story", new {slug = result.Data.Slug}),
+                mapper.Map<StoryModel>(result.Data)
+            );
         }
 
         // GET api/v1/stories
+        [AllowAnonymous]
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<StoryModel>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Get([FromQuery(Name = "include")] string include)
+        [ProducesResponseType(typeof(IEnumerable<StoryModel>), (int) HttpStatusCode.OK)]
+        public async Task<IActionResult> Get([FromQuery(Name = "include")] string include = "")
         {
-            var includes = include.Split(',');
-            var stories = await mediator.Send(new GetStoriesListQuery(User, blogSettings.PageSize, includes));
+            var flags = new IncludeFlags();
+
+            flags.Parse(include);
+
+            var stories = await mediator.Send(new GetStoriesListQuery(User)
+            {
+                IncludeAuthors = flags.IncludeAuthors,
+                IncludeComments = flags.IncludeComments
+            });
 
             return Ok(new ListResult<StoryModel>
             {

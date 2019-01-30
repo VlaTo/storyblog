@@ -22,11 +22,17 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Commands
             get;
         }
 
-        public CreateStoryCommand(IPrincipal user, string title, string content)
+        public bool IsPublic
+        {
+            get;
+        }
+
+        public CreateStoryCommand(IPrincipal user, string title, string content, bool isPublic)
         {
             User = user;
             Title = title;
             Content = content;
+            IsPublic = isPublic;
         }
     }
 }
