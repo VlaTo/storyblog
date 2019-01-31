@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Security.Principal;
 using MediatR;
+using StoryBlog.Web.Services.Blog.Application.Models;
 using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
@@ -31,6 +32,15 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
         /// 
         /// </summary>
         public bool IncludeComments
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public NavigationCursor Cursor
         {
             get;
             set;

@@ -2,20 +2,21 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using StoryBlog.Web.Services.Blog.API.Infrastructure;
+using StoryBlog.Web.Services.Blog.Application.Infrastructure;
+using StoryBlog.Web.Services.Blog.Application.Models;
+using StoryBlog.Web.Services.Blog.Application.Stories.Commands;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
 using StoryBlog.Web.Services.Blog.Common;
 using StoryBlog.Web.Services.Blog.Common.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Blog.Application.Infrastructure;
-using StoryBlog.Web.Services.Blog.Application.Stories.Commands;
+using StoryBlog.Web.Services.Blog.API.Infrastructure;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -80,19 +81,26 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
         // GET api/v1/stories
         [AllowAnonymous]
-        [HttpGet]
+        [HttpGet("{page:cursor?}")]
         [ProducesResponseType(typeof(IEnumerable<StoryModel>), (int) HttpStatusCode.OK)]
-        public async Task<IActionResult> Get([FromQuery(Name = "include")] string include = "")
+        public async Task<IActionResult> Get(string page, [FromQuery(Name = "include")] string include = "")
         {
             var flags = new IncludeFlags();
 
             flags.Parse(include);
 
-            var stories = await mediator.Send(new GetStoriesListQuery(User)
+            var query = new GetStoriesListQuery(User)
             {
-                IncludeAuthors = flags.IncludeAuthors,
-                IncludeComments = flags.IncludeComments
-            });
+                IncludeComments = flags.IncludeComments,
+                IncludeAuthors = flags.IncludeAuthors
+            };
+
+            if (null != page && NavigationCursorEncoder.TryParse(page, out var cursor))
+            {
+                query.Cursor = cursor;
+            }
+
+            var stories = await mediator.Send(query);
 
             return Ok(new ListResult<StoryModel>
             {
@@ -101,8 +109,8 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 {
                     Navigation = new Navigation
                     {
-                        Previous = Url.Action("Get", "Stories", new {prev = "111"}),
-                        Next = Url.Action("Get", "Stories", new {next = "222"})
+                        Previous = Url.Action("Get", "Stories", new {cursor = new NavigationCursor(0, 1)}),
+                        Next = Url.Action("Get", "Stories", new {cursor = new NavigationCursor(1, 1)})
                     }
                 }
             });

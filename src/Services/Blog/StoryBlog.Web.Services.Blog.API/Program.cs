@@ -21,7 +21,6 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Mime;
-using StoryBlogSettings = StoryBlog.Web.Services.Blog.API.Infrastructure.StoryBlogSettings;
 
 namespace StoryBlog.Web.Services.Blog.API
 {
@@ -68,6 +67,10 @@ namespace StoryBlog.Web.Services.Blog.API
 
                     services
                         .AddCors()
+                        .AddRouting(options =>
+                        {
+                            options.ConstraintMap["cursor"] = typeof(NavigationCursorRouteConstraint);
+                        })
                         .AddMvc(options =>
                         {
                             options.Filters.Add<HttpGlobalExceptionFilter>();
@@ -172,12 +175,12 @@ namespace StoryBlog.Web.Services.Blog.API
 
                     if (environment.IsDevelopment())
                     {
-                        var logging = app.ApplicationServices.GetRequiredService<ILoggerFactory>();
-                        var logger = logging.CreateLogger<Program>();
+                        //var logging = app.ApplicationServices.GetRequiredService<ILoggerFactory>();
+                        //var logger = logging.CreateLogger<Program>();
 
-                        logger.LogDebug("Application run in development mode");
+                        //logger.LogDebug("Application run in development mode");
 
-                        app.UseDeveloperExceptionPage();
+                        //app.UseDeveloperExceptionPage();
                     }
 
                     app
@@ -202,7 +205,13 @@ namespace StoryBlog.Web.Services.Blog.API
 
                 try
                 {
-                    //var environment = services.GetRequiredService<IHostingEnvironment>();
+                    var environment = services.GetRequiredService<IHostingEnvironment>();
+
+                    if (environment.IsDevelopment())
+                    {
+                        ;
+                    }
+
                     //var context = services.GetRequiredService<StoryBlogDbContext>();
 
                     //context.Database.Migrate();
@@ -210,7 +219,7 @@ namespace StoryBlog.Web.Services.Blog.API
                 }
                 catch (Exception exception)
                 {
-                    logger.LogError(exception, "Application Startup");
+                    logger.LogCritical(exception, "Application Startup");
                 }
             }
 
