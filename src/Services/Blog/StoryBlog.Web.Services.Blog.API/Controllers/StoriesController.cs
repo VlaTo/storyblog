@@ -109,8 +109,8 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 {
                     Navigation = new Navigation
                     {
-                        Previous = Url.Action("Get", "Stories", new {cursor = new NavigationCursor(0, 1)}),
-                        Next = Url.Action("Get", "Stories", new {cursor = new NavigationCursor(1, 1)})
+                        Previous = Url.Action("Get", "Stories", new {page = new NavigationCursor(0, 1), include = flags.ToString()}),
+                        Next = Url.Action("Get", "Stories", new {page = new NavigationCursor(1, 1), include = flags.ToString()})
                     }
                 }
             });
