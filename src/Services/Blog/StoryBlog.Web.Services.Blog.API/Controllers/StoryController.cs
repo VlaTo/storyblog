@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,8 @@ using StoryBlog.Web.Services.Blog.Common.Models;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
+using StoryBlog.Web.Services.Blog.Infrastructure;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -50,12 +53,9 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         [AllowAnonymous]
         [HttpGet("{slug:required}")]
         [ProducesResponseType(typeof(StoryModel), (int) HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(string slug, [FromQuery(Name = "include")] string include = "")
+        public async Task<IActionResult> Get(string slug, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
         {
-            var flags = new IncludeFlags();
-
-            flags.Parse(include);
-
+            var flags = FlagParser.Parse<IncludeFlags>(includes);
             var story = await mediator.Send(new GetStoryQuery(User, slug)
             {
                 IncludeAuthors = flags.IncludeAuthors,

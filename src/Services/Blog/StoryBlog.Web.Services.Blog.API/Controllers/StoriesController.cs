@@ -17,6 +17,8 @@ using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using StoryBlog.Web.Services.Blog.API.Infrastructure;
+using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
+using StoryBlog.Web.Services.Blog.Infrastructure;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -83,22 +85,21 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         [AllowAnonymous]
         [HttpGet("{page:cursor?}")]
         [ProducesResponseType(typeof(IEnumerable<StoryModel>), (int) HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(string page, [FromQuery(Name = "include")] string include = "")
+        //public async Task<IActionResult> Get(string page, [FromQuery(Name = "include")] string include = "")
+        //public async Task<IActionResult> Get([CommaSeparatedFlags(Name = "include")] IncludeFlags flags)
+        public async Task<IActionResult> Get(string page, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
         {
-            var flags = new IncludeFlags();
-
-            flags.Parse(include);
-
+            var flags = FlagParser.Parse<IncludeFlags>(includes);
             var query = new GetStoriesListQuery(User)
             {
                 IncludeComments = flags.IncludeComments,
                 IncludeAuthors = flags.IncludeAuthors
             };
 
-            if (null != page && NavigationCursorEncoder.TryParse(page, out var cursor))
+            /*if (null != page && NavigationCursorEncoder.TryParse(page, out var cursor))
             {
                 query.Cursor = cursor;
-            }
+            }*/
 
             var stories = await mediator.Send(query);
 
@@ -109,8 +110,8 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 {
                     Navigation = new Navigation
                     {
-                        Previous = Url.Action("Get", "Stories", new {page = new NavigationCursor(0, 1), include = flags.ToString()}),
-                        Next = Url.Action("Get", "Stories", new {page = new NavigationCursor(1, 1), include = flags.ToString()})
+                        Previous = Url.Action("Get", "Stories", new {page = new NavigationCursor(0, 1), include = flags}),
+                        Next = Url.Action("Get", "Stories", new {page = new NavigationCursor(1, 1), include = flags})
                     }
                 }
             });

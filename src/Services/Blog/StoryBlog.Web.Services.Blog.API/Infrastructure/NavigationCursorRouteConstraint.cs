@@ -34,9 +34,7 @@ namespace StoryBlog.Web.Services.Blog.API.Infrastructure
                         return false;
                     }
 
-                    var value = values[routeKey];
-
-                    return value is NavigationCursor cursor && null != cursor;
+                    return values[routeKey] is NavigationCursor;
                 }
             }
 

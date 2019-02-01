@@ -21,6 +21,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Mime;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace StoryBlog.Web.Services.Blog.API
 {
@@ -74,6 +75,7 @@ namespace StoryBlog.Web.Services.Blog.API
                         .AddMvc(options =>
                         {
                             options.Filters.Add<HttpGlobalExceptionFilter>();
+                            options.Conventions.Add(new CommaSeparatedFlagsQueryStringConvention());
                         })
                         .AddControllersAsServices()
                         .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)

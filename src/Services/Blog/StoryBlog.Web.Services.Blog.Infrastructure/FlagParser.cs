@@ -1,31 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using Microsoft.EntityFrameworkCore.Internal;
 using StoryBlog.Web.Services.Blog.Infrastructure.Annotations;
 
 namespace StoryBlog.Web.Services.Blog.Infrastructure
 {
-    public abstract class FlagParser
+    public static class FlagParser
     {
-        protected abstract char Separator
-        {
-            get;
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TFlags"></typeparam>
+        /// <param name="strings"></param>
+        /// <returns></returns>
+        public static TFlags Parse<TFlags>(IEnumerable<string> strings)
+            where TFlags : class, new()
+            => Parse<TFlags>(strings, StringComparer.OrdinalIgnoreCase);
 
-        protected virtual IEqualityComparer<string> Comparer { get; } = StringComparer.OrdinalIgnoreCase;
-
-        public void Parse(string text)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TFlags"></typeparam>
+        /// <param name="strings"></param>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
+        public static TFlags Parse<TFlags>(IEnumerable<string> strings, IEqualityComparer<string> comparer)
+            where TFlags: class, new ()
         {
-            if (null == text)
+            if (null == strings)
             {
-                throw new ArgumentNullException(nameof(text));
+                throw new ArgumentNullException(nameof(strings));
             }
 
-            var segments = text.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
-            var properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            if (null == comparer)
+            {
+                throw new ArgumentNullException(nameof(comparer));
+            }
+
+            var hash = new HashSet<string>(strings, comparer);
+            var properties = typeof(TFlags).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var flags = new TFlags();
 
             foreach (var property in properties)
             {
@@ -36,20 +50,28 @@ namespace StoryBlog.Web.Services.Blog.Infrastructure
                     continue;
                 }
 
-                if (property.CanWrite && property.CanRead)
+                if (property.CanWrite)
                 {
                     var key = attribute.Name ?? property.Name;
-                    var contains = segments.Contains(key, Comparer);
+                    var contains = hash.Contains(key);
 
-                    property.SetValue(this, contains);
+                    property.SetValue(flags, contains);
                 }
             }
+
+            return flags;
         }
 
-        public override string ToString()
+        public static string[] ToArray<TFlags>(TFlags flags) 
+            where TFlags: class
         {
-            var flags = new List<string>();
-            var properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            if (null == flags)
+            {
+                throw new ArgumentNullException(nameof(flags));
+            }
+
+            var values = new List<string>();
+            var properties = typeof(TFlags).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             foreach (var property in properties)
             {
@@ -60,10 +82,10 @@ namespace StoryBlog.Web.Services.Blog.Infrastructure
                     continue;
                 }
 
-                if (property.CanWrite && property.CanRead)
+                if (property.CanRead)
                 {
                     var key = attribute.Name ?? property.Name;
-                    var value = property.GetValue(this);
+                    var value = property.GetValue(flags);
                     var contains = Convert.ToBoolean(value);
 
                     if (false == contains)
@@ -71,11 +93,24 @@ namespace StoryBlog.Web.Services.Blog.Infrastructure
                         continue;
                     }
 
-                    flags.Add(key);
+                    values.Add(key);
                 }
             }
 
-            return String.Join(',', flags);
+            return values.ToArray();
+        }
+
+        public static string ToString<TFlags>(TFlags flags) 
+            where TFlags: class
+        {
+            if (null == flags)
+            {
+                throw new ArgumentNullException(nameof(flags));
+            }
+
+            var values = ToArray(flags);
+
+            return String.Join(',', values);
         }
     }
 }
