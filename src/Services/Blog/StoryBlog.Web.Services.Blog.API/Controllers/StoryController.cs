@@ -11,6 +11,7 @@ using StoryBlog.Web.Services.Blog.Common.Models;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
 using StoryBlog.Web.Services.Blog.Infrastructure;
 
@@ -26,27 +27,31 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
     {
         private readonly IMediator mediator;
         private readonly IMapper mapper;
+        private readonly ICommandBus commandBus;
         private readonly StoryBlogSettings blogSettings;
-        private readonly ILogger logger;
+        private readonly ILogger<StoryController> logger;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="mediator"></param>
         /// <param name="mapper"></param>
+        /// <param name="commandBus"></param>
         /// <param name="storyBlogSettings"></param>
-        /// <param name="loggerFactory"></param>
+        /// <param name="logger"></param>
         public StoryController(
             IMediator mediator,
             IMapper mapper,
+            ICommandBus commandBus,
             IOptionsSnapshot<StoryBlogSettings> storyBlogSettings,
-            ILoggerFactory loggerFactory)
+            ILogger<StoryController> logger)
         {
             this.mediator = mediator;
             this.mapper = mapper;
+            this.commandBus = commandBus;
+            this.logger = logger;
 
             blogSettings = storyBlogSettings.Value;
-            logger = loggerFactory.CreateLogger<StoriesController>();
         }
 
         // GET api/v1/stories/<slug>

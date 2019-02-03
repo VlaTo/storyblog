@@ -48,6 +48,7 @@
 
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="wwwroot\css\src\" />
   </ItemGroup>
 
   <ItemGroup>

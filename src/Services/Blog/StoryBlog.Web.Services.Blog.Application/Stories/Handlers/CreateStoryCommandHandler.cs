@@ -40,11 +40,12 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
             var author = await context.Authors
                 .Where(user => user.Id == 1)
                 .FirstOrDefaultAsync(cancellationToken);
+            var slug = slugGenerator.CreateFrom(request.Title);
 
             var story = new Persistence.Models.Story
             {
                 Title = request.Title,
-                Slug = slugGenerator.CreateFrom(request.Title),
+                Slug = slug,
                 Content = request.Content,
                 Status = StoryStatus.Draft,
                 IsPublic = request.IsPublic,

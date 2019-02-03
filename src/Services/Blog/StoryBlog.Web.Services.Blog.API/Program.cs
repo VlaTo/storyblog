@@ -114,11 +114,14 @@ namespace StoryBlog.Web.Services.Blog.API
                     services
                         .AddSingleton<IDateTimeProvider, DateTimeProvider>()
                         .AddSingleton<ISlugGenerator, SlugTextGenerator>()
-                        .AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));
+                        .AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>))
+                        .AddSingleton<ICommandBus, NullCommandBus>();
 
-                    services.AddMediatR(
+                    /*services.AddMediatR(
                         typeof(Program).Assembly
-                    );
+                    );*/
+
+                    services.AddMediatR();
 
                     services
                         .AppBlogApplicationDependencies()

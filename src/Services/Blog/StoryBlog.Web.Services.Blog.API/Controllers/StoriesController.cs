@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,7 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using StoryBlog.Web.Services.Blog.API.Infrastructure;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
+using StoryBlog.Web.Services.Blog.API.Integration.Commands;
 using StoryBlog.Web.Services.Blog.Infrastructure;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
@@ -32,31 +34,36 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
     {
         private readonly IMediator mediator;
         private readonly IMapper mapper;
+        private readonly ICommandBus commandBus;
         private readonly StoryBlogSettings blogSettings;
-        private readonly ILogger logger;
+        private readonly ILogger<StoriesController> logger;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="mediator"></param>
         /// <param name="mapper"></param>
+        /// <param name="commandBus"></param>
         /// <param name="storyBlogSettings"></param>
-        /// <param name="loggerFactory"></param>
+        /// <param name="logger"></param>
         public StoriesController(
             IMediator mediator,
             IMapper mapper,
+            ICommandBus commandBus,
             IOptionsSnapshot<StoryBlogSettings> storyBlogSettings,
-            ILoggerFactory loggerFactory)
+            ILogger<StoriesController> logger)
         {
             this.mediator = mediator;
             this.mapper = mapper;
+            this.commandBus = commandBus;
+            this.logger = logger;
 
             blogSettings = storyBlogSettings.Value;
-            logger = loggerFactory.CreateLogger<StoriesController>();
         }
 
         // POST api/v1/stories
-        [Authorize]
+        [AllowAnonymous]
+        //[Authorize]
         [HttpPost]
         [ProducesResponseType(typeof(StoryModel), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Create([FromBody] CreateStoryModel model)
@@ -75,9 +82,15 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return BadRequest(result.Exceptions);
             }
 
+            await commandBus.SendAsync(new NewStoryCreatedCommand(Guid.NewGuid(), result.Data.Created)
+            {
+                StoryId = result.Data.Id,
+                Slug = result.Data.Slug
+            });
+
             return Created(
-                Url.Action("Get", "Story", new {slug = result.Data.Slug}),
-                mapper.Map<StoryModel>(result.Data)
+                Url.Action("Get", "Story", new {slug = result.Data}),
+                result.Data
             );
         }
 
