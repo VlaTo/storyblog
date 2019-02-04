@@ -15,7 +15,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
     /// <summary>
     /// 
     /// </summary>
-    public sealed class CreateStoryCommandHandler : IRequestHandler<CreateStoryCommand, CommandResult<Story>>
+    public sealed class CreateStoryCommandHandler : IRequestHandler<CreateStoryCommand, RequestResult<Story>>
     {
         private readonly StoryBlogDbContext context;
         private readonly IMapper mapper;
@@ -34,7 +34,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
             this.dateTimeProvider = dateTimeProvider;
         }
 
-        public async Task<CommandResult<Story>> Handle(CreateStoryCommand request, CancellationToken cancellationToken)
+        public async Task<RequestResult<Story>> Handle(CreateStoryCommand request, CancellationToken cancellationToken)
         {
             //var name = request.User.Identity.Name;
             var author = await context.Authors
@@ -58,7 +58,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
 
             var result = mapper.Map<Story>(story);
 
-            return CommandResult.Success(result);
+            return RequestResult.Success(result);
         }
     }
 }

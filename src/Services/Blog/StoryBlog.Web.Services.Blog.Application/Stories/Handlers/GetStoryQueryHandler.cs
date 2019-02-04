@@ -7,6 +7,7 @@ using StoryBlog.Web.Services.Blog.Persistence;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using Story = StoryBlog.Web.Services.Blog.Application.Stories.Models.Story;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
@@ -14,7 +15,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoryQueryHandler : IRequestHandler<GetStoryQuery, Story>
+    public sealed class GetStoryQueryHandler : IRequestHandler<GetStoryQuery, RequestResult<Story>>
     {
         private readonly StoryBlogDbContext context;
         private readonly IMapper mapper;
@@ -37,18 +38,17 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
         }
 
         /// <inheritdoc cref="IRequestHandler{TRequest,TResponse}.Handle" />
-        public async Task<Story> Handle(GetStoryQuery request, CancellationToken cancellationToken)
+        public async Task<RequestResult<Story>> Handle(GetStoryQuery request, CancellationToken cancellationToken)
         {
             logger.LogDebug("{Name}", request.User.Identity.Name);
 
             var authenticated = request.User.Identity.IsAuthenticated;
-
             var model = await context.Stories
                 .AsNoTracking()
                 .Where(story => (authenticated || story.IsPublic) && story.Slug == request.Slug)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            return mapper.Map<Story>(model);
+            return RequestResult.Success(mapper.Map<Story>(model));
         }
     }
 }

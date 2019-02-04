@@ -1,29 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 
 namespace StoryBlog.Web.Services.Blog.Common.Models
 {
     [DataContract]
-    public sealed class StoryModel
+    public sealed class CommentModel
     {
         [DataMember(Name = "id")]
         public long Id
-        {
-            get;
-            set;
-        }
-
-        [DataMember(Name = "title")]
-        public string Title
-        {
-            get;
-            set;
-        }
-
-        [DataMember(Name = "slug")]
-        public string Slug
         {
             get;
             set;
@@ -43,13 +27,6 @@ namespace StoryBlog.Web.Services.Blog.Common.Models
             set;
         }
 
-        [DataMember(Name = "public")]
-        public bool IsPublic
-        {
-            get;
-            set;
-        }
-
         [DataMember(Name = "created")]
         public DateTime Created
         {
@@ -62,17 +39,6 @@ namespace StoryBlog.Web.Services.Blog.Common.Models
         {
             get;
             set;
-        }
-
-        [DataMember(Name = "comments")]
-        public ICollection<CommentModel> Comments
-        {
-            get;
-        }
-
-        public StoryModel()
-        {
-            Comments = new Collection<CommentModel>();
         }
     }
 }

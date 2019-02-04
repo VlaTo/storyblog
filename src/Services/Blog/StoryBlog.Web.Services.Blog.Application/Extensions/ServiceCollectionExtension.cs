@@ -23,17 +23,40 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
         public static IServiceCollection AppBlogApplicationDependencies(this IServiceCollection services)
         {
             services
-                .AddScoped<IRequest<IReadOnlyCollection<Story>>, GetStoriesListQuery>()
-                .AddScoped<IRequest<CommandResult<Story>>, CreateStoryCommand>()
-                .AddScoped<IRequest<Story>, GetStoryQuery>()
-                .AddScoped<IRequestHandler<GetStoriesListQuery, IReadOnlyCollection<Story>>, GetStoriesListQueryHandler>()
-                .AddScoped<IRequestHandler<CreateStoryCommand, CommandResult<Story>>, CreateStoryCommandHandler>()
-                .AddScoped<IRequestHandler<GetStoryQuery, Story>, GetStoryQueryHandler>();
+                .AddScoped<IRequest<PagedQueryResult<Story>>, GetStoriesListQuery>()
+                .AddScoped<IRequest<RequestResult<Story>>, CreateStoryCommand>()
+                .AddScoped<IRequest<RequestResult<Story>>, GetStoryQuery>()
+                .AddScoped<IRequestHandler<GetStoriesListQuery, PagedQueryResult<Story>>, GetStoriesListQueryHandler>()
+                .AddScoped<IRequestHandler<CreateStoryCommand, RequestResult<Story>>, CreateStoryCommandHandler>()
+                .AddScoped<IRequestHandler<GetStoryQuery, RequestResult<Story>>, GetStoryQueryHandler>();
 
             services.AddAutoMapper(config => {
                 config
                     .CreateMap<Persistence.Models.Author, Author>()
                     .ConstructUsing(author => new Author(author.Id, author.UserName));
+
+                config
+                    .CreateMap<Persistence.Models.Comment, Comment>()
+                    .ForMember(
+                        comment => comment.Id,
+                        mapping => mapping.MapFrom(source => source.Id)
+                    )
+                    .ForMember(
+                        comment => comment.Content,
+                        mapping => mapping.MapFrom(source => source.Content)
+                    )
+                    .ForMember(
+                        comment => comment.Author,
+                        mapping => mapping.MapFrom(source => source.Author)
+                    )
+                    .ForMember(
+                        comment => comment.Created,
+                        mapping => mapping.MapFrom(source => source.Created)
+                    )
+                    .ForMember(
+                        comment => comment.Modified,
+                        mapping => mapping.MapFrom(source => source.Modified)
+                    );
 
                 config
                     .CreateMap<Persistence.Models.Story, Story>()
@@ -68,6 +91,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                     .ForMember(
                         story => story.Author,
                         mapping => mapping.MapFrom(source => source.Author)
+                    )
+                    .ForMember(
+                        story => story.Comments,
+                        mapping => mapping.MapFrom(source => source.Comments)
                     );
             });
 

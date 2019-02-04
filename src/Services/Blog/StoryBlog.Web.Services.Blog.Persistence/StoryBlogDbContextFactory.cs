@@ -14,6 +14,7 @@ namespace StoryBlog.Web.Services.Blog.Persistence
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(path)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.Development.json", optional: true)
                 .Build();
             var context = new DbContextOptionsBuilder<StoryBlogDbContext>();
             var connectionString = configuration.GetConnectionString("StoryBlog");

@@ -62,6 +62,12 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
             set;
         }
 
+        public CommentStatus Status
+        {
+            get;
+            set;
+        }
+
         [DataType(DataType.DateTime)]
         public DateTime Created
         {

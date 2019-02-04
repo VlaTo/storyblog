@@ -2,6 +2,9 @@
 using StoryBlog.Web.Services.Blog.Application.Models;
 using System;
 using System.IO;
+using System.Text.Encodings.Web;
+using IdentityModel;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace StoryBlog.Web.Services.Blog.API.Infrastructure
 {
@@ -23,36 +26,54 @@ namespace StoryBlog.Web.Services.Blog.API.Infrastructure
                 throw new ArgumentNullException(nameof(str));
             }
 
-            if (0 == str.Length)
+            if (0 < str.Length)
             {
-                cursor = null;
-                return false;
+                var stream = new MemoryStream(Base64UrlTextEncoder.Decode(str));
+
+                if (TryRead(stream, out var dir, out var id, out var count))
+                {
+                    var direction = Enum.ToObject(typeof(NavigationCursorDirection), dir);
+
+                    cursor = new NavigationCursor((NavigationCursorDirection) direction, id, count);
+
+                    return true;
+                }
             }
 
-            var stream = new MemoryStream(Base64UrlTextEncoder.Decode(str));
+            cursor = null;
 
-            using (var reader = new BinaryReader(stream))
-            {
-                var id = reader.ReadInt64();
-                var count = reader.ReadInt32();
-
-                cursor = new NavigationCursor(id, count);
-            }
-
-            return true;
+            return false;
         }
 
         public static string ToEncodedString(NavigationCursor cursor)
         {
             var stream = new MemoryStream();
 
-            using (var writer = new BinaryWriter(stream))
-            {
-                writer.Write(cursor.Id);
-                writer.Write(cursor.Count);
-            }
+            Write(stream, Convert.ToSByte(cursor.Direction), cursor.Id, cursor.Count);
 
             return Base64UrlTextEncoder.Encode(stream.ToArray());
+        }
+
+        private static bool TryRead(Stream stream, out sbyte dir, out long id, out int count)
+        {
+            using (var reader = new BinaryReader(stream))
+            {
+                dir = reader.ReadSByte();
+                id = reader.ReadInt64();
+                count = reader.ReadInt32();
+            }
+
+            return true;
+        }
+
+        private static void Write(Stream stream, sbyte dir, long id, int count)
+        {
+            using (var writer = new BinaryWriter(stream))
+            {
+                writer.Write(dir);
+                writer.Write(id);
+                writer.Write(count);
+            }
         }
     }
 }

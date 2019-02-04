@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Security.Principal;
-using MediatR;
+﻿using MediatR;
+using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Application.Models;
 using StoryBlog.Web.Services.Blog.Application.Stories.Models;
+using System.Security.Principal;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
 {
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoriesListQuery : IRequest<IReadOnlyCollection<Story>>
+    public sealed class GetStoriesListQuery : IRequest<PagedQueryResult<Story>>
     {
         /// <summary>
         /// 

@@ -68,10 +68,10 @@ namespace StoryBlog.Web.Services.Blog.API
 
                     services
                         .AddCors()
-                        .AddRouting(options =>
+                        .AddRouting(/*options =>
                         {
                             options.ConstraintMap["cursor"] = typeof(NavigationCursorRouteConstraint);
-                        })
+                        }*/)
                         .AddMvc(options =>
                         {
                             options.Filters.Add<HttpGlobalExceptionFilter>();
@@ -117,10 +117,6 @@ namespace StoryBlog.Web.Services.Blog.API
                         .AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>))
                         .AddSingleton<ICommandBus, NullCommandBus>();
 
-                    /*services.AddMediatR(
-                        typeof(Program).Assembly
-                    );*/
-
                     services.AddMediatR();
 
                     services
@@ -132,6 +128,29 @@ namespace StoryBlog.Web.Services.Blog.API
                                 .ForMember(
                                     story => story.Id,
                                     mapping => mapping.MapFrom(source => source.Id)
+                                );
+
+                            config
+                                .CreateMap<Application.Stories.Models.Comment, Common.Models.CommentModel>()
+                                .ForMember(
+                                    story => story.Id,
+                                    mapping => mapping.MapFrom(source => source.Id)
+                                )
+                                .ForMember(
+                                    story => story.Content,
+                                    mapping => mapping.MapFrom(source => source.Content)
+                                )
+                                .ForMember(
+                                    story => story.Author,
+                                    mapping => mapping.MapFrom(source => source.Author)
+                                )
+                                .ForMember(
+                                    story => story.Created,
+                                    mapping => mapping.MapFrom(source => source.Created)
+                                )
+                                .ForMember(
+                                    story => story.Modified,
+                                    mapping => mapping.MapFrom(source => source.Modified)
                                 );
 
                             config
@@ -159,6 +178,10 @@ namespace StoryBlog.Web.Services.Blog.API
                                 .ForMember(
                                     story => story.Author,
                                     mapping => mapping.MapFrom(source => source.Author)
+                                )
+                                .ForMember(
+                                    story => story.Comments,
+                                    mapping => mapping.MapFrom(source => source.Comments)
                                 )
                                 .ForMember(
                                     story => story.Created,

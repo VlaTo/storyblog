@@ -1,5 +1,6 @@
 ﻿using System.Security.Principal;
 using MediatR;
+using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
@@ -7,7 +8,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoryQuery : IRequest<Story>
+    public sealed class GetStoryQuery : IRequest<RequestResult<Story>>
     {
         /// <summary>
         /// 

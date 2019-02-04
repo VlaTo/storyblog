@@ -100,7 +100,7 @@ namespace StoryBlog.Web.Services.Blog.Infrastructure
             return values.ToArray();
         }
 
-        public static string ToString<TFlags>(TFlags flags) 
+        public static string ToCommaSeparatedString<TFlags>(TFlags flags) 
             where TFlags: class
         {
             if (null == flags)

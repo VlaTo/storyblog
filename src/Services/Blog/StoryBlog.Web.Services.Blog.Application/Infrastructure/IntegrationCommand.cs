@@ -13,6 +13,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Infrastructure
         public Guid Id
         {
             get;
+            set;
         }
 
         /// <summary>
@@ -21,12 +22,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Infrastructure
         public DateTime Sent
         {
             get;
-        }
-
-        protected IntegrationCommand(Guid id, DateTime sent)
-        {
-            Id = id;
-            Sent = sent;
+            set;
         }
     }
 }
