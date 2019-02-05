@@ -8,30 +8,33 @@ namespace StoryBlog.Web.Services.Blog.Application.Infrastructure
     /// <summary>
     /// 
     /// </summary>
-    public class QueryResult<TEntity> : RequestResult, IEnumerable<TEntity>
+    public struct QueryResult<TEntity> : IQueryResult<TEntity>
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public IReadOnlyCollection<TEntity> Collection
-        {
-            get;
-        }
+        private IEnumerable<Exception> exceptions;
+        private IReadOnlyCollection<TEntity> entities;
+
+        /// <inheritdoc cref="IRequestResult.Exceptions" />
+        public IEnumerable<Exception> Exceptions => exceptions ?? (exceptions = Enumerable.Empty<Exception>());
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="collection"></param>
-        public QueryResult(IReadOnlyCollection<TEntity> collection)
-            : base(Enumerable.Empty<Exception>())
+        public IReadOnlyCollection<TEntity> Entities => entities ?? (entities = new TEntity[0]);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entities"></param>
+        public QueryResult(IReadOnlyCollection<TEntity> entities)
         {
-            Collection = collection;
+            this.entities = entities;
+            exceptions = null;
         }
 
         /// <inheritdoc cref="IEnumerable{T}.GetEnumerator" />
         public IEnumerator<TEntity> GetEnumerator()
         {
-            return Collection.GetEnumerator();
+            return Entities.GetEnumerator();
         }
 
         /// <inheritdoc cref="IEnumerable.GetEnumerator" />

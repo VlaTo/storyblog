@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace StoryBlog.Web.Services.Blog.Application.Infrastructure
@@ -8,120 +7,48 @@ namespace StoryBlog.Web.Services.Blog.Application.Infrastructure
     /// <summary>
     /// 
     /// </summary>
-    public abstract class RequestResult
+    public struct RequestResult : IRequestResult
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public IEnumerable<Exception> Exceptions
-        {
-            get;
-        }
+        private IEnumerable<Exception> exceptions;
 
-        protected RequestResult(IEnumerable<Exception> exceptions)
-        {
-            Exceptions = exceptions;
-        }
+        /// <inheritdoc cref="IRequestResult.Exceptions" />
+        public IEnumerable<Exception> Exceptions => exceptions ?? (exceptions = Enumerable.Empty<Exception>());
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="exceptions"></param>
-        /// <returns></returns>
-        public static RequestResult Error(params Exception[] exceptions)
+        public RequestResult(IEnumerable<Exception> exceptions)
+        {
+            this.exceptions = exceptions ?? Enumerable.Empty<Exception>();
+        }
+
+        public static IRequestResult<TData> Success<TData>(TData data)
+        {
+            return new RequestResult<TData>(data);
+        }
+
+        public static IRequestResult<TData> Error<TData>(params Exception[] exceptions)
         {
             if (null == exceptions)
             {
                 throw new ArgumentNullException(nameof(exceptions));
             }
 
-            return new InternalRequestResult(exceptions);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public static RequestResult Success()
-        {
-            return new InternalRequestResult();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="result"></param>
-        /// <returns></returns>
-        public static RequestResult<TResult> Success<TResult>(TResult result)
-        {
-            return new RequestResult<TResult>(result);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="result"></param>
-        /// <returns></returns>
-        public static QueryResult<TEntity> Success<TEntity>(IEnumerable<TEntity> result)
-        {
-            var list = new List<TEntity>(result);
-            return new QueryResult<TEntity>(list);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="list"></param>
-        /// <returns></returns>
-        public static QueryResult<TEntity> Success<TEntity>(IList<TEntity> list)
-        {
-            var collection = new ReadOnlyCollection<TEntity>(list);
-            return new QueryResult<TEntity>(collection);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="collection"></param>
-        /// <returns></returns>
-        public static QueryResult<TEntity> Success<TEntity>(IReadOnlyCollection<TEntity> collection)
-        {
-            return new QueryResult<TEntity>(collection);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private sealed class InternalRequestResult : RequestResult
-        {
-            /// <summary>
-            /// 
-            /// </summary>
-            internal InternalRequestResult()
-                : this(Enumerable.Empty<Exception>())
-            {
-            }
-
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="exceptions"></param>
-            internal InternalRequestResult(IEnumerable<Exception> exceptions)
-                : base(exceptions)
-            {
-            }
+            return new RequestResult<TData>(exceptions);
         }
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed class RequestResult<TData> : RequestResult
+    public struct RequestResult<TData> : IRequestResult<TData>
     {
+        private IEnumerable<Exception> exceptions;
+
+        /// <inheritdoc cref="IRequestResult.Exceptions" />
+        public IEnumerable<Exception> Exceptions => exceptions ?? (exceptions = Enumerable.Empty<Exception>());
+
         /// <summary>
         /// 
         /// </summary>
@@ -130,9 +57,27 @@ namespace StoryBlog.Web.Services.Blog.Application.Infrastructure
             get;
         }
 
-        internal RequestResult(TData data)
-            : base(Enumerable.Empty<Exception>())
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exceptions"></param>
+        public RequestResult(IEnumerable<Exception> exceptions)
+            : this(default(TData), exceptions)
         {
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        public RequestResult(TData data)
+            : this(data, null)
+        {
+        }
+
+        private RequestResult(TData data, IEnumerable<Exception> exceptions)
+        {
+            this.exceptions = exceptions;
             Data = data;
         }
     }

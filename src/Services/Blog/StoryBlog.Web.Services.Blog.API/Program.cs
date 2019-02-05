@@ -21,7 +21,6 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Mime;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace StoryBlog.Web.Services.Blog.API
 {
@@ -125,9 +124,18 @@ namespace StoryBlog.Web.Services.Blog.API
                         {
                             config
                                 .CreateMap<Application.Stories.Models.Author, Common.Models.AuthorModel>()
+                                /*.ConvertUsing(source => new Common.Models.AuthorModel
+                                {
+                                    Id = source.Id,
+                                    Name = source.UserName
+                                })*/
                                 .ForMember(
                                     story => story.Id,
                                     mapping => mapping.MapFrom(source => source.Id)
+                                )
+                                .ForMember(
+                                    story => story.UserName,
+                                    mapping => mapping.MapFrom(source => source.UserName)
                                 );
 
                             config
@@ -138,20 +146,25 @@ namespace StoryBlog.Web.Services.Blog.API
                                 )
                                 .ForMember(
                                     story => story.Content,
-                                    mapping => mapping.MapFrom(source => source.Content)
-                                )
+                                    mapping =>mapping.MapFrom(source => source.Content))
                                 .ForMember(
                                     story => story.Author,
-                                    mapping => mapping.MapFrom(source => source.Author)
-                                )
+                                    mapping =>
+                                    {
+                                        mapping.AllowNull();
+                                        mapping.MapFrom(source => source.Author);
+                                    })
                                 .ForMember(
                                     story => story.Created,
                                     mapping => mapping.MapFrom(source => source.Created)
                                 )
                                 .ForMember(
                                     story => story.Modified,
-                                    mapping => mapping.MapFrom(source => source.Modified)
-                                );
+                                    mapping =>
+                                    {
+                                        mapping.AllowNull();
+                                        mapping.MapFrom(source => source.Modified);
+                                    });
 
                             config
                                 .CreateMap<Application.Stories.Models.Story, Common.Models.StoryModel>()
@@ -177,8 +190,11 @@ namespace StoryBlog.Web.Services.Blog.API
                                 )
                                 .ForMember(
                                     story => story.Author,
-                                    mapping => mapping.MapFrom(source => source.Author)
-                                )
+                                    mapping =>
+                                    {
+                                        mapping.AllowNull();
+                                        mapping.MapFrom(source => source.Author);
+                                    })
                                 .ForMember(
                                     story => story.Comments,
                                     mapping => mapping.MapFrom(source => source.Comments)
@@ -189,8 +205,11 @@ namespace StoryBlog.Web.Services.Blog.API
                                 )
                                 .ForMember(
                                     story => story.Modified,
-                                    mapping => mapping.MapFrom(source => source.Modified)
-                                );
+                                    mapping =>
+                                    {
+                                        mapping.AllowNull();
+                                        mapping.MapFrom(source => source.Modified);
+                                    });
                         });
 
                     services

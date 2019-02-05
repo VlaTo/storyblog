@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 
 namespace StoryBlog.Web.Services.Blog.Common.Models
 {
-    [DataContract]
+    [DataContract(Name = "story")]
     public sealed class StoryModel
     {
         [DataMember(Name = "id")]

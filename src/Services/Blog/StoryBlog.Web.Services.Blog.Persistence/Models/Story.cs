@@ -105,7 +105,7 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
 
         public Story()
         {
-            Comments = new List<Comment>();
+            //Comments = new List<Comment>();
         }
     }
 }

@@ -37,6 +37,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
         public IList<Comment> Comments
         {
             get;
+            set;
         }
 
         public bool IsPublic

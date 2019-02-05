@@ -15,7 +15,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoryQueryHandler : IRequestHandler<GetStoryQuery, RequestResult<Story>>
+    public sealed class GetStoryQueryHandler : IRequestHandler<GetStoryQuery, IRequestResult<Story>>
     {
         private readonly StoryBlogDbContext context;
         private readonly IMapper mapper;
@@ -38,17 +38,38 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
         }
 
         /// <inheritdoc cref="IRequestHandler{TRequest,TResponse}.Handle" />
-        public async Task<RequestResult<Story>> Handle(GetStoryQuery request, CancellationToken cancellationToken)
+        public async Task<IRequestResult<Story>> Handle(GetStoryQuery request, CancellationToken cancellationToken)
         {
-            logger.LogDebug("{Name}", request.User.Identity.Name);
-
             var authenticated = request.User.Identity.IsAuthenticated;
-            var model = await context.Stories
-                .AsNoTracking()
-                .Where(story => (authenticated || story.IsPublic) && story.Slug == request.Slug)
+            var queryable = context.Stories.AsNoTracking();
+
+            if (request.IncludeAuthors)
+            {
+                if (request.IncludeComments)
+                {
+                    queryable = queryable
+                        .Include(entity => entity.Comments)
+                        .ThenInclude(entity => entity.Author);
+                }
+
+                queryable = queryable.Include(entity => entity.Author);
+            }
+
+            if (request.IncludeComments)
+            {
+                queryable = queryable.Include(entity => entity.Comments);
+            }
+
+            var story = await queryable
+                .Where(entity => (authenticated || entity.IsPublic) && entity.Slug == request.Slug)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            return RequestResult.Success(mapper.Map<Story>(model));
+            if (null == story)
+            {
+                return new RequestResult<Story>();
+            }
+
+            return RequestResult.Success(mapper.Map<Story>(story));
         }
     }
 }

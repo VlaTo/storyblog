@@ -1,13 +1,13 @@
-﻿using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Application.Stories.Commands;
 using StoryBlog.Web.Services.Blog.Persistence;
+using StoryBlog.Web.Services.Blog.Persistence.Models;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using StoryBlog.Web.Services.Blog.Persistence.Models;
 using Story = StoryBlog.Web.Services.Blog.Application.Stories.Models.Story;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
@@ -15,7 +15,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
     /// <summary>
     /// 
     /// </summary>
-    public sealed class CreateStoryCommandHandler : IRequestHandler<CreateStoryCommand, RequestResult<Story>>
+    public sealed class CreateStoryCommandHandler : IRequestHandler<CreateStoryCommand, IRequestResult<Story>>
     {
         private readonly StoryBlogDbContext context;
         private readonly IMapper mapper;
@@ -34,7 +34,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
             this.dateTimeProvider = dateTimeProvider;
         }
 
-        public async Task<RequestResult<Story>> Handle(CreateStoryCommand request, CancellationToken cancellationToken)
+        public async Task<IRequestResult<Story>> Handle(CreateStoryCommand request, CancellationToken cancellationToken)
         {
             //var name = request.User.Identity.Name;
             var author = await context.Authors
@@ -56,9 +56,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
             await context.Stories.AddAsync(story, cancellationToken);
             await context.SaveChangesAsync(cancellationToken);
 
-            var result = mapper.Map<Story>(story);
-
-            return RequestResult.Success(result);
+            return RequestResult.Success(mapper.Map<Story>(story));
         }
     }
 }

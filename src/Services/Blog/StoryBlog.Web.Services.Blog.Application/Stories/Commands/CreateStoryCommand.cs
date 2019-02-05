@@ -8,7 +8,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Commands
     /// <summary>
     /// 
     /// </summary>
-    public sealed class CreateStoryCommand : IRequest<RequestResult<Story>>
+    public sealed class CreateStoryCommand : IRequest<IRequestResult<Story>>
     {
         /// <summary>
         /// 

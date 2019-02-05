@@ -63,7 +63,8 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         }
 
         // POST api/v1/stories
-        [Authorize]
+        //[Authorize]
+        [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(StoryModel), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Create([FromBody] CreateStoryModel model)
@@ -82,15 +83,14 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return BadRequest(result.Exceptions);
             }
 
-            await commandBus.SendAsync(new NewStoryCreatedCommand
+            await commandBus.SendAsync(new StoryCreatedIntegrationCommand
             {
                 Id = Guid.NewGuid(),
                 StoryId = result.Data.Id,
-                Slug = result.Data.Slug,
                 Sent = result.Data.Created
             });
 
-            logger.NewStoryCreated(result.Data.Id);
+            logger.StoryCreated(result.Data.Id);
 
             return Created(
                 Url.Action("Get", "Story", new {slug = result.Data.Slug}),

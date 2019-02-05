@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
+using StoryBlog.Web.Services.Blog.Application.Models;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
 using StoryBlog.Web.Services.Blog.Persistence;
+using StoryBlog.Web.Services.Blog.Persistence.Models;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Blog.Application.Models;
-using StoryBlog.Web.Services.Blog.Persistence.Models;
 using Story = StoryBlog.Web.Services.Blog.Application.Stories.Models.Story;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
@@ -19,7 +19,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoriesListQueryHandler : IRequestHandler<GetStoriesListQuery, PagedQueryResult<Story>>
+    public sealed class GetStoriesListQueryHandler : IRequestHandler<GetStoriesListQuery, IPagedQueryResult<Story>>
     {
         private readonly StoryBlogDbContext context;
         private readonly IMapper mapper;
@@ -47,70 +47,65 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<PagedQueryResult<Story>> Handle(
-            GetStoriesListQuery request,
-            CancellationToken cancellationToken)
+        public async Task<IPagedQueryResult<Story>> Handle(GetStoriesListQuery request, CancellationToken cancellationToken)
         {
             if (null == request)
             {
                 throw new ArgumentNullException(nameof(request));
             }
 
-            logger.LogDebug("{Name}", request.User.Identity.Name);
+            var queryable = context.Stories.AsNoTracking();
 
-            var stories = context.Stories.AsNoTracking();
-
-            stories = stories
+            queryable = queryable
                 .OrderBy(story => story.Id)
                 .Where(story => story.Status == StoryStatus.Published && story.IsPublic);
-            var id = stories.Select(story => story.Id).FirstOrDefault();
+            var id = queryable.Select(story => story.Id).FirstOrDefault();
 
             switch (request.Cursor.Direction)
             {
                 case NavigationCursorDirection.Backward:
                 {
                     //stories = stories.SkipWhile(story => story.Id < request.Cursor.Id);
-                    stories = stories.Where(story => story.Id < request.Cursor.Id);
+                    queryable = queryable.Where(story => story.Id < request.Cursor.Id);
                     break;
                 }
 
                 case NavigationCursorDirection.Forward:
                 {
-                    stories = stories.Where(story => story.Id > request.Cursor.Id);
+                    queryable = queryable.Where(story => story.Id > request.Cursor.Id);
                     break;
                 }
             }
 
-            stories = stories.Take(request.Cursor.Count);
+            queryable = queryable.Take(request.Cursor.Count);
 
             if (request.IncludeAuthors)
             {
-                stories = stories.Include(story => story.Author);
+                queryable = queryable.Include(story => story.Author);
             }
 
             if (request.IncludeComments)
             {
                 if (request.IncludeAuthors)
                 {
-                    stories = stories.Include(story => story.Comments).ThenInclude(comment => comment.Author);
+                    queryable = queryable.Include(story => story.Comments).ThenInclude(comment => comment.Author);
                 }
                 else
                 {
-                    stories = stories.Include(story => story.Comments);
+                    queryable = queryable.Include(story => story.Comments);
                 }
             }
 
-            var entities = await stories
+            var stories = await queryable
                 .Take(request.Cursor.Count)
                 .Select(story => mapper.Map<Story>(story))
                 .ToListAsync(cancellationToken);
 
-            var result = PagedQueryResult<Story>.FromCollection(entities);
-
-            result.Backward = GetBackwardCursor(id, entities, request.Cursor.Count);
-            result.Forward = GetForwardCursor(entities, request.Cursor.Count);
-
-            return result;
+            return PagedQueryResult<Story>.Success(
+                stories,
+                GetBackwardCursor(id, stories, request.Cursor.Count),
+                GetForwardCursor(stories, request.Cursor.Count)
+            );
         }
 
         private static NavigationCursor GetBackwardCursor(long? firstId, IList<Story> stories, int pageSize)

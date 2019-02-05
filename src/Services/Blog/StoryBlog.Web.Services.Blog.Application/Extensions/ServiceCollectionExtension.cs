@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
@@ -23,12 +22,14 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
         public static IServiceCollection AppBlogApplicationDependencies(this IServiceCollection services)
         {
             services
-                .AddScoped<IRequest<PagedQueryResult<Story>>, GetStoriesListQuery>()
-                .AddScoped<IRequest<RequestResult<Story>>, CreateStoryCommand>()
-                .AddScoped<IRequest<RequestResult<Story>>, GetStoryQuery>()
-                .AddScoped<IRequestHandler<GetStoriesListQuery, PagedQueryResult<Story>>, GetStoriesListQueryHandler>()
-                .AddScoped<IRequestHandler<CreateStoryCommand, RequestResult<Story>>, CreateStoryCommandHandler>()
-                .AddScoped<IRequestHandler<GetStoryQuery, RequestResult<Story>>, GetStoryQueryHandler>();
+                .AddScoped<IRequest<IPagedQueryResult<Story>>, GetStoriesListQuery>()
+                .AddScoped<IRequest<IRequestResult<Story>>, CreateStoryCommand>()
+                .AddScoped<IRequest<IRequestResult<Story>>, GetStoryQuery>()
+                .AddScoped<IRequestHandler<GetStoriesListQuery, IPagedQueryResult<Story>>, GetStoriesListQueryHandler>()
+                .AddScoped<IRequestHandler<CreateStoryCommand, IRequestResult<Story>>, CreateStoryCommandHandler>()
+                .AddScoped<IRequestHandler<EditStoryCommand, IRequestResult<Story>>, EditStoryCommandHandler>()
+                .AddScoped<IRequestHandler<GetStoryQuery, IRequestResult<Story>>, GetStoryQueryHandler>()
+                .AddScoped<IRequestHandler<DeleteStoryCommand, IRequestResult>, DeleteStoryCommandHandler>();
 
             services.AddAutoMapper(config => {
                 config
@@ -94,8 +95,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                     )
                     .ForMember(
                         story => story.Comments,
-                        mapping => mapping.MapFrom(source => source.Comments)
-                    );
+                        mapping =>
+                        {
+                            mapping.MapFrom(source => source.Comments);
+                        });
             });
 
             return services;

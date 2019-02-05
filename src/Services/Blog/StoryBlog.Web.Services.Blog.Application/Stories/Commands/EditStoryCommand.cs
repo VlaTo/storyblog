@@ -3,12 +3,12 @@ using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 using System.Security.Principal;
 
-namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
+namespace StoryBlog.Web.Services.Blog.Application.Stories.Commands
 {
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoryQuery : IRequest<IRequestResult<Story>>
+    public sealed class EditStoryCommand : IRequest<IRequestResult<Story>>
     {
         /// <summary>
         /// 
@@ -29,30 +29,37 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
         /// <summary>
         /// 
         /// </summary>
-        public bool IncludeAuthors
+        public string Title
         {
             get;
-            set;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public bool IncludeComments
+        public string Content
         {
             get;
-            set;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="user"></param>
-        /// <param name="slug"></param>
-        public GetStoryQuery(IPrincipal user, string slug)
+        public bool IsPublic
+        {
+            get;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public EditStoryCommand(IPrincipal user, string slug, string title, string content, bool isPublic)
         {
             User = user;
             Slug = slug;
+            Title = title;
+            Content = content;
+            IsPublic = isPublic;
         }
     }
 }

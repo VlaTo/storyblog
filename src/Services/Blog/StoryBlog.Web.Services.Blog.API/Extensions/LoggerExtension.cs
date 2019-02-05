@@ -13,7 +13,7 @@ namespace StoryBlog.Web.Services.Blog.API.Extensions
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="id"></param>
-        public static void NewStoryCreated(this ILogger logger, long id)
+        public static void StoryCreated(this ILogger logger, long id)
         {
             if (null == logger)
             {
@@ -21,6 +21,36 @@ namespace StoryBlog.Web.Services.Blog.API.Extensions
             }
 
             logger.LogDebug($"New story was created (id: \'{id}\')");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="id"></param>
+        public static void StoryUpdated(this ILogger logger, long id)
+        {
+            if (null == logger)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+
+            logger.LogDebug($"Story was updated (id: \'{id}\')");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="id"></param>
+        public static void StoryDeleted(this ILogger logger, long id)
+        {
+            if (null == logger)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+
+            logger.LogDebug($"Story was deleted (id: \'{id}\')");
         }
     }
 }

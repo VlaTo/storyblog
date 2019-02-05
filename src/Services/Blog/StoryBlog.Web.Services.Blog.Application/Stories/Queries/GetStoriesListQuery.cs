@@ -9,7 +9,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoriesListQuery : IRequest<PagedQueryResult<Story>>
+    public sealed class GetStoriesListQuery : IRequest<IPagedQueryResult<Story>>
     {
         /// <summary>
         /// 

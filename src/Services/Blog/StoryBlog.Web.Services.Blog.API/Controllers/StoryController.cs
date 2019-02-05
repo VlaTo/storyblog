@@ -4,12 +4,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using StoryBlog.Web.Services.Blog.API.Extensions;
 using StoryBlog.Web.Services.Blog.API.Infrastructure;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
+using StoryBlog.Web.Services.Blog.API.Integration.Commands;
+using StoryBlog.Web.Services.Blog.Application.Extensions;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
+using StoryBlog.Web.Services.Blog.Application.Stories.Commands;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
 using StoryBlog.Web.Services.Blog.Common.Models;
 using StoryBlog.Web.Services.Blog.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Mime;
@@ -28,6 +33,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         private readonly IMediator mediator;
         private readonly IMapper mapper;
         private readonly ICommandBus commandBus;
+        private readonly IDateTimeProvider dateTimeProvider;
         private readonly StoryBlogSettings blogSettings;
         private readonly ILogger<StoryController> logger;
 
@@ -43,36 +49,100 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
             IMediator mediator,
             IMapper mapper,
             ICommandBus commandBus,
+            IDateTimeProvider dateTimeProvider,
             IOptionsSnapshot<StoryBlogSettings> storyBlogSettings,
             ILogger<StoryController> logger)
         {
             this.mediator = mediator;
             this.mapper = mapper;
             this.commandBus = commandBus;
+            this.dateTimeProvider = dateTimeProvider;
             this.logger = logger;
 
             blogSettings = storyBlogSettings.Value;
         }
 
-        // GET api/v1/stories/<slug>
+        // GET api/v1/story/<slug>
         [AllowAnonymous]
         [HttpGet("{slug:required}")]
         [ProducesResponseType(typeof(StoryModel), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Get(string slug, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
         {
             var flags = FlagParser.Parse<IncludeFlags>(includes);
-            var story = await mediator.Send(new GetStoryQuery(User, slug)
+            var result = await mediator.Send(new GetStoryQuery(User, slug)
             {
                 IncludeAuthors = flags.IncludeAuthors,
                 IncludeComments = flags.IncludeComments
             });
 
-            if (null == story)
+            if (false == result.IsSuccess())
             {
                 return NotFound();
             }
 
-            return Ok(mapper.Map<StoryModel>(story));
+            return Ok(mapper.Map<StoryModel>(result.Data));
+        }
+
+        // PUT api/v1/story/<slug>
+        [AllowAnonymous]
+        [HttpPut("{slug:required}")]
+        [ProducesResponseType(typeof(StoryModel), (int) HttpStatusCode.OK)]
+        public async Task<IActionResult> Put(string slug, [FromBody] EditStoryModel model)
+        {
+            if (false == ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await mediator.Send(
+                new EditStoryCommand(User, slug, model.Title, model.Content, model.IsPublic)
+            );
+
+            if (false == result.IsSuccess())
+            {
+                return BadRequest(result.Exceptions);
+            }
+
+            await commandBus.SendAsync(new StoryUpdatedIntegrationCommand
+            {
+                Id = Guid.NewGuid(),
+                StoryId = result.Data.Id,
+                Sent = dateTimeProvider.Now
+            });
+
+            logger.StoryCreated(result.Data.Id);
+
+            if (slug != result.Data.Slug)
+            {
+                var url = Url.Action("Get", "Story", new {slug = result.Data.Slug});
+            }
+
+            return Ok(mapper.Map<StoryModel>(result.Data));
+        }
+
+        // DELETE api/v1/story/<slug>
+        [AllowAnonymous]
+        [HttpDelete("{slug:required}")]
+        [ProducesResponseType((int) HttpStatusCode.OK)]
+        public async Task<IActionResult> Delete(string slug)
+        {
+            var result = await mediator.Send(new DeleteStoryCommand(User, slug));
+
+            if (false == result.IsSuccess())
+            {
+                return BadRequest(result.Exceptions);
+            }
+
+            await commandBus.SendAsync(new StoryDeletedIntegrationCommand
+            {
+                Id = Guid.NewGuid(),
+                StoryId = 1L,
+                Sent = dateTimeProvider.Now
+            });
+
+            logger.StoryDeleted(1L);
+
+            return Ok();
         }
     }
 }
