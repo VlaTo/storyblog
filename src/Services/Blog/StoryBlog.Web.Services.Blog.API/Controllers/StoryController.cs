@@ -69,12 +69,14 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         [ProducesResponseType(typeof(StoryModel), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Get(string slug, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
         {
-            var flags = FlagParser.Parse<IncludeFlags>(includes);
-            var result = await mediator.Send(new GetStoryQuery(User, slug)
+            var flags = FlagParser.Parse<StoryQueryFlags>(includes);
+            var query = new GetStoryQuery(User, slug)
             {
                 IncludeAuthors = flags.IncludeAuthors,
                 IncludeComments = flags.IncludeComments
-            });
+            };
+
+            var result = await mediator.Send(query, HttpContext.RequestAborted);
 
             if (false == result.IsSuccess())
             {
@@ -96,7 +98,8 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
             }
 
             var result = await mediator.Send(
-                new EditStoryCommand(User, slug, model.Title, model.Content, model.IsPublic)
+                new EditStoryCommand(User, slug, model.Title, model.Content, model.IsPublic),
+                HttpContext.RequestAborted
             );
 
             if (false == result.IsSuccess())
@@ -127,7 +130,10 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         [ProducesResponseType((int) HttpStatusCode.OK)]
         public async Task<IActionResult> Delete(string slug)
         {
-            var result = await mediator.Send(new DeleteStoryCommand(User, slug));
+            var result = await mediator.Send(
+                new DeleteStoryCommand(User, slug),
+                HttpContext.RequestAborted
+            );
 
             if (false == result.IsSuccess())
             {

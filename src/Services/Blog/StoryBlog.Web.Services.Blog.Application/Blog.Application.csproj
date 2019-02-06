@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <Folder Include="Comments\Models\" />
-    <Folder Include="Comments\Queries\" />
   </ItemGroup>
 
 </Project>

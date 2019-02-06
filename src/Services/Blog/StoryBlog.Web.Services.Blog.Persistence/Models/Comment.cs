@@ -4,16 +4,36 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StoryBlog.Web.Services.Blog.Persistence.Models
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public enum CommentStatus
     {
+        /// <summary>
+        /// 
+        /// </summary>
         Draft,
+
+        /// <summary>
+        /// 
+        /// </summary>
         Review,
+
+        /// <summary>
+        /// 
+        /// </summary>
         Published
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     [Table("Comments")]
     public class Comment
     {
+        /// <summary>
+        /// 
+        /// </summary>
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id

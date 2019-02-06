@@ -38,6 +38,15 @@ namespace StoryBlog.Web.Services.Blog.Persistence
         /// <summary>
         /// 
         /// </summary>
+        public DbSet<Comment> Comments
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="options"></param>
         public StoryBlogDbContext(DbContextOptions options)
             : base(options)

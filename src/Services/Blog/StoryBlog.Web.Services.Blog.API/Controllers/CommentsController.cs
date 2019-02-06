@@ -54,7 +54,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
             blogSettings = storyBlogSettings.Value;
         }
 
-        // POST api/v1/stories
+        // POST api/v1/comments/<story-slug>
         //[Authorize]
         [AllowAnonymous]
         [HttpPost("{slug:required}")]
@@ -67,7 +67,8 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
             }
 
             var result = await mediator.Send(
-                new CreateCommentCommand(User, slug, model.Content, model.IsPublic)
+                new CreateCommentCommand(User, slug, model.Content, model.IsPublic),
+                HttpContext.RequestAborted
             );
 
             if (false == result.IsSuccess())

@@ -1,20 +1,25 @@
-﻿using System.Collections.Generic;
-using System.Net;
-using System.Net.Mime;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using StoryBlog.Web.Services.Blog.Application.Extensions;
-using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
+using StoryBlog.Web.Services.Blog.API.Extensions;
 using StoryBlog.Web.Services.Blog.API.Infrastructure;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
+using StoryBlog.Web.Services.Blog.API.Integration.Commands;
+using StoryBlog.Web.Services.Blog.Application.Comments.Commands;
+using StoryBlog.Web.Services.Blog.Application.Comments.Queries;
+using StoryBlog.Web.Services.Blog.Application.Extensions;
+using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Common.Models;
 using StoryBlog.Web.Services.Blog.Infrastructure;
 using StoryBlog.Web.Services.Shared.Common;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Mime;
+using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -29,6 +34,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         private readonly IMediator mediator;
         private readonly IMapper mapper;
         private readonly ICommandBus commandBus;
+        private readonly IDateTimeProvider dateTimeProvider;
         private readonly StoryBlogSettings blogSettings;
         private readonly ILogger<CommentsController> logger;
 
@@ -44,12 +50,14 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
             IMediator mediator,
             IMapper mapper,
             ICommandBus commandBus,
+            IDateTimeProvider dateTimeProvider,
             IOptionsSnapshot<StoryBlogSettings> storyBlogSettings,
             ILogger<CommentsController> logger)
         {
             this.mediator = mediator;
             this.mapper = mapper;
             this.commandBus = commandBus;
+            this.dateTimeProvider = dateTimeProvider;
             this.logger = logger;
 
             blogSettings = storyBlogSettings.Value;
@@ -61,12 +69,13 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         [ProducesResponseType(typeof(CommentModel), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Get(long id, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
         {
-            var flags = FlagParser.Parse<IncludeFlags>(includes);
-            var result = await mediator.Send(new GetStoryQuery(User, slug)
+            var flags = FlagParser.Parse<CommentQueryFlags>(includes);
+            var query = new GetCommentQuery(User, id)
             {
-                IncludeAuthors = flags.IncludeAuthors,
-                IncludeComments = flags.IncludeComments
-            });
+                IncludeAuthor = flags.IncludeAuthor
+            };
+
+            var result = await mediator.Send(query, HttpContext.RequestAborted);
 
             if (false == result.IsSuccess())
             {
@@ -74,6 +83,67 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
             }
 
             return Ok(mapper.Map<StoryModel>(result.Data));
+        }
+
+        // PUT api/v1/comment/<id>
+        [AllowAnonymous]
+        [HttpPut("{id:long}")]
+        [ProducesResponseType(typeof(CommentModel), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Edit(long id, [FromBody] EditCommentModel model)
+        {
+            if (false == ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await mediator.Send(
+                new EditCommentCommand(User, id, model.Content, model.IsPublic),
+                HttpContext.RequestAborted
+            );
+
+            if (false == result.IsSuccess())
+            {
+                return BadRequest(result.Exceptions);
+            }
+
+            await commandBus.SendAsync(new CommentUpdatedIntegrationCommand
+            {
+                Id = Guid.NewGuid(),
+                //StoryId = result.Data.Id,
+                Sent = dateTimeProvider.Now
+            });
+
+            logger.StoryUpdated(result.Data.Id);
+
+            return Ok(mapper.Map<StoryModel>(result.Data));
+        }
+
+        // DELETE api/v1/comment/<id>
+        [AllowAnonymous]
+        [HttpDelete("{id:long}")]
+        [ProducesResponseType((int) HttpStatusCode.OK)]
+        public async Task<IActionResult> Delete(long id)
+        {
+            var result = await mediator.Send(
+                new DeleteCommentCommand(User, id),
+                HttpContext.RequestAborted
+            );
+
+            if (false == result.IsSuccess())
+            {
+                return BadRequest(result.Exceptions);
+            }
+
+            await commandBus.SendAsync(new CommentDeletedIntegrationCommand
+            {
+                Id = Guid.NewGuid(),
+                //StoryId = result.Data.Id,
+                Sent = dateTimeProvider.Now
+            });
+
+            logger.CommentDeleted(id);
+
+            return Ok();
         }
     }
 }

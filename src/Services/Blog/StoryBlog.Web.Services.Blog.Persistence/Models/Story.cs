@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data;
-using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 
 namespace StoryBlog.Web.Services.Blog.Persistence.Models
 {
@@ -29,6 +27,9 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
     [Table("Stories")]
     public class Story
     {
+        /// <summary>
+        /// 
+        /// </summary>
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id
@@ -37,6 +38,9 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [Required]
         public string Title
         {
@@ -44,6 +48,9 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [DataType(DataType.Text)]
         public string Slug
         {
@@ -51,6 +58,9 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [DataType(DataType.MultilineText)]
         public string Content
         {
@@ -58,12 +68,18 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public long AuthorId
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [ForeignKey(nameof(AuthorId))]
         public Author Author
         {
@@ -71,12 +87,18 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public StoryStatus Status
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [DataType(DataType.DateTime)]
         public DateTime Created
         {
@@ -84,6 +106,9 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [DataType(DataType.DateTime)]
         public DateTime? Modified
         {
@@ -91,21 +116,29 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsPublic
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IList<Comment> Comments
         {
             get;
-            set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Story()
         {
-            //Comments = new List<Comment>();
+            Comments = new List<Comment>();
         }
     }
 }

@@ -75,7 +75,8 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
             }
 
             var result = await mediator.Send(
-                new CreateStoryCommand(User, model.Title, model.Content, model.IsPublic)
+                new CreateStoryCommand(User, model.Title, model.Content, model.IsPublic),
+                HttpContext.RequestAborted
             );
 
             if (false == result.IsSuccess())
@@ -104,7 +105,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         [ProducesResponseType(typeof(IEnumerable<StoryModel>), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Get(string page, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
         {
-            var flags = FlagParser.Parse<IncludeFlags>(includes);
+            var flags = FlagParser.Parse<StoryQueryFlags>(includes);
             var query = new GetStoriesListQuery(User)
             {
                 IncludeComments = flags.IncludeComments,

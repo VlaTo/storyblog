@@ -2,8 +2,14 @@
 
 namespace StoryBlog.Web.Services.Blog.API.Infrastructure
 {
-    public sealed class IncludeFlags
+    /// <summary>
+    /// 
+    /// </summary>
+    internal sealed class StoryQueryFlags
     {
+        /// <summary>
+        /// 
+        /// </summary>
         [Key(Name = "author")]
         public bool IncludeAuthors
         {
@@ -11,6 +17,9 @@ namespace StoryBlog.Web.Services.Blog.API.Infrastructure
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [Key(Name = "comments")]
         public bool IncludeComments
         {
