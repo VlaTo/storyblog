@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace StoryBlog.Web.Services.Blog.Application.Infrastructure
+namespace StoryBlog.Web.Services.Shared.Common
 {
     /// <summary>
     /// 

@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
-using StoryBlog.Web.Services.Blog.Application.Models;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
 using StoryBlog.Web.Services.Blog.Persistence;
 using StoryBlog.Web.Services.Blog.Persistence.Models;

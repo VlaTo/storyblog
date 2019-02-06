@@ -1,4 +1,4 @@
-﻿namespace StoryBlog.Web.Services.Blog.Application.Models
+﻿namespace StoryBlog.Web.Services.Blog.Application.Infrastructure
 {
     /// <summary>
     /// 

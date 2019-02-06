@@ -14,9 +14,12 @@ namespace StoryBlog.Web.Services.Blog.API.Infrastructure
         {
             const char hyphen = '-';
             var slug = new StringBuilder();
+            var chars = title.ToCharArray();
 
-            foreach (var current in title)
+            for (var index = 0; index < chars.Length; index++)
             {
+                var last = index == chars.Length - 1;
+                var current = chars[index];
                 var ch = Char.IsUpper(current) ? Char.ToLower(current) : current;
 
                 if (false == Char.IsLetterOrDigit(ch))
@@ -24,7 +27,7 @@ namespace StoryBlog.Web.Services.Blog.API.Infrastructure
                     ch = hyphen;
                 }
 
-                if (hyphen == ch && slug[slug.Length - 1] == hyphen)
+                if (hyphen == ch && slug[slug.Length - 1] == hyphen || last)
                 {
                     continue;
                 }

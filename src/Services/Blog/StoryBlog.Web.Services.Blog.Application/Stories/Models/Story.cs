@@ -34,12 +34,6 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
             set;
         }
 
-        public IList<Comment> Comments
-        {
-            get;
-            set;
-        }
-
         public bool IsPublic
         {
             get;
@@ -56,6 +50,11 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
         {
             get;
             set;
+        }
+
+        public IList<Comment> Comments
+        {
+            get;
         }
 
         public Story(long id)

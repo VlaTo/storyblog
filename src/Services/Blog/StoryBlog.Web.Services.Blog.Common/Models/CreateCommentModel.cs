@@ -2,18 +2,18 @@
 
 namespace StoryBlog.Web.Services.Blog.Common.Models
 {
-    [DataContract(Name = "author")]
-    public sealed class AuthorModel
+    [DataContract(Name = "comment")]
+    public sealed class CreateCommentModel
     {
-        [DataMember(Name = "id")]
-        public long Id
+        [DataMember(Name = "content")]
+        public string Content
         {
             get;
             set;
         }
 
-        [DataMember(Name = "name")]
-        public string Name
+        [DataMember(Name = "public")]
+        public bool IsPublic
         {
             get;
             set;

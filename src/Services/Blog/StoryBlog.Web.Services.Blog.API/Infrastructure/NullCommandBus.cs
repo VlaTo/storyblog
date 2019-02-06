@@ -1,10 +1,13 @@
 ﻿using System;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using StoryBlog.Web.Services.Shared.Common;
 
-namespace StoryBlog.Web.Services.Blog.Application.Infrastructure
+namespace StoryBlog.Web.Services.Blog.API.Infrastructure
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class NullCommandBus : ICommandBus
     {
         private readonly ILogger<ICommandBus> logger;

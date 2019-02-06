@@ -19,7 +19,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                 return 1;
             }
 
-            return -1;
+            return 1;
         }
     }
 }

@@ -14,6 +14,7 @@ using StoryBlog.Web.Services.Blog.Application.Stories.Commands;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
 using StoryBlog.Web.Services.Blog.Common.Models;
 using StoryBlog.Web.Services.Blog.Infrastructure;
+using StoryBlog.Web.Services.Shared.Common;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -110,7 +111,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 Sent = dateTimeProvider.Now
             });
 
-            logger.StoryCreated(result.Data.Id);
+            logger.StoryUpdated(result.Data.Id);
 
             if (slug != result.Data.Slug)
             {

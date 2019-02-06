@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace StoryBlog.Web.Services.Blog.Application.Extensions
 {
@@ -12,6 +13,21 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                 action.Invoke(item);
                 yield return item;
             }
+        }
+
+        public static IList<T> AddRange<T>(this IList<T> list, IEnumerable<T> enumerable)
+        {
+            if (null == list)
+            {
+                throw new ArgumentNullException(nameof(list));
+            }
+
+            foreach (var item in enumerable ?? Enumerable.Empty<T>())
+            {
+                list.Add(item);
+            }
+
+            return list;
         }
     }
 }

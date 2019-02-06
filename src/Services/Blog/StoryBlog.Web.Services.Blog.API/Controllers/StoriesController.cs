@@ -4,24 +4,24 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using StoryBlog.Web.Services.Blog.API.Extensions;
 using StoryBlog.Web.Services.Blog.API.Infrastructure;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
 using StoryBlog.Web.Services.Blog.API.Integration.Commands;
 using StoryBlog.Web.Services.Blog.Application.Extensions;
-using StoryBlog.Web.Services.Blog.Application.Infrastructure;
-using StoryBlog.Web.Services.Blog.Application.Models;
 using StoryBlog.Web.Services.Blog.Application.Stories.Commands;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
 using StoryBlog.Web.Services.Blog.Common;
 using StoryBlog.Web.Services.Blog.Common.Models;
 using StoryBlog.Web.Services.Blog.Infrastructure;
+using StoryBlog.Web.Services.Shared.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Blog.API.Extensions;
+using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Routing;
-using StoryBlog.Web.Services.Blog.Application.Models;
+using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 
 namespace StoryBlog.Web.Services.Blog.API.Infrastructure
 {

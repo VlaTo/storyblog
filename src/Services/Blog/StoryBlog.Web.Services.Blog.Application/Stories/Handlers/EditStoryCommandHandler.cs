@@ -73,7 +73,9 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
 
             await context.SaveChangesAsync(cancellationToken);
 
-            return RequestResult.Success(mapper.Map<Story>(story));
+            var temp = mapper.Map<Story>(story);
+
+            return RequestResult.Success(temp);
         }
     }
 }

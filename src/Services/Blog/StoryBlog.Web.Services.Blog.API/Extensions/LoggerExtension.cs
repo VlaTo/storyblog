@@ -52,5 +52,20 @@ namespace StoryBlog.Web.Services.Blog.API.Extensions
 
             logger.LogDebug($"Story was deleted (id: \'{id}\')");
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="id"></param>
+        public static void CommentCreated(this ILogger logger, string slug, long id)
+        {
+            if (null == logger)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+
+            logger.LogDebug($"Story was deleted (id: \'{id}\')");
+        }
     }
 }

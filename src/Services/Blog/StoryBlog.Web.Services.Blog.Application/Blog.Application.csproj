@@ -18,4 +18,9 @@
     <ProjectReference Include="..\StoryBlog.Web.Services.Blog.Persistence\Blog.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Comments\Models\" />
+    <Folder Include="Comments\Queries\" />
+  </ItemGroup>
+
 </Project>

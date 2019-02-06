@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
-using StoryBlog.Web.Services.Blog.Application.Models;
 using System;
 using System.IO;
 using System.Text.Encodings.Web;
 using IdentityModel;
 using Microsoft.AspNetCore.Mvc.Routing;
+using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 
 namespace StoryBlog.Web.Services.Blog.API.Infrastructure
 {
