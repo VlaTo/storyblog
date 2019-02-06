@@ -1,10 +1,10 @@
 ﻿using System;
-using Blazor.Fluxor;
+//using Blazor.Fluxor;
 using StoryBlog.Web.Blazor.Shared;
 
 namespace StoryBlog.Web.Blazor.Client.State.Cart
 {
-    public sealed class GetCartStateFailedAction : IAction, IMutator
+    /*public sealed class GetCartStateFailedAction : IAction, IMutator
     {
         public Guid CartId
         {
@@ -21,5 +21,5 @@ namespace StoryBlog.Web.Blazor.Client.State.Cart
             CartId = cartId;
             ErrorMessage = errorMessage;
         }
-    }
+    }*/
 }

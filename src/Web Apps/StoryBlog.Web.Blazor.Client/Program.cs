@@ -1,5 +1,4 @@
-﻿using Blazor.Fluxor;
-using Microsoft.AspNetCore.Blazor.Hosting;
+﻿using Microsoft.AspNetCore.Blazor.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using StoryBlog.Web.Blazor.Client.Core;
 using StoryBlog.Web.Blazor.Shared;
@@ -10,19 +9,24 @@ namespace StoryBlog.Web.Blazor.Client
     {
         static void Main(string[] args)
         {
-            BlazorWebAssemblyHost.CreateDefaultBuilder()
+            var host = BlazorWebAssemblyHost
+                .CreateDefaultBuilder()
                 .ConfigureServices(services =>
                 {
                     services.Add(ServiceDescriptor.Singleton<IApiClient, ApiClient>());
                     services.AddLocalStorage();
-                    services.AddFluxor(options =>
+                    /*services.AddFluxor(options =>
                     {
                         options.UseDependencyInjection(typeof(Program).Assembly);
-                    });
+                    });*/
+                    services
+                        .AddMvc()
+                        .AddNewtonsoftJson();
                 })
                 .UseBlazorStartup<Startup>()
-                .Build()
-                .Run();
+                .Build();
+
+            host.Run();
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
-using Blazor.Fluxor;
+//using Blazor.Fluxor;
 using StoryBlog.Web.Blazor.Client.Core;
 
 namespace StoryBlog.Web.Blazor.Client.State.Cart
 {
-    public sealed class GetCartStateEffect : Effect<GetCartStateAction>
+    /*public sealed class GetCartStateEffect : Effect<GetCartStateAction>
     {
         private readonly IApiClient apiClient;
 
@@ -17,5 +17,5 @@ namespace StoryBlog.Web.Blazor.Client.State.Cart
         {
             return ActionCreators.LoadCartProductsAsync(dispatcher, apiClient, action.CartId);
         }
-    }
+    }*/
 }

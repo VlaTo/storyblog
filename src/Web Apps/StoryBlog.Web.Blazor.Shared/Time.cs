@@ -6,15 +6,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.RenderTree;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.RenderTree;
 
 namespace StoryBlog.Web.Blazor.Shared
 {
     /// <summary>
     /// Time representation.
     /// </summary>
-    public class Time : BlazorComponent, IDisposable
+    public class Time : ComponentBase, IDisposable
     {
         /// <summary>
         /// 
