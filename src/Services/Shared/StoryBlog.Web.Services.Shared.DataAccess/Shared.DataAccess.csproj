@@ -1,9 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
-    <AssemblyName>StoryBlog.Web.Services.Shared.DataAccess</AssemblyName>
-    <RootNamespace>StoryBlog.Web.Services.Shared.DataAccess</RootNamespace>
-  </PropertyGroup>
-
-</Project>

@@ -68,10 +68,7 @@ namespace StoryBlog.Web.Services.Blog.API
 
                     services
                         .AddCors()
-                        .AddRouting(/*options =>
-                        {
-                            options.ConstraintMap["cursor"] = typeof(NavigationCursorRouteConstraint);
-                        }*/)
+                        .AddRouting()
                         .AddMvc(options =>
                         {
                             options.Filters.Add<HttpGlobalExceptionFilter>();
@@ -225,9 +222,10 @@ namespace StoryBlog.Web.Services.Blog.API
                         .UseCors(options =>
                         {
                             options
-                                .WithOrigins("http://localhost:29699")
+                                .WithOrigins("http://localhost:64972")
+                                .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Delete)
                                 .AllowAnyHeader()
-                                .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put);
+                                .AllowCredentials();
                         })
                         .UseAuthentication()
                         .UseMvc()

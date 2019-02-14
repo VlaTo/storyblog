@@ -1,9 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>StoryBlog.Web.Services.Shared.Domain</AssemblyName>
-    <RootNamespace>StoryBlog.Web.Services.Shared.Domain</RootNamespace>
-  </PropertyGroup>
-  
-</Project>
