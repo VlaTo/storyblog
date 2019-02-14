@@ -1,10 +1,14 @@
-@inherits Microsoft.AspNetCore.Components.Layouts.LayoutComponentBase
+@using global::Blazor.Fluxor
+@inherits BlazorLayoutComponent
+@inject IStore Store
 
-<TopMenu>
-    
-</TopMenu>
+@Store.Initialize()
 
-<main class="container" role="main">
+<div class="sidebar">
+    <NavMenu />
+</div>
+
+<div class="main">
     <div class="top-row px-4">
         <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
     </div>
@@ -12,4 +16,4 @@
     <div class="content px-4">
         @Body
     </div>
-</main>
+</div>

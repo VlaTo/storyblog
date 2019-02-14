@@ -1,22 +1,7 @@
-﻿@using Microsoft.AspNetCore.Blazor
-@using Microsoft.AspNetCore.Components
+﻿@page "/"
 
-@page "/"
-@page "/{PageNumber:int}"
+<h1>Hello, world!</h1>
 
-@inject StoryBlog.Web.Blazor.Client.Core.IApiClient ApiClient
+Welcome to your new app.
 
-<div class="col-9">
-</div>
-<div class="col-3">
-    @(new MarkupString("<span>this is <strong>raw</strong> string.</span>"))
-    <a class="btn btn-default" href="http://localhost:5000/api/v1/account/">Sign in</a>
-</div>
-
-@functions {
-    [Parameter]
-    protected int PageNumber { get; set; } = 1;
-
-    [Parameter]
-    protected int PageSize { get; set; } = 10;
-}
+<SurveyPrompt Title="How is Blazor working for you?" />

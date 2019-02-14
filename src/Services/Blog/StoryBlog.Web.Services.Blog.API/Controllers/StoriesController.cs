@@ -102,7 +102,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         // GET api/v1/stories
         [AllowAnonymous]
         [HttpGet("{page?}")]
-        [ProducesResponseType(typeof(IEnumerable<StoryModel>), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ListResult<StoryModel>), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Get(string page, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
         {
             var flags = FlagParser.Parse<StoryQueryFlags>(includes);
