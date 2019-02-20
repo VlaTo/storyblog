@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>StoryBlog.Web.Blazor.Components</AssemblyName>
+    <RootNamespace>StoryBlog.Web.Blazor.Components</RootNamespace>
+    <OutputType>Library</OutputType>
+    <IsPackable>true</IsPackable>
+    <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="**\*.js" Exclude="bin\**\*.*;obj\**\*.*" LogicalName="blazor:js:%(RecursiveDir)%(Filename)%(Extension)" />
+    <EmbeddedResource Include="**\*.css" Exclude="bin\**\*.*;obj\**\*.*" LogicalName="blazor:css:%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.7.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.7.0" />
+  </ItemGroup>
+
+</Project>

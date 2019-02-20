@@ -1,12 +1,15 @@
 ﻿using StoryBlog.Web.Services.Blog.Common;
 using StoryBlog.Web.Services.Blog.Common.Models;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.Serialization.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Blazor;
 using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
 
 namespace StoryBlog.Web.Blazor.Client.Services
 {
@@ -24,15 +27,25 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
         public async Task<ListResult<StoryModel>> GetStoriesAsync()
         {
-            var path = baseUri + "stories";
+            var requestUri = new Uri(baseUri, "stories");
 
-            logger.LogDebug($"Call to API: {path}");
+            logger.LogDebug($"Call to API: {requestUri}");
 
-            var result = await client.GetJsonAsync<ListResult<StoryModel>>(path);
+            try
+            {
+                //var result = await client.GetJsonAsync<ListResult<StoryModel>>(path);
 
-            logger.LogDebug($"Count: {result.Data.Count()}");
-
-            return result;
+                using (var stream = await client.GetStreamAsync(requestUri))
+                {
+                    var json = await stream.GetResponseStringAsync(CancellationToken.None);
+                    return Json.Deserialize<ListResult<StoryModel>>(json);
+                }
+            }
+            catch (HttpRequestException exception)
+            {
+                Debug.WriteLine(exception);
+                return new ListResult<StoryModel>();
+            }
         }
     }
 }

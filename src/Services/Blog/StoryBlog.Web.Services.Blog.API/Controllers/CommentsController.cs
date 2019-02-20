@@ -11,8 +11,10 @@ using StoryBlog.Web.Services.Blog.Application.Extensions;
 using StoryBlog.Web.Services.Blog.Common.Models;
 using StoryBlog.Web.Services.Shared.Common;
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Mime;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
