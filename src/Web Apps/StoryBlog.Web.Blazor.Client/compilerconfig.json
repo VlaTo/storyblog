@@ -1,0 +1,10 @@
+﻿[
+  {
+    "inputFile": "wwwroot/less/site.less",
+    "outputFile": "wwwroot/css/site.css",
+    "includeInProject": true,
+    "minify": {
+      "enabled": true 
+    }
+  }
+]

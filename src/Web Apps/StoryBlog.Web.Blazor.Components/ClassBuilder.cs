@@ -46,7 +46,7 @@ namespace StoryBlog.Web.Blazor.Components
 
             if (false == String.IsNullOrWhiteSpace(componentPrefix))
             {
-                if (false == String.IsNullOrWhiteSpace(componentPrefix))
+                if (false == String.IsNullOrWhiteSpace(classNamePrefix))
                 {
                     this.classNamePrefix += (DashSeparator + componentPrefix);
                 }
@@ -64,13 +64,18 @@ namespace StoryBlog.Web.Blazor.Components
 
             if (addClassNamePrefix)
             {
-                builder.Append(classNamePrefix).Append(ClassNameSeparator);
+                builder.Append(classNamePrefix);
             }
 
             foreach (var definition in classDefinitions)
             {
                 if (null == definition.Condition || definition.Condition.Invoke(component))
                 {
+                    if (0 < builder.Length)
+                    {
+                        builder.Append(ClassNameSeparator);
+                    }
+
                     if (null == definition.ValueGetter)
                     {
                         builder.Append(definition.Name);
@@ -149,8 +154,7 @@ namespace StoryBlog.Web.Blazor.Components
             var prefix = new StringBuilder()
                 .Append(classNamePrefix)
                 .Append(GetSeparator(prefixSeparator))
-                .Append(value)
-                .Append(ClassNameSeparator);
+                .Append(value);
 
             classDefinitions.Add(new ClassDefinition(
                 prefix.ToString(),

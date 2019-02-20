@@ -23,25 +23,14 @@ else
     }
     else if (null != BlogState.Value.Stories)
     {
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Date</th>
-                <th>@nameof(StoryModel.Title)</th>
-                <th>@nameof(StoryModel.Content)</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var story in BlogState.Value.Stories)
-            {
-                <tr>
-                    <td>@story.Created.ToShortDateString()</td>
-                    <td>@story.Title</td>
-                    <td>@story.Content</td>
-                </tr>
-            }
-            </tbody>
-        </table>
+        foreach (var story in BlogState.Value.Stories)
+        {
+            <article class="storyblog-article">
+                <!--<td>story.Created.ToShortDateString()</td>-->
+                <h1 class="storyblog-article-title">@story.Title</h1>
+                <div class="storyblog-article-content">@story.Content</div>
+            </article>
+        }
     }
 }
 
