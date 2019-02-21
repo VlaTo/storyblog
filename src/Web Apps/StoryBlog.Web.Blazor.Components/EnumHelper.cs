@@ -4,7 +4,7 @@ using StoryBlog.Web.Blazor.Components.Attributes;
 
 namespace StoryBlog.Web.Blazor.Components
 {
-    internal static class EnumHelper
+    public static class EnumHelper
     {
         public static string GetClassName<TEnum>(TEnum value) 
             where TEnum : struct

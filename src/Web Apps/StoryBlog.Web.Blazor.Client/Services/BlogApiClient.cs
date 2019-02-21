@@ -3,7 +3,10 @@ using StoryBlog.Web.Services.Blog.Common.Models;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Runtime.Serialization.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,15 +32,13 @@ namespace StoryBlog.Web.Blazor.Client.Services
         {
             var requestUri = new Uri(baseUri, "stories");
 
-            logger.LogDebug($"Call to API: {requestUri}");
-
             try
             {
-                //var result = await client.GetJsonAsync<ListResult<StoryModel>>(path);
-
-                using (var stream = await client.GetStreamAsync(requestUri))
+                using (var response = await client.GetAsync(requestUri, CancellationToken.None))
                 {
-                    var json = await stream.GetResponseStringAsync(CancellationToken.None);
+                    response.EnsureSuccessStatusCode();
+
+                    var json = await response.Content.ReadAsStringAsync();
                     return Json.Deserialize<ListResult<StoryModel>>(json);
                 }
             }
@@ -45,6 +46,27 @@ namespace StoryBlog.Web.Blazor.Client.Services
             {
                 Debug.WriteLine(exception);
                 return new ListResult<StoryModel>();
+            }
+        }
+
+        public async Task CreateStoryAsync(StoryModel story)
+        {
+            var requestUri = new Uri(baseUri, "stories");
+
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Post, requestUri);
+
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                using (var response = await client.SendAsync(request, CancellationToken.None))
+                {
+                    response.EnsureSuccessStatusCode();
+                }
+            }
+            catch (HttpRequestException exception)
+            {
+                Debug.WriteLine(exception);
             }
         }
     }

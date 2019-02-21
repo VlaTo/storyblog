@@ -7,5 +7,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
     public interface IBlogApiClient
     {
         Task<ListResult<StoryModel>> GetStoriesAsync();
+
+        Task CreateStoryAsync(StoryModel story);
     }
 }

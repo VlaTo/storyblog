@@ -9,6 +9,7 @@ using StoryBlog.Web.Blazor.Client.Services;
 
 namespace StoryBlog.Web.Blazor.Client
 {
+    // http://wrapbootstrap.com/preview/WB0C58SK5
     public class Program
     {
         /// <summary>

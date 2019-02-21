@@ -1,35 +1,40 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+@using global::Blazor.Fluxor
+@using StoryBlog.Web.Blazor.Client.Store
+@using StoryBlog.Web.Blazor.Client.Store.Actions
 
-Welcome to your new app.
+@inherits global::Blazor.Fluxor.Components.FluxorComponent
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@inject IState<BlogState> Blog
+@inject IDispatcher Dispatcher
 
-<div>
-    <BootstrapButton Type=@BootstrapButtonTypes.Primary IsActive=true>Primary button</BootstrapButton>
-    <BootstrapButton Type=@BootstrapButtonTypes.Secondary>Secondary button</BootstrapButton>
-    <BootstrapButton Type=@BootstrapButtonTypes.Success>Success button</BootstrapButton>
-    <BootstrapButton Type=@BootstrapButtonTypes.Danger>Danger button</BootstrapButton>
-    <BootstrapButton Type=@BootstrapButtonTypes.Warning>Warning button</BootstrapButton>
-    <BootstrapButton Type=@BootstrapButtonTypes.Info>Info button</BootstrapButton>
-    <BootstrapButton Type=@BootstrapButtonTypes.Light>Light button</BootstrapButton>
-    <BootstrapButton Type=@BootstrapButtonTypes.Dark>Dark button</BootstrapButton>
-    <BootstrapButton Type=@BootstrapButtonTypes.Link>Link button</BootstrapButton>
-</div>
-@*<div>
-    <BootstrapButton Type=@BootstrapButtonTypes.Primary IsActive=true>Primary button</BootstrapButton>
-    <BootstrapButton Type=@BootstrapButtonTypes.Secondary>Secondary button</BootstrapButton>
-    <BootstrapButton Type=@BootstrapButtonTypes.Success>Success button</BootstrapButton>
-    <BootstrapButton Type=@BootstrapButtonTypes.Danger>Danger button</BootstrapButton>
-    <BootstrapButton Type=@BootstrapButtonTypes.Warning>Warning button</BootstrapButton>
-    <BootstrapButton Type=@BootstrapButtonTypes.Info>Info button</BootstrapButton>
-    <BootstrapButton Type=@BootstrapButtonTypes.Light>Light button</BootstrapButton>
-    <BootstrapButton Type=@BootstrapButtonTypes.Dark>Dark button</BootstrapButton>
-    <BootstrapButton Type=@BootstrapButtonTypes.Link>Link button</BootstrapButton>
-</div>*@
-<div>
-    <BootstrapButton Type=@BootstrapButtonTypes.Primary Size=@BootstrapButtonSizes.Large>Large button</BootstrapButton>
-    <BootstrapButton Type=@BootstrapButtonTypes.Primary>Default button</BootstrapButton>
-    <BootstrapButton Type=@BootstrapButtonTypes.Primary Size=@BootstrapButtonSizes.Small>Small button</BootstrapButton>
-</div>
+<StoryBlogTitle Title="Story Blog" Description="lorem ipsum dolor sit amet" />
+
+@if (Blog.Value.IsBusy)
+{
+
+}
+else
+{
+    if (null != Blog.Value.Error)
+    {
+        <p>@Blog.Value.Error</p>
+    }
+    else if (null != Blog.Value.Stories)
+    {
+        foreach (var story in Blog.Value.Stories)
+        {
+            <StoryBlogArticle Story=@story />
+        }
+    }
+}
+
+@functions
+{
+    protected override async Task OnInitAsync()
+    {
+        await base.OnInitAsync();
+        Dispatcher.Dispatch(new GetStoriesListAction());
+    }
+}

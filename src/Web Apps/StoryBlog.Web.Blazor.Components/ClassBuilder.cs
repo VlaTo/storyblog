@@ -1,43 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace StoryBlog.Web.Blazor.Components
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public enum PrefixSeparators
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        Dash,
-
-        /// <summary>
-        /// 
-        /// </summary>
-        Element,
-
-        /// <summary>
-        /// 
-        /// </summary>
-        Modifier
-    }
-
     public class ClassBuilder<TComponent>
         where TComponent : BootstrapComponentBase
     {
         private const char ClassNameSeparator = ' ';
         private const string DashSeparator = "-";
-        private const string ElementSeparator = "_";
-        private const string ModifierSeparator = "--";
 
         private readonly string classNamePrefix;
         private readonly StringBuilder builder;
         private readonly IList<ClassDefinition> classDefinitions;
 
-        public ClassBuilder(string classNamePrefix, string componentPrefix)
+        public ClassBuilder(string classNamePrefix, string componentPrefix = default(string))
         {
             this.classNamePrefix = classNamePrefix;
 
@@ -46,9 +24,13 @@ namespace StoryBlog.Web.Blazor.Components
 
             if (false == String.IsNullOrWhiteSpace(componentPrefix))
             {
-                if (false == String.IsNullOrWhiteSpace(classNamePrefix))
+                if (false == String.IsNullOrWhiteSpace(this.classNamePrefix))
                 {
                     this.classNamePrefix += (DashSeparator + componentPrefix);
+                }
+                else
+                {
+                    throw new ArgumentException("", nameof(classNamePrefix));
                 }
             }
         }
@@ -69,24 +51,49 @@ namespace StoryBlog.Web.Blazor.Components
 
             foreach (var definition in classDefinitions)
             {
-                if (null == definition.Condition || definition.Condition.Invoke(component))
+                if (false == definition.Condition.Invoke(component))
                 {
-                    if (0 < builder.Length)
-                    {
-                        builder.Append(ClassNameSeparator);
-                    }
+                    continue;
+                }
 
-                    if (null == definition.ValueGetter)
+                if (0 < builder.Length)
+                {
+                    builder.Append(ClassNameSeparator);
+                }
+
+                var hasPrefix = false == String.IsNullOrWhiteSpace(definition.Prefix);
+
+                if (hasPrefix)
+                {
+                    builder.Append(definition.Prefix);
+                }
+
+                var count = 0;
+
+                foreach (var modifier in definition.Modifiers)
+                {
+                    if (false == modifier.Condition.Invoke(component))
                     {
-                        builder.Append(definition.Name);
                         continue;
                     }
 
-                    builder
-                        .Append(definition.Name)
-                        .Append(definition.PrefixSeparator)
-                        .Append(definition.ValueGetter.Invoke(component));
+                    if (0 < count || hasPrefix)
+                    {
+                        builder.Append(DashSeparator);
+                    }
+
+                    var value = modifier.Accessor.Invoke(component);
+
+                    builder.Append(value);
+                    count++;
                 }
+
+                if (0 < definition.Modifiers.Count || hasPrefix)
+                {
+                    builder.Append(definition.PrefixSeparator);
+                }
+
+                builder.Append(definition.Accessor.Invoke(component));
             }
 
             if (false == String.IsNullOrWhiteSpace(extras))
@@ -97,99 +104,20 @@ namespace StoryBlog.Web.Blazor.Components
             return builder.ToString();
         }
 
-        public ClassBuilder<TComponent> DefineClass(
-            Func<TComponent, string> valueGetter,
-            PrefixSeparators prefixSeparator = PrefixSeparators.Dash)
+        public ClassBuilder<TComponent> DefineClass(Action<IClassBuilder<TComponent>> configurator)
         {
-            if (null == valueGetter)
+            if (null == configurator)
             {
-                throw new ArgumentNullException(nameof(valueGetter));
+                throw new ArgumentNullException(nameof(configurator));
             }
 
-            classDefinitions.Add(new ClassDefinition(
-                classNamePrefix,
-                valueGetter,
-                _ => true,
-                GetSeparator(prefixSeparator))
-            );
+            var classBuilder = new InternalClassBuilder();
+
+            configurator.Invoke(classBuilder);
+
+            classDefinitions.Add(classBuilder.Build(classNamePrefix));
 
             return this;
-        }
-
-        public ClassBuilder<TComponent> DefineClass(
-            Func<TComponent, string> valueGetter,
-            Predicate<TComponent> condition = default(Predicate<TComponent>),
-            PrefixSeparators prefixSeparator = PrefixSeparators.Dash)
-        {
-            if (null == valueGetter)
-            {
-                throw new ArgumentNullException(nameof(valueGetter));
-            }
-
-            classDefinitions.Add(new ClassDefinition(
-                classNamePrefix,
-                valueGetter,
-                condition,
-                GetSeparator(prefixSeparator))
-            );
-
-            return this;
-        }
-
-        public ClassBuilder<TComponent> DefineClass(
-            string value,
-            Predicate<TComponent> condition = default(Predicate<TComponent>),
-            PrefixSeparators prefixSeparator = PrefixSeparators.Dash)
-        {
-            if (null == value)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            if (String.IsNullOrWhiteSpace(value))
-            {
-                throw new ArgumentException("", nameof(value));
-            }
-
-            var prefix = new StringBuilder()
-                .Append(classNamePrefix)
-                .Append(GetSeparator(prefixSeparator))
-                .Append(value);
-
-            classDefinitions.Add(new ClassDefinition(
-                prefix.ToString(),
-                default(Func<TComponent, string>),
-                condition,
-                String.Empty)
-            );
-
-            return this;
-        }
-
-        private static string GetSeparator(PrefixSeparators prefix)
-        {
-            switch (prefix)
-            {
-                case PrefixSeparators.Dash:
-                {
-                    return DashSeparator;
-                }
-
-                case PrefixSeparators.Element:
-                {
-                    return ElementSeparator;
-                }
-
-                case PrefixSeparators.Modifier:
-                {
-                    return ModifierSeparator;
-                }
-
-                default:
-                {
-                    return DashSeparator;
-                }
-            }
         }
 
         /// <summary>
@@ -197,12 +125,17 @@ namespace StoryBlog.Web.Blazor.Components
         /// </summary>
         private class ClassDefinition
         {
-            public string Name
+            public string Prefix
             {
                 get;
             }
 
-            public Func<TComponent, string> ValueGetter
+            public Func<TComponent, string> Accessor
+            {
+                get;
+            }
+
+            public IReadOnlyList<ClassModifier> Modifiers
             {
                 get;
             }
@@ -217,12 +150,103 @@ namespace StoryBlog.Web.Blazor.Components
                 get;
             }
 
-            public ClassDefinition(string name, Func<TComponent, string> valueGetter, Predicate<TComponent> condition, string prefixSeparator)
+            public ClassDefinition(
+                string prefix,
+                Func<TComponent, string> accessor,
+                IList<ClassModifier> modifiers,
+                Predicate<TComponent> condition,
+                string prefixSeparator)
             {
-                Name = name;
-                ValueGetter = valueGetter;
+                Prefix = prefix;
+                Accessor = accessor;
+                Modifiers = new ReadOnlyCollection<ClassModifier>(modifiers);
                 Condition = condition;
                 PrefixSeparator = prefixSeparator;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private class ClassModifier
+        {
+            public Func<TComponent, string> Accessor
+            {
+                get;
+            }
+
+            public Predicate<TComponent> Condition
+            {
+                get;
+            }
+
+            public ClassModifier(Func<TComponent, string> accessor, Predicate<TComponent> condition)
+            {
+                Accessor = accessor;
+                Condition = condition;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private class InternalClassBuilder : IClassBuilder<TComponent>
+        {
+            private bool noPrefix;
+            private Predicate<TComponent> condition;
+            private Func<TComponent, string> accessor;
+            private readonly IList<ClassModifier> modifiers;
+
+            public InternalClassBuilder()
+            {
+                noPrefix = false;
+                modifiers = new List<ClassModifier>();
+            }
+
+            public IClassBuilder<TComponent> NoPrefix()
+            {
+                noPrefix = true;
+                return this;
+            }
+
+            public IClassBuilder<TComponent> Modifier(Func<TComponent, string> func, Predicate<TComponent> predicate)
+            {
+                modifiers.Add(new ClassModifier(func, predicate));
+                return this;
+            }
+
+            public IClassBuilder<TComponent> Name(Func<TComponent, string> valueAccessor)
+            {
+                accessor = valueAccessor;
+                return this;
+            }
+
+            public IClassBuilder<TComponent> Condition(Predicate<TComponent> predicate)
+            {
+                if (null == predicate)
+                {
+                    throw new ArgumentNullException(nameof(predicate));
+                }
+
+                if (null != condition)
+                {
+                    throw new ArgumentException("", nameof(predicate));
+                }
+
+                condition = predicate;
+
+                return this;
+            }
+
+            internal ClassDefinition Build(string prefix)
+            {
+                return new ClassDefinition(
+                    false == noPrefix ? prefix : null,
+                    accessor,
+                    modifiers,
+                    condition,
+                    DashSeparator
+                );
             }
         }
     }

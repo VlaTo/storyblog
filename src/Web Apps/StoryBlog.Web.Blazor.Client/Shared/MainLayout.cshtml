@@ -8,12 +8,13 @@
     <NavMenu />
 </div>
 
-<div class="main">
-    <div class="top-row px-4">
-        <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
-    </div>
+<div class="container storyblog-main">
+    <main class="row">
+        <div class="col-md-8 storyblog-main-content">
+            @Body
+        </div>
+        <aside class="col-md-4">
 
-    <main class="content px-4">
-        @Body
+        </aside>
     </main>
 </div>

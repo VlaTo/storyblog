@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Blazor.Components;
 using StoryBlog.Web.Blazor.Components.Attributes;
@@ -84,6 +85,9 @@ namespace StoryBlog.Web.Blazor.Components
     {
         private static readonly ClassBuilder<BootstrapButtonComponent> classNameBuilder;
 
+        private bool firstRender;
+        protected ElementRef button;
+
         [Parameter]
         protected BootstrapButtonTypes Type
         {
@@ -100,6 +104,27 @@ namespace StoryBlog.Web.Blazor.Components
 
         [Parameter]
         protected bool IsActive
+        {
+            get;
+            set;
+        }
+
+        [Parameter]
+        protected bool IsOutline
+        {
+            get;
+            set;
+        }
+
+        [Parameter]
+        protected bool IsBlock
+        {
+            get;
+            set;
+        }
+
+        [Parameter]
+        protected bool IsDisabled
         {
             get;
             set;
@@ -126,6 +151,13 @@ namespace StoryBlog.Web.Blazor.Components
             set;
         }
 
+        [Parameter]
+        protected int TabIndex
+        {
+            get;
+            set;
+        }
+
         protected string ClassString
         {
             get;
@@ -134,24 +166,44 @@ namespace StoryBlog.Web.Blazor.Components
 
         public BootstrapButtonComponent()
         {
+            firstRender = true;
             Type = BootstrapButtonTypes.Default;
+            Size = BootstrapButtonSizes.Default;
+            IsOutline = false;
+            IsActive = false;
+            IsBlock = false;
+            IsDisabled = false;
+            TabIndex = 0;
         }
 
         static BootstrapButtonComponent()
         {
-            classNameBuilder = new ClassBuilder<BootstrapButtonComponent>("btn", null)
-                .DefineClass(
-                    component => EnumHelper.GetClassName(component.Type),
-                    component => BootstrapButtonTypes.Default != component.Type
+            classNameBuilder = new ClassBuilder<BootstrapButtonComponent>("btn")
+                .DefineClass(@class => @class
+                    .Modifier("outline", component => component.IsOutline)
+                    .Name(component => EnumHelper.GetClassName(component.Type))
+                    .Condition(component => BootstrapButtonTypes.Default != component.Type)
                 )
-                .DefineClass("lg", component => BootstrapButtonSizes.Large == component.Size)
-                .DefineClass("sm", component => BootstrapButtonSizes.Small == component.Size)
-                .DefineClass("active", component => component.IsActive, PrefixSeparators.Dash);
+                .DefineClass(@class => @class.Name("block").Condition(component => component.IsBlock))
+                .DefineClass(@class => @class.Name("lg").Condition(component => BootstrapButtonSizes.Large == component.Size))
+                .DefineClass(@class => @class.Name("sm").Condition(component => BootstrapButtonSizes.Small == component.Size))
+                .DefineClass(@class => @class.NoPrefix().Name("active").Condition(component => component.IsActive));
         }
 
         protected override void OnInit()
         {
             ClassString = classNameBuilder.Build(this, Class);
+        }
+
+        protected override Task OnAfterRenderAsync()
+        {
+            if (firstRender)
+            {
+                firstRender = false;
+                //await Task.Delay(TimeSpan.FromMilliseconds(100.0d));
+            }
+
+            return base.OnAfterRenderAsync();
         }
     }
 }

@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Services\Shared\StoryBlog.Web.Services.Shared.Data.Csv\Shared.Data.Csv.csproj" />
+    <ProjectReference Include="..\..\..\src\Web Apps\StoryBlog.Web.Blazor.Components\Blazor.Components.csproj" />
   </ItemGroup>
 
 </Project>
