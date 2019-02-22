@@ -5,16 +5,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StoryBlog.Web.Services.Blog.API.Extensions;
-using StoryBlog.Web.Services.Blog.API.Infrastructure;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
-using StoryBlog.Web.Services.Blog.API.Integration.Commands;
 using StoryBlog.Web.Services.Blog.Application.Extensions;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Application.Stories.Commands;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
+using StoryBlog.Web.Services.Blog.Common.Includes;
 using StoryBlog.Web.Services.Blog.Common.Models;
-using StoryBlog.Web.Services.Blog.Infrastructure;
 using StoryBlog.Web.Services.Shared.Common;
+using StoryBlog.Web.Services.Shared.Communication;
+using StoryBlog.Web.Services.Shared.Communication.Commands;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -69,11 +69,11 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         [ProducesResponseType(typeof(StoryModel), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Get(string slug, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
         {
-            var flags = FlagParser.Parse<StoryQueryFlags>(includes);
+            var flags = EnumFlags.Parse<StoryIncludes>(includes);
             var query = new GetStoryQuery(User, slug)
             {
-                IncludeAuthors = flags.IncludeAuthors,
-                IncludeComments = flags.IncludeComments
+                IncludeAuthors = StoryIncludes.Authors == (flags & StoryIncludes.Authors),
+                IncludeComments = StoryIncludes.Comments == (flags & StoryIncludes.Comments)
             };
 
             var result = await mediator.Send(query, HttpContext.RequestAborted);

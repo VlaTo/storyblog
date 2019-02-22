@@ -1,18 +1,15 @@
-﻿using StoryBlog.Web.Services.Blog.Common;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
+using StoryBlog.Web.Services.Blog.Common;
+using StoryBlog.Web.Services.Blog.Common.Includes;
 using StoryBlog.Web.Services.Blog.Common.Models;
+using StoryBlog.Web.Services.Shared.Common;
 using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Mime;
-using System.Runtime.Serialization.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Blazor;
-using Microsoft.Extensions.Logging;
-using Microsoft.JSInterop;
 
 namespace StoryBlog.Web.Blazor.Client.Services
 {
@@ -22,33 +19,53 @@ namespace StoryBlog.Web.Blazor.Client.Services
         private readonly Uri baseUri = new Uri("http://localhost:3000/api/v1/");
         private readonly ILogger logger;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="logger"></param>
         public BlogApiClient(HttpClient client, ILogger<IBlogApiClient> logger)
         {
             this.client = client;
             this.logger = logger;
         }
 
-        public async Task<ListResult<StoryModel>> GetStoriesAsync()
+        /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync" />
+        public async Task<ListResult<StoryModel>> GetStoriesAsync(StoryIncludes flags)
         {
-            var requestUri = new Uri(baseUri, "stories");
+            var path = new Uri(baseUri, "stories");
+            var include = EnumFlags.ToQueryString(flags);
+            var query = QueryString.Create(nameof(include), include);
+            var requestUri = new UriBuilder(path) {Query = query.ToUriComponent()}.Uri;
 
             try
             {
+                logger.LogDebug($"[{nameof(BlogApiClient)}] Requesting stories from \"{requestUri}\"");
+
                 using (var response = await client.GetAsync(requestUri, CancellationToken.None))
                 {
                     response.EnsureSuccessStatusCode();
 
                     var json = await response.Content.ReadAsStringAsync();
-                    return Json.Deserialize<ListResult<StoryModel>>(json);
+                    var data = Json.Deserialize<ListResult<StoryModel>>(json);
+
+                    logger.LogDebug($"[{nameof(BlogApiClient)}] Stories fetch status {response.StatusCode}");
+
+                    return data;
                 }
             }
             catch (HttpRequestException exception)
             {
-                Debug.WriteLine(exception);
+                logger.LogError(exception, $"Failed to fetch stories from \"{requestUri}\"");
                 return new ListResult<StoryModel>();
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="story"></param>
+        /// <returns></returns>
         public async Task CreateStoryAsync(StoryModel story)
         {
             var requestUri = new Uri(baseUri, "stories");

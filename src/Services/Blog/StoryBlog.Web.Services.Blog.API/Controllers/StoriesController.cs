@@ -7,21 +7,22 @@ using Microsoft.Extensions.Options;
 using StoryBlog.Web.Services.Blog.API.Extensions;
 using StoryBlog.Web.Services.Blog.API.Infrastructure;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
-using StoryBlog.Web.Services.Blog.API.Integration.Commands;
 using StoryBlog.Web.Services.Blog.Application.Extensions;
+using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Application.Stories.Commands;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
 using StoryBlog.Web.Services.Blog.Common;
+using StoryBlog.Web.Services.Blog.Common.Includes;
 using StoryBlog.Web.Services.Blog.Common.Models;
-using StoryBlog.Web.Services.Blog.Infrastructure;
 using StoryBlog.Web.Services.Shared.Common;
+using StoryBlog.Web.Services.Shared.Communication;
+using StoryBlog.Web.Services.Shared.Communication.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -105,11 +106,11 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         [ProducesResponseType(typeof(ListResult<StoryModel>), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Get(string page, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
         {
-            var flags = FlagParser.Parse<StoryQueryFlags>(includes);
+            var flags = EnumFlags.Parse<StoryIncludes>(includes);
             var query = new GetStoriesListQuery(User)
             {
-                IncludeComments = flags.IncludeComments,
-                IncludeAuthors = flags.IncludeAuthors,
+                IncludeComments = StoryIncludes.Comments == (flags & StoryIncludes.Comments),
+                IncludeAuthors = StoryIncludes.Authors == (flags & StoryIncludes.Authors),
                 Cursor = (null != page && NavigationCursorEncoder.TryParse(page, out var cursor))
                     ? cursor
                     : NavigationCursor.Forward(0, blogSettings.PageSize)
@@ -122,7 +123,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return BadRequest(result.Exceptions);
             }
 
-            var include = FlagParser.ToCommaSeparatedString(flags);
+            var include = EnumFlags.ToQueryString(flags);
             string backward = null;
             string forward = null;
 
@@ -131,7 +132,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 backward = Url.Action("Get", "Stories", new
                 {
                     page = NavigationCursorEncoder.ToEncodedString(result.Backward),
-                    include
+                    include = include.ToString()
                 });
             }
 
@@ -140,7 +141,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 forward = Url.Action("Get", "Stories", new
                 {
                     page = NavigationCursorEncoder.ToEncodedString(result.Forward),
-                    include
+                    include = include.ToString()
                 });
             }
 

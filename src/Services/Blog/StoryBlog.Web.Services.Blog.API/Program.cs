@@ -17,11 +17,11 @@ using StoryBlog.Web.Services.Blog.API.Infrastructure.Filters;
 using StoryBlog.Web.Services.Blog.Application.Extensions;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Persistence;
+using StoryBlog.Web.Services.Shared.Communication;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Mime;
-using StoryBlog.Web.Services.Shared.Common;
 
 namespace StoryBlog.Web.Services.Blog.API
 {

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using Blazor.Extensions.Logging;
+﻿using Blazor.Extensions.Logging;
 using Blazor.Fluxor;
 using Microsoft.AspNetCore.Blazor.Hosting;
 using Microsoft.Extensions.DependencyInjection;

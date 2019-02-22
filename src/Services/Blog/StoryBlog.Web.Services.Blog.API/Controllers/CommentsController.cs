@@ -5,16 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StoryBlog.Web.Services.Blog.API.Extensions;
-using StoryBlog.Web.Services.Blog.API.Integration.Commands;
 using StoryBlog.Web.Services.Blog.Application.Comments.Commands;
 using StoryBlog.Web.Services.Blog.Application.Extensions;
 using StoryBlog.Web.Services.Blog.Common.Models;
-using StoryBlog.Web.Services.Shared.Common;
+using StoryBlog.Web.Services.Shared.Communication;
+using StoryBlog.Web.Services.Shared.Communication.Commands;
 using System;
-using System.IO;
 using System.Net;
 using System.Net.Mime;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers

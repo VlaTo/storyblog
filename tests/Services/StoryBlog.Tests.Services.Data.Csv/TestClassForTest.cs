@@ -1,5 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoryBlog.Web.Blazor.Components;
+using StoryBlog.Web.Services.Shared.Common;
+using StoryBlog.Web.Services.Shared.Common.Annotations;
 
 namespace StoryBlog.Tests.Services.Data.Csv
 {
@@ -27,6 +30,27 @@ namespace StoryBlog.Tests.Services.Data.Csv
                 .DefineClass(@class => @class.NoPrefix().Name("active").Condition(component => component.IsActive));
             var style = classNameBuilder.Build(button, ((IComponentClassExposure) button).Class);
         }
+
+        [TestMethod]
+        public void Test2()
+        {
+            //var include = EnumFlags.ToQueryString(TestFlags.Value1 | TestFlags.Value3);
+            var temp = EnumFlags.Parse<TestFlags>(new[] {"value-1", "Value3"}, StringComparer.InvariantCulture);
+            //Assert.IsNotNull(include);
+        }
+    }
+
+    [Flags]
+    public enum TestFlags
+    {
+        [Flag(Key = "value-1")]
+        Value1 = 1,
+
+        [Flag(Key = "value-2")]
+        Value2 = 2,
+
+        [Flag]
+        Value3 = 4
     }
 
     public interface IComponentClassExposure

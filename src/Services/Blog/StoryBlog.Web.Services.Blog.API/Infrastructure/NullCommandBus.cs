@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using StoryBlog.Web.Services.Shared.Communication;
+using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using StoryBlog.Web.Services.Shared.Common;
 
 namespace StoryBlog.Web.Services.Blog.API.Infrastructure
 {

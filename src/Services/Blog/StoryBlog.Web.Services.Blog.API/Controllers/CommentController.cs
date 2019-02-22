@@ -5,16 +5,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StoryBlog.Web.Services.Blog.API.Extensions;
-using StoryBlog.Web.Services.Blog.API.Infrastructure;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
-using StoryBlog.Web.Services.Blog.API.Integration.Commands;
 using StoryBlog.Web.Services.Blog.Application.Comments.Commands;
 using StoryBlog.Web.Services.Blog.Application.Comments.Queries;
 using StoryBlog.Web.Services.Blog.Application.Extensions;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
+using StoryBlog.Web.Services.Blog.Common.Includes;
 using StoryBlog.Web.Services.Blog.Common.Models;
-using StoryBlog.Web.Services.Blog.Infrastructure;
 using StoryBlog.Web.Services.Shared.Common;
+using StoryBlog.Web.Services.Shared.Communication;
+using StoryBlog.Web.Services.Shared.Communication.Commands;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -69,10 +69,10 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         [ProducesResponseType(typeof(CommentModel), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Get(long id, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
         {
-            var flags = FlagParser.Parse<CommentQueryFlags>(includes);
+            var flags = EnumFlags.Parse<CommentIncludes>(includes);
             var query = new GetCommentQuery(User, id)
             {
-                IncludeAuthor = flags.IncludeAuthor
+                IncludeAuthor = CommentIncludes.Authors == (flags & CommentIncludes.Authors)
             };
 
             var result = await mediator.Send(query, HttpContext.RequestAborted);
