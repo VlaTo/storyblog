@@ -37,7 +37,7 @@ namespace StoryBlog.Web.Services.Shared.Captcha
 
         public CaptchaValidationResult ValidateRequest(HttpContext httpContext)
         {
-            return new CaptchaValidationResult();
+            return new CaptchaValidationResult(ValidationResult.NotExists);
         }
 
         public string GetImageUrl(HttpContext httpContext)

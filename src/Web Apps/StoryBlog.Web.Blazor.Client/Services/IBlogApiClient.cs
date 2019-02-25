@@ -13,6 +13,13 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="flags"></param>
+        /// <returns></returns>
+        Task<LandingModel> GetLandingAsync(LandingIncludes flags);
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="include"></param>
         /// <returns></returns>
         Task<ListResult<StoryModel>> GetStoriesAsync(StoryIncludes include);

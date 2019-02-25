@@ -1,10 +1,25 @@
 ﻿namespace StoryBlog.Web.Services.Shared.Captcha
 {
-    internal enum ValidationResult
+    public enum ValidationResult
     {
+        /// <summary>
+        /// 
+        /// </summary>
         NotExists = -2,
+
+        /// <summary>
+        /// 
+        /// </summary>
         Expired,
+
+        /// <summary>
+        /// 
+        /// </summary>
         Success,
-        Missmatch
+
+        /// <summary>
+        /// 
+        /// </summary>
+        Mismatch
     }
 }

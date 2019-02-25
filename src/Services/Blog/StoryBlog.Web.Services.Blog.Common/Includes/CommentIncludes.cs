@@ -10,6 +10,6 @@ namespace StoryBlog.Web.Services.Blog.Common.Includes
         /// 
         /// </summary>
         [Flag(Key = "author")]
-        Authors
+        Authors = 1
     }
 }

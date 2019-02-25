@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace StoryBlog.Web.Services.Blog.Common
+namespace StoryBlog.Web.Services.Blog.Interop
 {
     [DataContract(Name = "navigation")]
     public sealed class Navigation

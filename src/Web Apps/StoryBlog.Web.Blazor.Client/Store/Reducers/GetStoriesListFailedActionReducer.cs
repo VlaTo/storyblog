@@ -6,8 +6,6 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     public sealed class GetStoriesListFailedActionReducer : Reducer<BlogState, GetStoriesListFailedAction>
     {
         public override BlogState Reduce(BlogState state, GetStoriesListFailedAction action)
-        {
-            return new BlogState(false, state.Stories, action.Error);
-        }
+            => new BlogState(false, state.Stories, action.Error);
     }
 }

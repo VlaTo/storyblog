@@ -173,6 +173,8 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
             var email = GetEmailFromClaims(claims);
             var name = GetContactNameFromClaims(claims);
 
+            await Task.CompletedTask;
+
             return View("Signup", new SignupViewModel
             {
                 Email = email,

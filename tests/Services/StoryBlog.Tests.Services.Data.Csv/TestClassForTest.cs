@@ -38,6 +38,14 @@ namespace StoryBlog.Tests.Services.Data.Csv
             var temp = EnumFlags.Parse<TestFlags>(new[] {"value-1", "Value3"}, StringComparer.InvariantCulture);
             //Assert.IsNotNull(include);
         }
+
+        [TestMethod]
+        public void Test3()
+        {
+            var include = EnumFlags.ToQueryString(TestFlags.Value1 | TestFlags.Value2);
+            //var temp = EnumFlags.Parse<TestFlags>(new[] {"value-1", "Value3"}, StringComparer.InvariantCulture);
+            Assert.IsNotNull(include);
+        }
     }
 
     [Flags]

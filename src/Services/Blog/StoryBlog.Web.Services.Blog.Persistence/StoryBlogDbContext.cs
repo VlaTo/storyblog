@@ -36,9 +36,27 @@ namespace StoryBlog.Web.Services.Blog.Persistence
         }
 
         /// <summary>
-        /// 
+        /// Comments of stories collection.
         /// </summary>
         public DbSet<Comment> Comments
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
+        /// Featured stories collection.
+        /// </summary>
+        public DbSet<Featured> Featured
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public DbSet<Settings> Settings
         {
             get;
             protected set;

@@ -31,6 +31,37 @@ namespace StoryBlog.Web.Blazor.Client.Services
         }
 
         /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync" />
+        public async Task<LandingModel> GetLandingAsync(LandingIncludes flags)
+        {
+            var path = new Uri(baseUri, "landing");
+            var include = EnumFlags.ToQueryString(flags);
+            var query = QueryString.Create(nameof(include), include);
+            var requestUri = new UriBuilder(path) {Query = query.ToUriComponent()}.Uri;
+
+            try
+            {
+                logger.LogDebug($"[{nameof(BlogApiClient)}] Requesting landing from \"{requestUri}\"");
+
+                using (var response = await client.GetAsync(requestUri, CancellationToken.None))
+                {
+                    response.EnsureSuccessStatusCode();
+
+                    var json = await response.Content.ReadAsStringAsync();
+                    var data = Json.Deserialize<LandingModel>(json);
+
+                    logger.LogDebug($"[{nameof(BlogApiClient)}] Landing fetch status {response.StatusCode}");
+
+                    return data;
+                }
+            }
+            catch (HttpRequestException exception)
+            {
+                logger.LogError(exception, $"Failed to fetch stories from \"{requestUri}\"");
+                return new LandingModel();
+            }
+        }
+
+        /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync" />
         public async Task<ListResult<StoryModel>> GetStoriesAsync(StoryIncludes flags)
         {
             var path = new Uri(baseUri, "stories");

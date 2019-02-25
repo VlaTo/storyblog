@@ -1,0 +1,37 @@
+﻿@using StoryBlog.Web.Blazor.Client.Store
+
+@if (null == State)
+{
+
+}
+else if (State.IsBusy)
+{
+
+}
+else
+{
+    if (null != State.Error)
+    {
+        <p>@State.Error</p>
+    }
+
+    if (null != State.Data)
+    {
+        <div class="jumbotron">
+            <h4>@State.Data.Title</h4>
+            <div class="justify-content-md-start">
+                @State.Data.Description
+            </div>
+        </div>
+    }
+}
+
+@functions
+{
+    [Parameter]
+    protected LandingState State
+    {
+        get;
+        set;
+    }
+}

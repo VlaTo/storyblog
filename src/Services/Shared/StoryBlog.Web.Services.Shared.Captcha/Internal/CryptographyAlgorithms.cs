@@ -11,7 +11,7 @@ namespace StoryBlog.Web.Services.Shared.Captcha.Internal
             {
                 return SHA256.Create();
             }
-            catch (TargetInvocationException e)
+            catch (TargetInvocationException)
             {
                 return new SHA256CryptoServiceProvider();
             }

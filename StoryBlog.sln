@@ -57,11 +57,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Client", "src\Web Ap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Components", "src\Web Apps\StoryBlog.Web.Blazor.Components\Blazor.Components.csproj", "{60A1F60D-887E-4398-A368-13B7E6951213}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Infrastructure", "src\Services\Shared\StoryBlog.Web.Services.Shared.Infrastructure\Shared.Infrastructure.csproj", "{61EB0724-B92B-403E-ABD1-9581A3C155FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Infrastructure", "src\Services\Shared\StoryBlog.Web.Services.Shared.Infrastructure\Shared.Infrastructure.csproj", "{61EB0724-B92B-403E-ABD1-9581A3C155FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Communication", "src\Services\Shared\StoryBlog.Web.Services.Shared.Communication\Shared.Communication.csproj", "{120BED88-6971-4CEF-B161-8F1C6F5F8551}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Communication", "src\Services\Shared\StoryBlog.Web.Services.Shared.Communication\Shared.Communication.csproj", "{120BED88-6971-4CEF-B161-8F1C6F5F8551}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Common", "src\Services\Shared\StoryBlog.Web.Services.Shared.Common\Shared.Common.csproj", "{6F0C4807-C08D-44AE-8E2A-EBB661125E1C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Common", "src\Services\Shared\StoryBlog.Web.Services.Shared.Common\Shared.Common.csproj", "{6F0C4807-C08D-44AE-8E2A-EBB661125E1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.Interop", "src\Services\Blog\StoryBlog.Web.Services.Blog.Interop\Blog.Interop.csproj", "{BBC7D3A5-B3F0-49E6-97DA-6A37A2F2BE32}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -137,6 +139,10 @@ Global
 		{6F0C4807-C08D-44AE-8E2A-EBB661125E1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F0C4807-C08D-44AE-8E2A-EBB661125E1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F0C4807-C08D-44AE-8E2A-EBB661125E1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBC7D3A5-B3F0-49E6-97DA-6A37A2F2BE32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBC7D3A5-B3F0-49E6-97DA-6A37A2F2BE32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBC7D3A5-B3F0-49E6-97DA-6A37A2F2BE32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBC7D3A5-B3F0-49E6-97DA-6A37A2F2BE32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -165,9 +171,10 @@ Global
 		{61EB0724-B92B-403E-ABD1-9581A3C155FB} = {920EC233-08A7-47FB-A89C-B703CAFFB4C0}
 		{120BED88-6971-4CEF-B161-8F1C6F5F8551} = {920EC233-08A7-47FB-A89C-B703CAFFB4C0}
 		{6F0C4807-C08D-44AE-8E2A-EBB661125E1C} = {920EC233-08A7-47FB-A89C-B703CAFFB4C0}
+		{BBC7D3A5-B3F0-49E6-97DA-6A37A2F2BE32} = {605EB559-AD43-4003-BA83-5B92664B2D2E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2BDF20E6-9CFF-444E-88D4-B67EF316084F}
-		LessCompiler = 193bea1a-7151-46db-aed1-e5fafe14f3c3
+		LessCompiler = 193bea1a-7151-46db-aed1-e5fafe14f3c3,a3b52c4e-54ca-4233-83ea-a4baa2669f90
 	EndGlobalSection
 EndGlobal

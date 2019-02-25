@@ -6,15 +6,10 @@
     <div class="card-body">
         <h5 class="card-title">@Story.Title</h5>
         <p class="card-text">@Story.Content</p>
-        <BootstrapButton Type=@BootstrapButtonTypes.Secondary Size=@BootstrapButtonSizes.Small>Read more</BootstrapButton>
-        
-        @foreach (var comment in Story.Comments)
-        {
-            <p class="text-muted">@comment.Content</p>
-        }
+        <BootstrapButton Type=BootstrapButtonTypes.Secondary IsOutline=true Size=BootstrapButtonSizes.Small>Read more</BootstrapButton>
     </div>
     <div class="card-footer text-muted">
-        <p>Comments: @Story.Comments.Count</p>
+        <p>Comments: <small>@Story.Comments.Count()</small></p>
     </div>
 </article>
 

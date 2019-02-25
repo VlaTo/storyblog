@@ -14,7 +14,7 @@
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="2.3.0" />
     <PackageReference Include="MediatR" Version="6.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="6.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
@@ -33,6 +33,7 @@
     <ProjectReference Include="..\..\Shared\StoryBlog.Web.Services.Shared.Infrastructure\Shared.Infrastructure.csproj" />
     <ProjectReference Include="..\StoryBlog.Web.Services.Blog.Application\Blog.Application.csproj" />
     <ProjectReference Include="..\StoryBlog.Web.Services.Blog.Common\Blog.Common.csproj" />
+    <ProjectReference Include="..\StoryBlog.Web.Services.Blog.Interop\Blog.Interop.csproj" />
   </ItemGroup>
 
   <ItemGroup>

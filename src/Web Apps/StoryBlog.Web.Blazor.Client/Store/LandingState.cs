@@ -1,16 +1,15 @@
 ﻿using StoryBlog.Web.Services.Blog.Common.Models;
-using System.Collections.Generic;
 
 namespace StoryBlog.Web.Blazor.Client.Store
 {
-    public sealed class BlogState
+    public sealed class LandingState
     {
         public bool IsBusy
         {
             get;
         }
-        
-        public IEnumerable<StoryModel> Stories
+
+        public LandingModel Data
         {
             get;
         }
@@ -20,10 +19,10 @@ namespace StoryBlog.Web.Blazor.Client.Store
             get;
         }
 
-        public BlogState(bool isBusy, IEnumerable<StoryModel> stories, string error)
+        public LandingState(bool isBusy, LandingModel data, string error)
         {
             IsBusy = isBusy;
-            Stories = stories;
+            Data = data;
             Error = error;
         }
     }

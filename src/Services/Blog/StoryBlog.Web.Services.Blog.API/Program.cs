@@ -61,7 +61,6 @@ namespace StoryBlog.Web.Services.Blog.API
 
                             options.UseSqlite(connectionString, database =>
                             {
-                                //database.MigrationsAssembly(typeof(Program).Assembly.GetName().Name);
                                 database.MigrationsAssembly(typeof(StoryBlogDbContext).Assembly.GetName().Name);
                             });
                         });
@@ -122,6 +121,27 @@ namespace StoryBlog.Web.Services.Blog.API
                         .AddAutoMapper(config =>
                         {
                             config.AddBlogApplicationTypeMappings();
+
+                            config
+                                .CreateMap<Application.Landing.Models.Landing, Common.Models.LandingModel>()
+                                .ForMember(
+                                    landing => landing.Title,
+                                    mapping => mapping.MapFrom(source => source.Title)
+                                )
+                                .ForMember(
+                                    landing => landing.Description,
+                                    mapping => mapping.MapFrom(source => source.Description)
+                                )
+                                .ForMember(
+                                    landing => landing.HeroStory,
+                                    mapping => mapping.MapFrom(source => source.HeroStory)
+                                )
+                                .AfterMap((source, landing, ctx) =>
+                                {
+                                    landing.FeaturedStories = source.FeaturedStories.Select(
+                                        story => ctx.Mapper.Map<Common.Models.StoryModel>(story)
+                                    );
+                                });
 
                             config
                                 .CreateMap<Application.Stories.Models.Author, Common.Models.AuthorModel>()
@@ -192,10 +212,9 @@ namespace StoryBlog.Web.Services.Blog.API
                                 )
                                 .AfterMap((source, story, ctx) =>
                                 {
-                                    foreach (var comment in source.Comments)
-                                    {
-                                        story.Comments.Add(ctx.Mapper.Map<Common.Models.CommentModel>(comment));
-                                    }
+                                    story.Comments = source.Comments.Select(
+                                        comment => ctx.Mapper.Map<Common.Models.CommentModel>(comment)
+                                    );
                                 });
                         });
 
@@ -247,9 +266,9 @@ namespace StoryBlog.Web.Services.Blog.API
                         ;
                     }
 
-                    //var context = services.GetRequiredService<StoryBlogDbContext>();
+                    var context = services.GetRequiredService<StoryBlogDbContext>();
 
-                    //context.Database.Migrate();
+                    context.Database.Migrate();
                     //StoryBlogInitializer.Seed(context, logger);
                 }
                 catch (Exception exception)

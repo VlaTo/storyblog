@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.Serialization;
+using StoryBlog.Web.Services.Blog.Common.Models;
 
-namespace StoryBlog.Web.Services.Blog.Common.Models
+namespace StoryBlog.Web.Services.Blog.Interop.Models
 {
     [DataContract(Name = "story")]
     public sealed class StoryModel
@@ -65,14 +66,15 @@ namespace StoryBlog.Web.Services.Blog.Common.Models
         }
 
         [DataMember(Name = "comments")]
-        public ICollection<CommentModel> Comments
+        public IEnumerable<CommentModel> Comments
         {
             get;
+            set;
         }
 
         public StoryModel()
         {
-            Comments = new Collection<CommentModel>();
+            Comments = Enumerable.Empty<CommentModel>();
         }
     }
 }

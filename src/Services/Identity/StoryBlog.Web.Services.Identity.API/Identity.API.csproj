@@ -8,25 +8,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\css\src\**" />
     <Compile Remove="wwwroot\img\**" />
+    <Content Remove="wwwroot\css\src\**" />
     <Content Remove="wwwroot\img\**" />
+    <EmbeddedResource Remove="wwwroot\css\src\**" />
     <EmbeddedResource Remove="wwwroot\img\**" />
+    <None Remove="wwwroot\css\src\**" />
     <None Remove="wwwroot\img\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="compilerconfig.json" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
-    <PackageReference Include="BuildWebCompiler" Version="1.12.394" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="2.3.0" />
     <PackageReference Include="IdentityServer4.EntityFramework" Version="2.3.2" />
     <PackageReference Include="MediatR" Version="6.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="6.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
@@ -47,7 +46,6 @@
 
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="wwwroot\css\src\" />
   </ItemGroup>
 
   <ItemGroup>

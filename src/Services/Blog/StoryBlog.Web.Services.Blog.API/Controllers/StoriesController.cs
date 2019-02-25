@@ -23,6 +23,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Blog.Application.Stories;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -107,10 +108,10 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         public async Task<IActionResult> Get(string page, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
         {
             var flags = EnumFlags.Parse<StoryIncludes>(includes);
-            var query = new GetStoriesListQuery(User)
+            var query = new GetStoriesListQuery(User, flags)
             {
-                IncludeComments = StoryIncludes.Comments == (flags & StoryIncludes.Comments),
-                IncludeAuthors = StoryIncludes.Authors == (flags & StoryIncludes.Authors),
+                //IncludeComments = StoryIncludes.Comments == (flags & StoryIncludes.Comments),
+                //IncludeAuthors = StoryIncludes.Authors == (flags & StoryIncludes.Authors),
                 Cursor = (null != page && NavigationCursorEncoder.TryParse(page, out var cursor))
                     ? cursor
                     : NavigationCursor.Forward(0, blogSettings.PageSize)

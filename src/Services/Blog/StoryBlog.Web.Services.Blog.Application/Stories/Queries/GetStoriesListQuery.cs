@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System;
+using MediatR;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 using System.Security.Principal;
@@ -21,19 +22,9 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
         /// <summary>
         /// 
         /// </summary>
-        public bool IncludeAuthors
+        public StoryIncludes Includes
         {
             get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool IncludeComments
-        {
-            get;
-            set;
         }
 
         /// <summary>
@@ -49,10 +40,16 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
         /// 
         /// </summary>
         /// <param name="user"></param>
-        public GetStoriesListQuery(
-            IPrincipal user)
+        /// <param name="includes"></param>
+        public GetStoriesListQuery(IPrincipal user, StoryIncludes includes)
         {
+            if (null == user)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
             User = user;
+            Includes = includes;
         }
     }
 }
