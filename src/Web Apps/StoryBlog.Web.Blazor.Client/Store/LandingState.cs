@@ -1,4 +1,4 @@
-﻿using StoryBlog.Web.Services.Blog.Common.Models;
+﻿using StoryBlog.Web.Services.Blog.Interop.Models;
 
 namespace StoryBlog.Web.Blazor.Client.Store
 {

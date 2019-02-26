@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using StoryBlog.Web.Services.Blog.Common.Models;
 
 namespace StoryBlog.Web.Services.Blog.Interop.Models
 {

@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using Blazor.Fluxor;
-using StoryBlog.Web.Services.Blog.Common.Models;
+﻿using Blazor.Fluxor;
+using StoryBlog.Web.Services.Blog.Interop.Models;
+using System.Linq;
 
 namespace StoryBlog.Web.Blazor.Client.Store
 {
@@ -8,6 +8,7 @@ namespace StoryBlog.Web.Blazor.Client.Store
     {
         public override string GetName() => nameof(BlogState);
 
-        protected override BlogState GetInitialState() => new BlogState(false, Enumerable.Empty<StoryModel>(), null);
+        protected override BlogState GetInitialState() =>
+            new BlogState(false, Enumerable.Empty<StoryModel>(), null);
     }
 }

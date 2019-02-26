@@ -16,6 +16,7 @@ using StoryBlog.Web.Services.Blog.API.Infrastructure;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Filters;
 using StoryBlog.Web.Services.Blog.Application.Extensions;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
+using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Blog.Persistence;
 using StoryBlog.Web.Services.Shared.Communication;
 using System;
@@ -123,7 +124,7 @@ namespace StoryBlog.Web.Services.Blog.API
                             config.AddBlogApplicationTypeMappings();
 
                             config
-                                .CreateMap<Application.Landing.Models.Landing, Common.Models.LandingModel>()
+                                .CreateMap<Application.Landing.Models.Landing, LandingModel>()
                                 .ForMember(
                                     landing => landing.Title,
                                     mapping => mapping.MapFrom(source => source.Title)
@@ -139,12 +140,12 @@ namespace StoryBlog.Web.Services.Blog.API
                                 .AfterMap((source, landing, ctx) =>
                                 {
                                     landing.FeaturedStories = source.FeaturedStories.Select(
-                                        story => ctx.Mapper.Map<Common.Models.StoryModel>(story)
+                                        story => ctx.Mapper.Map<StoryModel>(story)
                                     );
                                 });
 
                             config
-                                .CreateMap<Application.Stories.Models.Author, Common.Models.AuthorModel>()
+                                .CreateMap<Application.Stories.Models.Author, AuthorModel>()
                                 .ForMember(
                                     story => story.Id,
                                     mapping => mapping.MapFrom(source => source.Id)
@@ -155,7 +156,7 @@ namespace StoryBlog.Web.Services.Blog.API
                                 );
 
                             config
-                                .CreateMap<Application.Stories.Models.Comment, Common.Models.CommentModel>()
+                                .CreateMap<Application.Stories.Models.Comment, CommentModel>()
                                 .ForMember(
                                     story => story.Id,
                                     mapping => mapping.MapFrom(source => source.Id)
@@ -177,7 +178,7 @@ namespace StoryBlog.Web.Services.Blog.API
                                 );
 
                             config
-                                .CreateMap<Application.Stories.Models.Story, Common.Models.StoryModel>()
+                                .CreateMap<Application.Stories.Models.Story, StoryModel>()
                                 .ForMember(
                                     story => story.Id,
                                     mapping => mapping.MapFrom(source => source.Id)
@@ -213,7 +214,7 @@ namespace StoryBlog.Web.Services.Blog.API
                                 .AfterMap((source, story, ctx) =>
                                 {
                                     story.Comments = source.Comments.Select(
-                                        comment => ctx.Mapper.Map<Common.Models.CommentModel>(comment)
+                                        comment => ctx.Mapper.Map<CommentModel>(comment)
                                     );
                                 });
                         });
@@ -266,9 +267,9 @@ namespace StoryBlog.Web.Services.Blog.API
                         ;
                     }
 
-                    var context = services.GetRequiredService<StoryBlogDbContext>();
+                    //var context = services.GetRequiredService<StoryBlogDbContext>();
 
-                    context.Database.Migrate();
+                    //context.Database.Migrate();
                     //StoryBlogInitializer.Seed(context, logger);
                 }
                 catch (Exception exception)

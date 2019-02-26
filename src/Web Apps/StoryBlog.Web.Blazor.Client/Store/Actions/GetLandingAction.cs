@@ -1,5 +1,5 @@
 ﻿using Blazor.Fluxor;
-using StoryBlog.Web.Services.Blog.Common.Includes;
+using StoryBlog.Web.Services.Blog.Interop.Includes;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Actions
 {

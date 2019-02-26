@@ -1,6 +1,6 @@
-﻿using StoryBlog.Web.Services.Blog.Common;
-using StoryBlog.Web.Services.Blog.Common.Includes;
-using StoryBlog.Web.Services.Blog.Common.Models;
+﻿using StoryBlog.Web.Services.Blog.Interop;
+using StoryBlog.Web.Services.Blog.Interop.Includes;
+using StoryBlog.Web.Services.Blog.Interop.Models;
 using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Blazor.Client.Services

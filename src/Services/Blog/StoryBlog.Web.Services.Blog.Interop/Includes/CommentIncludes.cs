@@ -1,7 +1,7 @@
 ﻿using System;
 using StoryBlog.Web.Services.Shared.Common.Annotations;
 
-namespace StoryBlog.Web.Services.Blog.Common.Includes
+namespace StoryBlog.Web.Services.Blog.Interop.Includes
 {
     [Flags]
     public enum CommentIncludes

@@ -3,7 +3,7 @@ using StoryBlog.Web.Blazor.Client.Services;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
 using System;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Blog.Common.Includes;
+using StoryBlog.Web.Services.Blog.Interop.Includes;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Effects
 {

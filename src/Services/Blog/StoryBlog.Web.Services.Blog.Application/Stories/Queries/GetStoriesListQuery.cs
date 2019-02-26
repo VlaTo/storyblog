@@ -1,7 +1,7 @@
-﻿using System;
-using MediatR;
+﻿using MediatR;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Application.Stories.Models;
+using System;
 using System.Security.Principal;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
@@ -22,9 +22,19 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
         /// <summary>
         /// 
         /// </summary>
-        public StoryIncludes Includes
+        public bool IncludeAuthors
         {
             get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IncludeComments
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -41,7 +51,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
         /// </summary>
         /// <param name="user"></param>
         /// <param name="includes"></param>
-        public GetStoriesListQuery(IPrincipal user, StoryIncludes includes)
+        public GetStoriesListQuery(IPrincipal user)
         {
             if (null == user)
             {
@@ -49,7 +59,6 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
             }
 
             User = user;
-            Includes = includes;
         }
     }
 }

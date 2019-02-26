@@ -3,42 +3,21 @@
 @using global::Blazor.Fluxor
 @using StoryBlog.Web.Blazor.Client.Store
 @using StoryBlog.Web.Blazor.Client.Store.Actions
-@using StoryBlog.Web.Services.Blog.Common.Includes
+@using StoryBlog.Web.Services.Blog.Interop.Includes
 
 @inherits global::Blazor.Fluxor.Components.FluxorComponent
 
-@inject IState<BlogState> Blog
-@inject IState<LandingState> Landing
+@inject IState<LandingState> Model
 @inject IDispatcher Dispatcher
 
-<StoryBlogTitle Title="Story Blog" Description="lorem ipsum dolor sit amet" />
-<StosyBlogLanding State=Landing />
-
-@if (Blog.Value.IsBusy)
-{
-
-}
-else
-{
-    if (null != Blog.Value.Error)
-    {
-        <p>@Blog.Value.Error</p>
-    }
-    else if (null != Blog.Value.Stories)
-    {
-        foreach (var story in Blog.Value.Stories)
-        {
-            <StoryBlogArticle Story=@story />
-        }
-    }
-}
+<StosyBlogLanding State=Model />
 
 @functions
 {
     protected override async Task OnInitAsync()
     {
         await base.OnInitAsync();
-        Dispatcher.Dispatch(new GetLandingAction(LandingIncludes.HeroPost | LandingIncludes.FeaturedPosts));
-        Dispatcher.Dispatch(new GetStoriesListAction());
+        Dispatcher.Dispatch(new GetLandingAction(LandingIncludes.HeroStory | LandingIncludes.FeaturedStories | LandingIncludes.StoriesFeed));
+    //Dispatcher.Dispatch(new GetStoriesListAction());
     }
 }

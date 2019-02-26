@@ -32,7 +32,6 @@
     <ProjectReference Include="..\..\Shared\StoryBlog.Web.Services.Shared.Communication\Shared.Communication.csproj" />
     <ProjectReference Include="..\..\Shared\StoryBlog.Web.Services.Shared.Infrastructure\Shared.Infrastructure.csproj" />
     <ProjectReference Include="..\StoryBlog.Web.Services.Blog.Application\Blog.Application.csproj" />
-    <ProjectReference Include="..\StoryBlog.Web.Services.Blog.Common\Blog.Common.csproj" />
     <ProjectReference Include="..\StoryBlog.Web.Services.Blog.Interop\Blog.Interop.csproj" />
   </ItemGroup>
 

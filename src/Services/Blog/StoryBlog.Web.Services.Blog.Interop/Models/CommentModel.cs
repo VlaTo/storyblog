@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace StoryBlog.Web.Services.Blog.Common.Models
+namespace StoryBlog.Web.Services.Blog.Interop.Models
 {
     [DataContract]
     public sealed class CommentModel

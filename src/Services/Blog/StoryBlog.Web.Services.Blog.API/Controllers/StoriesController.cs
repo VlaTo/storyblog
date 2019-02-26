@@ -11,9 +11,8 @@ using StoryBlog.Web.Services.Blog.Application.Extensions;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Application.Stories.Commands;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
-using StoryBlog.Web.Services.Blog.Common;
-using StoryBlog.Web.Services.Blog.Common.Includes;
-using StoryBlog.Web.Services.Blog.Common.Models;
+using StoryBlog.Web.Services.Blog.Interop;
+using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Shared.Common;
 using StoryBlog.Web.Services.Shared.Communication;
 using StoryBlog.Web.Services.Shared.Communication.Commands;
@@ -23,7 +22,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Blog.Application.Stories;
+using StoryBlog.Web.Services.Blog.Interop.Includes;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -108,10 +107,10 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         public async Task<IActionResult> Get(string page, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
         {
             var flags = EnumFlags.Parse<StoryIncludes>(includes);
-            var query = new GetStoriesListQuery(User, flags)
+            var query = new GetStoriesListQuery(User)
             {
-                //IncludeComments = StoryIncludes.Comments == (flags & StoryIncludes.Comments),
-                //IncludeAuthors = StoryIncludes.Authors == (flags & StoryIncludes.Authors),
+                IncludeAuthors = StoryIncludes.Authors == (flags & StoryIncludes.Authors),
+                IncludeComments = StoryIncludes.Comments == (flags & StoryIncludes.Comments),
                 Cursor = (null != page && NavigationCursorEncoder.TryParse(page, out var cursor))
                     ? cursor
                     : NavigationCursor.Forward(0, blogSettings.PageSize)
@@ -149,7 +148,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
             return Ok(new ListResult<StoryModel>
             {
                 Data = result.Select(story => mapper.Map<StoryModel>(story)),
-                Meta = new ResultMetaInformation
+                Meta = new ListResultMetaInformation
                 {
                     Navigation = new Navigation
                     {

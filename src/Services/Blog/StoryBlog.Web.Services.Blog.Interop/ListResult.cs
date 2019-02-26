@@ -3,7 +3,18 @@ using System.Runtime.Serialization;
 
 namespace StoryBlog.Web.Services.Blog.Interop
 {
-    [DataContract(Name = "result")]
+    [DataContract]
+    public sealed class ListResultMetaInformation
+    {
+        [DataMember(Name = "navigation")]
+        public Navigation Navigation
+        {
+            get;
+            set;
+        }
+    }
+
+    [DataContract]
     public class ListResult<TValue>
     {
         [DataMember(Name = "data")]
@@ -14,7 +25,7 @@ namespace StoryBlog.Web.Services.Blog.Interop
         }
 
         [DataMember(Name = "meta")]
-        public ResultMetaInformation Meta
+        public ListResultMetaInformation Meta
         {
             get;
             set;

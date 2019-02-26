@@ -1,7 +1,7 @@
 ﻿using System;
 using StoryBlog.Web.Services.Shared.Common.Annotations;
 
-namespace StoryBlog.Web.Services.Blog.Common.Includes
+namespace StoryBlog.Web.Services.Blog.Interop.Includes
 {
     /// <summary>
     /// 
@@ -13,12 +13,18 @@ namespace StoryBlog.Web.Services.Blog.Common.Includes
         /// 
         /// </summary>
         [Flag(Key = "hero")]
-        HeroPost = 1,
+        HeroStory = 1,
 
         /// <summary>
         /// 
         /// </summary>
         [Flag(Key = "featured")]
-        FeaturedPosts = 2
+        FeaturedStories = 2,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Flag(Key = "stories")]
+        StoriesFeed = 4
     }
 }

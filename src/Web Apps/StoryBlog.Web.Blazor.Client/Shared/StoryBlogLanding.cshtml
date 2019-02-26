@@ -6,7 +6,7 @@
 }
 else if (State.IsBusy)
 {
-
+    <p class="text-muted">Loading...</p>
 }
 else
 {
@@ -17,12 +17,23 @@ else
 
     if (null != State.Data)
     {
-        <div class="jumbotron">
-            <h4>@State.Data.Title</h4>
-            <div class="justify-content-md-start">
-                @State.Data.Description
+        <StoryBlogTitle Title=@State.Data.Title Description=@State.Data.Description />
+
+        if (null != State.Data.HeroStory)
+        {
+            <div class="jumbotron">
+                <h4>@State.Data.HeroStory.Title</h4>
+                <div class="justify-content-md-start">
+                    @State.Data.HeroStory.Content
+                </div>
             </div>
-        </div>
+        }
+
+
+    }
+    else
+    {
+        <p>Empty Content</p>
     }
 }
 
