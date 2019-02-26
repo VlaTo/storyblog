@@ -1,6 +1,6 @@
-﻿using System.Security.Principal;
-using MediatR;
+﻿using MediatR;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
+using System.Security.Principal;
 
 namespace StoryBlog.Web.Services.Blog.Application.Landing.Queries
 {
@@ -11,13 +11,19 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Queries
             get;
         }
 
-        public bool IncludeHeroPost
+        public bool IncludeHeroStory
         {
             get;
             set;
         }
 
-        public int FeaturedPostsCount
+        public int FeaturedStoriesCount
+        {
+            get;
+            set;
+        }
+
+        public int StoriesFeedCount
         {
             get;
             set;

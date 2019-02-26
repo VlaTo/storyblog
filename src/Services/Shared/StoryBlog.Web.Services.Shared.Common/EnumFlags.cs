@@ -76,7 +76,7 @@ namespace StoryBlog.Web.Services.Shared.Common
                 keys = StringValues.Concat(keys, value.ToString());
             }
 
-            return (TFlags) Enum.Parse(enumType, keys.ToString());
+            return 0 == keys.Count ? default(TFlags) : (TFlags) Enum.Parse(enumType, keys.ToString());
         }
 
         /// <summary>

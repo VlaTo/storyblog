@@ -26,14 +26,21 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
         }
 
         [DataMember(Name = "hero")]
-        public StoryModel HeroStory
+        public FeedStoryModel HeroStory
         {
             get;
             set;
         }
 
         [DataMember(Name = "featured")]
-        public IEnumerable<StoryModel> FeaturedStories
+        public IEnumerable<FeedStoryModel> FeaturedStories
+        {
+            get;
+            set;
+        }
+
+        [DataMember(Name = "feed")]
+        public IEnumerable<FeedStoryModel> StoriesFeed
         {
             get;
             set;
@@ -41,7 +48,8 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
 
         public LandingModel()
         {
-            FeaturedStories = Enumerable.Empty<StoryModel>();
+            FeaturedStories = Enumerable.Empty<FeedStoryModel>();
+            StoriesFeed = Enumerable.Empty<FeedStoryModel>();
         }
     }
 }

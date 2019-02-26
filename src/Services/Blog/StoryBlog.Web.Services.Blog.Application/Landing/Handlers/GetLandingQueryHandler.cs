@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -13,6 +6,13 @@ using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Application.Landing.Queries;
 using StoryBlog.Web.Services.Blog.Persistence;
 using StoryBlog.Web.Services.Blog.Persistence.Models;
+using System;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using StoryBlog.Web.Services.Blog.Application.Stories.Models;
+using Author = StoryBlog.Web.Services.Blog.Application.Stories.Models.Author;
 
 namespace StoryBlog.Web.Services.Blog.Application.Landing.Handlers
 {
@@ -54,15 +54,101 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Handlers
                 throw new ArgumentNullException(nameof(request));
             }
 
-            //var authenticated = request.User.Identity.IsAuthenticated;
-            var queryable = context.Settings.AsNoTracking();
-            var landing = new Models.Landing
+            try
             {
-                Title = await GetStringValueAsync(queryable.Where(story => story.Name == "Title")),
-                Description = await GetStringValueAsync(queryable.Where(story => story.Name == "Description"))
-            };
+                var authenticated = request.User.Identity.IsAuthenticated;
+                var queryable = context.Settings.AsNoTracking();
+                var landing = new Models.Landing
+                {
+                    Title = await GetStringValueAsync(queryable.Where(story => story.Name == "Title")),
+                    Description = await GetStringValueAsync(queryable.Where(story => story.Name == "Description"))
+                };
 
-            return RequestResult.Success(landing);
+                if (request.IncludeHeroStory)
+                {
+                    var stories = context.Stories
+                        .OrderBy(story => story.Id)
+                        .Where(story => story.Status == StoryStatus.Published && (authenticated || story.IsPublic))
+                        .Select(story => new FeedStory(story.Id)
+                        {
+                            Title = story.Title,
+                            Slug = story.Slug,
+                            Content = story.Content,
+                            IsPublic = story.IsPublic,
+                            Created = story.Created,
+                            Modified = story.Modified,
+                            Author = mapper.Map<Author>(story.Author),
+                            CommentsCount = story.Comments.Count(
+                                comment => comment.Status == CommentStatus.Published && (authenticated || comment.IsPublic)
+                            )
+                        });
+                    landing.HeroStory = stories.FirstOrDefault();
+                }
+
+                if (0 < request.FeaturedStoriesCount)
+                {
+                    var stories = context.Stories
+                        .AsNoTracking()
+                        .Include(story => story.Author)
+                        .Include(story => story.Comments)
+                        .OrderBy(story => story.Id)
+                        .Where(story => story.Status == StoryStatus.Published && (authenticated || story.IsPublic))
+                        .Select(story => new FeedStory(story.Id)
+                        {
+                            Title = story.Title,
+                            Slug = story.Slug,
+                            Content = story.Content,
+                            IsPublic = story.IsPublic,
+                            Created = story.Created,
+                            Modified = story.Modified,
+                            Author = mapper.Map<Author>(story.Author),
+                            CommentsCount = story.Comments.Count(
+                                comment => comment.Status == CommentStatus.Published && (authenticated || comment.IsPublic)
+                            )
+                        })
+                        .Take(request.FeaturedStoriesCount);
+
+                    foreach (var story in stories)
+                    {
+                        landing.FeaturedStories.Add(mapper.Map<FeedStory>(story));
+                    }
+                }
+
+                if (0 < request.StoriesFeedCount)
+                {
+                    var stories = context.Stories
+                        .AsNoTracking()
+                        .Include(story => story.Author)
+                        .Include(story => story.Comments)
+                        .OrderBy(story => story.Id)
+                        .Where(story => story.Status == StoryStatus.Published && (authenticated || story.IsPublic))
+                        .Select(story => new FeedStory(story.Id)
+                        {
+                            Title = story.Title,
+                            Slug = story.Slug,
+                            Content = story.Content,
+                            IsPublic = story.IsPublic,
+                            Created = story.Created,
+                            Modified = story.Modified,
+                            Author = mapper.Map<Author>(story.Author),
+                            CommentsCount = story.Comments.Count(
+                                comment => comment.Status == CommentStatus.Published && (authenticated || comment.IsPublic)
+                            )
+                        })
+                        .Take(request.StoriesFeedCount);
+
+                    foreach (var story in stories)
+                    {
+                        landing.StoriesFeed.Add(mapper.Map<FeedStory>(story));
+                    }
+                }
+
+                return RequestResult.Success(landing);
+            }
+            catch (Exception exception)
+            {
+                return RequestResult.Error<Models.Landing>(exception);
+            }
         }
 
         private static Task<string> GetStringValueAsync(IQueryable<Settings> queryable)

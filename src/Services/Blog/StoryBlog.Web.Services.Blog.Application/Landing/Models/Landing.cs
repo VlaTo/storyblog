@@ -18,20 +18,26 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Models
             set;
         }
 
-        public Story HeroStory
+        public FeedStory HeroStory
         {
             get;
             set;
         }
 
-        public ICollection<Story> FeaturedStories
+        public ICollection<FeedStory> FeaturedStories
+        {
+            get;
+        }
+
+        public ICollection<FeedStory> StoriesFeed
         {
             get;
         }
 
         public Landing()
         {
-            FeaturedStories = new Collection<Story>();
+            FeaturedStories = new Collection<FeedStory>();
+            StoriesFeed = new Collection<FeedStory>();
         }
     }
 }

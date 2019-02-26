@@ -3,33 +3,20 @@
     /// <summary>
     /// 
     /// </summary>
-    public sealed class FeedStory
+    public sealed class FeedStory : StoryBase
     {
         /// <summary>
         /// 
         /// </summary>
-        public string Title
+        public int CommentsCount
         {
             get;
             set;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Slug
+        public FeedStory(long id) 
+            : base(id)
         {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Text
-        {
-            get;
-            set;
         }
     }
 }

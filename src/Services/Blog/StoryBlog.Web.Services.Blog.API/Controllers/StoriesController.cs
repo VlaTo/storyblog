@@ -82,6 +82,11 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
             if (false == result.IsSuccess())
             {
+                foreach (var exception in result.Exceptions)
+                {
+                    logger.LogError(exception, "[StoriesController.Create]");
+                }
+
                 return BadRequest(result.Exceptions);
             }
 
@@ -120,6 +125,11 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
             if (false == result.IsSuccess())
             {
+                foreach (var exception in result.Exceptions)
+                {
+                    logger.LogError(exception, "[StoriesController.Get]");
+                }
+
                 return BadRequest(result.Exceptions);
             }
 

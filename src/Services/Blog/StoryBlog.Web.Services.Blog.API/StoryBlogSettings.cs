@@ -13,5 +13,23 @@
             get;
             set;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int FeaturedStoriesCount
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int FeedStoriesCount
+        {
+            get;
+            set;
+        }
     }
 }

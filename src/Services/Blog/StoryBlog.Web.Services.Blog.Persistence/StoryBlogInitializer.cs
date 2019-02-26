@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Internal;
+﻿using System;
+using System.Linq;
+using System.Text;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using StoryBlog.Web.Services.Blog.Persistence.Models;
 
@@ -17,9 +20,12 @@ namespace StoryBlog.Web.Services.Blog.Persistence
         public static void Seed(StoryBlogDbContext context, ILogger logger)
         {
             //const string email = "dev@storyblog.net";
+            SeedSettings(context, logger);
 
-            using (var transaction = context.Database.BeginTransaction())
+            /*using (var transaction = context.Database.BeginTransaction())
             {
+
+
 
                 if (false == context.Addresses.Any())
                 {
@@ -34,7 +40,7 @@ namespace StoryBlog.Web.Services.Blog.Persistence
                 }
 
                 transaction.Commit();
-            }
+            }*/
 
             /*var customer = await customerManager.FindByEmailAsync(email);
 
@@ -69,6 +75,40 @@ namespace StoryBlog.Web.Services.Blog.Persistence
             {
 
             }*/
+        }
+
+        private static void SeedSettings(StoryBlogDbContext context, ILogger logger)
+        {
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                var exists = context.Settings.Any(setting => setting.Name == "Title");
+
+                if (false == exists)
+                {
+                    context.Settings.Add(new Settings
+                    {
+                        Name = "Title",
+                        Value = Encoding.UTF8.GetBytes("The Story Blog")
+                    });
+
+                    context.SaveChanges();
+                }
+
+                exists = context.Settings.Any(setting => setting.Name == "Description");
+
+                if (false == exists)
+                {
+                    context.Settings.Add(new Settings
+                    {
+                        Name = "Description",
+                        Value = Encoding.UTF8.GetBytes("lorem ipsum dolor dit amet")
+                    });
+
+                    context.SaveChanges();
+                }
+
+                transaction.Commit();
+            }
         }
     }
 }

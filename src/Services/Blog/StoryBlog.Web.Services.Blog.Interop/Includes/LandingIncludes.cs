@@ -24,7 +24,7 @@ namespace StoryBlog.Web.Services.Blog.Interop.Includes
         /// <summary>
         /// 
         /// </summary>
-        [Flag(Key = "stories")]
+        [Flag(Key = "feed")]
         StoriesFeed = 4
     }
 }
