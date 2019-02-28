@@ -270,9 +270,9 @@ namespace StoryBlog.Web.Services.Blog.API
                                     landing.Featured = source.FeaturedStories.Select(
                                         story => ctx.Mapper.Map<FeedStoryModel>(story)
                                     );
-                                    /*landing.StoriesFeed = source.StoriesFeed.Select(
+                                    landing.Feed = source.FeedStories.Select(
                                         story => ctx.Mapper.Map<FeedStoryModel>(story)
-                                    );*/
+                                    );
                                 });
 
                             /*config

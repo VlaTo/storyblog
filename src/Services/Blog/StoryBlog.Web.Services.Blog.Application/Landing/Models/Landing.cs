@@ -29,15 +29,15 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Models
             get;
         }
 
-        /*public ICollection<FeedStory> StoriesFeed
+        public ICollection<FeedStory> FeedStories
         {
             get;
-        }*/
+        }
 
         public Landing()
         {
             FeaturedStories = new Collection<FeedStory>();
-            //StoriesFeed = new Collection<FeedStory>();
+            FeedStories = new Collection<FeedStory>();
         }
     }
 }

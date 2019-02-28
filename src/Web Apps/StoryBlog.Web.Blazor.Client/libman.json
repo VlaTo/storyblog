@@ -27,6 +27,18 @@
         "fonts/fontawesome-webfont.woff",
         "fonts/fontawesome-webfont.woff2"
       ]
+    },
+    {
+      "library": "MaterialDesign-Webfont@3.5.95",
+      "destination": "wwwroot/lib/materialdesignicons",
+      "files": [
+        "css/materialdesignicons.min.css",
+        "fonts/materialdesignicons-webfont.eot",
+        "fonts/materialdesignicons-webfont.svg",
+        "fonts/materialdesignicons-webfont.ttf",
+        "fonts/materialdesignicons-webfont.woff",
+        "fonts/materialdesignicons-webfont.woff2"
+      ]
     }
   ]
 }

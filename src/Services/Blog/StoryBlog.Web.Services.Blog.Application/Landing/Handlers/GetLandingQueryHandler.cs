@@ -68,7 +68,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Handlers
                 };
 
                 FillFeaturedStories(landing.FeaturedStories, request.FeaturedStoriesCount, authenticated);
-                //FillStoriesFeed(landing.StoriesFeed, request.StoriesFeedCount, authenticated);
+                FillStoriesFeed(landing.FeedStories, request.StoriesFeedCount, authenticated);
 
                 return RequestResult.Success(landing);
             }
@@ -121,7 +121,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Handlers
                 {
                     Title = story.Title,
                     Slug = story.Slug,
-                    Content = story.Content,
+                    Content = TrimContent(story.Content),
                     Created = story.Created,
                     Modified = story.Modified,
                     Author = mapper.Map<Author>(story.Author),
@@ -180,6 +180,12 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Handlers
             }
 
             return Task.FromResult(Encoding.UTF8.GetString(value));
+        }
+
+        private static string TrimContent(string content)
+        {
+            var words = content.Split(' ').Take(20);
+            return String.Join(' ', words);
         }
     }
 }

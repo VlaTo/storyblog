@@ -117,5 +117,41 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 Debug.WriteLine(exception);
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="slug"></param>
+        /// <param name="flags"></param>
+        /// <returns></returns>
+        public async Task<StoryModel> GetStoryAsync(string slug, StoryIncludes flags)
+        {
+            var path = new Uri(baseUri, $"story/{slug}");
+            var include = EnumFlags.ToQueryString(flags);
+            var query = QueryString.Create(nameof(include), include);
+            var requestUri = new UriBuilder(path) { Query = query.ToUriComponent() }.Uri;
+
+            try
+            {
+                logger.LogDebug($"[{nameof(BlogApiClient)}] Requesting stories from \"{requestUri}\"");
+
+                using (var response = await client.GetAsync(requestUri, CancellationToken.None))
+                {
+                    response.EnsureSuccessStatusCode();
+
+                    var json = await response.Content.ReadAsStringAsync();
+                    var data = Json.Deserialize<StoryModel>(json);
+
+                    logger.LogDebug($"[{nameof(BlogApiClient)}] Stories fetch status {response.StatusCode}");
+
+                    return data;
+                }
+            }
+            catch (HttpRequestException exception)
+            {
+                logger.LogError(exception, $"Failed to fetch stories from \"{requestUri}\"");
+                return null;
+            }
+        }
     }
 }

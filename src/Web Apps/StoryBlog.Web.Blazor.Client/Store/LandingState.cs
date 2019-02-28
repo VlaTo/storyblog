@@ -1,7 +1,21 @@
-﻿using StoryBlog.Web.Services.Blog.Interop.Models;
+﻿using Blazor.Fluxor;
+using StoryBlog.Web.Services.Blog.Interop.Models;
 
 namespace StoryBlog.Web.Blazor.Client.Store
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class LandingFeature : Feature<LandingState>
+    {
+        public override string GetName() => nameof(LandingState);
+
+        protected override LandingState GetInitialState() => LandingState.Empty;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class LandingState
     {
         public static readonly LandingState Empty;

@@ -1,0 +1,22 @@
+﻿@using StoryBlog.Web.Services.Blog.Interop.Models
+
+@if (null != Story)
+{
+    <article class="mb-4">
+        <h4>@Story.Title</h4>
+        <div class="justify-content-md-start">
+            @Story.Content
+        </div>
+        <span>Comments: <small>@Story.Comments</small></span>
+    </article>
+}
+
+@functions
+{
+    [Parameter]
+    protected HeroStoryModel Story
+    {
+        get;
+        set;
+    }
+}

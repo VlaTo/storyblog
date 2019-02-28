@@ -45,41 +45,9 @@ else
             <div class="container">
                 <div class="row">
                     <div class="col-lg-9">
-                        @{
-                            Debug.WriteLine($"Has hero class? {null != model.Hero}");
-                        }
-
-                        @if (null != model.Hero)
-                        {
-                            <article class="mb-4">
-                                <h4>@model.Hero.Title</h4>
-                                <div class="justify-content-md-start">
-                                    @model.Hero.Content
-                                </div>
-                                <span>Comments: <small>@model.Hero.Comments</small></span>
-                            </article>
-                        }
-
-                        @if (null != model.Featured)
-                        {
-                            foreach (var story in model.Featured)
-                            {
-                                <article id="@story.Slug" class="mb-2">
-                                    <h4>@story.Title</h4>
-                                </article>
-                            }
-                        }
-
-                        @*if (null != model.StoriesFeed)
-                        {
-                            foreach (var story in model.StoriesFeed)
-                            {
-                                <article id="@story.Slug" class="">
-                                    <h4 class="mb-2">@story.Title</h4>
-                                    <p>@story.Content</p>
-                                </article>
-                            }
-                        }*@
+                        <StoryBlogHeroStory Story=@model.Hero />
+                        <StoryBlogFeaturedStories Stories=@model.Featured />
+                        <StoryBlogFeedStories Stories=@model.Feed />
                     </div>
                     <aside class="col-lg-3">
 
