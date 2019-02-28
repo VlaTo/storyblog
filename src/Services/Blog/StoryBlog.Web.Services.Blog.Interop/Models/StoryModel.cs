@@ -4,9 +4,15 @@ using System.Runtime.Serialization;
 
 namespace StoryBlog.Web.Services.Blog.Interop.Models
 {
-    [DataContract(Name = "story")]
+    /// <summary>
+    /// 
+    /// </summary>
+    [DataContract(Namespace = "http://storyblog.org/schemas/json/models/story")]
     public sealed class StoryModel : StoryModelBase
     {
+        /// <summary>
+        /// 
+        /// </summary>
         [DataMember(Name = "comments")]
         public IEnumerable<CommentModel> Comments
         {

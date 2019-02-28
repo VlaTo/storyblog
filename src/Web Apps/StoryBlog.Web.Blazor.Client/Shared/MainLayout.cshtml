@@ -4,17 +4,13 @@
 
 @Store.Initialize()
 
-<div class="sidebar">
-    <NavMenu />
-</div>
-
-<div class="container storyblog-main">
-    <main class="row">
-        <section class="col-md-8 storyblog-main-content">
+<div class="container-fluid storyblog-wrapper">
+    <main class="row storyblog-main">
+        <aside class="left col-md-3 storyblog-main-menu">
+            <StoryBlogTitle Title="Sample Blog" Description="lorem ipsum dolor sit amet" />
+        </aside>
+        <section class="col-md-9 storyblog-main-content">
             @Body
         </section>
-        <aside class="col-md-4">
-
-        </aside>
     </main>
 </div>

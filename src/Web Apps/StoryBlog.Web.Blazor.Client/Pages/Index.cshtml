@@ -1,5 +1,6 @@
 ﻿@page "/"
 
+@using System.Diagnostics
 @using global::Blazor.Fluxor
 @using StoryBlog.Web.Blazor.Client.Store
 @using StoryBlog.Web.Blazor.Client.Store.Actions
@@ -7,17 +8,100 @@
 
 @inherits global::Blazor.Fluxor.Components.FluxorComponent
 
-@inject IState<LandingState> Model
+@inject IState<LandingState> State
 @inject IDispatcher Dispatcher
 
-<StosyBlogLanding State=Model />
+@if (null == State)
+{
+
+}
+else if (State.Value.IsBusy)
+{
+    <p class="text-muted">Loading...</p>
+}
+else
+{
+    if (null != State.Value.Error)
+    {
+        <p>@State.Value.Error</p>
+    }
+
+    var model = State.Value.Model;
+    
+    if (null != model)
+    {
+        <section>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 mt-4 mb-5 storyblog-landing-title">
+                        <h3 class="mb-2">@model.Title</h3>
+                        <text class="text-muted">@model.Description</text>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-9">
+                        @{
+                            Debug.WriteLine($"Has hero class? {null != model.Hero}");
+                        }
+
+                        @if (null != model.Hero)
+                        {
+                            <article class="mb-4">
+                                <h4>@model.Hero.Title</h4>
+                                <div class="justify-content-md-start">
+                                    @model.Hero.Content
+                                </div>
+                                <span>Comments: <small>@model.Hero.Comments</small></span>
+                            </article>
+                        }
+
+                        @if (null != model.Featured)
+                        {
+                            foreach (var story in model.Featured)
+                            {
+                                <article id="@story.Slug" class="mb-2">
+                                    <h4>@story.Title</h4>
+                                </article>
+                            }
+                        }
+
+                        @*if (null != model.StoriesFeed)
+                        {
+                            foreach (var story in model.StoriesFeed)
+                            {
+                                <article id="@story.Slug" class="">
+                                    <h4 class="mb-2">@story.Title</h4>
+                                    <p>@story.Content</p>
+                                </article>
+                            }
+                        }*@
+                    </div>
+                    <aside class="col-lg-3">
+
+                    </aside>
+                </div>
+            </div>
+        </section>
+    }
+    else
+    {
+        <p>Empty Content</p>
+    }
+}
 
 @functions
 {
     protected override async Task OnInitAsync()
     {
+        const LandingIncludes includes = LandingIncludes.HeroStory | LandingIncludes.FeaturedStories | LandingIncludes.StoriesFeed;
+
         await base.OnInitAsync();
-        Dispatcher.Dispatch(new GetLandingAction(LandingIncludes.HeroStory | LandingIncludes.FeaturedStories | LandingIncludes.StoriesFeed));
-    //Dispatcher.Dispatch(new GetStoriesListAction());
+
+        Dispatcher.Dispatch(new GetLandingAction(includes));
     }
 }

@@ -4,12 +4,14 @@ namespace StoryBlog.Web.Blazor.Client.Store
 {
     public sealed class LandingState
     {
+        public static readonly LandingState Empty;
+
         public bool IsBusy
         {
             get;
         }
 
-        public LandingModel Data
+        public LandingModel Model
         {
             get;
         }
@@ -19,11 +21,31 @@ namespace StoryBlog.Web.Blazor.Client.Store
             get;
         }
 
-        public LandingState(bool isBusy, LandingModel data, string error)
+        private LandingState(bool isBusy, LandingModel model, string error)
         {
             IsBusy = isBusy;
-            Data = data;
+            Model = model;
             Error = error;
+        }
+
+        static LandingState()
+        {
+            Empty = new LandingState(false, null, null);
+        }
+
+        public static LandingState Loading(LandingModel model)
+        {
+            return new LandingState(true, model, null);
+        }
+
+        public static LandingState Success(LandingModel model)
+        {
+            return new LandingState(false, model, null);
+        }
+
+        public static LandingState Failed(LandingModel model, string error)
+        {
+            return new LandingState(false, model, error);
         }
     }
 }

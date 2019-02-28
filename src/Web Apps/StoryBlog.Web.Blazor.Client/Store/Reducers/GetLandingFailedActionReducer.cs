@@ -6,6 +6,6 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     public sealed class GetLandingFailedActionReducer : Reducer<LandingState, GetLandingFailedAction>
     {
         public override LandingState Reduce(LandingState state, GetLandingFailedAction action)
-            => new LandingState(false, state.Data, action.Error);
+            => LandingState.Failed(state.Model, action.Error);
     }
 }

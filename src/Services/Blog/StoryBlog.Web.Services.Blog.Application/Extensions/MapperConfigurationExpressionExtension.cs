@@ -57,10 +57,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                     story => story.Content,
                     mapping => mapping.MapFrom(source => source.Content)
                 )
-                .ForMember(
+                /*.ForMember(
                     story => story.IsPublic,
                     mapping => mapping.MapFrom(source => source.IsPublic)
-                )
+                )*/
                 .ForMember(
                     story => story.Created,
                     mapping => mapping.MapFrom(source => source.Created)
@@ -93,10 +93,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                     story => story.Content,
                     mapping => mapping.MapFrom(source => source.Content)
                 )
-                .ForMember(
+                /*.ForMember(
                     story => story.IsPublic,
                     mapping => mapping.MapFrom(source => source.IsPublic)
-                )
+                )*/
                 .ForMember(
                     story => story.Created,
                     mapping => mapping.MapFrom(source => source.Created)
@@ -110,6 +110,39 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                     mapping => mapping.MapFrom(source => source.Author)
                 )
                 .AfterMap((source, story, context) => story.CommentsCount = source.Comments.Count());
+
+            configuration
+                .CreateMap<Persistence.Models.Story, Landing.Models.HeroStory>()
+                .ConstructUsing(story => new Landing.Models.HeroStory(story.Id))
+                .ForMember(
+                    story => story.Slug,
+                    mapping => mapping.MapFrom(source => source.Slug)
+                )
+                .ForMember(
+                    story => story.Title,
+                    mapping => mapping.MapFrom(source => source.Title)
+                )
+                .ForMember(
+                    story => story.Content,
+                    mapping => mapping.MapFrom(source => source.Content)
+                )
+                /*.ForMember(
+                    story => story.IsPublic,
+                    mapping => mapping.MapFrom(source => source.IsPublic)
+                )*/
+                .ForMember(
+                    story => story.Created,
+                    mapping => mapping.MapFrom(source => source.Created)
+                )
+                .ForMember(
+                    story => story.Modified,
+                    mapping => mapping.MapFrom(source => source.Modified)
+                )
+                .ForMember(
+                    story => story.Author,
+                    mapping => mapping.MapFrom(source => source.Author)
+                )
+                .AfterMap((source, story, context) => story.CommentsCount = source.Comments.Count);
 
             return configuration;
         }

@@ -7,10 +7,12 @@ using StoryBlog.Web.Services.Blog.Application.Landing.Queries;
 using StoryBlog.Web.Services.Blog.Persistence;
 using StoryBlog.Web.Services.Blog.Persistence.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Blog.Application.Landing.Models;
 using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 using Author = StoryBlog.Web.Services.Blog.Application.Stories.Models.Author;
 
@@ -60,94 +62,111 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Handlers
                 var queryable = context.Settings.AsNoTracking();
                 var landing = new Models.Landing
                 {
-                    Title = await GetStringValueAsync(queryable.Where(story => story.Name == "Title")),
-                    Description = await GetStringValueAsync(queryable.Where(story => story.Name == "Description"))
+                    Title = await GetStringValueAsync(queryable.Where(story => story.Name == "Landing.Title")),
+                    Description = await GetStringValueAsync(queryable.Where(story => story.Name == "Landing.Description")),
+                    HeroStory = await GetHeroStoryAsync(request.IncludeHeroStory, authenticated)
                 };
 
-                if (request.IncludeHeroStory)
-                {
-                    var stories = context.Stories
-                        .OrderBy(story => story.Id)
-                        .Where(story => story.Status == StoryStatus.Published && (authenticated || story.IsPublic))
-                        .Select(story => new FeedStory(story.Id)
-                        {
-                            Title = story.Title,
-                            Slug = story.Slug,
-                            Content = story.Content,
-                            IsPublic = story.IsPublic,
-                            Created = story.Created,
-                            Modified = story.Modified,
-                            Author = mapper.Map<Author>(story.Author),
-                            CommentsCount = story.Comments.Count(
-                                comment => comment.Status == CommentStatus.Published && (authenticated || comment.IsPublic)
-                            )
-                        });
-                    landing.HeroStory = stories.FirstOrDefault();
-                }
-
-                if (0 < request.FeaturedStoriesCount)
-                {
-                    var stories = context.Stories
-                        .AsNoTracking()
-                        .Include(story => story.Author)
-                        .Include(story => story.Comments)
-                        .OrderBy(story => story.Id)
-                        .Where(story => story.Status == StoryStatus.Published && (authenticated || story.IsPublic))
-                        .Select(story => new FeedStory(story.Id)
-                        {
-                            Title = story.Title,
-                            Slug = story.Slug,
-                            Content = story.Content,
-                            IsPublic = story.IsPublic,
-                            Created = story.Created,
-                            Modified = story.Modified,
-                            Author = mapper.Map<Author>(story.Author),
-                            CommentsCount = story.Comments.Count(
-                                comment => comment.Status == CommentStatus.Published && (authenticated || comment.IsPublic)
-                            )
-                        })
-                        .Take(request.FeaturedStoriesCount);
-
-                    foreach (var story in stories)
-                    {
-                        landing.FeaturedStories.Add(mapper.Map<FeedStory>(story));
-                    }
-                }
-
-                if (0 < request.StoriesFeedCount)
-                {
-                    var stories = context.Stories
-                        .AsNoTracking()
-                        .Include(story => story.Author)
-                        .Include(story => story.Comments)
-                        .OrderBy(story => story.Id)
-                        .Where(story => story.Status == StoryStatus.Published && (authenticated || story.IsPublic))
-                        .Select(story => new FeedStory(story.Id)
-                        {
-                            Title = story.Title,
-                            Slug = story.Slug,
-                            Content = story.Content,
-                            IsPublic = story.IsPublic,
-                            Created = story.Created,
-                            Modified = story.Modified,
-                            Author = mapper.Map<Author>(story.Author),
-                            CommentsCount = story.Comments.Count(
-                                comment => comment.Status == CommentStatus.Published && (authenticated || comment.IsPublic)
-                            )
-                        })
-                        .Take(request.StoriesFeedCount);
-
-                    foreach (var story in stories)
-                    {
-                        landing.StoriesFeed.Add(mapper.Map<FeedStory>(story));
-                    }
-                }
+                FillFeaturedStories(landing.FeaturedStories, request.FeaturedStoriesCount, authenticated);
+                //FillStoriesFeed(landing.StoriesFeed, request.StoriesFeedCount, authenticated);
 
                 return RequestResult.Success(landing);
             }
             catch (Exception exception)
             {
                 return RequestResult.Error<Models.Landing>(exception);
+            }
+        }
+
+        private async Task<HeroStory> GetHeroStoryAsync(bool include, bool authenticated)
+        {
+            if (false == include)
+            {
+                return null;
+            }
+
+            var stories = context.Stories
+                .OrderBy(story => story.Id)
+                .Where(story => story.Status == StoryStatus.Published && (authenticated || story.IsPublic))
+                .Select(story => new HeroStory(story.Id)
+                {
+                    Title = story.Title,
+                    Slug = story.Slug,
+                    Content = story.Content,
+                    Created = story.Created,
+                    Modified = story.Modified,
+                    Author = mapper.Map<Author>(story.Author),
+                    CommentsCount = story.Comments.Count(
+                        comment => comment.Status == CommentStatus.Published && (authenticated || comment.IsPublic)
+                    )
+                });
+
+            return await stories.FirstOrDefaultAsync();
+        }
+
+        private void FillFeaturedStories(ICollection<FeedStory> collection, int count, bool authenticated)
+        {
+            if (0 == count)
+            {
+                return;
+            }
+
+            var stories = context.Stories
+                .AsNoTracking()
+                .Include(story => story.Author)
+                .Include(story => story.Comments)
+                .OrderBy(story => story.Id)
+                .Where(story => story.Status == StoryStatus.Published && (authenticated || story.IsPublic))
+                .Select(story => new FeedStory(story.Id)
+                {
+                    Title = story.Title,
+                    Slug = story.Slug,
+                    Content = story.Content,
+                    Created = story.Created,
+                    Modified = story.Modified,
+                    Author = mapper.Map<Author>(story.Author),
+                    CommentsCount = story.Comments.Count(
+                        comment => comment.Status == CommentStatus.Published && (authenticated || comment.IsPublic)
+                    )
+                })
+                .Take(count);
+
+            foreach (var story in stories)
+            {
+                collection.Add(mapper.Map<FeedStory>(story));
+            }
+        }
+
+        private void FillStoriesFeed(ICollection<FeedStory> collection, int count, bool authenticated)
+        {
+            if (0 == count)
+            {
+                return;
+            }
+
+            var stories = context.Stories
+                .AsNoTracking()
+                .Include(story => story.Author)
+                .Include(story => story.Comments)
+                .OrderBy(story => story.Id)
+                .Where(story => story.Status == StoryStatus.Published && (authenticated || story.IsPublic))
+                .Select(story => new FeedStory(story.Id)
+                {
+                    Title = story.Title,
+                    Slug = story.Slug,
+                    Content = story.Content,
+                    Created = story.Created,
+                    Modified = story.Modified,
+                    Author = mapper.Map<Author>(story.Author),
+                    CommentsCount = story.Comments.Count(
+                        comment => comment.Status == CommentStatus.Published && (authenticated || comment.IsPublic)
+                    )
+                })
+                .Take(count);
+
+            foreach (var story in stories)
+            {
+                collection.Add(mapper.Map<FeedStory>(story));
             }
         }
 

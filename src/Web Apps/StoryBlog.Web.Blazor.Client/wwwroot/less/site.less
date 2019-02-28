@@ -1,5 +1,12 @@
 ﻿// lessc --csscomb=yandex --source-map "../css/site.css"
 
+@import (reference, once) "variables.less";
+
+body {
+    margin: 35px;
+    background-color: @page-background-color;
+}
+
 .storyblog-main {
 
     .storyblog-main-content {

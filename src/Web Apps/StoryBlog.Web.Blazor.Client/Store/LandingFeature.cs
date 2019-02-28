@@ -6,6 +6,6 @@ namespace StoryBlog.Web.Blazor.Client.Store
     {
         public override string GetName() => nameof(LandingState);
 
-        protected override LandingState GetInitialState() => new LandingState(false, null, null);
+        protected override LandingState GetInitialState() => LandingState.Empty;
     }
 }

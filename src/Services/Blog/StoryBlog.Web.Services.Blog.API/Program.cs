@@ -124,37 +124,9 @@ namespace StoryBlog.Web.Services.Blog.API
                             config.AddBlogApplicationTypeMappings();
 
                             config
-                                .CreateMap<Application.Landing.Models.Landing, LandingModel>()
-                                .ForMember(
-                                    landing => landing.Title,
-                                    mapping => mapping.MapFrom(source => source.Title)
-                                )
-                                .ForMember(
-                                    landing => landing.Description,
-                                    mapping => mapping.MapFrom(source => source.Description)
-                                )
-                                .ForMember(
-                                    landing => landing.HeroStory,
-                                    mapping => mapping.MapFrom(source => source.HeroStory)
-                                )
-                                .AfterMap((source, landing, ctx) =>
-                                {
-                                    landing.FeaturedStories = source.FeaturedStories.Select(
-                                        story => ctx.Mapper.Map<FeedStoryModel>(story)
-                                    );
-                                    landing.StoriesFeed = source.StoriesFeed.Select(
-                                        story => ctx.Mapper.Map<FeedStoryModel>(story)
-                                    );
-                                });
-
-                            config
                                 .CreateMap<Application.Stories.Models.Author, AuthorModel>()
                                 .ForMember(
-                                    story => story.Id,
-                                    mapping => mapping.MapFrom(source => source.Id)
-                                )
-                                .ForMember(
-                                    story => story.Name,
+                                    landing => landing.Name,
                                     mapping => mapping.MapFrom(source => source.UserName)
                                 );
 
@@ -181,11 +153,7 @@ namespace StoryBlog.Web.Services.Blog.API
                                 );
 
                             config
-                                .CreateMap<Application.Stories.Models.Story, StoryModel>()
-                                .ForMember(
-                                    story => story.Id,
-                                    mapping => mapping.MapFrom(source => source.Id)
-                                )
+                                .CreateMap<Application.Landing.Models.HeroStory, HeroStoryModel>()
                                 .ForMember(
                                     story => story.Title,
                                     mapping => mapping.MapFrom(source => source.Title)
@@ -199,9 +167,40 @@ namespace StoryBlog.Web.Services.Blog.API
                                     mapping => mapping.MapFrom(source => source.Content)
                                 )
                                 .ForMember(
+                                    story => story.Author,
+                                    mapping => mapping.MapFrom(source => source.Author)
+                                )
+                                .ForMember(
+                                    story => story.Created,
+                                    mapping => mapping.MapFrom(source => source.Created)
+                                )
+                                .ForMember(
+                                    story => story.Modified,
+                                    mapping => mapping.MapFrom(source => source.Modified)
+                                )
+                                .ForMember(
+                                    test => test.Comments,
+                                    mapping => mapping.MapFrom(source => source.CommentsCount)
+                                );
+
+                            config
+                                .CreateMap<Application.Stories.Models.Story, StoryModel>()
+                                .ForMember(
+                                    story => story.Title,
+                                    mapping => mapping.MapFrom(source => source.Title)
+                                )
+                                .ForMember(
+                                    story => story.Slug,
+                                    mapping => mapping.MapFrom(source => source.Slug)
+                                )
+                                .ForMember(
+                                    story => story.Content,
+                                    mapping => mapping.MapFrom(source => source.Content)
+                                )
+                                /*.ForMember(
                                     story => story.IsPublic,
                                     mapping => mapping.MapFrom(source => source.IsPublic)
-                                )
+                                )*/
                                 .ForMember(
                                     story => story.Author,
                                     mapping => mapping.MapFrom(source => source.Author)
@@ -224,10 +223,6 @@ namespace StoryBlog.Web.Services.Blog.API
                             config
                                 .CreateMap<Application.Stories.Models.FeedStory, FeedStoryModel>()
                                 .ForMember(
-                                    story => story.Id,
-                                    mapping => mapping.MapFrom(source => source.Id)
-                                )
-                                .ForMember(
                                     story => story.Title,
                                     mapping => mapping.MapFrom(source => source.Title)
                                 )
@@ -238,10 +233,6 @@ namespace StoryBlog.Web.Services.Blog.API
                                 .ForMember(
                                     story => story.Content,
                                     mapping => mapping.MapFrom(source => source.Content)
-                                )
-                                .ForMember(
-                                    story => story.IsPublic,
-                                    mapping => mapping.MapFrom(source => source.IsPublic)
                                 )
                                 .ForMember(
                                     story => story.Author,
@@ -256,9 +247,52 @@ namespace StoryBlog.Web.Services.Blog.API
                                     mapping => mapping.MapFrom(source => source.Modified)
                                 )
                                 .ForMember(
-                                    story => story.CommentsCount,
+                                    story => story.Comments,
                                     mapping => mapping.MapFrom(source => source.CommentsCount)
                                 );
+
+                            config
+                                .CreateMap<Application.Landing.Models.Landing, LandingModel>()
+                                .ForMember(
+                                    landing => landing.Title,
+                                    mapping => mapping.MapFrom(source => source.Title)
+                                )
+                                .ForMember(
+                                    landing => landing.Description,
+                                    mapping => mapping.MapFrom(source => source.Description)
+                                )
+                                .ForMember(
+                                    landing => landing.Hero,
+                                    mapping => mapping.MapFrom(source => source.HeroStory)
+                                )
+                                .AfterMap((source, landing, ctx) =>
+                                {
+                                    landing.Featured = source.FeaturedStories.Select(
+                                        story => ctx.Mapper.Map<FeedStoryModel>(story)
+                                    );
+                                    /*landing.StoriesFeed = source.StoriesFeed.Select(
+                                        story => ctx.Mapper.Map<FeedStoryModel>(story)
+                                    );*/
+                                });
+
+                            /*config
+                                .CreateMap<Application.Stories.Models.FeedStory, StoryModel>()
+                                .ForMember(
+                                    story => story.Id,
+                                    mapping => mapping.MapFrom(source => source.Id)
+                                )
+                                .ForMember(
+                                    story => story.Title,
+                                    mapping => mapping.MapFrom(source => source.Title)
+                                )
+                                .ForMember(
+                                    story => story.Slug,
+                                    mapping => mapping.MapFrom(source => source.Slug)
+                                )
+                                .ForMember(
+                                    story => story.Content,
+                                    mapping => mapping.MapFrom(source => source.Content)
+                                );*/
                         });
 
                     services

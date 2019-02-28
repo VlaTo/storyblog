@@ -49,7 +49,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
                     var json = await response.Content.ReadAsStringAsync();
                     var data = Json.Deserialize<LandingModel>(json);
 
-                    logger.LogDebug($"[{nameof(BlogApiClient)}] Landing fetch status {response.StatusCode}");
+                    logger.LogDebug($"[{nameof(BlogApiClient)}] Fetch landing status: {response.StatusCode}");
 
                     return data;
                 }

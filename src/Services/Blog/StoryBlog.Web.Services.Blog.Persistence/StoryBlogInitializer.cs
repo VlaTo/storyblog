@@ -81,34 +81,27 @@ namespace StoryBlog.Web.Services.Blog.Persistence
         {
             using (var transaction = context.Database.BeginTransaction())
             {
-                var exists = context.Settings.Any(setting => setting.Name == "Title");
-
-                if (false == exists)
-                {
-                    context.Settings.Add(new Settings
-                    {
-                        Name = "Title",
-                        Value = Encoding.UTF8.GetBytes("The Story Blog")
-                    });
-
-                    context.SaveChanges();
-                }
-
-                exists = context.Settings.Any(setting => setting.Name == "Description");
-
-                if (false == exists)
-                {
-                    context.Settings.Add(new Settings
-                    {
-                        Name = "Description",
-                        Value = Encoding.UTF8.GetBytes("lorem ipsum dolor dit amet")
-                    });
-
-                    context.SaveChanges();
-                }
+                AddSetting(context, "Landing.Title", "The Story Blog");
+                AddSetting(context, "Landing.Description", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.");
 
                 transaction.Commit();
             }
+        }
+
+        private static void AddSetting(StoryBlogDbContext context, string name, string value)
+        {
+            if (context.Settings.Any(setting => setting.Name == name))
+            {
+                return;
+            }
+
+            context.Settings.Add(new Settings
+            {
+                Name = name,
+                Value = Encoding.UTF8.GetBytes(value)
+            });
+
+            context.SaveChanges();
         }
     }
 }

@@ -3,16 +3,9 @@ using System.Runtime.Serialization;
 
 namespace StoryBlog.Web.Services.Blog.Interop.Models
 {
-    [DataContract]
-    public class StoryModelBase
+    [DataContract(Namespace = "http://storyblog.org/schemas/json/models/base/story")]
+    public abstract class StoryModelBase
     {
-        [DataMember(Name = "id")]
-        public long Id
-        {
-            get;
-            set;
-        }
-
         [DataMember(Name = "title")]
         public string Title
         {
@@ -36,13 +29,6 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
 
         [DataMember(Name = "author")]
         public AuthorModel Author
-        {
-            get;
-            set;
-        }
-
-        [DataMember(Name = "public")]
-        public bool IsPublic
         {
             get;
             set;

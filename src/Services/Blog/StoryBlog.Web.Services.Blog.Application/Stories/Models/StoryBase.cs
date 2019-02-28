@@ -33,11 +33,11 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
             set;
         }
 
-        public bool IsPublic
+        /*public bool IsPublic
         {
             get;
             set;
-        }
+        }*/
 
         public DateTime Created
         {

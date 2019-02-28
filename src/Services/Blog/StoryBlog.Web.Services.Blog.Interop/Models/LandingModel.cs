@@ -5,11 +5,16 @@ using System.Runtime.Serialization;
 
 namespace StoryBlog.Web.Services.Blog.Interop.Models
 {
-    [DataContract]
+    /// <summary>
+    /// 
+    /// </summary>
+    [DataContract(Namespace = "http://storyblog.org/schemas/json/models/landing")]
     public sealed class LandingModel
     {
+        /// <summary>
+        /// 
+        /// </summary>
         [Required]
-        [DataType(DataType.Text)]
         [DataMember(Name = "title")]
         public string Title
         {
@@ -17,7 +22,9 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
             set;
         }
 
-        [DataType(DataType.MultilineText)]
+        /// <summary>
+        /// 
+        /// </summary>
         [DataMember(Name = "description")]
         public string Description
         {
@@ -25,22 +32,31 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [DataMember(Name = "hero")]
-        public FeedStoryModel HeroStory
+        public HeroStoryModel Hero
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [DataMember(Name = "featured")]
-        public IEnumerable<FeedStoryModel> FeaturedStories
+        public IEnumerable<FeedStoryModel> Featured
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [DataMember(Name = "feed")]
-        public IEnumerable<FeedStoryModel> StoriesFeed
+        public IEnumerable<FeedStoryModel> Feed
         {
             get;
             set;
@@ -48,8 +64,8 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
 
         public LandingModel()
         {
-            FeaturedStories = Enumerable.Empty<FeedStoryModel>();
-            StoriesFeed = Enumerable.Empty<FeedStoryModel>();
+            Featured = Enumerable.Empty<FeedStoryModel>();
+            Feed = Enumerable.Empty<FeedStoryModel>();
         }
     }
 }
