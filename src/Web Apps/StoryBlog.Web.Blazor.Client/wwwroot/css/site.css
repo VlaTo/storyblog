@@ -1,0 +1,39 @@
+﻿html {
+    background-color: #E1E6ED;
+}
+
+body {
+    font-family: 'Nunito Sans', sans-serif;
+    margin: 35px !important;
+    background-color: #F0F4F7 !important;
+}
+
+.storyblog-wrapper {
+}
+
+.storyblog-main {
+
+}
+
+    .storyblog-main .storyblog-main-menu {
+
+    }
+
+    .storyblog-main .storyblog-main-menu .storyblog-logo {
+    }
+
+    .storyblog-main .storyblog-main-content {
+         background-color: white;
+    }
+
+        .storyblog-main .storyblog-main-content .storyblog-landing-title {
+
+        }
+
+        .storyblog-main .storyblog-main-content .storyblog-story + .storyblog-story {
+            border-top: 1px solid #7D7D7D;
+        }
+
+        .storyblog-main .storyblog-main-content .storyblog-story {
+            ;
+        }
