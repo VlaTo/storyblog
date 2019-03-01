@@ -26,6 +26,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                     mapping => mapping.MapFrom(source => source.Id)
                 )
                 .ForMember(
+                    comment => comment.ParentId,
+                    mapping => mapping.MapFrom(source => source.ParentId)
+                )
+                .ForMember(
                     comment => comment.Content,
                     mapping => mapping.MapFrom(source => source.Content)
                 )

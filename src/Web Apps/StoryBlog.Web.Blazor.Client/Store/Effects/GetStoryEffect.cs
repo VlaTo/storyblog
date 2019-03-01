@@ -2,6 +2,7 @@
 using StoryBlog.Web.Blazor.Client.Services;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Effects
@@ -29,7 +30,15 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
                     throw new Exception("");
                 }
 
-                dispatcher.Dispatch(new GetStorySuccessAction(story));
+                var result = new GetStorySuccessAction(story.Comments)
+                {
+                    Slug = story.Slug,
+                    Title = story.Title,
+                    Content = story.Content,
+                    Published = story.Modified.GetValueOrDefault(story.Created),
+                };
+
+                dispatcher.Dispatch(result);
             }
             catch (Exception exception)
             {

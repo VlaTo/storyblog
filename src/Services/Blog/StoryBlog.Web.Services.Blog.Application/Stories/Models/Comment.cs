@@ -24,10 +24,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
             get;
             set;
         }
-        public bool IsPublic
+
+        public long? ParentId
         {
-            get;
-            set;
+            get; set;
         }
 
         public DateTime Created

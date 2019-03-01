@@ -14,22 +14,45 @@
 {
 
 }
-else if (State.Value.IsBusy)
+else if (State.Value.Status.IsNone())
 {
     <p class="text-muted">Loading...</p>
 }
 else
 {
-    if (null != State.Value.Error)
+    if (null != State.Value.Status. Error)
     {
-        <p>@State.Value.Error</p>
+        <p>@State.Value.Status.Error</p>
     }
 
-    var model = State.Value.Story;
+    var model = State.Value;
 
     if (null != model)
     {
-        <text>@model.Content</text>
+        <article id="@model.Slug" class="">
+            <div class="">
+                <h2 class="">@model.Title</h2>
+                <ul class="list-unstyled list-inline">
+                    <li class="list-inline-item">
+                        <i class="mdi mdi-calendar"></i>
+
+                    </li>
+                    <li class="list-inline-item">
+                        <i class="mdi mdi-comment-multiple-outline"></i>
+
+                    </li>
+                </ul>
+                <div class="justify-content-md-start">@model.Content</div>
+            </div>
+            <div>
+                <ul class="list-unstyled">
+                    @foreach (var comment in model.Comments)
+                    {
+                        <StoryBlogComment Comment=@comment />
+                    }
+                </ul>
+            </div>
+        </article>
     }
 }
 

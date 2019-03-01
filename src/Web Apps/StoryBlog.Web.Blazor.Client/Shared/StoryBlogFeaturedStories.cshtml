@@ -2,22 +2,10 @@
 
 @if (null != Stories)
 {
-    <div class="card-deck mb-5">
+    <div class="card-columns mb-5">
         @foreach (var story in Stories)
         {
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">@story.Title</h5>
-                    <p class="card-text">@story.Content</p>
-                    <p class="card-text text-muted">
-                        <small><TimeLabel DateTime=@story.Created /></small>
-                    </p>
-                    @*<BootstrapButton Type=BootstrapButtonTypes.Primary IsOutline=true Size=BootstrapButtonSizes.Small>Read more</BootstrapButton>*@
-                </div>
-                <div class="card-footer">
-                    <small class="text-muted">@story.Author.Name</small>
-                </div>
-            </div>
+            <StoryBlogFeaturedStory Story=@story />
         }
     </div>
 }

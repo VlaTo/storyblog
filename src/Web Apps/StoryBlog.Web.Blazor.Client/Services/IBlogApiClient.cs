@@ -27,16 +27,16 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="story"></param>
-        /// <returns></returns>
-        Task CreateStoryAsync(StoryModel story);
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="slug"></param>
         /// <param name="flags"></param>
         /// <returns></returns>
         Task<StoryModel> GetStoryAsync(string slug, StoryIncludes flags);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="story"></param>
+        /// <returns></returns>
+        Task CreateStoryAsync(StoryModel story);
     }
 }

@@ -1,0 +1,21 @@
+﻿@using StoryBlog.Web.Blazor.Client.Models
+
+<li class="media">
+    <div class="media-body">
+        <div>@Comment.Content</div>
+        @foreach (var comment in Comment.Comments)
+        {
+            <StoryBlogComment Comment=@comment/>
+        }
+    </div>
+</li>
+
+@functions
+{
+    [Parameter]
+    protected CommentModel Comment
+    {
+        get;
+        set;
+    }
+}

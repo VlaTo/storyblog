@@ -137,8 +137,13 @@ namespace StoryBlog.Web.Services.Blog.API
                                     mapping => mapping.MapFrom(source => source.Id)
                                 )
                                 .ForMember(
+                                    story => story.Parent,
+                                    mapping => mapping.MapFrom(source => source.ParentId)
+                                )
+                                .ForMember(
                                     story => story.Content,
-                                    mapping => mapping.MapFrom(source => source.Content))
+                                    mapping => mapping.MapFrom(source => source.Content)
+                                )
                                 .ForMember(
                                     story => story.Author,
                                     mapping => mapping.MapFrom(source => source.Author)
@@ -343,10 +348,10 @@ namespace StoryBlog.Web.Services.Blog.API
                         ;
                     }
 
-                    //var context = services.GetRequiredService<StoryBlogDbContext>();
+                    /*var context = services.GetRequiredService<StoryBlogDbContext>();
 
-                    //context.Database.Migrate();
-                    //StoryBlogInitializer.Seed(context, logger);
+                    context.Database.Migrate();
+                    StoryBlogInitializer.Seed(context, logger);*/
                 }
                 catch (Exception exception)
                 {

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using StoryBlog.Web.Services.Blog.Persistence.Models;
@@ -21,6 +23,11 @@ namespace StoryBlog.Web.Services.Blog.Persistence
         {
             //const string email = "dev@storyblog.net";
             SeedSettings(context, logger);
+
+            var johnDoe = CreateAuthor(context, "John Doe");
+            var richardRoe = CreateAuthor(context, "Richard Roe");
+            var janeRoe = CreateAuthor(context, "Jane Roe");
+            var jimSmith = CreateAuthor(context, "Jim Smith");
 
             /*using (var transaction = context.Database.BeginTransaction())
             {
@@ -86,6 +93,30 @@ namespace StoryBlog.Web.Services.Blog.Persistence
 
                 transaction.Commit();
             }
+        }
+
+        private static Author CreateAuthor(StoryBlogDbContext context, string userName)
+        {
+            var author = context.Authors.AsNoTracking().SingleOrDefault(entity => entity.UserName == userName);
+
+            if (null != author)
+            {
+                return author;
+            }
+
+            author = new Author
+            {
+                UserName = userName
+            };
+
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                context.Authors.Add(author);
+                context.SaveChanges();
+                transaction.Commit();
+            }
+
+            return author;
         }
 
         private static void AddSetting(StoryBlogDbContext context, string name, string value)

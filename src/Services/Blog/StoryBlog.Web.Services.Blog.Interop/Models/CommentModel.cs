@@ -13,6 +13,13 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
             set;
         }
 
+        [DataMember(Name = "parent")]
+        public long? Parent
+        {
+            get;
+            set;
+        }
+
         [DataMember(Name = "content")]
         public string Content
         {

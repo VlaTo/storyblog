@@ -9,8 +9,8 @@ using StoryBlog.Web.Services.Blog.Persistence;
 namespace StoryBlog.Web.Services.Blog.Persistence.Migrations
 {
     [DbContext(typeof(StoryBlogDbContext))]
-    [Migration("20190129143149_InitialStructure")]
-    partial class InitialStructure
+    [Migration("20190301135548_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -73,15 +73,55 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Migrations
 
                     b.Property<DateTime?>("Modified");
 
+                    b.Property<long?>("ParentId");
+
+                    b.Property<int>("Status");
+
                     b.Property<long>("StoryId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
 
+                    b.HasIndex("ParentId");
+
                     b.HasIndex("StoryId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("StoryBlog.Web.Services.Blog.Persistence.Models.Featured", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("StoryId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StoryId")
+                        .IsUnique();
+
+                    b.ToTable("Featured");
+                });
+
+            modelBuilder.Entity("StoryBlog.Web.Services.Blog.Persistence.Models.Settings", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<byte[]>("Value")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Settings");
                 });
 
             modelBuilder.Entity("StoryBlog.Web.Services.Blog.Persistence.Models.Story", b =>
@@ -110,6 +150,9 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Migrations
 
                     b.HasIndex("AuthorId");
 
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
                     b.ToTable("Stories");
                 });
 
@@ -128,8 +171,20 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Migrations
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("StoryBlog.Web.Services.Blog.Persistence.Models.Comment", "Parent")
+                        .WithMany("Comments")
+                        .HasForeignKey("ParentId");
+
                     b.HasOne("StoryBlog.Web.Services.Blog.Persistence.Models.Story", "Story")
                         .WithMany("Comments")
+                        .HasForeignKey("StoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("StoryBlog.Web.Services.Blog.Persistence.Models.Featured", b =>
+                {
+                    b.HasOne("StoryBlog.Web.Services.Blog.Persistence.Models.Story", "Story")
+                        .WithMany()
                         .HasForeignKey("StoryId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

@@ -71,6 +71,8 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Migrations
 
                     b.Property<DateTime?>("Modified");
 
+                    b.Property<long?>("ParentId");
+
                     b.Property<int>("Status");
 
                     b.Property<long>("StoryId");
@@ -78,6 +80,8 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
+
+                    b.HasIndex("ParentId");
 
                     b.HasIndex("StoryId");
 
@@ -164,6 +168,10 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("StoryBlog.Web.Services.Blog.Persistence.Models.Comment", "Parent")
+                        .WithMany("Comments")
+                        .HasForeignKey("ParentId");
 
                     b.HasOne("StoryBlog.Web.Services.Blog.Persistence.Models.Story", "Story")
                         .WithMany("Comments")

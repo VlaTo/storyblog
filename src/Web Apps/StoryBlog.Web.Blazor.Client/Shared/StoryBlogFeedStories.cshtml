@@ -4,7 +4,7 @@
 {
     foreach (var story in Stories)
     {
-        <article id=@story.Slug class="storyblog-story mb-4">
+        <article id=@story.Slug class="border-bottom border-light storyblog-story mt-5">
             <div class="storyblog-story-header mt-0 mb-1">
                 <h2 class="storyblog-story-title">
                     <a href="/Story/@story.Slug">@story.Title</a>
@@ -20,7 +20,7 @@
                     </li>
                 </ul>
             </div>
-            @story.Content
+            <div class="justify-content-md-start mb-5">@story.Content</div>
         </article>
     }
 }

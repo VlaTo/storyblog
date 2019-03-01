@@ -5,7 +5,7 @@ using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Shared.Common;
 using System;
-using System.Diagnostics;
+//using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -95,32 +95,6 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="story"></param>
-        /// <returns></returns>
-        public async Task CreateStoryAsync(StoryModel story)
-        {
-            var requestUri = new Uri(baseUri, "stories");
-
-            try
-            {
-                var request = new HttpRequestMessage(HttpMethod.Post, requestUri);
-
-                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                using (var response = await client.SendAsync(request, CancellationToken.None))
-                {
-                    response.EnsureSuccessStatusCode();
-                }
-            }
-            catch (HttpRequestException exception)
-            {
-                Debug.WriteLine(exception);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="slug"></param>
         /// <param name="flags"></param>
         /// <returns></returns>
@@ -151,6 +125,32 @@ namespace StoryBlog.Web.Blazor.Client.Services
             {
                 logger.LogError(exception, $"Failed to fetch stories from \"{requestUri}\"");
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="story"></param>
+        /// <returns></returns>
+        public async Task CreateStoryAsync(StoryModel story)
+        {
+            var requestUri = new Uri(baseUri, "stories");
+
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Post, requestUri);
+
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                using (var response = await client.SendAsync(request, CancellationToken.None))
+                {
+                    response.EnsureSuccessStatusCode();
+                }
+            }
+            catch (HttpRequestException exception)
+            {
+                logger.LogError(exception, "");
             }
         }
     }

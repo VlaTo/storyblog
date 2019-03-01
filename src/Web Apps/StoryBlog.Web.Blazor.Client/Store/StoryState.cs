@@ -1,5 +1,7 @@
-﻿using Blazor.Fluxor;
-using StoryBlog.Web.Services.Blog.Interop.Models;
+﻿using System;
+using System.Collections.Generic;
+using Blazor.Fluxor;
+using StoryBlog.Web.Blazor.Client.Models;
 
 namespace StoryBlog.Web.Blazor.Client.Store
 {
@@ -10,7 +12,7 @@ namespace StoryBlog.Web.Blazor.Client.Store
     {
         public override string GetName() => nameof(StoryState);
 
-        protected override StoryState GetInitialState() => new StoryState(false, null, null);
+        protected override StoryState GetInitialState() => new StoryState(ModelStatus.None);
     }
 
     /// <summary>
@@ -18,26 +20,44 @@ namespace StoryBlog.Web.Blazor.Client.Store
     /// </summary>
     public class StoryState
     {
-        public bool IsBusy
+        public ModelStatus Status
         {
             get;
         }
 
-        public StoryModel Story
+        public string Title
+        {
+            get;
+            set;
+        }
+
+        public string Slug
+        {
+            get;
+            set;
+        }
+
+        public string Content
+        {
+            get;
+            set;
+        }
+
+        public DateTime Published
+        {
+            get;
+            set;
+        }
+
+        public IList<CommentModel> Comments
         {
             get;
         }
 
-        public string Error
+        public StoryState(ModelStatus status)
         {
-            get;
-        }
-
-        public StoryState(bool busy, StoryModel story, string error)
-        {
-            IsBusy = busy;
-            Story = story;
-            Error = error;
+            Status = status;
+            Comments = new List<CommentModel>();
         }
     }
 }
