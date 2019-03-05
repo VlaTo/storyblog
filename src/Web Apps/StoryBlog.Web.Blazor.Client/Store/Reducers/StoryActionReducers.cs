@@ -24,7 +24,8 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
             {
                 Title = action.Title,
                 Slug = action.Slug,
-                Content = action.Content
+                Content = action.Content,
+                AllCommentsCount = action.Comments.Count
             };
 
             CreateComments(result.Comments, action.Comments);
@@ -43,7 +44,11 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
                     continue;
                 }
 
-                var model = new CommentModel(null, comment.Id);
+                var model = new CommentModel(null, comment.Id)
+                {
+                    Content = comment.Content,
+                    Published = comment.Modified.GetValueOrDefault(comment.Created)
+                };
 
                 collection.Add(model);
 
@@ -62,7 +67,11 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
                     continue;
                 }
 
-                var model = new CommentModel(parent, comment.Id);
+                var model = new CommentModel(parent, comment.Id)
+                {
+                    Content = comment.Content,
+                    Published = comment.Modified.GetValueOrDefault(comment.Created)
+                };
 
                 parent.Comments.Add(model);
 

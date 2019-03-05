@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using Blazor.Fluxor;
 using StoryBlog.Web.Blazor.Client.Models;
 
@@ -44,6 +45,12 @@ namespace StoryBlog.Web.Blazor.Client.Store
         }
 
         public DateTime Published
+        {
+            get;
+            set;
+        }
+
+        public int AllCommentsCount
         {
             get;
             set;

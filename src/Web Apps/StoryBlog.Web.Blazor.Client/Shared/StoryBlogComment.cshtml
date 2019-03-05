@@ -1,11 +1,11 @@
 ﻿@using StoryBlog.Web.Blazor.Client.Models
 
-<li class="media">
+<li class="media ml-lg-4">
     <div class="media-body">
-        <div>@Comment.Content</div>
+        <div class="mb-lg-3">@Comment.Content</div>
         @foreach (var comment in Comment.Comments)
         {
-            <StoryBlogComment Comment=@comment/>
+            <StoryBlogComment Comment=@comment Level=@(Level + 1) />
         }
     </div>
 </li>
@@ -14,6 +14,13 @@
 {
     [Parameter]
     protected CommentModel Comment
+    {
+        get;
+        set;
+    }
+
+    [Parameter]
+    protected int Level
     {
         get;
         set;

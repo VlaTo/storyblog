@@ -30,16 +30,16 @@ else
     if (null != model)
     {
         <article id="@model.Slug" class="">
-            <div class="">
+            <div class="mb-5">
                 <h2 class="">@model.Title</h2>
                 <ul class="list-unstyled list-inline">
                     <li class="list-inline-item">
                         <i class="mdi mdi-calendar"></i>
-
+                        <TimeLabel DateTime=@model.Published />
                     </li>
                     <li class="list-inline-item">
                         <i class="mdi mdi-comment-multiple-outline"></i>
-
+                        @model.AllCommentsCount Comments
                     </li>
                 </ul>
                 <div class="justify-content-md-start">@model.Content</div>
@@ -48,7 +48,7 @@ else
                 <ul class="list-unstyled">
                     @foreach (var comment in model.Comments)
                     {
-                        <StoryBlogComment Comment=@comment />
+                        <StoryBlogComment Comment=@comment Level=0 />
                     }
                 </ul>
             </div>

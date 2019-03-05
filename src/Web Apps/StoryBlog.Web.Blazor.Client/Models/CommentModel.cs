@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace StoryBlog.Web.Blazor.Client.Models
 {
@@ -15,6 +16,12 @@ namespace StoryBlog.Web.Blazor.Client.Models
         }
 
         public string Content
+        {
+            get;
+            set;
+        }
+
+        public DateTime Published
         {
             get;
             set;
