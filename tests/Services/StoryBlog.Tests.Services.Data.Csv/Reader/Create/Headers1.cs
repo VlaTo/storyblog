@@ -6,9 +6,9 @@ using StoryBlog.Web.Services.Shared.Data.Csv;
 namespace StoryBlog.Tests.Services.Data.Csv.Reader.Create
 {
     [TestClass]
-    public sealed class HeadersWithWhitespacesOnly : ContextBase
+    public class Headers1 : ContextBase
     {
-        protected override TextReader Reader => new StringReader("test");
+        protected override TextReader Reader => new StringReader("test,test1, test2 , test3,=\"030810023\"");
 
         protected override CsvParsingOptions Options => new CsvParsingOptions
         {
@@ -34,17 +34,25 @@ namespace StoryBlog.Tests.Services.Data.Csv.Reader.Create
         [TestMethod]
         public void Test3()
         {
-            Assert.AreEqual(1, Document.Names.Count);
+            Assert.AreEqual(2, Document.Names.Count);
         }
 
         [TestMethod]
         public void Test4()
         {
-            Assert.AreEqual("test", Document.Names.First());
+            var names = Document.Names.ToArray();
+            Assert.AreEqual("test", names[0]);
         }
 
         [TestMethod]
         public void Test5()
+        {
+            var names = Document.Names.ToArray();
+            Assert.AreEqual("test1", names[1]);
+        }
+
+        [TestMethod]
+        public void Test6()
         {
             Assert.IsNotNull(Document.Rows);
         }

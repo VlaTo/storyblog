@@ -9,6 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Data\Authors.csv" />
+    <None Remove="Data\Settings.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Data\Authors.csv" />
+    <EmbeddedResource Include="Data\Settings.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="2.3.0" />
@@ -31,6 +41,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\StoryBlog.Web.Services.Shared.Common\Shared.Common.csproj" />
     <ProjectReference Include="..\..\Shared\StoryBlog.Web.Services.Shared.Communication\Shared.Communication.csproj" />
+    <ProjectReference Include="..\..\Shared\StoryBlog.Web.Services.Shared.Data.Csv\Shared.Data.Csv.csproj" />
     <ProjectReference Include="..\..\Shared\StoryBlog.Web.Services.Shared.Infrastructure\Shared.Infrastructure.csproj" />
     <ProjectReference Include="..\StoryBlog.Web.Services.Blog.Application\Blog.Application.csproj" />
     <ProjectReference Include="..\StoryBlog.Web.Services.Blog.Interop\Blog.Interop.csproj" />

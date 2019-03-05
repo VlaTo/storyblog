@@ -7,7 +7,7 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
 {
     public partial class CsvDocument
     {
-        private class RowCollection : CollectionBase, IList<CsvRow>
+        internal class RowCollection : CollectionBase, IList<CsvRow>
         {
             private readonly CsvDocument document;
             private int version;
@@ -42,7 +42,7 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
                 this.document = document;
             }
 
-            public new IEnumerator<CsvRow> GetEnumerator() => new Enumerator(this);
+            public new IEnumerator<CsvRow> GetEnumerator() => new Iterator(this);
 
             public void Add(CsvRow item)
             {
@@ -124,7 +124,7 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
             /// <summary>
             /// 
             /// </summary>
-            private class Enumerator : IEnumerator<CsvRow>
+            private class Iterator : IEnumerator<CsvRow>
             {
                 private readonly RowCollection collection;
                 private readonly int version;
@@ -144,7 +144,7 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
 
                 object IEnumerator.Current => Current;
 
-                public Enumerator(RowCollection collection)
+                public Iterator(RowCollection collection)
                 {
                     this.collection = collection;
                     version = collection.version;
@@ -154,15 +154,18 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
                 public bool MoveNext()
                 {
                     EnsureNotDisposed();
-                    EnsureInitialized();
                     EnsureNotModified();
 
-                    if (collection.Count > index)
+                    if (-1 == index)
                     {
-                        return collection.Count == ++index;
+                        index = 0 < collection.Count ? 0 : -1;
+                    }
+                    else if (collection.Count > index)
+                    {
+                        index++;
                     }
 
-                    return false;
+                    return -1 < index && index < collection.Count;
                 }
 
                 public void Reset()

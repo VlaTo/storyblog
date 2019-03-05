@@ -1,11 +1,7 @@
-﻿using System;
-
-namespace StoryBlog.Web.Services.Shared.Data.Csv
+﻿namespace StoryBlog.Web.Services.Shared.Data.Csv
 {
     public class CsvField : CsvNode
     {
-        private readonly CsvDocument document;
-
         public string Text
         {
             get;
@@ -15,21 +11,28 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
         {
             get
             {
-                /*if (null == document.Header)
+                var document = Row.Document;
+
+                if (0 == document.NamesCollection.Count)
                 {
                     return null;
                 }
 
-                document.Header[]*/
-
-                throw new NotImplementedException();
+                return document.NamesCollection[Index];
             }
         }
 
-        public CsvField(CsvDocument document, string text)
+        public int Index => Row.Fields.FindIndex(this);
+
+        internal CsvRow Row
+        {
+            get;
+        }
+
+        public CsvField(CsvRow row, string text)
             : base(CsvNodeType.Field)
         {
-            this.document = document;
+            Row = row;
             Text = text;
         }
     }

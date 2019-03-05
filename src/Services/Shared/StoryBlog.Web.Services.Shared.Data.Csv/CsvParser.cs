@@ -1,10 +1,8 @@
-﻿using System;
+﻿using StoryBlog.Web.Services.Shared.Data.Csv.Tokens;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using StoryBlog.Web.Services.Shared.Data.Csv.Tokens;
 
 namespace StoryBlog.Web.Services.Shared.Data.Csv
 {
@@ -22,11 +20,11 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
             this.tokenizer = tokenizer;
         }
 
-        public async Task ParserAsync(CsvDocument document, CsvParsingOptions options)
+        public void Parse(CsvDocument document, CsvParsingOptions options)
         {
             try
             {
-                await ParseInternalAsync(document, options).ConfigureAwait(false);
+                ParseInternal(document, options);
             }
             catch (Exception exception)
             {
@@ -34,13 +32,14 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
             }
         }
 
-        internal async Task ParseInternalAsync(CsvDocument document, CsvParsingOptions options)
+        internal void ParseInternal(CsvDocument document, CsvParsingOptions options)
         {
+            var hasHeader = false;
             var addRow = new Action<ICollection<string>>(fields =>
             {
-                var row = new CsvRow();
+                var row = document.CreateRow();
 
-                fields.ForEach(text => row.Fields.Add(document.CreateField(text)));
+                fields.ForEach(text => row.Fields.Add(document.CreateField(row, text)));
 
                 document.Rows.Add(row);
             });
@@ -53,24 +52,26 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
                 {
                     case ParserState.Begin:
                     {
-                        state = await ParseLineAsync(fields =>
+                        state = ParseLine(fields =>
                         {
-                            if (options.HasHeader)
+                            if (options.HasHeader && false == hasHeader)
                             {
+                                hasHeader = true;
                                 fields.ForEach(field => document.Names.Add(field));
+
                                 return;
                             }
 
                             addRow.Invoke(fields);
 
-                        }).ConfigureAwait(false);
+                        });
 
                         break;
                     }
 
                     case ParserState.NewLine:
                     {
-                        state = await ParseLineAsync(addRow).ConfigureAwait(false);
+                        state = ParseLine(addRow);
 
                         break;
                     }
@@ -83,7 +84,7 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
             }
         }
 
-        private async Task<ParserState> ParseLineAsync(Action<ICollection<string>> callback)
+        private ParserState ParseLine(Action<ICollection<string>> callback)
         {
             var state = ParserState.BeginLine;
             Collection<string> fields = null;
@@ -104,7 +105,7 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
                     {
                         var collection = fields;
 
-                        state = await ParseFieldAsync(field =>
+                        state = ParseField(field =>
                         {
                             if (null == collection)
                             {
@@ -113,14 +114,14 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
 
                             collection.Add(field);
 
-                        }).ConfigureAwait(false);
+                        });
 
                         break;
                     }
 
                     case ParserState.Field:
                     {
-                        state = await ParseCommaAsync().ConfigureAwait(false);
+                        state = ParseComma();
                         break;
                     }
 
@@ -157,13 +158,13 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
             }
         }
 
-        private async Task<ParserState> ParseCommaAsync()
+        private ParserState ParseComma()
         {
             CsvToken token;
 
             while (true)
             {
-                token = await tokenizer.GetTokenAsync().ConfigureAwait(false);
+                token = tokenizer.GetToken();
 
                 if (token.IsWhitespace())
                 {
@@ -173,19 +174,40 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
                 break;
             }
 
-            if (token.IsEnd())
-            {
-                return ParserState.Done;
-            }
+            var lineFeed = false;
 
-            if (token.IsComma())
+            while (true)
             {
-                return ParserState.NextField;
-            }
+                if (token.IsEnd())
+                {
+                    return ParserState.Done;
+                }
 
-            if (token.IsTerminal(CsvTerminals.NewLine))
-            {
-                return ParserState.NewLine;
+                if (token.IsComma())
+                {
+                    return ParserState.NextField;
+                }
+
+                if (token.IsTerminal(CsvTerminals.LineFeed))
+                {
+                    lineFeed = true;
+                    token = tokenizer.GetToken();
+
+                    continue;
+                }
+
+                if (token.IsTerminal(CsvTerminals.NewLine))
+                {
+                    if (lineFeed)
+                    {
+
+                    }
+
+                    //return ParserState.NewLine;
+                    return ParserState.EndLine;
+                }
+
+                break;
             }
 
             return ParserState.Failed;
@@ -231,13 +253,13 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
             return ParserState.Failed;
         }*/
 
-        private async Task<ParserState> ParseFieldAsync(Action<string> callback)
+        private ParserState ParseField(Action<string> callback)
         {
             CsvToken token;
 
             while (true)
             {
-                token = await tokenizer.GetTokenAsync().ConfigureAwait(false);
+                token = tokenizer.GetToken();
 
                 if (token.IsWhitespace())
                 {
@@ -249,10 +271,11 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
 
             if (token.IsDoubleQuote())
             {
-                return await ParseQuotedFieldAsync(callback);
+                return ParseQuotedField(callback);
             }
 
             ParserState state;
+            var lineFeed = false;
             var text = new StringBuilder();
 
             while (true)
@@ -266,6 +289,26 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
                 if (token.IsComma())
                 {
                     state = ParserState.NextField;
+                    break;
+                }
+
+                if (token.IsTerminal(CsvTerminals.LineFeed))
+                {
+                    lineFeed = true;
+                    token = tokenizer.GetToken();
+
+                    continue;
+                }
+
+                if (token.IsNewLine())
+                {
+                    if (lineFeed)
+                    {
+
+                    }
+
+                    state = ParserState.EndLine;
+
                     break;
                 }
 
@@ -284,24 +327,29 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
                     break;
                 }
 
-                token = await tokenizer.GetTokenAsync().ConfigureAwait(false);
+                token = tokenizer.GetToken();
             }
 
             if (0 < text.Length)
             {
                 callback.Invoke(text.ToString());
             }
+            else if (ParserState.NextField == state || ParserState.NewLine == state)
+            {
+                callback.Invoke(null);
+            }
 
             return state;
         }
 
-        private async Task<ParserState> ParseQuotedFieldAsync(Action<string> callback)
+        private ParserState ParseQuotedField(Action<string> callback)
         {
             var field = new StringBuilder();
+            var done = false;
 
-            while (true)
+            while (false == done)
             {
-                var token = await tokenizer.GetTokenAsync().ConfigureAwait(false);
+                var token = tokenizer.GetToken();
 
                 if (token.IsEnd())
                 {
@@ -316,7 +364,7 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
                     {
                         case CsvTerminals.DoubleQuote:
                         {
-
+                            done = true;
                             break;
                         }
 

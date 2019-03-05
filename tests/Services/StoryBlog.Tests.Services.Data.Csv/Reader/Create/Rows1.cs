@@ -1,15 +1,12 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoryBlog.Web.Services.Shared.Data.Csv;
 
 namespace StoryBlog.Tests.Services.Data.Csv.Reader.Create
 {
     [TestClass]
-    public sealed class HeadersWithWhitespacesOnly : ContextBase
+    public sealed class Rows1 : MethodBase
     {
-        protected override TextReader Reader => new StringReader("test");
-
         protected override CsvParsingOptions Options => new CsvParsingOptions
         {
             HasHeader = true
@@ -34,19 +31,42 @@ namespace StoryBlog.Tests.Services.Data.Csv.Reader.Create
         [TestMethod]
         public void Test3()
         {
-            Assert.AreEqual(1, Document.Names.Count);
+            Assert.AreEqual(2, Document.Names.Count);
         }
 
         [TestMethod]
         public void Test4()
         {
-            Assert.AreEqual("test", Document.Names.First());
+            var names = Document.Names.ToArray();
+            Assert.AreEqual("Id", names[0]);
         }
 
         [TestMethod]
         public void Test5()
         {
+            var names = Document.Names.ToArray();
+            Assert.AreEqual("UserName", names[1]);
+        }
+
+        [TestMethod]
+        public void Test6()
+        {
             Assert.IsNotNull(Document.Rows);
+        }
+
+        [TestMethod]
+        public void Test7()
+        {
+            Assert.AreEqual(4, Document.Rows.Count);
+        }
+
+        [TestMethod]
+        public void Test8()
+        {
+            var names = Document.Names.ToArray();
+            var row = Document.Rows[0];
+            var field = row.Fields[0];
+            Assert.AreEqual(names[0], field.Name);
         }
     }
 }

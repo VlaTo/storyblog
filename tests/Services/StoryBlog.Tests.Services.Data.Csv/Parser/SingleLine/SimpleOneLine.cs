@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StoryBlog.Web.Services.Shared.Data.Csv;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoryBlog.Web.Services.Shared.Data.Csv;
 
 namespace StoryBlog.Tests.Services.Data.Csv.Parser.SingleLine
 {
@@ -37,11 +35,11 @@ namespace StoryBlog.Tests.Services.Data.Csv.Parser.SingleLine
             Assert.AreEqual("test1", field.Text);
         }
 
-        protected override async Task ActAsync()
+        protected override void Act()
         {
             var document = new CsvDocument();
 
-            await Parser.ParseInternalAsync(document, new CsvParsingOptions());
+            Parser.ParseInternal(document, new CsvParsingOptions());
 
             if (1 == document.Rows.Count)
             {

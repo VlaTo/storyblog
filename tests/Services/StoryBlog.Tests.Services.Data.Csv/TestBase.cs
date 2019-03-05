@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace StoryBlog.Tests.Services.Data.Csv
@@ -6,10 +5,10 @@ namespace StoryBlog.Tests.Services.Data.Csv
     public abstract class TestBase
     {
         [TestInitialize]
-        public async Task Setup()
+        public void Setup()
         {
-            await ArrangeAsync();
-            await ActAsync();
+            Arrange();
+            Act();
         }
 
         [TestCleanup]
@@ -17,8 +16,8 @@ namespace StoryBlog.Tests.Services.Data.Csv
         {
         }
 
-        protected abstract Task ArrangeAsync();
+        protected abstract void Arrange();
 
-        protected abstract Task ActAsync();
+        protected abstract void Act();
     }
 }

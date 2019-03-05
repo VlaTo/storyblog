@@ -20,4 +20,8 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\StoryBlog.Web.Services.Shared.Data.Csv\Shared.Data.Csv.csproj" />
+  </ItemGroup>
+
 </Project>

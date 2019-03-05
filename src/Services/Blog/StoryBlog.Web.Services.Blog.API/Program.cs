@@ -23,6 +23,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Mime;
+using System.Reflection;
 
 namespace StoryBlog.Web.Services.Blog.API
 {
@@ -348,10 +349,10 @@ namespace StoryBlog.Web.Services.Blog.API
                         ;
                     }
 
-                    /*var context = services.GetRequiredService<StoryBlogDbContext>();
+                    //var context = services.GetRequiredService<StoryBlogDbContext>();
 
-                    context.Database.Migrate();
-                    StoryBlogInitializer.Seed(context, logger);*/
+                    //context.Database.Migrate();
+                    //StoryBlogInitializer.Seed(context, Assembly.GetAssembly(typeof(Program)), logger);
                 }
                 catch (Exception exception)
                 {

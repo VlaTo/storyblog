@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using StoryBlog.Web.Services.Blog.Persistence.Models;
+using StoryBlog.Web.Services.Shared.Data.Csv;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 
 namespace StoryBlog.Web.Services.Blog.Persistence
 {
@@ -19,85 +19,60 @@ namespace StoryBlog.Web.Services.Blog.Persistence
         /// </summary>
         /// <param name="context"></param>
         /// <param name="logger"></param>
-        public static void Seed(StoryBlogDbContext context, ILogger logger)
+        public static void Seed(StoryBlogDbContext context, Assembly resourceAssembly, ILogger logger)
         {
-            //const string email = "dev@storyblog.net";
-            SeedSettings(context, logger);
+            SeedSettings(context, resourceAssembly, logger);
+            SeedAuthors(context, resourceAssembly, logger);
+        }
 
-            var johnDoe = CreateAuthor(context, "John Doe");
-            var richardRoe = CreateAuthor(context, "Richard Roe");
-            var janeRoe = CreateAuthor(context, "Jane Roe");
-            var jimSmith = CreateAuthor(context, "Jim Smith");
+        private static void SeedAuthors(StoryBlogDbContext context, Assembly resourceAssembly, ILogger logger)
+        {
+            var resource = resourceAssembly.GetManifestResourceStream("StoryBlog.Web.Services.Blog.API.Data.Authors.csv");
 
-            /*using (var transaction = context.Database.BeginTransaction())
+            using (var reader = new StreamReader(resource, Encoding.UTF8))
             {
+                var document = CsvDocument.CreateFrom(reader);
 
-
-
-                if (false == context.Addresses.Any())
+                using (var transaction = context.Database.BeginTransaction())
                 {
-                    context.Addresses.Add(new Address
+                    foreach (var row in document.Rows)
                     {
-                        AddressTypes = AddressTypes.Home,
-                        City = "",
-                        Country = "",
-                        Street = "",
-                        State = ""
-                    });
-                }
-
-                transaction.Commit();
-            }*/
-
-            /*var customer = await customerManager.FindByEmailAsync(email);
-
-            if (null == customer)
-            {
-                var result = await customerManager.CreateAsync(new Author
-                {
-                    UserName = "DevUser",
-                    Email = email,
-                    PhoneNumber = "+7(123)123-45-67"
-                }, "Abcd1234!");
-
-                if (false == result.Succeeded)
-                {
-                    if (environment.IsDevelopment())
-                    {
-                        logger.LogDebug("[StoryBlogIdentitySeed::SeedAsync] Failed to create customer");
+                        var author = CreateAuthorFromRow(context, row);
+                        logger.LogDebug($"[SeedAuthors] Author with name \'{author.UserName}\' created");
                     }
+
+                    transaction.Commit();
                 }
-                else
+            }
+        }
+
+        private static void SeedSettings(StoryBlogDbContext context, Assembly resourceAssembly, ILogger logger)
+        {
+            var resource = resourceAssembly.GetManifestResourceStream("StoryBlog.Web.Services.Blog.API.Data.Settings.csv");
+
+            using (var reader = new StreamReader(resource, Encoding.UTF8))
+            {
+                var document = CsvDocument.CreateFrom(reader);
+
+                using (var transaction = context.Database.BeginTransaction())
                 {
-                    customer = await customerManager.FindByEmailAsync(email);
+                    foreach (var row in document.Rows)
+                    {
+                        var settings = CreateSettingFromRow(context, row);
+                        logger.LogDebug($"[SeedSettings] Setting \'{settings.Name}\' created");
+                    }
+
+                    transaction.Commit();
                 }
             }
-
-            if (customerManager.SupportsUserRole)
-            {
-
-            }
-
-            if (customerManager.SupportsUserClaim)
-            {
-
-            }*/
         }
 
-        private static void SeedSettings(StoryBlogDbContext context, ILogger logger)
+        private static Author CreateAuthorFromRow(StoryBlogDbContext context, CsvRow row)
         {
-            using (var transaction = context.Database.BeginTransaction())
-            {
-                AddSetting(context, "Landing.Title", "The Story Blog");
-                AddSetting(context, "Landing.Description", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.");
-
-                transaction.Commit();
-            }
-        }
-
-        private static Author CreateAuthor(StoryBlogDbContext context, string userName)
-        {
-            var author = context.Authors.AsNoTracking().SingleOrDefault(entity => entity.UserName == userName);
+            var userName = row.Fields[1].Text;
+            var author = context.Authors
+                .AsNoTracking()
+                .SingleOrDefault(entity => entity.UserName == userName);
 
             if (null != author)
             {
@@ -106,33 +81,38 @@ namespace StoryBlog.Web.Services.Blog.Persistence
 
             author = new Author
             {
+                Id = row.Fields[0].ReadAs<long>(),
                 UserName = userName
             };
 
-            using (var transaction = context.Database.BeginTransaction())
-            {
-                context.Authors.Add(author);
-                context.SaveChanges();
-                transaction.Commit();
-            }
+            context.Authors.Add(author);
+            context.SaveChanges();
 
             return author;
         }
 
-        private static void AddSetting(StoryBlogDbContext context, string name, string value)
+        private static Settings CreateSettingFromRow(StoryBlogDbContext context, CsvRow row)
         {
-            if (context.Settings.Any(setting => setting.Name == name))
+            var name = row.Fields[0].Text;
+            var entity = context.Settings
+                .AsNoTracking()
+                .SingleOrDefault(setting => setting.Name == name);
+
+            if (null != entity)
             {
-                return;
+                return entity;
             }
 
-            context.Settings.Add(new Settings
+            entity = new Settings
             {
                 Name = name,
-                Value = Encoding.UTF8.GetBytes(value)
-            });
+                Value = Encoding.UTF8.GetBytes(row.Fields[1].Text)
+            };
 
+            context.Settings.Add(entity);
             context.SaveChanges();
+
+            return entity;
         }
     }
 }

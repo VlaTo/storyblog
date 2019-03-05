@@ -26,22 +26,61 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv.Tokens
                 return false;
             }
 
-            var term = ((CsvTerminalToken)token).Term;
+            var term = ((CsvTerminalToken) token).Term;
 
             return CsvTerminals.Whitespace == term
                    || CsvTerminals.Tab == term;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public static bool IsDoubleQuote(this CsvToken token)
         {
             return CheckTerminal(token, CsvTerminals.DoubleQuote);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public static bool IsNewLine(this CsvToken token)
+        {
+            if (null == token)
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
+
+            if (CsvTokenType.Terminal != token.TokenType)
+            {
+                return false;
+            }
+
+            var term = ((CsvTerminalToken) token).Term;
+
+            return CsvTerminals.NewLine == term
+                   || CsvTerminals.LineFeed == term;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public static bool IsComma(this CsvToken token)
         {
             return CheckTerminal(token, CsvTerminals.Comma);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public static bool IsString(this CsvToken token, out string text)
         {
             if (null == token)

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace StoryBlog.Web.Services.Shared.Data.Csv
@@ -6,6 +7,19 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
     public abstract class CsvFieldCollection : IEnumerable<CsvField>
     {
         protected readonly IList<CsvField> FieldsList;
+
+        public CsvField this[int index]
+        {
+            get
+            {
+                if (0 > index || index >= FieldsList.Count)
+                {
+                    throw new ArgumentException("", nameof(index));
+                }
+
+                return FieldsList[index];
+            }
+        }
 
         protected CsvFieldCollection()
         {

@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Services.Shared.Data.Csv
 {
@@ -63,7 +62,7 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
             };
         }
 
-        public Task<CsvToken> GetTokenAsync()
+        public CsvToken GetToken()
         {
             if (disposed)
             {
@@ -83,7 +82,7 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
                         if (EndOfStream != input)
                         {
                             TextPosition = TextPosition.Begin();
-                            text = new StringBuilder();
+                            //text = new StringBuilder();
                             state = TokenizerState.Reading;
 
                             break;
@@ -99,7 +98,7 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
                         if (null != text && 0 < text.Length)
                         {
                             state = TokenizerState.EndOfDocument;
-                            return Task.FromResult<CsvToken>(CsvToken.String(text.ToString()));
+                            return CsvToken.String(text.ToString());
                         }
 
                         state = TokenizerState.Failed;
@@ -109,7 +108,7 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
 
                     case TokenizerState.EndOfDocument:
                     {
-                        return Task.FromResult(CsvToken.End);
+                        return CsvToken.End;
                     }
 
                     case TokenizerState.Reading:
@@ -122,8 +121,8 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
 
                         if (null == text)
                         {
-                            state = TokenizerState.Failed;
-                            break;
+                            //TextPosition = TextPosition.Begin();
+                            text = new StringBuilder();
                         }
 
                         var current = (char) input;
@@ -132,12 +131,12 @@ namespace StoryBlog.Web.Services.Shared.Data.Csv
                         {
                             if (0 < text.Length)
                             {
-                                return Task.FromResult<CsvToken>(CsvToken.String(text.ToString()));
+                                return CsvToken.String(text.ToString());
                             }
 
                             input = reader.Read();
 
-                            return Task.FromResult<CsvToken>(CsvToken.Terminal(current));
+                            return CsvToken.Terminal(current);
                         }
 
                         text.Append(current);

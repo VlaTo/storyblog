@@ -1,7 +1,5 @@
-﻿using System;
+﻿using StoryBlog.Web.Services.Shared.Data.Csv;
 using System.IO;
-using System.Threading.Tasks;
-using StoryBlog.Web.Services.Shared.Data.Csv;
 
 namespace StoryBlog.Tests.Services.Data.Csv.Parser
 {
@@ -18,13 +16,10 @@ namespace StoryBlog.Tests.Services.Data.Csv.Parser
             set;
         }
 
-        protected override Task ArrangeAsync()
+        protected override void Arrange()
         {
             var tokenizer = new CsvTokenizer(TextReader);
-
             Parser = new CsvParser(tokenizer);
-
-            return Task.CompletedTask;
         }
 
         public override void Cleanup()
