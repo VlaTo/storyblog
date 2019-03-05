@@ -10,12 +10,16 @@
 
   <ItemGroup>
     <None Remove="Data\Authors.csv" />
+    <None Remove="Data\Comments.csv" />
     <None Remove="Data\Settings.csv" />
+    <None Remove="Data\Stories.csv" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Data\Authors.csv" />
+    <EmbeddedResource Include="Data\Comments.csv" />
     <EmbeddedResource Include="Data\Settings.csv" />
+    <EmbeddedResource Include="Data\Stories.csv" />
   </ItemGroup>
 
   <ItemGroup>

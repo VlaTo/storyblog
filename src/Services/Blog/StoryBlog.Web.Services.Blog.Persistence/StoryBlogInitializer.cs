@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using StoryBlog.Web.Services.Blog.Persistence.Models;
 using StoryBlog.Web.Services.Shared.Data.Csv;
@@ -23,6 +24,8 @@ namespace StoryBlog.Web.Services.Blog.Persistence
         {
             SeedSettings(context, resourceAssembly, logger);
             SeedAuthors(context, resourceAssembly, logger);
+            SeedStories(context, resourceAssembly, logger);
+            SeedComments(context, resourceAssembly, logger);
         }
 
         private static void SeedAuthors(StoryBlogDbContext context, Assembly resourceAssembly, ILogger logger)
@@ -60,6 +63,48 @@ namespace StoryBlog.Web.Services.Blog.Persistence
                     {
                         var settings = CreateSettingFromRow(context, row);
                         logger.LogDebug($"[SeedSettings] Setting \'{settings.Name}\' created");
+                    }
+
+                    transaction.Commit();
+                }
+            }
+        }
+
+        private static void SeedStories(StoryBlogDbContext context, Assembly resourceAssembly, ILogger logger)
+        {
+            var resource = resourceAssembly.GetManifestResourceStream("StoryBlog.Web.Services.Blog.API.Data.Stories.csv");
+
+            using (var reader = new StreamReader(resource, Encoding.UTF8))
+            {
+                var document = CsvDocument.CreateFrom(reader);
+
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    foreach (var row in document.Rows)
+                    {
+                        var story = CreateStoryFromRow(context, row);
+                        logger.LogDebug($"[SeedStories] Story \'{story.Slug}\' created");
+                    }
+
+                    transaction.Commit();
+                }
+            }
+        }
+
+        private static void SeedComments(StoryBlogDbContext context, Assembly resourceAssembly, ILogger logger)
+        {
+            var resource = resourceAssembly.GetManifestResourceStream("StoryBlog.Web.Services.Blog.API.Data.Comments.csv");
+
+            using (var reader = new StreamReader(resource, Encoding.UTF8))
+            {
+                var document = CsvDocument.CreateFrom(reader);
+
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    foreach (var row in document.Rows)
+                    {
+                        var comment = CreateCommentFromRow(context, row);
+                        logger.LogDebug($"[SeedComment] Comment \'{comment.Id}\' created");
                     }
 
                     transaction.Commit();
@@ -110,6 +155,68 @@ namespace StoryBlog.Web.Services.Blog.Persistence
             };
 
             context.Settings.Add(entity);
+            context.SaveChanges();
+
+            return entity;
+        }
+
+        private static Story CreateStoryFromRow(StoryBlogDbContext context, CsvRow row)
+        {
+            var slug = row.Fields[2].Text;
+            var entity = context.Stories
+                .AsNoTracking()
+                .SingleOrDefault(story => story.Slug == slug);
+
+            if (null != entity)
+            {
+                return entity;
+            }
+
+            entity = new Story
+            {
+                Id = row.Fields[0].ReadAs<uint>(),
+                Title = row.Fields[1].Text,
+                Slug = slug,
+                Content = row.Fields[3].Text,
+                AuthorId = row.Fields[4].ReadAs<long>(),
+                Status = (StoryStatus) Enum.ToObject(typeof(StoryStatus), row.Fields[5].ReadAs<int>()),
+                Created = row.Fields[6].ReadAs<DateTime>(),
+                Modified = null == row.Fields[7].Text ? null : new DateTime?(row.Fields[7].ReadAs<DateTime>()),
+                IsPublic = row.Fields[8].ReadAs<bool>()
+            };
+
+            context.Stories.Add(entity);
+            context.SaveChanges();
+
+            return entity;
+        }
+
+        private static Comment CreateCommentFromRow(StoryBlogDbContext context, CsvRow row)
+        {
+            var id = row.Fields[0].ReadAs<long>();
+            var entity = context.Comments
+                .AsNoTracking()
+                .SingleOrDefault(comment => comment.Id == id);
+
+            if (null != entity)
+            {
+                return entity;
+            }
+
+            entity = new Comment
+            {
+                Id = id,
+                Content = row.Fields[1].Text,
+                AuthorId = row.Fields[2].ReadAs<long>(),
+                StoryId = row.Fields[3].ReadAs<long>(),
+                ParentId = null == row.Fields[4].Text ? null : new long?(row.Fields[4].ReadAs<long>()),
+                IsPublic = row.Fields[5].ReadAs<bool>(),
+                Status = (CommentStatus) Enum.ToObject(typeof(CommentStatus), row.Fields[6].ReadAs<int>()),
+                Created = row.Fields[7].ReadAs<DateTime>(),
+                Modified = null == row.Fields[8].Text ? null : new DateTime?(row.Fields[8].ReadAs<DateTime>())
+            };
+
+            context.Comments.Add(entity);
             context.SaveChanges();
 
             return entity;
