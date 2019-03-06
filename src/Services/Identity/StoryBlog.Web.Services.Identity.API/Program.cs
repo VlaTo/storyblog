@@ -7,6 +7,7 @@ using System.Net.Mail;
 using System.Net.Mime;
 using IdentityServer4;
 using IdentityServer4.Configuration;
+using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -108,7 +109,7 @@ namespace StoryBlog.Web.Services.Identity.API
                         })
                         //.AddCors()
                         .AddMvc()
-                        .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                        .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                         .AddJsonOptions(options =>
                         {
                             options.SerializerSettings.ContractResolver = new DefaultContractResolver();
@@ -266,7 +267,7 @@ namespace StoryBlog.Web.Services.Identity.API
 
                             options.Image.Size = new Size(200, 60);
 
-                            options.Cookie.Name = "AspNetCoreCaptcha.Cookie";
+                            options.Cookie.Name = "AspNetCoreCaptcha";
                             options.Cookie.Domain = "localhost";
                             options.Cookie.SameSite = SameSiteMode.Lax;
                         })
@@ -289,11 +290,6 @@ namespace StoryBlog.Web.Services.Identity.API
 
                     if (environment.IsDevelopment())
                     {
-                        //var logging = app.ApplicationServices.GetRequiredService<ILoggerFactory>();
-                        var logger = app.ApplicationServices.GetRequiredService<ILogger<Program>>();
-
-                        logger.LogDebug("Application run in development mode");
-
                         app.UseDeveloperExceptionPage();
                     }
 
@@ -326,9 +322,9 @@ namespace StoryBlog.Web.Services.Identity.API
                 })
                 .Build();
 
-            Console.Title = "Identity Server";
+            Console.Title = "Identity.API";
 
-            using (var scope = host.Services.CreateScope())
+            /*using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var logger = services.GetRequiredService<ILogger<Program>>();
@@ -336,6 +332,8 @@ namespace StoryBlog.Web.Services.Identity.API
 
                 try
                 {
+                    services.GetRequiredService<ConfigurationDbContext>().Database.Migrate();
+                    services.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
                     identitySetup.SeedAsync().Wait();
                 }
                 catch (Exception exception)
@@ -343,7 +341,7 @@ namespace StoryBlog.Web.Services.Identity.API
                     logger.LogError(exception, "Application Startup");
                 }
 
-            }
+            }*/
 
             host.Run();
         }

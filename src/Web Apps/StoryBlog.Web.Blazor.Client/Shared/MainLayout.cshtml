@@ -6,10 +6,13 @@
 
 <div class="container-fluid storyblog-wrapper">
     <main class="row storyblog-main">
-        <aside class="left col-md-3 storyblog-main-menu">
+        <aside class="left col-md-2 storyblog-main-menu">
             <StoryBlogTitle Title="Sample Blog" Description="lorem ipsum dolor sit amet" />
+            <BlogMenu>
+                <BlogMenuItem Title="Home" Link="/" />
+            </BlogMenu>
         </aside>
-        <section class="col-md-9 storyblog-main-content">
+        <section class="col-md-10 storyblog-main-content">
             @Body
         </section>
     </main>

@@ -1,14 +1,9 @@
-﻿using System;
-using System.Security.Policy;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Mvc.Routing;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
+using System.Text;
+using System.Text.Encodings.Web;
 
 namespace StoryBlog.Web.Services.Shared.Captcha
 {
@@ -31,7 +26,7 @@ namespace StoryBlog.Web.Services.Shared.Captcha
             textGenerator = new CaptchaTextGenerator(this.options.AllowedChars, this.options.CaptchaLength);
         }
 
-        public void Create(HttpContext context)
+        public string Create(HttpContext context)
         {
             var feature = GetCaptchaFeature(context);
 
@@ -45,16 +40,19 @@ namespace StoryBlog.Web.Services.Shared.Captcha
             var token = new CaptchaToken(blob);
             var cookie = options.Cookie.Build(context);
             var captcha = new GeneratedCaptcha(token, text, DateTime.UtcNow);
+            var key = "hf54sxm";
 
             store.SetCaptcha(context, captcha);
 
             context.Response.Cookies.Append(
-                options.Cookie.Name,
+                options.Cookie.Name + '.' + key,
                 Encoding.UTF8.GetString(token.Value.GetData()),
                 cookie
             );
 
             logger.LogDebug($"New CAPTCHA was generated for token: {blob.DebugString}");
+
+            return key;
         }
 
         public CaptchaValidationResult ValidateRequest(HttpContext context)
@@ -62,18 +60,18 @@ namespace StoryBlog.Web.Services.Shared.Captcha
             throw new NotImplementedException();
         }
 
-        public string GetImageUrl(HttpContext context)
+        public string GetImageUrl(HttpContext context, string key)
         {
-            //var feature = GetCaptchaFeature(context);
+            var feature = GetCaptchaFeature(context);
 
-            //if (false == feature.HasCaptchaToken)
-            //{
+            if (false == feature.HasCaptchaToken)
+            {
             //    return null;
-            //}
+            }
 
             //var blob = feature.CaptchaToken.Value;
             //var token = Convert.ToBase64String(blob.GetData());
-            var path = options.RequestPath;// + '/' + UrlEncoder.Default.Encode(token);
+            var path = options.RequestPath + '/' + UrlEncoder.Default.Encode(key);
 
             return path;
         }

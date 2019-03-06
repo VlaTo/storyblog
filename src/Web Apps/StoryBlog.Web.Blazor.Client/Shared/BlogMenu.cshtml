@@ -1,0 +1,15 @@
+﻿@using Microsoft.AspNetCore.Blazor
+@using Microsoft.AspNetCore.Blazor.Components
+
+<ul class="list-unstyled">
+    @ChildContent
+</ul>
+
+@functions {
+    [Parameter]
+    protected RenderFragment ChildContent
+    {
+        get;
+        set;
+    }
+}

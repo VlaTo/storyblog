@@ -150,7 +150,8 @@ namespace StoryBlog.Web.Services.Identity.API.Data
                 {
                     foreach (var client in Config.GetClients())
                     {
-                        configurationContext.Clients.Add(client.ToEntity());
+                        var model = client.ToEntity();
+                        configurationContext.Clients.Add(model);
                     }
 
                     configurationContext.SaveChanges();

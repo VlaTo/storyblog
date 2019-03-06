@@ -13,6 +13,16 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
         /// <summary>
         /// 
         /// </summary>
+        [DataMember(Name = "closed")]
+        public bool Closed
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         [DataMember(Name = "comments")]
         public IEnumerable<CommentModel> Comments
         {
@@ -20,6 +30,9 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public StoryModel()
         {
             Comments = Enumerable.Empty<CommentModel>();

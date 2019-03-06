@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Blazor.Fluxor;
-using StoryBlog.Web.Blazor.Client.Models;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
+using StoryBlog.Web.Blazor.Client.Store.Models;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Reducers
 {
@@ -25,6 +25,11 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
                 Title = action.Title,
                 Slug = action.Slug,
                 Content = action.Content,
+                Closed = action.Closed,
+                Author = new AuthorModel
+                {
+                    Name = action.Author.Name
+                },
                 AllCommentsCount = action.Comments.Count
             };
 
@@ -47,6 +52,10 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
                 var model = new CommentModel(null, comment.Id)
                 {
                     Content = comment.Content,
+                    Author = new AuthorModel
+                    {
+                        Name = comment.Author.Name
+                    },
                     Published = comment.Modified.GetValueOrDefault(comment.Created)
                 };
 
@@ -70,6 +79,10 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
                 var model = new CommentModel(parent, comment.Id)
                 {
                     Content = comment.Content,
+                    Author = new AuthorModel
+                    {
+                        Name = comment.Author.Name
+                    },
                     Published = comment.Modified.GetValueOrDefault(comment.Created)
                 };
 

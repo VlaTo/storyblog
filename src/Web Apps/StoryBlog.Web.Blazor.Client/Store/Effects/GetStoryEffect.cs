@@ -2,7 +2,6 @@
 using StoryBlog.Web.Blazor.Client.Services;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Effects
@@ -35,6 +34,8 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
                     Slug = story.Slug,
                     Title = story.Title,
                     Content = story.Content,
+                    Closed = story.Closed,
+                    Author = story.Author,
                     Published = story.Modified.GetValueOrDefault(story.Created),
                 };
 

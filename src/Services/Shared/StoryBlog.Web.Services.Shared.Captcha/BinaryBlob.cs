@@ -20,12 +20,12 @@ namespace StoryBlog.Web.Services.Shared.Captcha
         {
             get
             {
-                var text = new StringBuilder("0X");
+                var text = new StringBuilder("0x");
                 var provider = CultureInfo.InvariantCulture;
 
                 foreach (var @byte in bytes)
                 {
-                    text.AppendFormat(provider, "X2", @byte);
+                    text.AppendFormat(provider, "{0:X2}", @byte);
                 }
 
                 return text.ToString();

@@ -20,40 +20,70 @@ else if (State.Value.Status.IsNone())
 }
 else
 {
-    if (null != State.Value.Status. Error)
-    {
-        <p>@State.Value.Status.Error</p>
-    }
-
-    var model = State.Value;
-
-    if (null != model)
-    {
-        <article id="@model.Slug" class="">
-            <div class="mb-5">
-                <h2 class="">@model.Title</h2>
-                <ul class="list-unstyled list-inline">
-                    <li class="list-inline-item">
-                        <i class="mdi mdi-calendar"></i>
-                        <TimeLabel DateTime=@model.Published />
-                    </li>
-                    <li class="list-inline-item">
-                        <i class="mdi mdi-comment-multiple-outline"></i>
-                        @model.AllCommentsCount Comments
-                    </li>
-                </ul>
-                <div class="justify-content-md-start">@model.Content</div>
-            </div>
-            <div>
-                <ul class="list-unstyled">
-                    @foreach (var comment in model.Comments)
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9">
+                    @if (null != State.Value.Status.Error)
                     {
-                        <StoryBlogComment Comment=@comment Level=0 />
+                        <p>@State.Value.Status.Error</p>
                     }
-                </ul>
+
+                    @{
+                        var model = State.Value;
+                    }
+
+                    @if (null != model)
+                    {
+                        <article id="@model.Slug" class="">
+                            <div class="mb-5">
+                                <h2 class="">@model.Title</h2>
+                                <ul class="list-unstyled list-inline">
+                                    <li class="list-inline-item">
+                                        <i class="mdi mdi-calendar"></i>
+                                        <TimeLabel DateTime=@model.Published/>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <i class="mdi mdi-comment-multiple-outline"></i>
+                                        @model.AllCommentsCount Comments
+                                    </li>
+                                </ul>
+                                <div class="justify-content-md-start">@model.Content</div>
+                            </div>
+
+                            @if (0 == model.AllCommentsCount)
+                            {
+                                <div class="alert alert-secondary" role="alert">
+                                    <h4>No comments yet</h4>
+                                </div>
+                            }
+                            else
+                            {
+                                if (model.Closed)
+                                {
+                                    <div class="alert alert-warning" role="alert">
+                                        <h4>Comments are closed</h4>
+                                    </div>
+                                }
+
+                                <div class="m-lg-2">
+                                    <ul class="list-unstyled">
+                                        @foreach (var comment in model.Comments)
+                                        {
+                                            <StoryBlogComment Comment=@comment Level=0/>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        </article>
+                    }
+                </div>
+                <aside class="col-lg-3">
+                    <StoryBlogAboutAuthor />
+                </aside>
             </div>
-        </article>
-    }
+        </div>
+    </section>
 }
 
 @functions

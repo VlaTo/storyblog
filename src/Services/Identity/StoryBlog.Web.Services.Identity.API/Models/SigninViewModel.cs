@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using StoryBlog.Web.Services.Shared.Captcha;
 
 namespace StoryBlog.Web.Services.Identity.API.Models
 {
@@ -31,7 +30,7 @@ namespace StoryBlog.Web.Services.Identity.API.Models
         }
 
         [IgnoreDataMember]
-        public CaptchaToken CaptchaToken
+        public string CaptchaKey
         {
             get;
             set;

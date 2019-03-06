@@ -203,10 +203,10 @@ namespace StoryBlog.Web.Services.Blog.API
                                     story => story.Content,
                                     mapping => mapping.MapFrom(source => source.Content)
                                 )
-                                /*.ForMember(
-                                    story => story.IsPublic,
-                                    mapping => mapping.MapFrom(source => source.IsPublic)
-                                )*/
+                                .ForMember(
+                                    story => story.Closed,
+                                    mapping => mapping.MapFrom((source, dest) => false)
+                                )
                                 .ForMember(
                                     story => story.Author,
                                     mapping => mapping.MapFrom(source => source.Author)

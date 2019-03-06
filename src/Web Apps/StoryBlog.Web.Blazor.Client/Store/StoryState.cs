@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using Blazor.Fluxor;
-using StoryBlog.Web.Blazor.Client.Models;
+using StoryBlog.Web.Blazor.Client.Store.Models;
 
 namespace StoryBlog.Web.Blazor.Client.Store
 {
@@ -45,6 +45,24 @@ namespace StoryBlog.Web.Blazor.Client.Store
         }
 
         public DateTime Published
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public AuthorModel Author
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool Closed
         {
             get;
             set;
