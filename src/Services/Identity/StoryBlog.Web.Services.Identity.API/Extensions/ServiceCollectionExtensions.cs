@@ -1,7 +1,8 @@
-﻿using System;
-using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using StoryBlog.Web.Services.Identity.API.Services;
+using System;
 
 namespace StoryBlog.Web.Services.Identity.API.Extensions
 {
@@ -20,10 +21,10 @@ namespace StoryBlog.Web.Services.Identity.API.Extensions
                 throw new ArgumentNullException(nameof(services));
             }
 
-            services
-                .AddScoped<IEmailSender, SimpleEmailSender>()
-                .AddOptions<SimpleEmailSenderOptions>()
-                .Configure(configurator);
+            //services.AddOptions<SimpleEmailSenderOptions>().Configure(configurator);
+            services.Configure(configurator);
+            services.TryAddSingleton<IEmailTemplateGenerator, SimpleEmailTemplateGenerator>();
+            services.TryAddSingleton<ISimpleEmailSender, SimpleEmailSender>();
 
             return services;
         }

@@ -1,14 +1,13 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
-using StoryBlog.Web.Services.Identity.API.Infrastructure;
+using System;
 
 namespace StoryBlog.Web.Services.Shared.Captcha
 {
     /// <summary>
     /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public sealed class ValidateCaptchaAttribute : Attribute, IFilterFactory, IOrderedFilter
     {
         /// <summary>

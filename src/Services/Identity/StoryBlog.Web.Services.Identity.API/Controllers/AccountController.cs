@@ -17,8 +17,12 @@ using StoryBlog.Web.Services.Identity.API.Models;
 using StoryBlog.Web.Services.Identity.API.Services;
 using StoryBlog.Web.Services.Shared.Captcha;
 using System;
+using System.Collections.Specialized;
 using System.Linq;
+using System.Net.Mail;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Primitives;
 
 namespace StoryBlog.Web.Services.Identity.API.Controllers
 {
@@ -28,46 +32,43 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
     {
         private readonly IIdentityServerInteractionService interactions;
         private readonly ILoginService<Customer> loginService;
-        //private readonly SignInManager<Customer> signInManager;
         private readonly IClientStore clientStore;
         private readonly IAuthenticationSchemeProvider schemeProvider;
         private readonly UserManager<Customer> customerManager;
         private readonly ICaptcha captcha;
         private readonly IHostingEnvironment environment;
 
-        //private readonly IEmailSender emailSender;
+        private readonly ISimpleEmailSender emailSender;
+        private readonly IEmailTemplateGenerator templateGenerator;
         private readonly IEventService eventService;
         private readonly IStringLocalizer<AccountController> localizer;
-        //private readonly IMapper mapper;
         private readonly ILogger<AccountController> logger;
 
         public AccountController(
             IIdentityServerInteractionService interactions,
             ILoginService<Customer> loginService,
-            //SignInManager<Customer> signInManager,
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
             UserManager<Customer> customerManager,
             ICaptcha captcha,
             IHostingEnvironment environment,
-            //IEmailSender emailSender,
+            ISimpleEmailSender emailSender,
+            IEmailTemplateGenerator templateGenerator,
             IEventService eventService,
-            //IMapper mapper,
             IStringLocalizer<AccountController> localizer,
             ILogger<AccountController> logger)
         {
             this.interactions = interactions;
             this.loginService = loginService;
-            //this.signInManager = signInManager;
             this.clientStore = clientStore;
             this.schemeProvider = schemeProvider;
             this.customerManager = customerManager;
             this.captcha = captcha;
             this.environment = environment;
-            //this.emailSender = emailSender;
+            this.emailSender = emailSender;
+            this.templateGenerator = templateGenerator;
             this.eventService = eventService;
             this.localizer = localizer;
-            //this.mapper = mapper;
             this.logger = logger;
         }
 
@@ -123,7 +124,6 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
 
                 if (null != customer)
                 {
-                    // signInManager.CheckPasswordSignInAsync(customer, model.Password, true);
                     var result = await loginService.ValidateCredentialsAsync(customer, model.Password);
 
                     if (result.IsNotAllowed)
@@ -200,7 +200,6 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
             return View(await CreateSigninModelAsync(model));
         }
 
-
         // GET account/create
         [HttpGet("create")]
         public async Task<IActionResult> Create([FromQuery] string returnUrl)
@@ -214,14 +213,41 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
         [HttpPost("create")]
         [Consumes("application/x-www-form-urlencoded")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromForm] SignupViewModel model)
+        public async Task<IActionResult> Create([FromForm] SignupModel model)
         {
             if (false == ModelState.IsValid)
             {
                 return View("Signup", model);
             }
 
-            await Task.CompletedTask;
+
+            if (customerManager.SupportsUserEmail)
+            {
+                var customer = new Customer
+                {
+
+                };
+                var token = await customerManager.GenerateEmailConfirmationTokenAsync(customer);
+                var template = await templateGenerator.ResolveTemplateAsync("create");
+                var context = new MailMessageTemplateContext
+                {
+                    From = new MailAddress("noreply@storyblog.org"),
+                    To =
+                    {
+                        new MailAddress("test@storyblog.org")
+                    },
+                    Subject = "",
+                    Replacements =
+                    {
+                        [nameof(token)] = token
+                    }
+                };
+
+                var message = await template.GenerateAsync(context);
+                await emailSender.SendMessageAsync(message);
+
+                ;
+            }
 
             return View("Signup", new SignupViewModel());
         }
@@ -281,14 +307,15 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
                 }
             }
 
+            captcha.Create(HttpContext);
+
             return new SigninViewModel
             {
                 AllowRememberMe = AccountOptions.AllowRememberMe,
                 EnableLocalLogin = canSigninLocal && AccountOptions.AllowLocalLogin,
                 ReturnUrl = returnUrl,
                 Email = context?.LoginHint,
-                ExternalProviders = providers,
-                CaptchaKey = captcha.Create(HttpContext)
+                ExternalProviders = providers
             };
         }
 
@@ -304,7 +331,9 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
 
         private Task<SignupViewModel> CreateSignupModelAsync(string returnUrl)
         {
-            return Task.FromResult(new SignupViewModel());
+            var model = new SignupViewModel();
+
+            return Task.FromResult(model);
         }
     }
 }

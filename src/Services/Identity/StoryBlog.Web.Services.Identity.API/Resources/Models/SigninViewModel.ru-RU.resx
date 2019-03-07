@@ -120,6 +120,9 @@
   <data name="EmailField" xml:space="preserve">
     <value>Адрес электронной почты (email)</value>
   </data>
+  <data name="EmailFieldDescription" xml:space="preserve">
+    <value>Мы не будем передавать ваш адрес третьим лицам</value>
+  </data>
   <data name="EmailInvalidError" xml:space="preserve">
     <value>Недопустимый адрес электронной почты</value>
   </data>

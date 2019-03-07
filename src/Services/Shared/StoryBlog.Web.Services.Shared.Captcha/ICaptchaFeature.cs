@@ -19,7 +19,6 @@
         CaptchaToken CaptchaToken
         {
             get;
-            set;
         }
     }
 }

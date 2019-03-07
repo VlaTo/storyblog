@@ -1,9 +1,6 @@
-﻿using System.Runtime.Serialization;
-
-namespace StoryBlog.Web.Services.Identity.API.Models
+﻿namespace StoryBlog.Web.Services.Identity.API.Models
 {
-    [DataContract]
-    public class SignupViewModel : SignupModel
+    public sealed class SignupViewModel : SignupModel
     {
 
     }

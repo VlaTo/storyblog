@@ -1,13 +1,5 @@
-﻿using System;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Net;
-using System.Net.Mail;
-using System.Net.Mime;
-using IdentityServer4;
+﻿using IdentityServer4;
 using IdentityServer4.Configuration;
-using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -20,7 +12,6 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
 using Newtonsoft.Json.Serialization;
 using StoryBlog.Web.Services.Identity.API.Configuration;
@@ -29,6 +20,14 @@ using StoryBlog.Web.Services.Identity.API.Data.Models;
 using StoryBlog.Web.Services.Identity.API.Extensions;
 using StoryBlog.Web.Services.Identity.API.Services;
 using StoryBlog.Web.Services.Shared.Captcha.Extensions;
+using System;
+using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using System.Net;
+using System.Net.Mail;
+using System.Net.Mime;
+using StoryBlog.Web.Services.Shared.Captcha;
 
 namespace StoryBlog.Web.Services.Identity.API
 {
@@ -238,7 +237,6 @@ namespace StoryBlog.Web.Services.Identity.API
                         {
                             var settings = context.Configuration.GetSection("EmailSender");
 
-                            options.From = new MailAddress(settings.GetValue<string>("From"));
                             options.Credentials = new NetworkCredential(
                                 settings.GetValue<string>("Credentials:User"),
                                 settings.GetValue<string>("Credentials:Password")
@@ -260,16 +258,17 @@ namespace StoryBlog.Web.Services.Identity.API
                         .AddTransient<StoryBlogIdentitySetup>()
                         .AddCaptcha(options =>
                         {
-                            options.AllowedChars = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
                             options.CaptchaLength = 5;
-
+                            options.Comparison = CaptchaComparisonMode.CaseInsensitive;
+                            options.AllowedChars = "abcdefghijklmnopqrstuvwxyz" +
+                                                   "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                                                   "1234567890";
+                            options.Timeout = TimeSpan.FromMinutes(15.0d);
                             options.RequestPath = new PathString("/api/v1/captcha");
-
                             options.Image.Size = new Size(200, 60);
-
-                            options.Cookie.Name = "AspNetCoreCaptcha";
                             options.Cookie.Domain = "localhost";
-                            options.Cookie.SameSite = SameSiteMode.Lax;
+                            options.Cookie.HttpOnly = true;
+                            options.Cookie.SameSite = SameSiteMode.Strict;
                         })
                         /*
                             .AddAutoMapper(config =>

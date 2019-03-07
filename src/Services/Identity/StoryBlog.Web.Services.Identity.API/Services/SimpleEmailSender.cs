@@ -1,15 +1,22 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
+using System.Net.Mail;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.Extensions.Options;
 
 namespace StoryBlog.Web.Services.Identity.API.Services
 {
-    public class SimpleEmailSender : IEmailSender
+    /// <summary>
+    /// 
+    /// </summary>
+    public class SimpleEmailSender : ISimpleEmailSender
     {
         private readonly SimpleEmailSenderOptions options;
 
-        public SimpleEmailSender(IOptionsSnapshot<SimpleEmailSenderOptions> snapshot)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="snapshot"></param>
+        public SimpleEmailSender(IOptions<SimpleEmailSenderOptions> snapshot)
         {
             if (null == snapshot)
             {
@@ -19,9 +26,15 @@ namespace StoryBlog.Web.Services.Identity.API.Services
             options = snapshot.Value;
         }
 
-        public Task SendEmailAsync(string email, string subject, string htmlMessage)
+        /// <inheritdoc />
+        public async Task SendMessageAsync(MailMessage message)
         {
-            throw new System.NotImplementedException();
+            if (null == message)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
+            await Task.CompletedTask;
         }
     }
 }

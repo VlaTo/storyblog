@@ -11,7 +11,7 @@ namespace StoryBlog.Web.Services.Shared.Captcha
         /// 
         /// </summary>
         /// <returns></returns>
-        string Create(HttpContext context);
+        void Create(HttpContext context);
 
         /// <summary>
         /// 
@@ -25,6 +25,12 @@ namespace StoryBlog.Web.Services.Shared.Captcha
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        string GetImageUrl(HttpContext context, string key);
+        string GetImageUrl(HttpContext context);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        FormFieldDescription GetFormFieldDescription();
     }
 }

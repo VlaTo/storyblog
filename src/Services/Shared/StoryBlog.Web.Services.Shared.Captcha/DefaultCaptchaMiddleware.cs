@@ -1,18 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
+using System;
+using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Services.Shared.Captcha
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DefaultCaptchaMiddleware
     {
         private const StringComparison Comparison = StringComparison.InvariantCultureIgnoreCase;
@@ -24,6 +27,13 @@ namespace StoryBlog.Web.Services.Shared.Captcha
         private readonly CaptchaOptions options;
         private ImageCodecInfo imageCodec;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="next"></param>
+        /// <param name="store"></param>
+        /// <param name="generator"></param>
+        /// <param name="options"></param>
         public DefaultCaptchaMiddleware(
             RequestDelegate next,
             ICaptchaStore store,
@@ -41,6 +51,11 @@ namespace StoryBlog.Web.Services.Shared.Captcha
             emptyActionDescriptor = new ActionDescriptor();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public Task Invoke(HttpContext context)
         {
             var requestPath = context.Request.Path;
@@ -50,9 +65,7 @@ namespace StoryBlog.Web.Services.Shared.Captcha
                 return next.Invoke(context);
             }
 
-            var method = context.Request.Method;
-
-            if (false == String.Equals("GET", method, StringComparison.OrdinalIgnoreCase))
+            if (false == String.Equals("GET", context.Request.Method, StringComparison.OrdinalIgnoreCase))
             {
                 return BadRequestAsync(context);
             }
@@ -63,7 +76,7 @@ namespace StoryBlog.Web.Services.Shared.Captcha
             {
                 var captcha = store.GetCaptcha(context, captchaFeature.CaptchaToken);
 
-                if (null != captcha && NotExpired(captcha))
+                if (null != captcha && DefaultCaptcha.NotExpired(captcha, options.Timeout))
                 {
                     return ImageContentAsync(context, captcha);
                 }
@@ -111,15 +124,6 @@ namespace StoryBlog.Web.Services.Shared.Captcha
             await result.ExecuteResultAsync(actionContext);
         }
 
-        private async Task BadRequestAsync(HttpContext context)
-        {
-            var routeData = context.GetRouteData() ?? new RouteData();
-            var actionContext = new ActionContext(context, routeData, emptyActionDescriptor);
-            var result = new BadRequestResult();
-
-            await result.ExecuteResultAsync(actionContext);
-        }
-
         private ImageCodecInfo GetImageCodec(ImageFormat format)
         {
             if (null == imageCodec)
@@ -129,6 +133,15 @@ namespace StoryBlog.Web.Services.Shared.Captcha
             }
 
             return imageCodec;
+        }
+
+        private static async Task BadRequestAsync(HttpContext context)
+        {
+            var routeData = context.GetRouteData() ?? new RouteData();
+            var actionContext = new ActionContext(context, routeData, emptyActionDescriptor);
+            var result = new BadRequestResult();
+
+            await result.ExecuteResultAsync(actionContext);
         }
 
         private static bool CanClientAccept(IEnumerable<MediaTypeHeaderValue> values, string mimeType)
@@ -157,12 +170,6 @@ namespace StoryBlog.Web.Services.Shared.Captcha
             }
 
             return false;
-        }
-
-        private static bool NotExpired(GeneratedCaptcha captcha)
-        {
-            var duration = DateTime.UtcNow - captcha.CreatedAt;
-            return duration <= TimeSpan.FromMinutes(15.0d);
         }
     }
 }

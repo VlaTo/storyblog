@@ -24,16 +24,16 @@ namespace StoryBlog.Web.Services.Shared.Captcha
     /// </summary>
     public class CaptchaOptions
     {
+        internal const string DefaultFormField = "__RequestValidationCaptchaField";
+        internal const string DefaultCookiePrefix = "AspNetCore.Captcha.";
+
         private FormFieldBuilder formField;
         private string allowedChars;
         private int captchaLength;
         private PathString requestPath;
         private ImageBuilder imageBuilder;
         private CookieBuilder cookie;
-
-        internal static readonly string DefaultFormField = "__RequestValidationCaptchaToken";
-
-        internal static readonly string DefaultCookiePrefix = "AspNetCore.Captcha.";
+        private TimeSpan timeout;
 
         /// <summary>
         /// 
@@ -88,6 +88,23 @@ namespace StoryBlog.Web.Services.Shared.Captcha
                 }
 
                 captchaLength = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets captcha timeout.
+        /// </summary>
+        public TimeSpan Timeout
+        {
+            get => timeout;
+            set
+            {
+                if (value <= TimeSpan.Zero)
+                {
+                    throw new ArgumentException("", nameof(value));
+                }
+
+                timeout = value;
             }
         }
 
@@ -157,6 +174,7 @@ namespace StoryBlog.Web.Services.Shared.Captcha
             requestPath = new PathString("/captcha");
             imageBuilder = new ImageBuilder();
             cookie = new CookieBuilder();
+            timeout = TimeSpan.FromMinutes(3.0d);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace StoryBlog.Web.Services.Identity.API.Models
     [DataContract]
     public class CredentialsModel
     {
-        [Display(Name = "EmailField", Prompt = "EmailPrompt")]
+        [Display(Name = "EmailField", Prompt = "EmailPrompt", Description = "EmailFieldDescription")]
         [Required(ErrorMessage = "EmailRequiredError")]
         [DataType(DataType.EmailAddress, ErrorMessage = "EmailInvalidError")]
         [DataMember]

@@ -62,10 +62,16 @@
                             </a>
                             <span asp-validation-for="Password"></span>
                         </div>
-                        <div class="form-group mt-5">
-                                <div class="border p-3">
-                                    <img src="@Captcha.GetImageUrl(Context, Model.CaptchaKey)" alt="captcha" />
-                                </div>
+                        <div class="mt-5">
+                            <img src="@Captcha.GetImageUrl(Context)" alt="captcha" />
+                            <div class="form-label-group mt-3">
+                                @{
+                                    var description = Captcha.GetFormFieldDescription();
+                                }
+                                <input id="@description.FieldName" name="@description.FieldName" type="text" class="form-control" autocomplete="off" aria-describedby="captcha-field-description" />
+                                <label for="@description.FieldName">@description.FieldHint</label>
+                                <small id="captcha-field-description" class="form-text text-muted">captcha here</small>
+                            </div>
                         </div>
                         @if (Model.AllowRememberMe)
                         {

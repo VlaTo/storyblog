@@ -1,10 +1,13 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using System;
 
 namespace StoryBlog.Web.Services.Shared.Captcha.Extensions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class ServiceCollectionExtension
     {
         /// <summary>
@@ -21,6 +24,7 @@ namespace StoryBlog.Web.Services.Shared.Captcha.Extensions
 
             services.AddDataProtection();
 
+            services.TryAddTransient<ValidateCaptchaTokenAuthorizationFilter>();
             services.TryAddEnumerable(
                 ServiceDescriptor.Transient<IConfigureOptions<CaptchaOptions>, CaptchaOptionsSetup>()
             );

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using Microsoft.AspNetCore.DataProtection;
+﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using StoryBlog.Web.Services.Shared.Captcha.Internal;
+using System;
+using System.Linq;
+using System.Text;
 
 namespace StoryBlog.Web.Services.Shared.Captcha
 {
@@ -25,12 +25,17 @@ namespace StoryBlog.Web.Services.Shared.Captcha
             if (null == options.Cookie.Name)
             {
                 var applicationId = dataProtectionOptions.ApplicationDiscriminator ?? String.Empty;
-                options.FormField.Name = CaptchaOptions.DefaultCookiePrefix + GenerateCookieSuffix(applicationId);
+                options.Cookie.Name = CaptchaOptions.DefaultCookiePrefix + GenerateCookieSuffix(applicationId);
             }
 
             if (false == options.Cookie.Expiration.HasValue)
             {
                 options.Cookie.Expiration = TimeSpan.FromMinutes(15.0d);
+            }
+
+            if (TimeSpan.Zero >= options.Timeout)
+            {
+                options.Timeout = TimeSpan.FromMinutes(3.0d);
             }
         }
 
