@@ -2,14 +2,40 @@
 
 @import (reference, once) "variables.less";
 
+html {
+    background-color: @page-baclground-color;
+}
+
 body {
     margin: 35px;
-    background-color: @page-background-color;
+    background-color: @content-background-color;
+}
+
+.storyblog-wrapper {
 }
 
 .storyblog-main {
+    font-family: 'Nunito Sans', sans-serif;
+
+    a:link, .storyblog-main a:hover, .storyblog-main a:visited {
+        text-decoration: none;
+        color: black;
+    }
+
+    .storyblog-main-menu {
+        .storyblog-logo {
+        }
+    }
 
     .storyblog-main-content {
+        background-color: white;
+    }
+
+    .storyblog-main-content {
+        background-color: white;
+
+        .storyblog-landing-title {
+        }
 
         .storyblog-article {
             padding: inherit;
@@ -18,6 +44,9 @@ body {
             }
 
             .storyblog-article-content {
+            }
+
+            .storyblog-story {
             }
         }
     }

@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Blog.API.Infrastructure;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -125,7 +126,8 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         }
 
         // DELETE api/v1/story/<slug>
-        [AllowAnonymous]
+        [Authorize(Policy = Policies.Admins)]
+        //[AllowAnonymous]
         [HttpDelete("{slug:required}")]
         [ProducesResponseType((int) HttpStatusCode.OK)]
         public async Task<IActionResult> Delete(string slug)

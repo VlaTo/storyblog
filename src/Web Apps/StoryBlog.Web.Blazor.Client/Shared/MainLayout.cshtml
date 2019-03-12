@@ -9,7 +9,14 @@
         <aside class="left col-md-2 storyblog-main-menu">
             <StoryBlogTitle Title="Sample Blog" Description="lorem ipsum dolor sit amet" />
             <BlogMenu>
-                <BlogMenuItem Title="Home" Link="/" />
+                <NavLink href="/">
+                    <p class="h5"><strong>Home</strong></p>
+                </NavLink>
+                <NavLink href="/Stories">
+                    <p class="h5"><strong>Stories</strong></p>
+                </NavLink>
+                @*<BlogMenuItem Title="Home" Link="/"/>
+                <BlogMenuItem Title="Stories" Link="/Stories"/>*@
             </BlogMenu>
         </aside>
         <section class="col-md-10 storyblog-main-content">

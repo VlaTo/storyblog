@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Blazor.Components;
 using StoryBlog.Web.Blazor.Components;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Blazor.Components;
 
 namespace StoryBlog.Web.Blazor.Client.Controls
 {
@@ -10,13 +9,6 @@ namespace StoryBlog.Web.Blazor.Client.Controls
         private static readonly ClassBuilder<BlogMenuItemComponent> classNameBuilder;
 
         private bool firstRender;
-
-        [Parameter]
-        protected bool IsActive
-        {
-            get;
-            set;
-        }
 
         [Parameter]
         protected bool IsBlock
@@ -56,7 +48,6 @@ namespace StoryBlog.Web.Blazor.Client.Controls
         {
             firstRender = true;
 
-            IsActive = false;
             IsBlock = false;
         }
 
@@ -71,7 +62,8 @@ namespace StoryBlog.Web.Blazor.Client.Controls
                 .DefineClass(@class => @class.Name("block").Condition(component => component.IsBlock))
                 //.DefineClass(@class => @class.Name("lg").Condition(component => BootstrapButtonSizes.Large == component.Size))
                 //.DefineClass(@class => @class.Name("sm").Condition(component => BootstrapButtonSizes.Small == component.Size))
-                .DefineClass(@class => @class.NoPrefix().Name("active").Condition(component => component.IsActive));
+                //.DefineClass(@class => @class.NoPrefix().Name("active").Condition(component => component.IsActive))
+                ;
         }
 
         protected override void OnInit()

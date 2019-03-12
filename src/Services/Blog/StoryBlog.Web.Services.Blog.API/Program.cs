@@ -24,6 +24,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Mime;
 using System.Reflection;
+using System.Security.Claims;
+using StoryBlog.Web.Services.Shared.Common;
 
 namespace StoryBlog.Web.Services.Blog.API
 {
@@ -97,6 +99,15 @@ namespace StoryBlog.Web.Services.Blog.API
                             options.Authority = section.GetValue<string>("Authority");
                             options.Audience = section.GetValue<string>("Audience");
                             options.RequireHttpsMetadata = false;
+                        });
+
+                    services
+                        .AddAuthorization(options =>
+                        {
+                            options.AddPolicy(
+                                Policies.Admins,
+                                policy => policy.RequireClaim(ClaimTypes.Role, RoleNames.Admin)
+                            );
                         });
 
                     services

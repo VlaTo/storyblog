@@ -1,6 +1,6 @@
 ﻿@inherits global::StoryBlog.Web.Blazor.Client.Controls.BlogMenuItemComponent
 <li class=@ClassString style=@Style>
-    <a class="" href=@Link>
-        <h5>@Title</h5>
-    </a>
+    <NavLink href=@Link>
+        <p class="h5"><strong>@Title</strong></p>
+    </NavLink>
 </li>
