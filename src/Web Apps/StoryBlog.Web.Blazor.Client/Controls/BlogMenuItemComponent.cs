@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Blazor.Components;
+﻿using System;
+using System.Diagnostics;
+using System.Net;
+using Microsoft.AspNetCore.Blazor.Components;
 using StoryBlog.Web.Blazor.Components;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Blazor.Services;
 
 namespace StoryBlog.Web.Blazor.Client.Controls
 {
@@ -38,7 +42,20 @@ namespace StoryBlog.Web.Blazor.Client.Controls
             set;
         }
 
+        [Inject]
+        protected IUriHelper UriHelper
+        {
+            get;
+            set;
+        }
+
         protected string ClassString
+        {
+            get;
+            private set;
+        }
+
+        protected bool IsActive
         {
             get;
             private set;
@@ -62,13 +79,14 @@ namespace StoryBlog.Web.Blazor.Client.Controls
                 .DefineClass(@class => @class.Name("block").Condition(component => component.IsBlock))
                 //.DefineClass(@class => @class.Name("lg").Condition(component => BootstrapButtonSizes.Large == component.Size))
                 //.DefineClass(@class => @class.Name("sm").Condition(component => BootstrapButtonSizes.Small == component.Size))
-                //.DefineClass(@class => @class.NoPrefix().Name("active").Condition(component => component.IsActive))
-                ;
+                .DefineClass(@class => @class.NoPrefix().Name("active").Condition(component => component.IsActive));
         }
 
         protected override void OnInit()
         {
+            RefreshStyles();
             ClassString = classNameBuilder.Build(this, Class);
+            UriHelper.OnLocationChanged += OnLocationChanged;
         }
 
         protected override Task OnAfterRenderAsync()
@@ -80,6 +98,37 @@ namespace StoryBlog.Web.Blazor.Client.Controls
             }
 
             return base.OnAfterRenderAsync();
+        }
+
+        protected override void OnDispose()
+        {
+            UriHelper.OnLocationChanged -= OnLocationChanged;
+        }
+
+        private void OnLocationChanged(object sender, string e)
+        {
+            RefreshStyles();
+            StateHasChanged();
+        }
+
+        private void RefreshStyles()
+        {
+            var uri = new Uri(UriHelper.GetAbsoluteUri());
+            var path = uri.LocalPath;
+            //var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+
+            if (String.Equals(Link, path, StringComparison.InvariantCultureIgnoreCase))
+            {
+                IsActive = true;
+            }
+            else
+            {
+                IsActive = false;
+            }
+
+            ClassString = classNameBuilder.Build(this, Class);
+
+            Debug.WriteLine($"Location: \"{Link}\" IsActive: {IsActive}");
         }
     }
 }
