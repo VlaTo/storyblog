@@ -3,7 +3,6 @@ using StoryBlog.Web.Blazor.Client.Services;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
 using System;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Blog.Interop.Includes;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Effects
 {
@@ -27,12 +26,11 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
         {
             try
             {
-                var result = await client.GetStoriesAsync(StoryIncludes.Comments);
+                var result = await client.GetStoriesAsync(action.Includes);
 
                 if (null == result)
                 {
-                    dispatcher.Dispatch(new GetStoriesListFailedAction(""));
-                    return;
+                    throw new Exception("No result received");
                 }
 
                 dispatcher.Dispatch(new GetStoriesListSuccessAction(result.Data));

@@ -103,28 +103,28 @@ namespace StoryBlog.Web.Blazor.Components
         }
 
         [Parameter]
-        protected bool IsActive
+        protected bool Active
         {
             get;
             set;
         }
 
         [Parameter]
-        protected bool IsOutline
+        protected bool Outline
         {
             get;
             set;
         }
 
         [Parameter]
-        protected bool IsBlock
+        protected bool Block
         {
             get;
             set;
         }
 
         [Parameter]
-        protected bool IsDisabled
+        protected bool Disabled
         {
             get;
             set;
@@ -169,10 +169,10 @@ namespace StoryBlog.Web.Blazor.Components
             firstRender = true;
             Type = BootstrapButtonTypes.Default;
             Size = BootstrapButtonSizes.Default;
-            IsOutline = false;
-            IsActive = false;
-            IsBlock = false;
-            IsDisabled = false;
+            Outline = false;
+            Active = false;
+            Block = false;
+            Disabled = false;
             TabIndex = 0;
         }
 
@@ -180,14 +180,14 @@ namespace StoryBlog.Web.Blazor.Components
         {
             classNameBuilder = new ClassBuilder<BootstrapButtonComponent>("btn")
                 .DefineClass(@class => @class
-                    .Modifier("outline", component => component.IsOutline)
+                    .Modifier("outline", component => component.Outline)
                     .Name(component => EnumHelper.GetClassName(component.Type))
                     .Condition(component => BootstrapButtonTypes.Default != component.Type)
                 )
-                .DefineClass(@class => @class.Name("block").Condition(component => component.IsBlock))
+                .DefineClass(@class => @class.Name("block").Condition(component => component.Block))
                 .DefineClass(@class => @class.Name("lg").Condition(component => BootstrapButtonSizes.Large == component.Size))
                 .DefineClass(@class => @class.Name("sm").Condition(component => BootstrapButtonSizes.Small == component.Size))
-                .DefineClass(@class => @class.NoPrefix().Name("active").Condition(component => component.IsActive));
+                .DefineClass(@class => @class.NoPrefix().Name("active").Condition(component => component.Active));
         }
 
         protected override void OnInit()

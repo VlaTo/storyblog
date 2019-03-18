@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace StoryBlog.Web.Services.Blog.Interop.Models
 {
@@ -24,7 +22,8 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
         /// 
         /// </summary>
         [DataMember(Name = "comments")]
-        public IEnumerable<CommentModel> Comments
+        //public IReadOnlyCollection<CommentModel> Comments
+        public CommentModel[] Comments
         {
             get;
             set;
@@ -35,7 +34,8 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
         /// </summary>
         public StoryModel()
         {
-            Comments = Enumerable.Empty<CommentModel>();
+            //Comments = Enumerable.Empty<CommentModel>();
+            Comments = new CommentModel[0];
         }
     }
 }

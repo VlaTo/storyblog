@@ -1,10 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-using System.Net;
-using Microsoft.AspNetCore.Blazor.Components;
-using StoryBlog.Web.Blazor.Components;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Blazor.Components;
 using Microsoft.AspNetCore.Blazor.Services;
+using StoryBlog.Web.Blazor.Components;
+using System;
+using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Blazor.Client.Controls
 {
@@ -64,7 +62,6 @@ namespace StoryBlog.Web.Blazor.Client.Controls
         public BlogMenuItemComponent()
         {
             firstRender = true;
-
             IsBlock = false;
         }
 
@@ -127,8 +124,6 @@ namespace StoryBlog.Web.Blazor.Client.Controls
             }
 
             ClassString = classNameBuilder.Build(this, Class);
-
-            Debug.WriteLine($"Location: \"{Link}\" IsActive: {IsActive}");
         }
     }
 }

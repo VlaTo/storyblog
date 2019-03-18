@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Blazor.Fluxor;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
+using StoryBlog.Web.Blazor.Client.Store.Helpers;
 using StoryBlog.Web.Blazor.Client.Store.Models;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Reducers
@@ -33,12 +34,12 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
                 AllCommentsCount = action.Comments.Count
             };
 
-            CreateComments(result.Comments, action.Comments);
+            Comments.CreateCommentsTree(result.Comments, action.Comments);
 
             return result;
         }
 
-        private static void CreateComments(
+        /*private static void CreateComments(
             ICollection<CommentModel> collection, 
             IReadOnlyCollection<Web.Services.Blog.Interop.Models.CommentModel> comments)
         {
@@ -90,7 +91,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
 
                 CreateNestedComments(model, comments);
             }
-        }
+        }*/
     }
 
     /// <summary>

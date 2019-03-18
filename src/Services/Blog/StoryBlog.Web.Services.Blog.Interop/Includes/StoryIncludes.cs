@@ -20,17 +20,5 @@ namespace StoryBlog.Web.Services.Blog.Interop.Includes
         /// </summary>
         [Flag(Key = "comments")]
         Comments = 2,
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Flag(Key = "hero")]
-        HeroPost = 4,
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Flag(Key = "featured")]
-        FeaturedStories = 8
     }
 }

@@ -25,6 +25,7 @@ using System.Linq;
 using System.Net.Mime;
 using System.Reflection;
 using System.Security.Claims;
+using StoryBlog.Web.Services.Blog.API.Extensions;
 using StoryBlog.Web.Services.Shared.Common;
 
 namespace StoryBlog.Web.Services.Blog.API
@@ -231,11 +232,10 @@ namespace StoryBlog.Web.Services.Blog.API
                                     mapping => mapping.MapFrom(source => source.Modified)
                                 )
                                 .AfterMap((source, story, ctx) =>
-                                {
-                                    story.Comments = source.Comments.Select(
-                                        comment => ctx.Mapper.Map<CommentModel>(comment)
-                                    );
-                                });
+                                    story.Comments = source.Comments
+                                        .Select(comment => ctx.Mapper.Map<CommentModel>(comment))
+                                        .ToArray()
+                                );
 
                             config
                                 .CreateMap<Application.Stories.Models.FeedStory, FeedStoryModel>()

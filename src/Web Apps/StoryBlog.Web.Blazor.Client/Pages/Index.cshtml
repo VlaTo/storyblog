@@ -1,6 +1,5 @@
 ﻿@page "/"
 
-@using System.Diagnostics
 @using global::Blazor.Fluxor
 @using StoryBlog.Web.Blazor.Client.Store
 @using StoryBlog.Web.Blazor.Client.Store.Actions
@@ -47,7 +46,7 @@ else
                     <div class="col-lg-9">
                         <StoryBlogHeroStory Story=model.Hero />
                         <StoryBlogFeaturedStories Stories=model.Featured />
-                        <StoryBlogFeedStories Stories=model.Feed />
+                        <FeedStories Stories=model.Feed />
                     </div>
                     <aside class="col-lg-3">
                         <StoryBlogAboutAuthor />
