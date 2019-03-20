@@ -188,6 +188,13 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
                             return Redirect("~/");
                         }
 
+                        var uri = new Uri(model.ReturnUrl);
+
+                        if (uri.IsAbsoluteUri)
+                        {
+                            return Redirect(model.ReturnUrl);
+                        }
+
                         throw new Exception("Invalid redirect url");
                     }
                 }

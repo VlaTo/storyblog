@@ -40,7 +40,8 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
                     Title = story.Title,
                     Slug = story.Slug,
                     Content = story.Content,
-                    AllCommentsCount = story.Comments.Length
+                    AllCommentsCount = story.Comments.Length,
+                    Published = story.Modified.GetValueOrDefault(story.Created)
                 };
 
                 Comments.CreateCommentsTree(model.Comments, story.Comments);

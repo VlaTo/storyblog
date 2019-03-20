@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Blazor.Components;
+﻿using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Blazor.Components;
 using Microsoft.AspNetCore.Blazor.RenderTree;
 
 namespace StoryBlog.Web.Blazor.Components
@@ -6,7 +7,8 @@ namespace StoryBlog.Web.Blazor.Components
     public class Plural : BlazorComponent
     {
         private string content;
-        private int _value;
+        private int currentValue;
+        private string rules;
 
         /// <summary>
         /// 
@@ -14,17 +16,38 @@ namespace StoryBlog.Web.Blazor.Components
         [Parameter]
         protected int Value
         {
-            get => _value;
+            get => currentValue;
             set
             {
-                if (_value == value)
+                if (currentValue == value)
                 {
                     return;
                 }
 
-                _value = value;
+                currentValue = value;
 
-                UpdateContent(value, true);
+                UpdateContent(currentValue, true);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Parameter]
+        protected string Rules
+        {
+            get => rules;
+            set
+            {
+                if (rules == value)
+                {
+                    return;
+                }
+
+                rules = value;
+
+                ParseRules();
+                UpdateContent(currentValue, true);
             }
         }
 
@@ -32,7 +55,8 @@ namespace StoryBlog.Web.Blazor.Components
         {
             base.OnInit();
 
-            UpdateContent(_value, false);
+            ParseRules();
+            UpdateContent(currentValue, false);
         }
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
@@ -70,6 +94,59 @@ namespace StoryBlog.Web.Blazor.Components
             }
 
             return "Комментариев";
+        }
+
+        private void ParseRules()
+        {
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private abstract class ValueMatchBase
+        {
+            protected ValueMatchBase()
+            {
+            }
+
+            public abstract bool Match(int value);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private class ExactValueMatch : ValueMatchBase
+        {
+            public int Value
+            {
+                get;
+            }
+
+            public ExactValueMatch(int value)
+            {
+                Value = value;
+            }
+
+            public override bool Match(int value) => Value == value;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private class ReminderValueMatch : ValueMatchBase
+        {
+            public int Remainer
+            {
+                get;
+            }
+
+            public ReminderValueMatch(int remainer)
+            {
+                Remainer = remainer;
+            }
+
+            public override bool Match(int value) => (value % 10) == Remainer;
         }
     }
 }

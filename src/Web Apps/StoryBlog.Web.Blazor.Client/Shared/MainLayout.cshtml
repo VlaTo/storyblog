@@ -1,6 +1,10 @@
 @using global::Blazor.Fluxor
+@using StoryBlog.Web.Blazor.Client.Store.Actions
+
 @inherits BlazorLayoutComponent
+
 @inject IStore Store
+@inject IDispatcher Dispatcher
 
 @Store.Initialize()
 
@@ -8,6 +12,12 @@
     <main class="row storyblog-main">
         <aside class="left col-md-2 storyblog-main-menu">
             <StoryBlogTitle Title="Sample Blog" Description="lorem ipsum dolor sit amet" />
+            <div>
+                <a href="http://localhost:3100/account/signin?returnUrl=http://localhost:64972/" class="btn btn-outline-secondary">
+                    <i class="mdi mdi-account-arrow-right"></i>
+                    Sign in
+                </a>
+            </div>
             <BlogMenu>
                 <BlogMenuItem Title="Home" Link="/" Class="ml-3" />
                 <BlogMenuItem Title="Stories" Link="/Stories" Class="ml-3" />
@@ -18,3 +28,7 @@
         </section>
     </main>
 </div>
+
+@functions
+{
+}
