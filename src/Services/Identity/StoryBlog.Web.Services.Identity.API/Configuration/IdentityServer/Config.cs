@@ -22,6 +22,10 @@ namespace StoryBlog.Web.Services.Identity.API.Configuration.IdentityServer
                 new ApiResource("api.identity", "StoryBlog Identity API", new[]
                 {
                     "name", "role"
+                }),
+                new ApiResource("api.blog", "StoryBlog Blog API", new[]
+                {
+                    "name", "role"
                 })
             };
         }
@@ -35,26 +39,65 @@ namespace StoryBlog.Web.Services.Identity.API.Configuration.IdentityServer
                 {
                     ClientId = "client.application",
                     ClientName = "Blazor Web application",
-                    //AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AccessTokenType = AccessTokenType.Jwt,
                     AllowAccessTokensViaBrowser = true,
                     AlwaysIncludeUserClaimsInIdToken = true,
 
                     AllowedCorsOrigins =
                     {
-                        "http://localhost:5100"
+                        "http://localhost:3000"
                     },
-
-                    /*ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },*/
 
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        "api.identity"
+                        "api.identity",
+                        "api.blog"
+                    },
+
+                    RedirectUris =
+                    {
+                        "http://localhost:5100/#callback"
+                    },
+
+                    AccessTokenLifetime = 300,
+                    IdentityTokenLifetime = 3600,
+                    AllowOfflineAccess = false
+                },
+
+                // client credentials client
+                new Client
+                {
+                    ClientId = "api.blog",
+                    ClientName = "Blog API",
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AccessTokenType = AccessTokenType.Jwt,
+                    //AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    AllowAccessTokensViaBrowser = true,
+                    AlwaysIncludeUserClaimsInIdToken = true,
+
+                    AllowedCorsOrigins =
+                    {
+                        "http://localhost:3100/",
+                        "http://localhost:64972/"
+                    },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "api.identity",
+                        "api.blog"
                     },
 
                     RedirectUris =

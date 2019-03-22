@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using IdentityServer4.Extensions;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -56,6 +57,8 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         [ProducesResponseType(typeof(LandingModel), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Get([FromCommaSeparatedQuery(Name = "include")]IEnumerable<string> includes)
         {
+            logger.LogDebug($"[LandingController.Get] User: {User.GetDisplayName()} authenticated: {User.Identity.IsAuthenticated}");
+
             var flags = EnumFlags.Parse<LandingIncludes>(includes);
             var query = new GetLandingQuery(User)
             {

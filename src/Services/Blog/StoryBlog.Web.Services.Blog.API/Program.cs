@@ -20,11 +20,16 @@ using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Blog.Persistence;
 using StoryBlog.Web.Services.Shared.Communication;
 using System;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Mime;
 using System.Reflection;
 using System.Security.Claims;
+using System.Threading.Tasks;
+using IdentityServer4.AccessTokenValidation;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using StoryBlog.Web.Services.Blog.API.Extensions;
 using StoryBlog.Web.Services.Shared.Common;
 
@@ -85,6 +90,9 @@ namespace StoryBlog.Web.Services.Blog.API
                             options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                         });
 
+                    // remove it
+                    IdentityModelEventSource.ShowPII = true;
+
                     JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
                     services
@@ -93,14 +101,53 @@ namespace StoryBlog.Web.Services.Blog.API
                             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                         })
-                        .AddJwtBearer(options =>
+                        .AddIdentityServerAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme, options =>
+                        {
+                            options.Authority = "http://api.blog.storyblog.net";
+                            options.RequireHttpsMetadata = false;
+                            options.ApiName = "api.blog";
+                            options.ApiSecret = "secret";
+                            options.SupportedTokens = SupportedTokens.Jwt;
+                            options.JwtBearerEvents = new JwtBearerEvents
+                            {
+                                OnMessageReceived = ctx =>
+                                {
+                                    var logger = ctx.HttpContext.RequestServices.GetService<ILogger>();
+                                    logger.LogDebug("[JWT Bearer] Message received");
+                                    return Task.CompletedTask;
+                                },
+
+                                OnChallenge = ctx =>
+                                {
+                                    var logger = ctx.HttpContext.RequestServices.GetService<ILogger>();
+                                    logger.LogDebug("[JWT Bearer] Challenge");
+                                    return Task.CompletedTask;
+                                },
+
+                                OnTokenValidated = ctx =>
+                                {
+                                    var logger = ctx.HttpContext.RequestServices.GetService<ILogger>();
+                                    logger.LogDebug("[JWT Bearer] Token validated");
+                                    return Task.CompletedTask;
+                                },
+
+                                OnAuthenticationFailed = ctx =>
+                                {
+                                    var logger = ctx.HttpContext.RequestServices.GetService<ILogger>();
+                                    logger.LogDebug("[JWT Bearer] Authentication failed");
+                                    return Task.CompletedTask;
+                                }
+                            };
+                        })
+                        /*.AddJwtBearer(options =>
                         {
                             var section = context.Configuration.GetSection("Bearer");
 
                             options.Authority = section.GetValue<string>("Authority");
                             options.Audience = section.GetValue<string>("Audience");
                             options.RequireHttpsMetadata = false;
-                        });
+                        })*/
+                        ;
 
                     services
                         .AddAuthorization(options =>
@@ -110,6 +157,16 @@ namespace StoryBlog.Web.Services.Blog.API
                                 policy => policy.RequireClaim(ClaimTypes.Role, RoleNames.Admin)
                             );
                         });
+
+                    services.AddOidcStateDataFormatterCache("aad");
+
+                    services.AddCors(options =>
+                    {
+                        options.AddPolicy("api", policy =>
+                        {
+                            policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+                        });
+                    });
 
                     services
                         .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
@@ -341,6 +398,7 @@ namespace StoryBlog.Web.Services.Blog.API
                                 .AllowCredentials();
                         })
                         .UseAuthentication()
+                        //.UseIdentityServer()
                         .UseMvc()
                         .UseResponseCompression();
                 })

@@ -17,12 +17,9 @@ using StoryBlog.Web.Services.Identity.API.Models;
 using StoryBlog.Web.Services.Identity.API.Services;
 using StoryBlog.Web.Services.Shared.Captcha;
 using System;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.Extensions.Primitives;
 
 namespace StoryBlog.Web.Services.Identity.API.Controllers
 {
@@ -199,7 +196,8 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
                     }
                 }
 
-                await eventService.RaiseAsync(new UserLoginFailureEvent(customer.UserName, "Invalid credentials"));
+                var invalidCredentials = localizer.InvalidCredentials();
+                await eventService.RaiseAsync(new UserLoginFailureEvent(model.Email, invalidCredentials));
 
                 ModelState.AddModelError(String.Empty, "Invalid credentials");
             }

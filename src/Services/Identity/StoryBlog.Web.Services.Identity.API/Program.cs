@@ -1,5 +1,6 @@
 ﻿using IdentityServer4;
 using IdentityServer4.Configuration;
+using IdentityServer4.Events;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -12,22 +13,22 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Logging;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json.Serialization;
 using StoryBlog.Web.Services.Identity.API.Configuration;
 using StoryBlog.Web.Services.Identity.API.Data;
 using StoryBlog.Web.Services.Identity.API.Data.Models;
 using StoryBlog.Web.Services.Identity.API.Extensions;
 using StoryBlog.Web.Services.Identity.API.Services;
+using StoryBlog.Web.Services.Shared.Captcha;
 using StoryBlog.Web.Services.Shared.Captcha.Extensions;
 using System;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Net;
-using System.Net.Mail;
 using System.Net.Mime;
-using StoryBlog.Web.Services.Shared.Captcha;
+using Microsoft.Extensions.Logging;
 
 namespace StoryBlog.Web.Services.Identity.API
 {
@@ -213,7 +214,14 @@ namespace StoryBlog.Web.Services.Identity.API
                             options.CallbackPath = "/callback/google/authorize";
                             options.ClientId = google.GetValue<string>("ClientId");
                             options.ClientSecret = google.GetValue<string>("ClientSecret");
-                        });
+                        })/*
+                        .AddIdentityServerAuthentication(
+                            IdentityServerAuthenticationDefaults.AuthenticationScheme,
+                            options =>
+                            {
+                                options.Authority=""
+                            }
+                        )*/;
 
                     services
                         .ConfigureApplicationCookie(options =>
@@ -227,10 +235,13 @@ namespace StoryBlog.Web.Services.Identity.API
                         .AddAntiforgery();
 
                     // remove it
-                    IdentityModelEventSource.ShowPII = true;
+                    //IdentityModelEventSource.ShowPII = true;
+
+                    services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+                    services.TryAddTransient<IEventService, DefaultEventService>();
+                    services.TryAddTransient<IEventSink, DefaultEventSink>();
 
                     services
-                        .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
                         .AddTransient<ILoginService<Customer>, EntityFrameworkLoginService>()
                         .AddTransient<IProfileService, EntityFrameworkProfileService>()
                         .AddSimpleEmailSender(options =>
@@ -323,7 +334,7 @@ namespace StoryBlog.Web.Services.Identity.API
 
             Console.Title = "Identity.API";
 
-            /*using (var scope = host.Services.CreateScope())
+            using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var logger = services.GetRequiredService<ILogger<Program>>();
@@ -331,16 +342,15 @@ namespace StoryBlog.Web.Services.Identity.API
 
                 try
                 {
-                    services.GetRequiredService<ConfigurationDbContext>().Database.Migrate();
-                    services.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+                    //services.GetRequiredService<ConfigurationDbContext>().Database.Migrate();
+                    //services.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
                     identitySetup.SeedAsync().Wait();
                 }
                 catch (Exception exception)
                 {
                     logger.LogError(exception, "Application Startup");
                 }
-
-            }*/
+            }
 
             host.Run();
         }

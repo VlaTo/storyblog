@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -146,36 +147,43 @@ namespace StoryBlog.Web.Services.Identity.API.Data
             // Identity4 seeds
             using (var scope = configurationContext.Database.BeginTransaction())
             {
-                if (false == configurationContext.Clients.Any())
+                var clients = configurationContext.Clients;
+
+                foreach (var client in Config.GetClients())
                 {
-                    foreach (var client in Config.GetClients())
+                    if (clients.Any(existing => existing.ClientName == client.ClientName))
                     {
-                        var model = client.ToEntity();
-                        configurationContext.Clients.Add(model);
+                        continue;
                     }
 
-                    configurationContext.SaveChanges();
+                    clients.Add(client.ToEntity());
                 }
 
-                if (false == configurationContext.IdentityResources.Any())
+                var identityResources = configurationContext.IdentityResources;
+
+                foreach (var resource in Config.GetIdentityResources())
                 {
-                    foreach (var resource in Config.GetIdentityResources())
+                    if (identityResources.Any(existing => existing.Name == resource.Name))
                     {
-                        configurationContext.IdentityResources.Add(resource.ToEntity());
+                        continue;
                     }
 
-                    configurationContext.SaveChanges();
+                    identityResources.Add(resource.ToEntity());
                 }
 
-                if (false == configurationContext.ApiResources.Any())
+                var apiResources = configurationContext.ApiResources;
+
+                foreach (var resource in Config.GetApiResources())
                 {
-                    foreach (var resource in Config.GetApiResources())
+                    if (apiResources.Any(existing => existing.Name == resource.Name))
                     {
-                        configurationContext.ApiResources.Add(resource.ToEntity());
+                        continue;
                     }
 
-                    configurationContext.SaveChanges();
+                    apiResources.Add(resource.ToEntity());
                 }
+
+                configurationContext.SaveChanges();
 
                 scope.Commit();
             }

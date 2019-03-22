@@ -1,10 +1,13 @@
 @using global::Blazor.Fluxor
+@using Microsoft.AspNetCore.Blazor.Services
 @using StoryBlog.Web.Blazor.Client.Store.Actions
+@using StoryBlog.Web.Services.Shared.Common
 
 @inherits BlazorLayoutComponent
 
 @inject IStore Store
 @inject IDispatcher Dispatcher
+@inject IUriHelper UriHelper
 
 @Store.Initialize()
 
@@ -13,10 +16,10 @@
         <aside class="left col-md-2 storyblog-main-menu">
             <StoryBlogTitle Title="Sample Blog" Description="lorem ipsum dolor sit amet" />
             <div>
-                <a href="http://localhost:3100/account/signin?returnUrl=http://localhost:64972/" class="btn btn-outline-secondary">
+                <BootstrapButton Type=@BootstrapButtonTypes.Secondary Outline=true Size=@BootstrapButtonSizes.Small OnClick=@OnLoginButtonClick>
                     <i class="mdi mdi-account-arrow-right"></i>
                     Sign in
-                </a>
+                </BootstrapButton>
             </div>
             <BlogMenu>
                 <BlogMenuItem Title="Home" Link="/" Class="ml-3" />
@@ -31,4 +34,11 @@
 
 @functions
 {
+    private void OnLoginButtonClick(UIMouseEventArgs e)
+    {
+        var query = QueryString.Create("returnUrl", UriHelper.GetAbsoluteUri());
+        var requestUri = new UriBuilder("http://localhost:3100/account/signin") { Query = query.ToUriComponent() };
+
+        UriHelper.NavigateTo(requestUri.ToString());
+    }
 }
