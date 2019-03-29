@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using IdentityModel.Client;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 
@@ -28,11 +29,15 @@ namespace StoryBlog.Web.Blazor.Client.Services
             {
                 logger.LogDebug($"[{nameof(BlogApiClient)}] Requesting stories from \"{requestUri}\"");
 
-                using (var response = await client.GetAsync(requestUri, CancellationToken.None))
+                var response = await client.RequestPasswordTokenAsync(new PasswordTokenRequest
                 {
-                    response.EnsureSuccessStatusCode();
-                    logger.LogDebug($"[{nameof(BlogApiClient)}] Stories fetch status {response.StatusCode}");
-                }
+                    Address = "",
+                    ClientId = "client.application",
+                    ClientSecret = "secret",
+                    UserName = "",
+                    Password = "",
+                    Scope = "api.blog"
+                });
             }
             catch (HttpRequestException exception)
             {

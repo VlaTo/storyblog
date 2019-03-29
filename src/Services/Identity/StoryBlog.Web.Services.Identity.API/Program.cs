@@ -28,6 +28,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
+using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.Extensions.Logging;
 
 namespace StoryBlog.Web.Services.Identity.API
@@ -334,7 +335,7 @@ namespace StoryBlog.Web.Services.Identity.API
 
             Console.Title = "Identity.API";
 
-            using (var scope = host.Services.CreateScope())
+            /*using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var logger = services.GetRequiredService<ILogger<Program>>();
@@ -342,15 +343,16 @@ namespace StoryBlog.Web.Services.Identity.API
 
                 try
                 {
-                    //services.GetRequiredService<ConfigurationDbContext>().Database.Migrate();
-                    //services.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+                    services.GetRequiredService<ConfigurationDbContext>().Database.Migrate();
+                    services.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+                    services.GetRequiredService<StoryBlogIdentityDbContext>().Database.Migrate();
                     identitySetup.SeedAsync().Wait();
                 }
                 catch (Exception exception)
                 {
                     logger.LogError(exception, "Application Startup");
                 }
-            }
+            }*/
 
             host.Run();
         }
