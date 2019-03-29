@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\Services\Blog\StoryBlog.Web.Services.Blog.Interop\Blog.Interop.csproj" />
     <ProjectReference Include="..\..\Services\Shared\StoryBlog.Web.Services.Shared.Common\Shared.Common.csproj" />
     <ProjectReference Include="..\StoryBlog.Web.Blazor.Components\Blazor.Components.csproj" />
+    <ProjectReference Include="..\StoryBlog.Web.Blazor.OidcClient2\Blazor.OidcClient2.csproj" />
   </ItemGroup>
 
 </Project>
