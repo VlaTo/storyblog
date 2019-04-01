@@ -36,13 +36,13 @@ namespace StoryBlog.Web.Blazor.OidcClient2
                     throw new ArgumentException("No authority specified", nameof(options.Authority));
                 }
 
-                useDiscovery = true;
+                //useDiscovery = true;
             }
 
             Options = options;
             _logger = options.LoggerFactory.CreateLogger<OidcClient>();
             _authorizeClient = new AuthorizationClient(options);
-            _processor = new ResponseProcessor(options, EnsureProviderInformationAsync);
+            //_processor = new ResponseProcessor(options, EnsureProviderInformationAsync);
         }
     }
 }

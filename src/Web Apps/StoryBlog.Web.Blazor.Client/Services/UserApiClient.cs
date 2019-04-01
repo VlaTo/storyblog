@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.JSInterop;
+using StoryBlog.Web.Blazor.OidcClient2;
 
 namespace StoryBlog.Web.Blazor.Client.Services
 {
     internal sealed class UserApiClient : IUserApiClient
     {
         private readonly HttpClient client;
-        private readonly Uri baseUri = new Uri("http://localhost:3100/");
+        //private readonly Uri baseUri = new Uri("http://localhost:3100/");
         private readonly ILogger logger;
 
         public UserApiClient(HttpClient client, ILogger<IUserApiClient> logger)
@@ -20,24 +19,26 @@ namespace StoryBlog.Web.Blazor.Client.Services
             this.logger = logger;
         }
 
-        public async Task LoginAsync()
+        public async Task<string> LoginAsync()
         {
-            var requestUri = new Uri(baseUri, "/account/signin");
-
             try
             {
-                logger.LogDebug($"[{nameof(BlogApiClient)}] Requesting stories from \"{requestUri}\"");
-
-                using (var response = await client.GetAsync(requestUri, CancellationToken.None))
+                var response = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
                 {
-                    response.EnsureSuccessStatusCode();
-                    logger.LogDebug($"[{nameof(BlogApiClient)}] Stories fetch status {response.StatusCode}");
-                }
+                    Address = "http://localhost:3100",
+                    ClientCredentialStyle = ClientCredentialStyle.PostBody,
+                    ClientId = "client.application",
+                    ClientSecret = "secret"
+                });
+
+                return response.AccessToken;
             }
             catch (HttpRequestException exception)
             {
-                logger.LogError(exception, $"Failed to fetch stories from \"{requestUri}\"");
+                logger.LogError(exception, "Failed");
             }
+
+            return null;
         }
     }
 }

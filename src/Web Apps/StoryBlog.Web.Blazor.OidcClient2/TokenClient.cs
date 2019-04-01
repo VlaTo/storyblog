@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using StoryBlog.Web.Blazor.OidcClient2.Infrastructure;
+using StoryBlog.Web.Blazor.OidcClient2.Messages;
 
 namespace StoryBlog.Web.Blazor.OidcClient2
 {
@@ -79,7 +80,10 @@ namespace StoryBlog.Web.Blazor.OidcClient2
         public TokenClient(string address, string clientId, string clientSecret, HttpMessageHandler innerHttpMessageHandler = null, AuthenticationStyle style = AuthenticationStyle.BasicAuthentication)
             : this(address, innerHttpMessageHandler)
         {
-            if (clientId.IsMissing()) throw new ArgumentNullException(nameof(clientId));
+            if (String.IsNullOrWhiteSpace(clientId))
+            {
+                throw new ArgumentNullException(nameof(clientId));
+            }
 
             AuthenticationStyle = style;
             ClientId = clientId;
@@ -146,7 +150,9 @@ namespace StoryBlog.Web.Blazor.OidcClient2
         /// <param name="form">The form.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public virtual async Task<OidcConstants.TokenResponse> RequestAsync(IDictionary<string, string> form, CancellationToken cancellationToken = default)
+        public virtual async Task<TokenResponse> RequestAsync(
+            IDictionary<string, string> form,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             HttpResponseMessage response;
 
@@ -177,7 +183,7 @@ namespace StoryBlog.Web.Blazor.OidcClient2
             }
             catch (Exception ex)
             {
-                return new OidcConstants.TokenResponse(ex);
+                return new TokenResponse(ex);
             }
 
             string content = null;
@@ -188,11 +194,11 @@ namespace StoryBlog.Web.Blazor.OidcClient2
 
             if (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.BadRequest)
             {
-                return new OidcConstants.TokenResponse(content);
+                return new TokenResponse(content);
             }
             else
             {
-                return new OidcConstants.TokenResponse(response.StatusCode, response.ReasonPhrase, content);
+                return new TokenResponse(response.StatusCode, response.ReasonPhrase, content);
             }
         }
 
@@ -210,7 +216,7 @@ namespace StoryBlog.Web.Blazor.OidcClient2
             {
                 merged.Add(OidcConstants.TokenRequest.ClientId, ClientId);
 
-                if (ClientSecret.IsPresent())
+                if (false == String.IsNullOrWhiteSpace(ClientSecret))
                 {
                     merged.Add(OidcConstants.TokenRequest.ClientSecret, ClientSecret);
                 }
@@ -220,9 +226,9 @@ namespace StoryBlog.Web.Blazor.OidcClient2
 
             if (additionalValues != null)
             {
-                merged =
-                    explicitValues.Concat(additionalValues.Where(add => !explicitValues.ContainsKey(add.Key)))
-                                         .ToDictionary(final => final.Key, final => final.Value);
+                merged = explicitValues
+                    .Concat(additionalValues.Where(add => false == explicitValues.ContainsKey(add.Key)))
+                    .ToDictionary(final => final.Key, final => final.Value);
             }
 
             return merged;

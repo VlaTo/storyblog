@@ -9,7 +9,7 @@ namespace StoryBlog.Web.Blazor.OidcClient2
 {
     internal sealed class ResponseProcessor
     {
-        private readonly OidcClientOptions _options;
+        /*private readonly OidcClientOptions _options;
         private readonly ILogger<ResponseProcessor> _logger;
         private readonly IdentityTokenValidator _tokenValidator;
         private readonly CryptoHelper _crypto;
@@ -277,6 +277,6 @@ namespace StoryBlog.Web.Blazor.OidcClient2
             }
 
             return _tokenClient;
-        }
+        }*/
     }
 }

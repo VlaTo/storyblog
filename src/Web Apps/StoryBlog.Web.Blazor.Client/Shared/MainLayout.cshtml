@@ -7,7 +7,6 @@
 
 @inject IStore Store
 @inject IDispatcher Dispatcher
-@inject IUriHelper UriHelper
 
 @Store.Initialize()
 
@@ -36,9 +35,6 @@
 {
     private void OnLoginButtonClick(UIMouseEventArgs e)
     {
-        var query = QueryString.Create("returnUrl", UriHelper.GetAbsoluteUri());
-        var requestUri = new UriBuilder("http://localhost:3100/account/signin") { Query = query.ToUriComponent() };
-
-        UriHelper.NavigateTo(requestUri.ToString());
+        Dispatcher.Dispatch(new LoginAction());
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using IdentityModel.Client;
 using Newtonsoft.Json.Linq;
 
 namespace StoryBlog.Web.Blazor.OidcClient2.Messages
@@ -62,9 +61,12 @@ namespace StoryBlog.Web.Blazor.OidcClient2.Messages
             HttpStatusCode = statusCode;
             HttpErrorReason = reason;
 
-            if (statusCode != HttpStatusCode.OK) ErrorType = ResponseErrorType.Http;
+            if (HttpStatusCode.OK != statusCode)
+            {
+                ErrorType = ResponseErrorType.Http;
+            }
 
-            if (content != null)
+            if (null != content)
             {
                 Raw = content;
 

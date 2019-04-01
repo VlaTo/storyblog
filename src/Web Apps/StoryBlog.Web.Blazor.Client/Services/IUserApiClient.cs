@@ -11,6 +11,6 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// 
         /// </summary>
         /// <returns></returns>
-        Task LoginAsync();
+        Task<string> LoginAsync();
     }
 }
