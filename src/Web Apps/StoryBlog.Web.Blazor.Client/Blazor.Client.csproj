@@ -13,6 +13,7 @@
     <PackageReference Include="Blazor.Extensions.Logging" Version="0.1.10" />
     <PackageReference Include="Blazor.Extensions.Storage" Version="0.1.7" />
     <PackageReference Include="Blazor.Fluxor" Version="0.18.0" />
+    <PackageReference Include="IdentityModel" Version="3.10.6" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.7.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
