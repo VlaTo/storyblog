@@ -1,0 +1,21 @@
+﻿@page "/UserLogin"
+@using System.Diagnostics
+@using StoryBlog.Web.Blazor.Client.Services
+
+@inherits global::Blazor.Fluxor.Components.FluxorComponent
+
+@inject IUserApiClient UserApi
+
+<BootstrapButton Type=@BootstrapButtonTypes.Secondary Outline=true Size=@BootstrapButtonSizes.Small OnClick=@OnLoginButtonClick>
+    <i class="mdi mdi-account-arrow-right"></i>
+    Sign in
+</BootstrapButton>
+
+@functions
+{
+private async void OnLoginButtonClick(UIMouseEventArgs e)
+{
+    var token = await UserApi.LoginAsync();
+    Debug.WriteLine($"[LoginUser] token: {token}");
+}
+}

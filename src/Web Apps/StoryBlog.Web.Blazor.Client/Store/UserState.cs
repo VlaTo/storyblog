@@ -20,6 +20,12 @@ namespace StoryBlog.Web.Blazor.Client.Store
     /// </summary>
     public sealed class UserState
     {
+        public string Token
+        {
+            get;
+            set;
+        }
+
         public ModelStatus Status
         {
             get;

@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
-//using Newtonsoft.Json.Linq;
+using Microsoft.JSInterop;
 
-namespace StoryBlog.Web.Blazor.OidcClient2.Messages
+namespace StoryBlog.Web.Blazor.Client.OidcClient.Messages
 {
     /// <summary>
     /// A protocol response
@@ -26,80 +27,9 @@ namespace StoryBlog.Web.Blazor.OidcClient2.Messages
         /// <value>
         /// The json.
         /// </value>
-        /*public JObject Json
+        public IDictionary<string, object> Dictionary
         {
             get;
-        }*/
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Response"/> class.
-        /// </summary>
-        /// <param name="raw">The raw response data.</param>
-        protected Response(string raw)
-        {
-            Raw = raw;
-
-            try
-            {
-                Microsoft.JSInterop.Json.Deserialize
-
-                //Json = JObject.Parse(raw);
-            }
-            catch (Exception ex)
-            {
-                ErrorType = ResponseErrorType.Exception;
-                Exception = ex;
-
-                return;
-            }
-
-            if (String.IsNullOrWhiteSpace(Error))
-            {
-                HttpStatusCode = HttpStatusCode.OK;
-            }
-            else
-            {
-                HttpStatusCode = HttpStatusCode.BadRequest;
-                ErrorType = ResponseErrorType.Protocol;
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Response"/> class with an exception.
-        /// </summary>
-        /// <param name="exception">The exception.</param>
-        protected Response(Exception exception)
-        {
-            Exception = exception;
-            ErrorType = ResponseErrorType.Exception;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Response"/> class with an HTTP status code.
-        /// </summary>
-        /// <param name="statusCode">The status code.</param>
-        /// <param name="reason">The reason.</param>
-        /// <param name="content">The response body</param>
-        protected Response(HttpStatusCode statusCode, string reason, string content = null)
-        {
-            HttpStatusCode = statusCode;
-            HttpErrorReason = reason;
-
-            if (HttpStatusCode.OK != statusCode)
-            {
-                ErrorType = ResponseErrorType.Http;
-            }
-
-            if (null != content)
-            {
-                Raw = content;
-
-                try
-                {
-                    //Json = JObject.Parse(content);
-                }
-                catch { }
-            }
         }
 
         /// <summary>
@@ -128,7 +58,10 @@ namespace StoryBlog.Web.Blazor.OidcClient2.Messages
         /// <value>
         /// The type of the error.
         /// </value>
-        public ResponseErrorType ErrorType { get; } = ResponseErrorType.None;
+        public ResponseErrorType ErrorType
+        {
+            get;
+        }
 
         /// <summary>
         /// Gets the HTTP status code.
@@ -177,6 +110,78 @@ namespace StoryBlog.Web.Blazor.OidcClient2.Messages
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Response"/> class.
+        /// </summary>
+        /// <param name="raw">The raw response data.</param>
+        protected Response(string raw)
+        {
+            Raw = raw;
+
+            try
+            {
+                Dictionary = Json.Deserialize<IDictionary<string, object>>(raw);
+            }
+            catch (Exception ex)
+            {
+                ErrorType = ResponseErrorType.Exception;
+                Exception = ex;
+
+                return;
+            }
+
+            if (String.IsNullOrWhiteSpace(Error))
+            {
+                HttpStatusCode = HttpStatusCode.OK;
+                ErrorType = ResponseErrorType.None;
+            }
+            else
+            {
+                HttpStatusCode = HttpStatusCode.BadRequest;
+                ErrorType = ResponseErrorType.Protocol;
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Response"/> class with an exception.
+        /// </summary>
+        /// <param name="exception">The exception.</param>
+        protected Response(Exception exception)
+        {
+            Exception = exception;
+            ErrorType = ResponseErrorType.Exception;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Response"/> class with an HTTP status code.
+        /// </summary>
+        /// <param name="statusCode">The status code.</param>
+        /// <param name="reason">The reason.</param>
+        /// <param name="content">The response body</param>
+        protected Response(HttpStatusCode statusCode, string reason, string content = null)
+        {
+            HttpStatusCode = statusCode;
+            HttpErrorReason = reason;
+
+            if (HttpStatusCode.OK != statusCode)
+            {
+                ErrorType = ResponseErrorType.Http;
+            }
+
+            if (null != content)
+            {
+                Raw = content;
+
+                try
+                {
+                    Dictionary = Json.Deserialize<IDictionary<string, object>>(content);
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        /// <summary>
         /// Tries to get a specific value from the JSON response.
         /// </summary>
         /// <param name="name">The name.</param>
@@ -184,7 +189,12 @@ namespace StoryBlog.Web.Blazor.OidcClient2.Messages
         //public string TryGet(string name) => Json.TryGetString(name);
         public string TryGet(string name)
         {
-            return String.Empty;
+            if (Dictionary.TryGetValue(name, out var value))
+            {
+                return value.ToString();
+            }
+
+            return null;
         }
     }
 }

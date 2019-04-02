@@ -15,6 +15,7 @@
     <PackageReference Include="Blazor.Fluxor" Version="0.18.0" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.7.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="System.Security.Claims" Version="4.3.0" />
 
@@ -25,7 +26,10 @@
     <ProjectReference Include="..\..\Services\Blog\StoryBlog.Web.Services.Blog.Interop\Blog.Interop.csproj" />
     <ProjectReference Include="..\..\Services\Shared\StoryBlog.Web.Services.Shared.Common\Shared.Common.csproj" />
     <ProjectReference Include="..\StoryBlog.Web.Blazor.Components\Blazor.Components.csproj" />
-    <ProjectReference Include="..\StoryBlog.Web.Blazor.OidcClient2\Blazor.OidcClient2.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="OidcClient\" />
   </ItemGroup>
 
 </Project>

@@ -27,12 +27,21 @@ namespace StoryBlog.Web.Blazor.Client
                             .AddBrowserConsole()
                             .SetMinimumLevel(LogLevel.Trace)
                     );
+
                     services.AddFluxor(options =>
                         options.UseDependencyInjection(typeof(Program).Assembly)
                     );
+
                     services
                         .AddSingleton<IBlogApiClient, BlogApiClient>()
                         .AddSingleton<IUserApiClient, UserApiClient>();
+
+                    services.AddCors(options =>
+                    {
+                        options.AddDefaultPolicy(policy =>
+                            policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials()
+                        );
+                    });
                 })
                 .UseBlazorStartup<Startup>()
                 .Build();

@@ -7,6 +7,7 @@ namespace StoryBlog.Web.Blazor.Client
         public void Configure(IBlazorApplicationBuilder app)
         {
             app.AddComponent<App>("app");
+            //app.UseCors()
         }
     }
 }

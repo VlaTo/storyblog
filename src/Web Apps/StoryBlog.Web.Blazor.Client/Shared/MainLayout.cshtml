@@ -1,12 +1,8 @@
 @using global::Blazor.Fluxor
-@using Microsoft.AspNetCore.Blazor.Services
-@using StoryBlog.Web.Blazor.Client.Store.Actions
-@using StoryBlog.Web.Services.Shared.Common
 
 @inherits BlazorLayoutComponent
 
 @inject IStore Store
-@inject IDispatcher Dispatcher
 
 @Store.Initialize()
 
@@ -14,15 +10,16 @@
     <main class="row storyblog-main">
         <aside class="left col-md-2 storyblog-main-menu">
             <StoryBlogTitle Title="Sample Blog" Description="lorem ipsum dolor sit amet" />
-            <div>
+            @*<div>
                 <BootstrapButton Type=@BootstrapButtonTypes.Secondary Outline=true Size=@BootstrapButtonSizes.Small OnClick=@OnLoginButtonClick>
                     <i class="mdi mdi-account-arrow-right"></i>
                     Sign in
                 </BootstrapButton>
-            </div>
+            </div>*@
             <BlogMenu>
                 <BlogMenuItem Title="Home" Link="/" Class="ml-3" />
                 <BlogMenuItem Title="Stories" Link="/Stories" Class="ml-3" />
+                <BlogMenuItem Title="Login" Link="/UserLogin" Class="ml-3" />
             </BlogMenu>
         </aside>
         <section class="col-md-10 storyblog-main-content">
@@ -30,11 +27,3 @@
         </section>
     </main>
 </div>
-
-@functions
-{
-    private void OnLoginButtonClick(UIMouseEventArgs e)
-    {
-        Dispatcher.Dispatch(new LoginAction());
-    }
-}

@@ -4,10 +4,10 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using StoryBlog.Web.Blazor.OidcClient2.Internal;
-using StoryBlog.Web.Blazor.OidcClient2.Messages;
+using StoryBlog.Web.Blazor.Client.OidcClient.Internal;
+using StoryBlog.Web.Blazor.Client.OidcClient.Messages;
 
-namespace StoryBlog.Web.Blazor.OidcClient2
+namespace StoryBlog.Web.Blazor.Client.OidcClient
 {
     public static class HttpClientTokenRequestExtensions
     {
@@ -21,7 +21,7 @@ namespace StoryBlog.Web.Blazor.OidcClient2
         public static async Task<TokenResponse> RequestClientCredentialsTokenAsync(
             this HttpMessageInvoker client,
             ClientCredentialsTokenRequest request,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             var clone = request.Clone();
 
@@ -41,7 +41,7 @@ namespace StoryBlog.Web.Blazor.OidcClient2
         public static async Task<TokenResponse> RequestAuthorizationCodeTokenAsync(
             this HttpMessageInvoker client,
             AuthorizationCodeTokenRequest request,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             var clone = request.Clone();
 
@@ -63,7 +63,7 @@ namespace StoryBlog.Web.Blazor.OidcClient2
         public static async Task<TokenResponse> RequestTokenAsync(
             this HttpMessageInvoker client,
             TokenRequest request,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             var clone = request.Clone();
 
@@ -75,10 +75,10 @@ namespace StoryBlog.Web.Blazor.OidcClient2
             return await client.RequestTokenAsync(clone, cancellationToken).ConfigureAwait(false);
         }
 
-        internal static async Task<TokenResponse> RequestTokenAsync(
+        private static async Task<TokenResponse> RequestTokenAsync(
             this HttpMessageInvoker client,
             Request request,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken)
         {
             if (false == request.Parameters.TryGetValue(OidcConstants.TokenRequest.ClientId, out _))
             {

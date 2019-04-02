@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace StoryBlog.Web.Blazor.OidcClient2.Internal
+namespace StoryBlog.Web.Blazor.Client.OidcClient.Internal
 {
     internal static class DictionaryExtensions
     {

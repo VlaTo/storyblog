@@ -1,16 +1,14 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using StoryBlog.Web.Blazor.OidcClient2;
+using StoryBlog.Web.Blazor.Client.OidcClient;
+using StoryBlog.Web.Blazor.Client.OidcClient.Messages;
 
 namespace StoryBlog.Web.Blazor.Client.Services
 {
     internal sealed class UserApiClient : IUserApiClient
     {
         private readonly HttpClient client;
-        //private readonly Uri baseUri = new Uri("http://localhost:3100/");
         private readonly ILogger logger;
 
         public UserApiClient(HttpClient client, ILogger<IUserApiClient> logger)
@@ -25,11 +23,15 @@ namespace StoryBlog.Web.Blazor.Client.Services
             {
                 var response = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
                 {
-                    Address = "http://localhost:3100",
+                    Address = "http://localhost:3100/connect/token",
                     ClientCredentialStyle = ClientCredentialStyle.PostBody,
                     ClientId = "client.application",
-                    ClientSecret = "secret"
+                    ClientSecret = "secret",
+                    Scope = "api.blog"
                 });
+
+                logger.LogDebug($"Access token: {response.AccessToken}");
+                logger.LogDebug($"Identity token: {response.IdentityToken}");
 
                 return response.AccessToken;
             }

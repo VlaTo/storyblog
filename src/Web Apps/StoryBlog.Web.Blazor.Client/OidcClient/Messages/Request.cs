@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace StoryBlog.Web.Blazor.OidcClient2.Messages
+namespace StoryBlog.Web.Blazor.Client.OidcClient.Messages
 {
     /// <summary>
     /// Models a base OAuth/OIDC request with client credentials

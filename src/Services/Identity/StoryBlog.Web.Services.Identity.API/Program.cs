@@ -107,7 +107,12 @@ namespace StoryBlog.Web.Services.Identity.API
                         {
                             options.ResourcesPath = "Resources";
                         })
-                        //.AddCors()
+                        .AddCors(options =>
+                        {
+                            options.AddDefaultPolicy(policy =>
+                                policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials()
+                            );
+                        })
                         .AddMvc()
                         .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                         .AddJsonOptions(options =>
@@ -304,14 +309,8 @@ namespace StoryBlog.Web.Services.Identity.API
                     }
 
                     app
-                        /*.UseForwardedHeaders()
-                        .UseCors(options =>
-                        {
-                            options
-                                .WithOrigins("http://localhost:29699")
-                                .AllowAnyHeader()
-                                .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put);
-                        })*/
+                        .UseForwardedHeaders()
+                        .UseCors()
                         .UseRequestLocalization(options =>
                         {
                             var cultures = new[]

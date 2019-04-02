@@ -8,4 +8,17 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
         {
         }
     }
+
+    public class LoginSuccessAction : IAction
+    {
+        public string Token
+        {
+            get;
+        }
+
+        public LoginSuccessAction(string token)
+        {
+            Token = token;
+        }
+    }
 }

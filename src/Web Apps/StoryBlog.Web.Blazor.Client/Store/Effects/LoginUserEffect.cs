@@ -1,4 +1,5 @@
-﻿using Blazor.Fluxor;
+﻿using System.Diagnostics;
+using Blazor.Fluxor;
 using StoryBlog.Web.Blazor.Client.Services;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
 using System.Net.Http;
@@ -19,11 +20,13 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
         {
             try
             {
-                await client.LoginAsync();
+                var result = await client.LoginAsync();
+                dispatcher.Dispatch(new LoginSuccessAction(result));
             }
             catch (HttpRequestException exception)
             {
-                ;
+                Debug.WriteLine(exception);
+                throw;
             }
         }
     }
