@@ -28,8 +28,4 @@
     <ProjectReference Include="..\StoryBlog.Web.Blazor.Components\Blazor.Components.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="OidcClient\" />
-  </ItemGroup>
-
 </Project>

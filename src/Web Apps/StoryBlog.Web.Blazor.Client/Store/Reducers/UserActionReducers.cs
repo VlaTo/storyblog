@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Linq;
+using System.Security.Claims;
 using Blazor.Fluxor;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
 
@@ -20,10 +21,22 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     {
         public override UserState Reduce(UserState state, LoginSuccessAction action)
         {
-            Debug.WriteLine($"[UserActionReducers.Reduce] token: {action.Token}");
             return new UserState(ModelStatus.Success)
             {
-                Token = action.Token
+                Token = action.Token,
+                Claims = action.Claims
+            };
+        }
+    }
+
+    public sealed class GetUserInfoActionReducer : Reducer<UserState, GetUserInfoAction>
+    {
+        public override UserState Reduce(UserState state, GetUserInfoAction action)
+        {
+            return new UserState(ModelStatus.Loading)
+            {
+                Token = action.Token,
+                Claims = Enumerable.Empty<Claim>()
             };
         }
     }

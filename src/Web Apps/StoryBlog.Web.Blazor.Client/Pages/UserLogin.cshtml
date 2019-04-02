@@ -1,21 +1,37 @@
 ﻿@page "/UserLogin"
 @using System.Diagnostics
+@using global::Blazor.Fluxor
 @using StoryBlog.Web.Blazor.Client.Services
+@using StoryBlog.Web.Blazor.Client.Store
+@using StoryBlog.Web.Blazor.Client.Store.Actions
 
 @inherits global::Blazor.Fluxor.Components.FluxorComponent
 
-@inject IUserApiClient UserApi
+@inject IState<UserState> State
+@inject IDispatcher Dispatcher
 
-<BootstrapButton Type=@BootstrapButtonTypes.Secondary Outline=true Size=@BootstrapButtonSizes.Small OnClick=@OnLoginButtonClick>
+<BootstrapButton Type=@BootstrapButtonTypes.Secondary Outline=true Size=@BootstrapButtonSizes.Small OnClick=@(e => Dispatcher.Dispatch(new LoginAction()))>
     <i class="mdi mdi-account-arrow-right"></i>
     Sign in
 </BootstrapButton>
 
-@functions
+@if (State.Value.Status.IsLoading())
 {
-private async void OnLoginButtonClick(UIMouseEventArgs e)
-{
-    var token = await UserApi.LoginAsync();
-    Debug.WriteLine($"[LoginUser] token: {token}");
+    <p>Loading...</p>
 }
+else
+{
+    if (State.Value.Status.IsFailed())
+    {
+        <p>Error</p>
+    }
+    else
+    {
+        <p class="h4">Access token<small>@State.Value.Token</small></p>
+
+        foreach (var claim in State.Value.Claims)
+        {
+            <p>@claim.ToString()</p>
+        }
+    }
 }

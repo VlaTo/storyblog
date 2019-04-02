@@ -1,4 +1,8 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using StoryBlog.Web.Blazor.Client.OidcClient;
@@ -19,6 +23,8 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
         public async Task<string> LoginAsync()
         {
+            string token = null;
+
             try
             {
                 var response = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
@@ -30,17 +36,52 @@ namespace StoryBlog.Web.Blazor.Client.Services
                     Scope = "api.blog"
                 });
 
-                logger.LogDebug($"Access token: {response.AccessToken}");
-                logger.LogDebug($"Identity token: {response.IdentityToken}");
+                if (response.IsError)
+                {
+                    throw new Exception();
+                }
 
-                return response.AccessToken;
+                token = response.AccessToken;
             }
             catch (HttpRequestException exception)
             {
                 logger.LogError(exception, "Failed");
             }
+            catch (Exception exception)
+            {
+                logger.LogError(exception, "Failed");
+            }
 
-            return null;
+            return token;
+        }
+
+        public async Task<IEnumerable<Claim>> GetUserInfoAsync(string token)
+        {
+            try
+            {
+                var response = await client.GetUserInfoAsync(new UserInfoRequest
+                {
+                    Address = "http://localhost:3100/connect/userinfo",
+                    Token = token
+                });
+
+                if (response.IsError)
+                {
+                    throw new Exception();
+                }
+
+                return response.Claims;
+            }
+            catch (HttpRequestException exception)
+            {
+                logger.LogError(exception, "Failed");
+            }
+            catch (Exception exception)
+            {
+                logger.LogError(exception, "Failed");
+            }
+
+            return Enumerable.Empty<Claim>();
         }
     }
 }

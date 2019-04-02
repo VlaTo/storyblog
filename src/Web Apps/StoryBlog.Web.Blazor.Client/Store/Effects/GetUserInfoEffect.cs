@@ -1,27 +1,28 @@
 ﻿using System.Diagnostics;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Blazor.Fluxor;
 using StoryBlog.Web.Blazor.Client.Services;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Effects
 {
-    public sealed class LoginUserEffect : Effect<LoginAction>
+    public class GetUserInfoEffect : Effect<GetUserInfoAction>
     {
         private readonly IUserApiClient client;
 
-        public LoginUserEffect(IUserApiClient client)
+        public GetUserInfoEffect(IUserApiClient client)
         {
             this.client = client;
         }
 
-        protected override async Task HandleAsync(LoginAction action, IDispatcher dispatcher)
+        protected override async Task HandleAsync(GetUserInfoAction action, IDispatcher dispatcher)
         {
             try
             {
-                var token = await client.LoginAsync();
-                dispatcher.Dispatch(new GetUserInfoAction(token));
+                // action.Token
+                var claims = await client.GetUserInfoAsync(action.Token);
+                dispatcher.Dispatch(new LoginSuccessAction(action.Token, claims));
             }
             catch (HttpRequestException exception)
             {
