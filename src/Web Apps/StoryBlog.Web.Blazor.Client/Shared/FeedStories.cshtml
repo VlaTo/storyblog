@@ -1,0 +1,33 @@
+﻿@using StoryBlog.Web.Services.Blog.Interop.Models
+
+@foreach (var story in Stories)
+{
+    <article id=@story.Slug class="border-bottom border-light storyblog-story mt-5">
+        <div class="storyblog-story-header mt-0 mb-1">
+            <h2 class="storyblog-story-title">
+                <a href="/Story/@story.Slug">@story.Title</a>
+            </h2>
+            <ul class="list-unstyled list-inline">
+                <li class="list-inline-item">
+                    <i class="mdi mdi-calendar"></i>
+                    @story.Created
+                </li>
+                <li class="list-inline-item">
+                    <i class="mdi mdi-comment-multiple-outline"></i>
+                    <text>@story.Comments</text>&nbsp;Comments
+                </li>
+            </ul>
+        </div>
+        <div class="justify-content-md-start mb-5">@story.Content</div>
+    </article>
+}
+
+@functions
+{
+    [Parameter]
+    protected IEnumerable<FeedStoryModel> Stories
+    {
+        get;
+        set;
+    }
+}

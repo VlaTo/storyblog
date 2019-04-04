@@ -1,0 +1,52 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "twitter-bootstrap@4.3.1",
+      "destination": "wwwroot/lib/twitter-bootstrap",
+      "files": [
+        "css/bootstrap.min.css",
+        "css/bootstrap.min.css.map"
+      ]
+    },
+    {
+      "library": "open-iconic@1.1.1",
+      "destination": "wwwroot/lib/open-iconic",
+      "files": [
+        "font/css/open-iconic-bootstrap.min.css",
+        "font/fonts/open-iconic.eot",
+        "font/fonts/open-iconic.otf",
+        "font/fonts/open-iconic.svg",
+        "font/fonts/open-iconic.ttf",
+        "font/fonts/open-iconic.woff"
+      ]
+    },
+    {
+      "library": "font-awesome@4.7.0",
+      "destination": "wwwroot/lib/font-awesome",
+      "files": [
+        "css/font-awesome.css",
+        "css/font-awesome.min.css",
+        "fonts/FontAwesome.otf",
+        "fonts/fontawesome-webfont.eot",
+        "fonts/fontawesome-webfont.svg",
+        "fonts/fontawesome-webfont.ttf",
+        "fonts/fontawesome-webfont.woff",
+        "fonts/fontawesome-webfont.woff2"
+      ]
+    },
+    {
+      "library": "MaterialDesign-Webfont@3.5.95",
+      "destination": "wwwroot/lib/materialdesignicons",
+      "files": [
+        "css/materialdesignicons.min.css",
+        "fonts/materialdesignicons-webfont.eot",
+        "fonts/materialdesignicons-webfont.svg",
+        "fonts/materialdesignicons-webfont.ttf",
+        "fonts/materialdesignicons-webfont.woff",
+        "fonts/materialdesignicons-webfont.woff2"
+      ]
+    }
+  ]
+}

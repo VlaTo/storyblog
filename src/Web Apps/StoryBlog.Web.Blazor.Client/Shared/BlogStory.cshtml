@@ -1,0 +1,44 @@
+﻿@using Microsoft.AspNetCore.Components.Services
+@using StoryBlog.Web.Blazor.Client.Store.Models
+
+@inject IUriHelper UriHelper
+
+<article id=@Story.Slug class="mb-5">
+    <div class="storyblog-story-header mt-0 mb-1">
+        <h4 class="storyblog-story-title">
+            <a onclick=@OnReadMoreClick>@Story.Title</a>
+        </h4>
+        <ul class="list-unstyled list-inline">
+            <li class="list-inline-item">
+                <i class="mdi mdi-calendar"></i>
+                <TimeLabel DateTime=@Story.Published />
+            </li>
+            <li class="list-inline-item">
+                <i class="mdi mdi-comment-multiple-outline"></i>
+                <text>@Story.AllCommentsCount</text>&nbsp;<Plural Value=@Story.AllCommentsCount Rules="[%1=Комментарий][%2,%3,%4=Комментария][*=Комментариев]" />
+            </li>
+        </ul>
+    </div>
+    <div class="justify-content-md-start mb-2">@Story.Content</div>
+    <div>
+        <BootstrapButton Type=BootstrapButtonTypes.Primary Size=BootstrapButtonSizes.Small Outline=true Disabled=false OnClick=OnReadMoreClick>
+            Читать полностью
+            <i class="mdi mdi-arrow-right"></i>
+        </BootstrapButton>
+    </div>
+</article>
+
+@functions
+{
+    [Parameter]
+    protected StoryModel Story
+    {
+        get;
+        set;
+    }
+
+    private void OnReadMoreClick(UIMouseEventArgs e)
+    {
+        UriHelper.NavigateTo($"/Story/{Story.Slug}");
+    }
+}

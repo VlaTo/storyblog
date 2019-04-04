@@ -1,6 +1,12 @@
 ﻿@page "/callback"
 
+@using System.Diagnostics
+@using IdentityModel.Client
+@using Microsoft.AspNetCore.Components.Services
 @inherits Microsoft.AspNetCore.Components.ComponentBase
+
+@inject IUriHelper Uri
+@inject HttpClient Http
 
 <div>
 
@@ -11,6 +17,15 @@
 
     protected override async Task OnInitAsync()
     {
+        var disco = await Http.GetDiscoveryDocumentAsync("http://localhost:3100");
+        var uri = Uri.GetAbsoluteUri();
+        Debug.Write($"Current uri: {uri}");
+        var response = await Http.GetUserInfoAsync(new UserInfoRequest
+        {
+            Address = disco.UserInfoEndpoint,
+            Token = ""
+        });
+
         await base.OnInitAsync();
     }
 

@@ -1,27 +1,81 @@
 ﻿@page "/"
 
+@using System.Net
+@using global::Blazor.Fluxor
 @using IdentityModel
-@using StoryBlog.Web.Blazor.Client.Helpers
 @using IdentityModel.Client
-@using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Services
+@using StoryBlog.Web.Blazor.Client.Helpers
+@using StoryBlog.Web.Blazor.Client.Store
+@using StoryBlog.Web.Blazor.Client.Store.Actions
+@using StoryBlog.Web.Services.Blog.Interop.Includes
+
+@inherits global::Blazor.Fluxor.Components.FluxorComponent
 
 @inject HttpClient Http
 @inject IUriHelper Uri
+@inject IState<LandingState> State
+@inject IDispatcher Dispatcher
 
-<h1>Hello, world!</h1>
+@if (null == State)
+{
 
-Welcome to your new app.
+}
+else if (State.Value.IsBusy)
+{
+    <p class="text-muted">Loading...</p>
+}
+else
+{
+    if (null != State.Value.Error)
+    {
+        <p>@State.Value.Error</p>
+    }
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    if (null != State.Value.Model)
+    {
+        <section>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 mt-4 mb-5 storyblog-landing-title">
+                        <h3 class="mb-2">@State.Value.Model.Title</h3>
+                        <text class="text-muted">@State.Value.Model.Description</text>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-<button class="btn btn-primary" onclick=@OnLoginClick>Login</button>
+        <section>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-9">
+                        <StoryBlogHeroStory Story=@State.Value.Model.Hero />
+                        <StoryBlogFeaturedStories Stories=@State.Value.Model.Featured />
+                        <FeedStories Stories=@State.Value.Model.Feed />
+                    </div>
+                    <aside class="col-lg-3">
+                        <StoryBlogAboutAuthor />
+                    </aside>
+                </div>
+            </div>
+        </section>
+    }
+    else
+    {
+        <p>Empty Content</p>
+    }
+}
 
 @functions
 {
-
-    private async void OnLoginClick(UIMouseEventArgs e)
+    protected override async Task OnInitAsync()
     {
+        /*const LandingIncludes includes = LandingIncludes.HeroStory | LandingIncludes.FeaturedStories | LandingIncludes.StoriesFeed;
+
+        await base.OnInitAsync();
+
+        Dispatcher.Dispatch(new GetLandingAction(includes));*/
+
         var disco = await Http.GetDiscoveryDocumentAsync("http://localhost:3100");
         var crypto = new CryptoHelper();
         var pkce = crypto.CreatePkceData();
@@ -36,6 +90,6 @@ Welcome to your new app.
             codeChallengeMethod: OidcConstants.CodeChallengeMethods.Sha256);
 
         Uri.NavigateTo(auth);
-    }
 
+    }
 }

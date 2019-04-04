@@ -1,0 +1,21 @@
+﻿@using StoryBlog.Web.Services.Blog.Interop.Models
+
+@if (null != Stories)
+{
+    <div class="card-columns mb-5">
+        @foreach (var story in Stories)
+        {
+            <StoryBlogFeaturedStory Story=@story />
+        }
+    </div>
+}
+
+@functions
+{
+    [Parameter]
+    protected IEnumerable<FeedStoryModel> Stories
+    {
+        get;
+        set;
+    }
+}

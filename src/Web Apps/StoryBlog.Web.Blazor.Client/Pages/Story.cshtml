@@ -1,0 +1,101 @@
+﻿@page "/Story/{Slug}"
+
+@using global::Blazor.Fluxor
+@using Microsoft.AspNetCore.Components
+@using StoryBlog.Web.Blazor.Client.Store
+@using StoryBlog.Web.Blazor.Client.Store.Actions
+@using StoryBlog.Web.Services.Blog.Interop.Includes
+
+@inherits global::Blazor.Fluxor.Components.FluxorComponent
+
+@inject IState<StoryState> State
+@inject IDispatcher Dispatcher
+
+@if (null == State)
+{
+
+}
+else if (State.Value.Status.IsNone())
+{
+    <p class="text-muted">Loading...</p>
+}
+else
+{
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9">
+                    @if (null != State.Value.Status.Error)
+                    {
+                        <p>@State.Value.Status.Error</p>
+                    }
+
+                    @if (null != State.Value)
+                    {
+                        <article id="@State.Value.Slug" class="">
+                            <div class="mb-5">
+                                <h2 class="">@State.Value.Title</h2>
+                                <ul class="list-unstyled list-inline">
+                                    <li class="list-inline-item">
+                                        <i class="mdi mdi-calendar"></i>
+                                        <TimeLabel DateTime=@State.Value.Published/>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <i class="mdi mdi-comment-multiple-outline"></i>
+                                        @State.Value.AllCommentsCount Comments
+                                    </li>
+                                </ul>
+                                <div class="justify-content-md-start">@State.Value.Content</div>
+                            </div>
+
+                            @if (0 == State.Value.AllCommentsCount)
+                            {
+                                <div class="alert alert-secondary" role="alert">
+                                    <h4>No comments yet</h4>
+                                </div>
+                            }
+                            else
+                            {
+                                if (State.Value.Closed)
+                                {
+                                    <div class="alert alert-warning" role="alert">
+                                        <h4>Comments are closed</h4>
+                                    </div>
+                                }
+
+                                <div class="m-lg-2">
+                                    <ul class="list-unstyled">
+                                        @foreach (var comment in State.Value.Comments)
+                                        {
+                                            <StoryBlogComment Comment=@comment Level=0/>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        </article>
+                    }
+                </div>
+                <aside class="col-lg-3">
+                    <StoryBlogAboutAuthor />
+                </aside>
+            </div>
+        </div>
+    </section>
+}
+
+@functions
+{
+
+    [Parameter]
+    protected string Slug
+    {
+        get;
+        set;
+    }
+
+    protected override void OnParametersSet()
+    {
+        const StoryIncludes includes = StoryIncludes.Authors | StoryIncludes.Comments;
+        Dispatcher.Dispatch(new GetStoryAction(Slug, includes));
+    }
+}
