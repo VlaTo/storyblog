@@ -1,13 +1,9 @@
-using Microsoft.AspNetCore.Blazor.Builder;
+using Microsoft.AspNetCore.Components.Builder;
 
 namespace StoryBlog.Web.Blazor.Client
 {
-    public class Startup
+    public sealed class Startup
     {
-        public void Configure(IBlazorApplicationBuilder app)
-        {
-            app.AddComponent<App>("app");
-            //app.UseCors()
-        }
+        public void Configure(IComponentsApplicationBuilder app) => app.AddComponent<App>("app");
     }
 }

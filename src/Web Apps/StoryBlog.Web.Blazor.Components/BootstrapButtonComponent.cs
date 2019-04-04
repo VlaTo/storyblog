@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Blazor;
-using Microsoft.AspNetCore.Blazor.Components;
+using Microsoft.AspNetCore.Components;
 using StoryBlog.Web.Blazor.Components.Attributes;
 
 namespace StoryBlog.Web.Blazor.Components

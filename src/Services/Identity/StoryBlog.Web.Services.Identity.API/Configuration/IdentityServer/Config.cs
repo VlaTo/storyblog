@@ -33,19 +33,14 @@ namespace StoryBlog.Web.Services.Identity.API.Configuration.IdentityServer
                 {
                     ClientId = "client.application",
                     ClientName = "Blazor Web application",
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    AllowedGrantTypes = GrantTypes.Code,
                     AccessTokenType = AccessTokenType.Jwt,
-                    AllowAccessTokensViaBrowser = true,
-                    AlwaysIncludeUserClaimsInIdToken = true,
+                    RequireClientSecret = false,
+                    RequirePkce = true,
 
-                    AllowedCorsOrigins =
-                    {
-                        "http://localhost:3000"
-                    },
+                    AllowedCorsOrigins = {"http://localhost:62742"},
+                    RedirectUris = {"http://localhost:62742/callback"},
+                    PostLogoutRedirectUris = {"http://localhost:62742/index"},
 
                     AllowedScopes =
                     {
@@ -53,16 +48,7 @@ namespace StoryBlog.Web.Services.Identity.API.Configuration.IdentityServer
                         IdentityServerConstants.StandardScopes.Profile,
                         "api.identity",
                         "api.blog"
-                    },
-
-                    RedirectUris =
-                    {
-                        "http://localhost:5100/#callback"
-                    },
-
-                    AccessTokenLifetime = 300,
-                    IdentityTokenLifetime = 3600,
-                    AllowOfflineAccess = false
+                    }
                 }
             };
         }

@@ -29,7 +29,7 @@ namespace StoryBlog.Web.Services.Identity.API.Services
 
         public Task SigninAsync(Customer user, AuthenticationProperties properties)
         {
-            return signInManager.SignInAsync(user, properties.IsPersistent);
+            return signInManager.SignInAsync(user, properties);
         }
     }
 }

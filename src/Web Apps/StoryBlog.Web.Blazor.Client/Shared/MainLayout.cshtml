@@ -1,29 +1,15 @@
-@using global::Blazor.Fluxor
+﻿@inherits LayoutComponentBase
 
-@inherits BlazorLayoutComponent
+<div class="sidebar">
+    <NavMenu />
+</div>
 
-@inject IStore Store
+<div class="main">
+    <div class="top-row px-4">
+        <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
+    </div>
 
-@Store.Initialize()
-
-<div class="container-fluid storyblog-wrapper">
-    <main class="row storyblog-main">
-        <aside class="left col-md-2 storyblog-main-menu">
-            <StoryBlogTitle Title="Sample Blog" Description="lorem ipsum dolor sit amet" />
-            @*<div>
-                <BootstrapButton Type=@BootstrapButtonTypes.Secondary Outline=true Size=@BootstrapButtonSizes.Small OnClick=@OnLoginButtonClick>
-                    <i class="mdi mdi-account-arrow-right"></i>
-                    Sign in
-                </BootstrapButton>
-            </div>*@
-            <BlogMenu>
-                <BlogMenuItem Title="Home" Link="/" Class="ml-3" />
-                <BlogMenuItem Title="Stories" Link="/Stories" Class="ml-3" />
-                <BlogMenuItem Title="Login" Link="/UserLogin" Class="ml-3" />
-            </BlogMenu>
-        </aside>
-        <section class="col-md-10 storyblog-main-content">
-            @Body
-        </section>
-    </main>
+    <div class="content px-4">
+        @Body
+    </div>
 </div>

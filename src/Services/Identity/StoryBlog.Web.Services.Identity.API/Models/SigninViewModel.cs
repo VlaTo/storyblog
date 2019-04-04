@@ -4,20 +4,32 @@ using System.Linq;
 
 namespace StoryBlog.Web.Services.Identity.API.Models
 {
-    public sealed class SigninViewModel : SigninModel
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class SigninViewModel : SigninInputModel
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public bool AllowRememberMe
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool EnableLocalLogin
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ICollection<ExternalProvider> ExternalProviders
         {
             get;

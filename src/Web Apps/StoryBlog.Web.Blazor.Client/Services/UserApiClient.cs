@@ -1,13 +1,10 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using IdentityModel.Client;
-using Microsoft.Extensions.Logging;
-using StoryBlog.Web.Blazor.Client.OidcClient;
-using StoryBlog.Web.Blazor.Client.OidcClient.Messages;
 
 namespace StoryBlog.Web.Blazor.Client.Services
 {
@@ -24,6 +21,13 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
         public async Task<string> LoginAsync()
         {
+            //var disco = await client.GetDiscoveryDocumentAsync("http://localhost:3100");
+
+            return await Task.FromResult(String.Empty);
+
+            /*var url = new RequestUrl(new Uri("http://localhost:3100"));
+
+
             string token = null;
 
             try
@@ -53,14 +57,14 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 logger.LogError(exception, "Failed");
             }
 
-            return token;
+            return token;*/
         }
 
         public async Task<IEnumerable<Claim>> GetUserInfoAsync(string token)
         {
             try
             {
-                var response = await client.GetUserInfoAsync(new UserInfoRequest
+                /*var response = await client.GetUserInfoAsync(new UserInfoRequest
                 {
                     Address = "http://localhost:3100/connect/userinfo",
                     Token = token
@@ -71,7 +75,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
                     throw new Exception();
                 }
 
-                return response.Claims;
+                return response.Claims;*/
             }
             catch (HttpRequestException exception)
             {
@@ -82,7 +86,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 logger.LogError(exception, "Failed");
             }
 
-            return Enumerable.Empty<Claim>();
+            return await Task.FromResult(Enumerable.Empty<Claim>());
         }
     }
 }

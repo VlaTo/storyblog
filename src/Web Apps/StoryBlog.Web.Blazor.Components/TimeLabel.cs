@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.RenderTree;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.RenderTree;
 
 namespace StoryBlog.Web.Blazor.Components
 {
     /// <summary>
     /// Time label class.
     /// </summary>
-    public class TimeLabel : BlazorComponent, IDisposable
+    public class TimeLabel : ComponentBase, IDisposable
     {
         internal delegate void ContentUpdaterCallback(DateTime dateTime);
 

@@ -134,6 +134,7 @@ namespace StoryBlog.Web.Services.Identity.API
                         {
                             options.Endpoints = new EndpointsOptions
                             {
+                                EnableDiscoveryEndpoint = true,
                                 EnableAuthorizeEndpoint = true,
                                 EnableCheckSessionEndpoint = true,
                                 EnableEndSessionEndpoint = true,
@@ -149,6 +150,9 @@ namespace StoryBlog.Web.Services.Identity.API
                             options.Events.RaiseFailureEvents = true;
 
                             options.IssuerUri = null;
+
+                            options.UserInteraction.LoginUrl = "/account/signin";
+                            options.UserInteraction.ConsentUrl = "/consent";
                         })
                         .AddDeveloperSigningCredential()
                         //.AddSigningCredential(Certificate.Get())

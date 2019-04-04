@@ -25,7 +25,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
 {
     [AllowAnonymous]
     [Route("[controller]")]
-    public class AccountController : Controller
+    public sealed class AccountController : Controller
     {
         private readonly IIdentityServerInteractionService interactions;
         private readonly ILoginService<Customer> loginService;
@@ -92,7 +92,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
         [Consumes("application/x-www-form-urlencoded")]
         [ValidateAntiForgeryToken]
         [ValidateCaptcha]
-        public async Task<IActionResult> Signin([FromForm] SigninModel model, [FromForm] string button)
+        public async Task<IActionResult> Signin([FromForm] SigninInputModel model, [FromForm] string button)
         {
             var context = await interactions.GetAuthorizationContextAsync(model.ReturnUrl);
 
@@ -324,7 +324,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
             };
         }
 
-        private async Task<SigninViewModel> CreateSigninModelAsync(SigninModel signin)
+        private async Task<SigninViewModel> CreateSigninModelAsync(SigninInputModel signin)
         {
             var model = await CreateSigninModelAsync(signin.ReturnUrl);
 

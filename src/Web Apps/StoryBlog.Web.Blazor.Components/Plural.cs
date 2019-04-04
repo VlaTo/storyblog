@@ -1,10 +1,9 @@
-﻿using System.Runtime.InteropServices;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.RenderTree;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.RenderTree;
 
 namespace StoryBlog.Web.Blazor.Components
 {
-    public class Plural : BlazorComponent
+    public class Plural : ComponentBase
     {
         private string content;
         private int currentValue;

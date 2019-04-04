@@ -1,12 +1,12 @@
 ﻿using System;
-using Microsoft.AspNetCore.Blazor.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace StoryBlog.Web.Blazor.Components
 {
     /// <summary>
     /// 
     /// </summary>
-    public class BootstrapComponentBase : BlazorComponent, IDisposable
+    public class BootstrapComponentBase : ComponentBase, IDisposable
     {
         private bool disposed;
 
