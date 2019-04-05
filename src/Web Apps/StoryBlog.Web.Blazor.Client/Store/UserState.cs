@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Principal;
 using Blazor.Fluxor;
 
 namespace StoryBlog.Web.Blazor.Client.Store
@@ -23,13 +24,7 @@ namespace StoryBlog.Web.Blazor.Client.Store
     /// </summary>
     public sealed class UserState
     {
-        public string Token
-        {
-            get;
-            set;
-        }
-
-        public IEnumerable<Claim> Claims
+        public IPrincipal Principal
         {
             get;
             set;
@@ -43,7 +38,6 @@ namespace StoryBlog.Web.Blazor.Client.Store
         public UserState(ModelStatus status)
         {
             Status = status;
-            Claims = Enumerable.Empty<Claim>();
         }
     }
 }

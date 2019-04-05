@@ -1,71 +1,41 @@
 ﻿@page "/callback"
 
-@using System.Diagnostics
-@using System.Security.Claims
-@using System.Threading
-@using IdentityModel.Client
-@using Microsoft.AspNetCore.Components.Services
-@using Microsoft.AspNetCore.WebUtilities
+@using global::Blazor.Fluxor
+@using StoryBlog.Web.Blazor.Client.Store
+@using StoryBlog.Web.Blazor.Client.Store.Actions
 
 @inherits Microsoft.AspNetCore.Components.ComponentBase
 
-@inject IUriHelper Uri
-@inject HttpClient Http
+@inject IState<UserState> State
+@inject IDispatcher Dispatcher
 
 <div>
-    @if (null == claims)
+    @if (State.Value.Status.IsNone())
     {
         <p>Empty</p>
     }
     else
     {
-        <ul>
-            @foreach (var claim in claims)
-            {
-                <li>
-                    @claim.Type
-                    <p>
-                        @foreach (var prop in claim.Properties)
-                        {
-                            @prop.Key <text>=</text> @prop.Value
-                        }
-                    </p>
-                </li>
-            }
-        </ul>
+        if (State.Value.Status.IsFailed())
+        {
+
+        }
+        else
+        {
+            <p class="h4">@State.Value.Principal.Identity.Name</p>
+        }
     }
 </div>
 
 @functions
 {
-    protected IEnumerable<Claim> claims;
-
-    protected override async Task OnInitAsync()
+    protected override Task OnInitAsync()
     {
-        await base.OnInitAsync();
-
-        var disco = await Http.GetDiscoveryDocumentAsync("http://localhost:3100");
-        var token = await RetrieveTokenAsync(disco);
-        var userInfo = await GetUserInfoAsync(disco, token);
-
-        if (false == userInfo.IsError)
-        {
-            claims = userInfo.Claims;
-
-            foreach (var claim in claims)
-            {
-                Debug.WriteLine($"{claim.Type} = {claim.Value}");
-                foreach (var prop in claim.Properties)
-                {
-                    Debug.WriteLine($"   {prop.Key} = {prop.Value}");
-                }
-            }
-
-            StateHasChanged();
-        }
+        Dispatcher.Dispatch(new SigninCallbackAction());
+        return base.OnInitAsync();
     }
 
-    private async Task<string> RetrieveTokenAsync(DiscoveryResponse disco)
+    /*private async Task<string> RetrieveTokenAsync(DiscoveryResponse disco)
     {
         var path = new Uri(Uri.GetAbsoluteUri());
         var query = QueryHelpers.ParseQuery(path.Query);
@@ -100,5 +70,5 @@
             Address = disco.UserInfoEndpoint,
             Token = token
         });
-    }
+    }*/
 }

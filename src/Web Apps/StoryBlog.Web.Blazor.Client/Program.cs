@@ -1,4 +1,5 @@
-﻿using Blazor.Fluxor;
+﻿using System;
+using Blazor.Fluxor;
 using Microsoft.AspNetCore.Blazor.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using StoryBlog.Web.Blazor.Client.Services;
@@ -15,6 +16,14 @@ namespace StoryBlog.Web.Blazor.Client
                     services.AddFluxor(options =>
                         options.UseDependencyInjection(typeof(Program).Assembly)
                     );
+
+                    services
+                        .AddOptions<UserApiClientOptions>()
+                        .Configure(options =>
+                        {
+                            options.Address = new Uri("http://localhost:3100");
+                            options.ClientId = "client.application";
+                        });
 
                     services
                         .AddSingleton<IBlogApiClient, BlogApiClient>()

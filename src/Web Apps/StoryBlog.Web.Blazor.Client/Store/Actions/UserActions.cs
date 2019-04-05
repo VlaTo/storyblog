@@ -1,45 +1,43 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
+using System.Security.Principal;
 using Blazor.Fluxor;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Actions
 {
-    public sealed class LoginAction : IAction
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class SigninAction : IAction
     {
-        public LoginAction()
+        public SigninAction()
         {
         }
     }
 
-    public sealed class LoginSuccessAction : IAction
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class SigninCallbackAction : IAction
     {
-        public string Token
+        public SigninCallbackAction()
         {
-            get;
-        }
-
-        public IEnumerable<Claim> Claims
-        {
-            get;
-        }
-
-        public LoginSuccessAction(string token, IEnumerable<Claim> claims)
-        {
-            Token = token;
-            Claims = claims;
         }
     }
 
-    public sealed class GetUserInfoAction : IAction
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class SigninCallbackSuccessAction : IAction
     {
-        public string Token
+        public IPrincipal Principal
         {
             get;
         }
 
-        public GetUserInfoAction(string token)
+        public SigninCallbackSuccessAction(IPrincipal principal)
         {
-            Token = token;
+            Principal = principal;
         }
     }
 }

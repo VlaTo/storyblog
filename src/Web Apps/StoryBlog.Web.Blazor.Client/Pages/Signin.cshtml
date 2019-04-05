@@ -1,12 +1,11 @@
 ﻿@page "/signin"
 
-@using IdentityModel
-@using IdentityModel.Client
-@using Microsoft.AspNetCore.Components.Services
-@using StoryBlog.Web.Blazor.Client.Helpers
+@using global::Blazor.Fluxor
+@using StoryBlog.Web.Blazor.Client.Store
+@using StoryBlog.Web.Blazor.Client.Store.Actions
 
-@inject HttpClient Http
-@inject IUriHelper Uri
+@inject IState<UserState> State
+@inject IDispatcher Dispatcher 
 
 <div class="col-auto">
     <BootstrapButton Type=BootstrapButtonTypes.Primary Outline=true Size=BootstrapButtonSizes.Small OnClick=OnSigninButtonClick>
@@ -18,9 +17,11 @@
 @functions
 {
 
-    private async void OnSigninButtonClick(UIMouseEventArgs e)
+    private void OnSigninButtonClick(UIMouseEventArgs e)
     {
-        var disco = await Http.GetDiscoveryDocumentAsync("http://localhost:3100");
+        Dispatcher.Dispatch(new SigninAction());
+
+        /*var disco = await Http.GetDiscoveryDocumentAsync("http://localhost:3100");
         var crypto = new CryptoHelper();
         var pkce = crypto.CreatePkceData();
         var scopes = String.Join(" ", OidcConstants.StandardScopes.OpenId, OidcConstants.StandardScopes.Profile, "api.blog");
@@ -34,7 +35,7 @@
             responseMode: OidcConstants.ResponseModes.Query,
             codeChallenge: pkce.CodeChallenge,
             codeChallengeMethod: OidcConstants.CodeChallengeMethods.Sha256);
-        Uri.NavigateTo(auth);
+        Uri.NavigateTo(auth);*/
     }
 
 }
