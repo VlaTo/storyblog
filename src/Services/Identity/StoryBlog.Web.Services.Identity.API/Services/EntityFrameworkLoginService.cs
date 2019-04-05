@@ -5,31 +5,42 @@ using StoryBlog.Web.Services.Identity.API.Data.Models;
 
 namespace StoryBlog.Web.Services.Identity.API.Services
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class EntityFrameworkLoginService : ILoginService<Customer>
     {
         private readonly UserManager<Customer> userManager;
         private readonly SignInManager<Customer> signInManager;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userManager"></param>
+        /// <param name="signInManager"></param>
         public EntityFrameworkLoginService(UserManager<Customer> userManager, SignInManager<Customer> signInManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
 
+        /// <inheritdoc cref="ILoginService{TEntity}.ValidateCredentialsAsync" />
         public async Task<SignInResult> ValidateCredentialsAsync(Customer user, string password)
         {
             var result = await signInManager.CheckPasswordSignInAsync(user, password, false);
             return result;
         }
 
-        public Task<Customer> FindByUsernameAsync(string username)
+        /// <inheritdoc cref="ILoginService{TEntity}.FindByEmailAsync" />
+        public Task<Customer> FindByEmailAsync(string email)
         {
-            return userManager.FindByNameAsync(username);
+            return userManager.FindByEmailAsync(email);
         }
 
-        public Task SigninAsync(Customer user, AuthenticationProperties properties)
+        /// <inheritdoc cref="ILoginService{TEntity}.SigninAsync" />
+        public Task SigninAsync(Customer user, AuthenticationProperties properties, string authenticationMethod)
         {
-            return signInManager.SignInAsync(user, properties);
+            return signInManager.SignInAsync(user, properties, authenticationMethod);
         }
     }
 }

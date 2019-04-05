@@ -55,14 +55,14 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
         /// </summary>
         /// <param name="returnUrl"></param>
         /// <returns></returns>
-        [HttpGet]
-        public async Task<IActionResult> Get(string returnUrl)
+        [HttpGet("confirm")]
+        public async Task<IActionResult> Confirm(string returnUrl)
         {
             var vm = await BuildViewModelAsync(returnUrl);
 
             if (vm != null)
             {
-                return View("Consent", vm);
+                return View(vm);
             }
 
             return View("Error");
@@ -73,9 +73,9 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("confirm")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Put([FromForm] ConsentInputModel model)
+        public async Task<IActionResult> Confirm([FromForm] ConsentInputModel model)
         {
             var result = await ProcessConsent(model);
 
@@ -98,7 +98,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
 
             if (result.ShowView)
             {
-                return View("Consent", result.ViewModel);
+                return View(result.ViewModel);
             }
 
             return View("Error");

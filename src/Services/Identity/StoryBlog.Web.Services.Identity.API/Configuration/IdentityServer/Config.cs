@@ -39,7 +39,10 @@ namespace StoryBlog.Web.Services.Identity.API.Configuration.IdentityServer
                     RequirePkce = true,
 
                     AllowedCorsOrigins = {"http://localhost:62742"},
-                    RedirectUris = {"http://localhost:62742/callback"},
+                    RedirectUris =
+                    {
+                        "http://localhost:62742/callback",
+                    },
                     PostLogoutRedirectUris = {"http://localhost:62742/index"},
 
                     AllowedScopes =

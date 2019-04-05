@@ -44,6 +44,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\StoryBlog.Web.Services.Shared.Captcha\Shared.Captcha.csproj" />
+    <ProjectReference Include="..\..\Shared\StoryBlog.Web.Services.Shared.Common\Shared.Common.csproj" />
     <ProjectReference Include="..\StoryBlog.Web.Services.Identity.Application\Identity.Application.csproj" />
     <ProjectReference Include="..\StoryBlog.Web.Services.Identity.Persistence\Identity.Persistence.csproj" />
   </ItemGroup>

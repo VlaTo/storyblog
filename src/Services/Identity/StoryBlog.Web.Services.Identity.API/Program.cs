@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 using StoryBlog.Web.Services.Identity.API.Configuration;
 using StoryBlog.Web.Services.Identity.API.Data;
@@ -28,8 +29,6 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
-using IdentityServer4.EntityFramework.DbContexts;
-using Microsoft.Extensions.Logging;
 
 namespace StoryBlog.Web.Services.Identity.API
 {
@@ -37,6 +36,8 @@ namespace StoryBlog.Web.Services.Identity.API
     {
         public static void Main(string[] args)
         {
+            Console.Title = "Identity.API";
+
             var host = WebHost
                 .CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((context, config) =>
@@ -111,7 +112,7 @@ namespace StoryBlog.Web.Services.Identity.API
                         .AddCors(options =>
                         {
                             options.AddDefaultPolicy(policy =>
-                                policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials()
+                                policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()
                             );
                         })
                         .AddMvc()
@@ -141,18 +142,22 @@ namespace StoryBlog.Web.Services.Identity.API
                                 EnableUserInfoEndpoint = true
                             };
 
-                            options.Authentication = new AuthenticationOptions
+                            /*options.Authentication = new AuthenticationOptions
                             {
-                                CookieLifetime = TimeSpan.FromSeconds(300.0d)
-                            };
+                                CookieLifetime = TimeSpan.FromSeconds(300.0d),
+                                CookieAuthenticationScheme = IdentityServerConstants.DefaultCookieAuthenticationScheme
+                            };*/
 
                             options.Events.RaiseErrorEvents = true;
                             options.Events.RaiseFailureEvents = true;
+                            options.Events.RaiseInformationEvents = true;
+                            options.Events.RaiseSuccessEvents = true;
 
-                            options.IssuerUri = null;
+                            //options.IssuerUri = null;
 
                             options.UserInteraction.LoginUrl = "/account/signin";
-                            options.UserInteraction.ConsentUrl = "/consent";
+                            options.UserInteraction.ConsentUrl = "/consent/confirm";
+                            options.UserInteraction.ErrorUrl = "/account/error";
                         })
                         .AddDeveloperSigningCredential()
                         //.AddSigningCredential(Certificate.Get())
@@ -215,7 +220,7 @@ namespace StoryBlog.Web.Services.Identity.API
                     services
                         .AddDistributedMemoryCache()
                         .AddOidcStateDataFormatterCache()
-                        .AddAuthentication()
+                        .AddAuthentication(IdentityConstants.ApplicationScheme)
                         .AddGoogle(options =>
                         {
                             var google = context.Configuration.GetSection("Authentication:Google");
@@ -224,24 +229,17 @@ namespace StoryBlog.Web.Services.Identity.API
                             options.CallbackPath = "/callback/google/authorize";
                             options.ClientId = google.GetValue<string>("ClientId");
                             options.ClientSecret = google.GetValue<string>("ClientSecret");
-                        })/*
-                        .AddIdentityServerAuthentication(
-                            IdentityServerAuthenticationDefaults.AuthenticationScheme,
-                            options =>
-                            {
-                                options.Authority=""
-                            }
-                        )*/;
+                        });
 
                     services
-                        .ConfigureApplicationCookie(options =>
+                        /*.ConfigureApplicationCookie(options =>
                         {
                             options.Cookie.Name = "StoryBlog.Identity";
                             options.Cookie.HttpOnly = true;
                             options.Cookie.SameSite = SameSiteMode.Lax;
                             options.ExpireTimeSpan = TimeSpan.FromHours(1.0d);
                             options.SlidingExpiration = true;
-                        })
+                        })*/
                         .AddAntiforgery();
 
                     // remove it
@@ -314,6 +312,7 @@ namespace StoryBlog.Web.Services.Identity.API
                     }
 
                     app
+                        .UseResponseCompression()
                         .UseForwardedHeaders()
                         .UseCors()
                         .UseRequestLocalization(options =>
@@ -330,13 +329,10 @@ namespace StoryBlog.Web.Services.Identity.API
                         .UseStaticFiles()
                         .UseAuthentication()
                         .UseIdentityServer()
-                        .UseMvc()
                         .UseCaptcha()
-                        .UseResponseCompression();
+                        .UseMvc();
                 })
                 .Build();
-
-            Console.Title = "Identity.API";
 
             /*using (var scope = host.Services.CreateScope())
             {
@@ -346,9 +342,9 @@ namespace StoryBlog.Web.Services.Identity.API
 
                 try
                 {
-                    services.GetRequiredService<ConfigurationDbContext>().Database.Migrate();
-                    services.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
-                    services.GetRequiredService<StoryBlogIdentityDbContext>().Database.Migrate();
+                    //services.GetRequiredService<ConfigurationDbContext>().Database.Migrate();
+                    //services.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+                    //services.GetRequiredService<StoryBlogIdentityDbContext>().Database.Migrate();
                     identitySetup.SeedAsync().Wait();
                 }
                 catch (Exception exception)

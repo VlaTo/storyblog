@@ -37,6 +37,6 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// </summary>
         /// <param name="story"></param>
         /// <returns></returns>
-        Task CreateStoryAsync(StoryModel story);
+        Task<bool> CreateStoryAsync(StoryModel story);
     }
 }

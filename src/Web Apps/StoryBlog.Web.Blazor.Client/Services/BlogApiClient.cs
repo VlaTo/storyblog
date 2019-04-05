@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 using StoryBlog.Web.Services.Blog.Interop;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
@@ -16,17 +15,15 @@ namespace StoryBlog.Web.Blazor.Client.Services
     {
         private readonly HttpClient client;
         private readonly Uri baseUri = new Uri("http://localhost:3000/api/v1/");
-        private readonly ILogger logger;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="client"></param>
         /// <param name="logger"></param>
-        public BlogApiClient(HttpClient client, ILogger<IBlogApiClient> logger)
+        public BlogApiClient(HttpClient client)
         {
             this.client = client;
-            this.logger = logger;
         }
 
         /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync" />
@@ -39,8 +36,6 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
             try
             {
-                logger.LogDebug($"[{nameof(BlogApiClient)}] Requesting landing from \"{requestUri}\"");
-
                 using (var response = await client.GetAsync(requestUri, CancellationToken.None))
                 {
                     response.EnsureSuccessStatusCode();
@@ -48,14 +43,11 @@ namespace StoryBlog.Web.Blazor.Client.Services
                     var json = await response.Content.ReadAsStringAsync();
                     var data = Json.Deserialize<LandingModel>(json);
 
-                    logger.LogDebug($"[{nameof(BlogApiClient)}] Fetch landing status: {response.StatusCode}");
-
                     return data;
                 }
             }
             catch (HttpRequestException exception)
             {
-                logger.LogError(exception, $"Failed to fetch stories from \"{requestUri}\"");
                 return new LandingModel();
             }
         }
@@ -70,8 +62,6 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
             try
             {
-                logger.LogDebug($"[{nameof(BlogApiClient)}] Requesting stories from \"{requestUri}\"");
-
                 using (var response = await client.GetAsync(requestUri, CancellationToken.None))
                 {
                     response.EnsureSuccessStatusCode();
@@ -79,14 +69,11 @@ namespace StoryBlog.Web.Blazor.Client.Services
                     var json = await response.Content.ReadAsStringAsync();
                     var data = Json.Deserialize<ListResult<StoryModel>>(json);
 
-                    logger.LogDebug($"[{nameof(BlogApiClient)}] Stories fetch status {response.StatusCode}");
-
                     return data;
                 }
             }
             catch (HttpRequestException exception)
             {
-                logger.LogError(exception, $"Failed to fetch stories from \"{requestUri}\"");
                 return new ListResult<StoryModel>();
             }
         }
@@ -106,8 +93,6 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
             try
             {
-                logger.LogDebug($"[{nameof(BlogApiClient)}] Requesting stories from \"{requestUri}\"");
-
                 using (var response = await client.GetAsync(requestUri, CancellationToken.None))
                 {
                     response.EnsureSuccessStatusCode();
@@ -115,14 +100,11 @@ namespace StoryBlog.Web.Blazor.Client.Services
                     var json = await response.Content.ReadAsStringAsync();
                     var data = Json.Deserialize<StoryModel>(json);
 
-                    logger.LogDebug($"[{nameof(BlogApiClient)}] Stories fetch status {response.StatusCode}");
-
                     return data;
                 }
             }
             catch (HttpRequestException exception)
             {
-                logger.LogError(exception, $"Failed to fetch stories from \"{requestUri}\"");
                 return null;
             }
         }
@@ -132,7 +114,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// </summary>
         /// <param name="story"></param>
         /// <returns></returns>
-        public async Task CreateStoryAsync(StoryModel story)
+        public async Task<bool> CreateStoryAsync(StoryModel story)
         {
             var requestUri = new Uri(baseUri, "stories");
 
@@ -146,10 +128,12 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 {
                     response.EnsureSuccessStatusCode();
                 }
+
+                return true;
             }
             catch (HttpRequestException exception)
             {
-                logger.LogError(exception, "");
+                return false;
             }
         }
     }

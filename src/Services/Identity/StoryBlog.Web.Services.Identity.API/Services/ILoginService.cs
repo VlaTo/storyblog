@@ -4,12 +4,34 @@ using Microsoft.AspNetCore.Identity;
 
 namespace StoryBlog.Web.Services.Identity.API.Services
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
     public interface ILoginService<TEntity>
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         Task<SignInResult> ValidateCredentialsAsync(TEntity user, string password);
 
-        Task<TEntity> FindByUsernameAsync(string username);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        Task<TEntity> FindByEmailAsync(string email);
 
-        Task SigninAsync(TEntity user, AuthenticationProperties properties);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="properties"></param>
+        /// <param name="authenticationMethod"></param>
+        /// <returns></returns>
+        Task SigninAsync(TEntity user, AuthenticationProperties properties, string authenticationMethod);
     }
 }

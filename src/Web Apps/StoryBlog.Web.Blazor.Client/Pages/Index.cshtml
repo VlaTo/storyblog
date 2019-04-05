@@ -1,19 +1,12 @@
 ﻿@page "/"
 
-@using System.Net
 @using global::Blazor.Fluxor
-@using IdentityModel
-@using IdentityModel.Client
-@using Microsoft.AspNetCore.Components.Services
-@using StoryBlog.Web.Blazor.Client.Helpers
 @using StoryBlog.Web.Blazor.Client.Store
 @using StoryBlog.Web.Blazor.Client.Store.Actions
 @using StoryBlog.Web.Services.Blog.Interop.Includes
 
 @inherits global::Blazor.Fluxor.Components.FluxorComponent
 
-@inject HttpClient Http
-@inject IUriHelper Uri
 @inject IState<LandingState> State
 @inject IDispatcher Dispatcher
 
@@ -70,26 +63,10 @@ else
 {
     protected override async Task OnInitAsync()
     {
-        /*const LandingIncludes includes = LandingIncludes.HeroStory | LandingIncludes.FeaturedStories | LandingIncludes.StoriesFeed;
+        const LandingIncludes includes = LandingIncludes.HeroStory | LandingIncludes.FeaturedStories | LandingIncludes.StoriesFeed;
 
         await base.OnInitAsync();
 
-        Dispatcher.Dispatch(new GetLandingAction(includes));*/
-
-        var disco = await Http.GetDiscoveryDocumentAsync("http://localhost:3100");
-        var crypto = new CryptoHelper();
-        var pkce = crypto.CreatePkceData();
-        var ur = new RequestUrl(disco.AuthorizeEndpoint);
-        var auth = ur.CreateAuthorizeUrl(
-            "client.application",
-            OidcConstants.ResponseTypes.Code,
-            "openid profile api.blog",
-            "http://localhost:62742/callback",
-            responseMode:OidcConstants.ResponseModes.Query,
-            codeChallenge:pkce.CodeChallenge,
-            codeChallengeMethod: OidcConstants.CodeChallengeMethods.Sha256);
-
-        Uri.NavigateTo(auth);
-
+        Dispatcher.Dispatch(new GetLandingAction(includes));
     }
 }

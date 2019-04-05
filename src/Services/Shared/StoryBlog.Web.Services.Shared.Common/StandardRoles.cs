@@ -1,6 +1,9 @@
-﻿namespace StoryBlog.Web.Services.Identity.Domain
+﻿namespace StoryBlog.Web.Services.Shared.Common
 {
-    public class CustomerRoleNames
+    /// <summary>
+    /// 
+    /// </summary>
+    public static class StandardRoles
     {
         /// <summary>
         /// 

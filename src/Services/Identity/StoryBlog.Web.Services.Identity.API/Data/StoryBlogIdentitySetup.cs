@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using StoryBlog.Web.Services.Identity.API.Configuration.IdentityServer;
 using StoryBlog.Web.Services.Identity.API.Data.Models;
 using StoryBlog.Web.Services.Identity.Domain;
+using StoryBlog.Web.Services.Shared.Common;
 
 namespace StoryBlog.Web.Services.Identity.API.Data
 {
@@ -44,9 +45,9 @@ namespace StoryBlog.Web.Services.Identity.API.Data
             {
                 var roles = new[]
                 {
-                    CustomerRoleNames.Administrator,
-                    CustomerRoleNames.Client,
-                    CustomerRoleNames.Shopper
+                    StandardRoles.Administrator,
+                    StandardRoles.Client,
+                    StandardRoles.Shopper
                 };
 
                 foreach (var roleName in roles)
@@ -73,9 +74,9 @@ namespace StoryBlog.Web.Services.Identity.API.Data
 
             var users = new[]
             {
-                (Email: "admin@storyblog.net", UserName: "admin", Password: "Abcd1234!", ContactName: "Administrator", Roles: new[] { CustomerRoleNames.Administrator }),
-                (Email: "dev@storyblog.net", UserName: "dev", Password: "1234Abcd!", ContactName: "Developer", Roles: new[] { CustomerRoleNames.Client, CustomerRoleNames.Shopper }),
-                (Email: "test@storyblog.net", UserName: "test", Password: "Test1234!", ContactName: "Test user", Roles: new[] { CustomerRoleNames.Shopper })
+                (Email: "admin@storyblog.net", UserName: "admin", Password: "Abcd1234!", ContactName: "Administrator", Roles: new[] { StandardRoles.Administrator }),
+                (Email: "dev@storyblog.net", UserName: "dev", Password: "1234Abcd!", ContactName: "Developer", Roles: new[] { StandardRoles.Client, StandardRoles.Shopper }),
+                (Email: "test@storyblog.net", UserName: "test", Password: "Test1234!", ContactName: "Test user", Roles: new[] { StandardRoles.Shopper })
             };
 
             foreach (var user in users)

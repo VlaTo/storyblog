@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using IdentityModel;
+﻿using IdentityModel;
+using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
 using StoryBlog.Web.Services.Identity.API.Data.Models;
 using StoryBlog.Web.Services.Identity.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Services.Identity.API.Services
 {
@@ -19,10 +19,14 @@ namespace StoryBlog.Web.Services.Identity.API.Services
     public class EntityFrameworkProfileService : IProfileService
     {
         private readonly UserManager<Customer> userManager;
+        private readonly IUserClaimsPrincipalFactory<Customer> claimsFactory;
 
-        public EntityFrameworkProfileService(UserManager<Customer> userManager)
+        public EntityFrameworkProfileService(
+            UserManager<Customer> userManager,
+            IUserClaimsPrincipalFactory<Customer> claimsFactory)
         {
             this.userManager = userManager;
+            this.claimsFactory = claimsFactory;
         }
 
         public async Task GetProfileDataAsync(ProfileDataRequestContext context)
@@ -37,22 +41,22 @@ namespace StoryBlog.Web.Services.Identity.API.Services
                 throw new ArgumentNullException(nameof(context.Subject));
             }
 
-            var subject = context.Subject;
-            var subjectId = subject.Claims.First(claim => claim.Type == JwtClaimTypes.Subject);
+            var subjectId = context.Subject.GetSubjectId();
 
             if (null == subjectId)
             {
                 throw new ArgumentException();
             }
 
-            var user = await userManager.FindByIdAsync(subjectId.Value);
+            var user = await userManager.FindByIdAsync(subjectId);
 
             if (null == user)
             {
                 throw new ArgumentNullException();
             }
 
-            var claims = GetClaimsFromUser(user);
+            //var temp = await claimsFactory.CreateAsync(user);
+            var claims = await GetClaimsFromUserAsync(user, context.IssuedClaims, context.RequestedClaimTypes);
 
             context.IssuedClaims = claims.ToList();
         }
@@ -105,18 +109,25 @@ namespace StoryBlog.Web.Services.Identity.API.Services
             }
         }
 
-        private IEnumerable<Claim> GetClaimsFromUser(Customer user)
+        private async Task<IEnumerable<Claim>> GetClaimsFromUserAsync(
+            Customer user,
+            IList<Claim> issuedClaims,
+            IEnumerable<string> requestedClaimTypes)
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtClaimTypes.Id, user.Id.ToString()),
+                new Claim(JwtClaimTypes.Subject, user.Id.ToString()),
                 new Claim(JwtClaimTypes.PreferredUserName, user.UserName),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
+                new Claim(JwtClaimTypes.Name, user.UserName)
             };
 
             if (String.IsNullOrWhiteSpace(user.ContactName))
             {
                 claims.Add(new Claim(CustomerClaimTypes.Name, user.NormalizedUserName));
+            }
+            else
+            {
+                claims.Add(new Claim(JwtClaimTypes.GivenName, user.ContactName));
             }
 
             var address = user.Addresses?.FirstOrDefault(x => x.AddressTypes == AddressTypes.Home);
@@ -141,7 +152,7 @@ namespace StoryBlog.Web.Services.Identity.API.Services
                 });
             }
 
-            if (userManager.SupportsUserPhoneNumber)
+            if (userManager.SupportsUserPhoneNumber && false == String.IsNullOrEmpty(user.PhoneNumber))
             {
                 claims.AddRange(new[]
                 {
@@ -152,6 +163,35 @@ namespace StoryBlog.Web.Services.Identity.API.Services
                 });
             }
 
+            if (userManager.SupportsUserRole)
+            {
+                const string claimType = JwtClaimTypes.Role;
+
+                if (requestedClaimTypes.Contains(claimType))
+                {
+                    var roles = await userManager.GetRolesAsync(user);
+                    claims.AddRange(roles.Select(role => new Claim(claimType, role)));
+                }
+            }
+
+            if (userManager.SupportsUserSecurityStamp)
+            {
+                var stamp = await userManager.GetSecurityStampAsync(user);
+                claims.Add(new Claim("security_stamp", stamp));
+            }
+
+            foreach (var issuedClaim in issuedClaims)
+            {
+                var claim = GetIssuedClaim(issuedClaim);
+
+                if (null == claim)
+                {
+                    continue;
+                }
+
+                claims.Add(claim);
+            }
+
             return claims;
         }
 
@@ -160,6 +200,11 @@ namespace StoryBlog.Web.Services.Identity.API.Services
             return false == user.LockoutEnabled ||
                    false == user.LockoutEnd.HasValue ||
                    user.LockoutEnd <= DateTime.UtcNow;
+        }
+
+        private static Claim GetIssuedClaim(Claim issuedClaim)
+        {
+            return null;
         }
     }
 }

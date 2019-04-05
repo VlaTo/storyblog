@@ -1,32 +1,104 @@
 ﻿@page "/callback"
 
 @using System.Diagnostics
+@using System.Security.Claims
+@using System.Threading
 @using IdentityModel.Client
 @using Microsoft.AspNetCore.Components.Services
+@using Microsoft.AspNetCore.WebUtilities
+
 @inherits Microsoft.AspNetCore.Components.ComponentBase
 
 @inject IUriHelper Uri
 @inject HttpClient Http
 
 <div>
-
+    @if (null == claims)
+    {
+        <p>Empty</p>
+    }
+    else
+    {
+        <ul>
+            @foreach (var claim in claims)
+            {
+                <li>
+                    @claim.Type
+                    <p>
+                        @foreach (var prop in claim.Properties)
+                        {
+                            @prop.Key <text>=</text> @prop.Value
+                        }
+                    </p>
+                </li>
+            }
+        </ul>
+    }
 </div>
 
 @functions
 {
+    protected IEnumerable<Claim> claims;
 
     protected override async Task OnInitAsync()
     {
-        var disco = await Http.GetDiscoveryDocumentAsync("http://localhost:3100");
-        var uri = Uri.GetAbsoluteUri();
-        Debug.Write($"Current uri: {uri}");
-        var response = await Http.GetUserInfoAsync(new UserInfoRequest
-        {
-            Address = disco.UserInfoEndpoint,
-            Token = ""
-        });
-
         await base.OnInitAsync();
+
+        var disco = await Http.GetDiscoveryDocumentAsync("http://localhost:3100");
+        var token = await RetrieveTokenAsync(disco);
+        var userInfo = await GetUserInfoAsync(disco, token);
+
+        if (false == userInfo.IsError)
+        {
+            claims = userInfo.Claims;
+
+            foreach (var claim in claims)
+            {
+                Debug.WriteLine($"{claim.Type} = {claim.Value}");
+                foreach (var prop in claim.Properties)
+                {
+                    Debug.WriteLine($"   {prop.Key} = {prop.Value}");
+                }
+            }
+
+            StateHasChanged();
+        }
     }
 
+    private async Task<string> RetrieveTokenAsync(DiscoveryResponse disco)
+    {
+        var path = new Uri(Uri.GetAbsoluteUri());
+        var query = QueryHelpers.ParseQuery(path.Query);
+
+        if (false == query.TryGetValue("code", out var code))
+        {
+            return null;
+        }
+
+        if (false == query.TryGetValue("state", out var state))
+        {
+            return null;
+        }
+
+        var response = await Http.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
+        {
+            Address = disco.TokenEndpoint,
+            ClientId = "client.application",
+            Code = code,
+            CodeVerifier = state,
+            RedirectUri = "http://localhost:62742/callback",
+            GrantType = IdentityModel.OidcConstants.GrantTypes.AuthorizationCode
+        });
+
+        return false == response.IsError ? response.AccessToken : null;
+    }
+
+    private async Task<UserInfoResponse> GetUserInfoAsync(DiscoveryResponse disco, string token)
+    {
+        return await Http.GetUserInfoAsync(new UserInfoRequest
+        {
+            Address = disco.UserInfoEndpoint,
+            Token = token
+        });
+    }
 }

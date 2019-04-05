@@ -19,10 +19,14 @@ using StoryBlog.Web.Services.Shared.Captcha;
 using System;
 using System.Linq;
 using System.Net.Mail;
+using System.Net.Mime;
 using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Services.Identity.API.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [AllowAnonymous]
     [Route("[controller]")]
     public sealed class AccountController : Controller
@@ -34,13 +38,27 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
         private readonly UserManager<Customer> customerManager;
         private readonly ICaptcha captcha;
         private readonly IHostingEnvironment environment;
-
         private readonly ISimpleEmailSender emailSender;
         private readonly IEmailTemplateGenerator templateGenerator;
         private readonly IEventService eventService;
         private readonly IStringLocalizer<AccountController> localizer;
         private readonly ILogger<AccountController> logger;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="interactions"></param>
+        /// <param name="loginService"></param>
+        /// <param name="clientStore"></param>
+        /// <param name="schemeProvider"></param>
+        /// <param name="customerManager"></param>
+        /// <param name="captcha"></param>
+        /// <param name="environment"></param>
+        /// <param name="emailSender"></param>
+        /// <param name="templateGenerator"></param>
+        /// <param name="eventService"></param>
+        /// <param name="localizer"></param>
+        /// <param name="logger"></param>
         public AccountController(
             IIdentityServerInteractionService interactions,
             ILoginService<Customer> loginService,
@@ -117,7 +135,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
 
             if (ModelState.IsValid)
             {
-                var customer = await customerManager.FindByEmailAsync(model.Email);
+                var customer = await loginService.FindByEmailAsync(model.Email);
 
                 if (null != customer)
                 {
@@ -163,7 +181,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
     
                         await HttpContext.SignInAsync(principal, properties);*/
 
-                        await loginService.SigninAsync(customer, properties);
+                        await loginService.SigninAsync(customer, properties, IdentityServerConstants.LocalIdentityProvider);
 
                         if (null != context)
                         {
@@ -214,7 +232,11 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
             return View("Signup", model);
         }
 
-        // POST account/create
+        /// <summary>
+        /// POST
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost("create")]
         [Consumes("application/x-www-form-urlencoded")]
         [ValidateAntiForgeryToken]
@@ -224,7 +246,6 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
             {
                 return View("Signup", model);
             }
-
 
             if (customerManager.SupportsUserEmail)
             {
@@ -255,6 +276,31 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
             }
 
             return View("Signup", new SignupViewModel());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="errorId"></param>
+        /// <returns></returns>
+        [HttpGet("error")]
+        public async Task<IActionResult> Error(string errorId)
+        {
+            // retrieve error details from identityserver
+            var message = await interactions.GetErrorContextAsync(errorId);
+
+            if (null == message)
+            {
+                return View(new ErrorViewModel(null));
+            }
+
+            if (false == environment.IsDevelopment())
+            {
+                // only show in development
+                message.ErrorDescription = null;
+            }
+
+            return View(new ErrorViewModel(message));
         }
 
         private async Task<SigninViewModel> CreateSigninModelAsync(string returnUrl)

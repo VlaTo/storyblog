@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -11,12 +10,10 @@ namespace StoryBlog.Web.Blazor.Client.Services
     internal sealed class UserApiClient : IUserApiClient
     {
         private readonly HttpClient client;
-        private readonly ILogger logger;
 
-        public UserApiClient(HttpClient client, ILogger<IUserApiClient> logger)
+        public UserApiClient(HttpClient client)
         {
             this.client = client;
-            this.logger = logger;
         }
 
         public async Task<string> LoginAsync()
@@ -76,17 +73,16 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 }
 
                 return response.Claims;*/
+                return await Task.FromResult(Enumerable.Empty<Claim>());
             }
             catch (HttpRequestException exception)
             {
-                logger.LogError(exception, "Failed");
+                return await Task.FromResult(Enumerable.Empty<Claim>());
             }
             catch (Exception exception)
             {
-                logger.LogError(exception, "Failed");
+                return await Task.FromResult(Enumerable.Empty<Claim>());
             }
-
-            return await Task.FromResult(Enumerable.Empty<Claim>());
         }
     }
 }
