@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -10,6 +10,8 @@ using IdentityModel;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Components.Services;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Options;
+using StoryBlog.Web.Blazor.Client.Extensions;
 using StoryBlog.Web.Blazor.Client.Helpers;
 
 namespace StoryBlog.Web.Blazor.Client.Services
@@ -22,29 +24,28 @@ namespace StoryBlog.Web.Blazor.Client.Services
         private readonly DiscoveryCache cache;
         private readonly CryptoHelper crypto;
 
-        public UserApiClient(IUriHelper uri, HttpClient client, UserApiClientOptions options)
+        public UserApiClient(
+            IUriHelper uri,
+            HttpClient client,
+            IOptions<UserApiClientOptions> options)
         {
             this.uri = uri;
             this.client = client;
-            this.options = options;
-            cache = new DiscoveryCache(options.Address.Authority, client);
+            this.options = options.Value;
+            cache = new DiscoveryCache(this.options.Address.SchemeWithAuthority(), client);
             crypto = new CryptoHelper();
         }
 
         /// <inheritdoc cref="IUserApiClient.LoginAsync" />
         public async Task LoginAsync()
         {
-            var disco = await cache.GetAsync();
-            var scopes = String.Join(" ",
-                OidcConstants.StandardScopes.OpenId,
-                OidcConstants.StandardScopes.Profile,
-                "api.blog"
-            );
+            var scopes = options.Scopes.ToScopes();
             var redirect = new UriBuilder(client.BaseAddress)
             {
                 Path = "callback"
             };
             var pkce = crypto.CreatePkceData();
+            var disco = await cache.GetAsync();
             var auth = new RequestUrl(disco.AuthorizeEndpoint).CreateAuthorizeUrl(
                 options.ClientId,
                 OidcConstants.ResponseTypes.Code,
@@ -75,7 +76,9 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 throw response.Exception;
             }
 
-            var identity = new ClaimsIdentity(response.Claims);
+            IIdentity identity = null != response.Claims
+                ? new ClaimsIdentity(response.Claims)
+                : new GenericIdentity("test1");
 
             return new ClaimsPrincipal(identity);
         }

@@ -1,74 +1,55 @@
 ﻿@page "/callback"
 
+@using System.Diagnostics
+@using System.Security.Claims
 @using global::Blazor.Fluxor
 @using StoryBlog.Web.Blazor.Client.Store
 @using StoryBlog.Web.Blazor.Client.Store.Actions
 
-@inherits Microsoft.AspNetCore.Components.ComponentBase
+@inherits global::Blazor.Fluxor.Components.FluxorComponent
 
 @inject IState<UserState> State
 @inject IDispatcher Dispatcher
 
 <div>
-    @if (State.Value.Status.IsNone())
+    @{
+        var userInfo = State.Value;
+    } 
+
+    @if (userInfo.Status.IsNone())
     {
         <p>Empty</p>
     }
     else
     {
-        if (State.Value.Status.IsFailed())
+        if (userInfo.Status.IsFailed())
         {
-
+            <p>@userInfo.Status.Error</p>
         }
         else
         {
-            <p class="h4">@State.Value.Principal.Identity.Name</p>
+            <p class="h4">
+                @{
+                    if (userInfo.Principal?.Identity is ClaimsIdentity identity)
+                    {
+                        foreach (var claim in identity.Claims)
+                        {
+                            Debug.WriteLine(claim);
+                        }
+                    }
+                }
+            </p>
         }
     }
 </div>
 
 @functions
 {
+    
     protected override Task OnInitAsync()
     {
         Dispatcher.Dispatch(new SigninCallbackAction());
         return base.OnInitAsync();
     }
 
-    /*private async Task<string> RetrieveTokenAsync(DiscoveryResponse disco)
-    {
-        var path = new Uri(Uri.GetAbsoluteUri());
-        var query = QueryHelpers.ParseQuery(path.Query);
-
-        if (false == query.TryGetValue("code", out var code))
-        {
-            return null;
-        }
-
-        if (false == query.TryGetValue("state", out var state))
-        {
-            return null;
-        }
-
-        var response = await Http.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
-        {
-            Address = disco.TokenEndpoint,
-            ClientId = "client.application",
-            Code = code,
-            CodeVerifier = state,
-            RedirectUri = "http://localhost:62742/callback",
-            GrantType = IdentityModel.OidcConstants.GrantTypes.AuthorizationCode
-        });
-
-        return false == response.IsError ? response.AccessToken : null;
-    }
-
-    private async Task<UserInfoResponse> GetUserInfoAsync(DiscoveryResponse disco, string token)
-    {
-        return await Http.GetUserInfoAsync(new UserInfoRequest
-        {
-            Address = disco.UserInfoEndpoint,
-            Token = token
-        });
-    }*/
 }

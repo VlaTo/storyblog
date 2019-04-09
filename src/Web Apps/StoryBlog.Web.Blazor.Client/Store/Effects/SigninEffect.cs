@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Blazor.Fluxor;
+﻿using Blazor.Fluxor;
 using StoryBlog.Web.Blazor.Client.Services;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
 using System.Net.Http;
@@ -26,9 +25,8 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
             {
                 await client.LoginAsync();
             }
-            catch (HttpRequestException exception)
+            catch (HttpRequestException)
             {
-                Debug.WriteLine(exception);
                 throw;
             }
         }
@@ -54,9 +52,8 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
                 var principal = await client.SigninCallbackAsync();
                 dispatcher.Dispatch(new SigninCallbackSuccessAction(principal));
             }
-            catch (HttpRequestException exception)
+            catch (HttpRequestException)
             {
-                Debug.WriteLine(exception);
                 throw;
             }
         }

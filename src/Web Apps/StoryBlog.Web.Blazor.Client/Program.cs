@@ -1,5 +1,6 @@
 ﻿using System;
 using Blazor.Fluxor;
+using IdentityModel;
 using Microsoft.AspNetCore.Blazor.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using StoryBlog.Web.Blazor.Client.Services;
@@ -23,6 +24,12 @@ namespace StoryBlog.Web.Blazor.Client
                         {
                             options.Address = new Uri("http://localhost:3100");
                             options.ClientId = "client.application";
+                            options.Scopes = new[]
+                            {
+                                OidcConstants.StandardScopes.OpenId,
+                                OidcConstants.StandardScopes.Profile,
+                                "api.blog"
+                            };
                         });
 
                     services

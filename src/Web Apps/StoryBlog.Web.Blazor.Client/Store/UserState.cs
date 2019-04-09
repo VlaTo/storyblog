@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using Blazor.Fluxor;
+using System;
 using System.Security.Principal;
-using Blazor.Fluxor;
 
 namespace StoryBlog.Web.Blazor.Client.Store
 {
@@ -13,10 +11,7 @@ namespace StoryBlog.Web.Blazor.Client.Store
     {
         public override string GetName() => nameof(UserState);
 
-        protected override UserState GetInitialState()
-        {
-            return new UserState(ModelStatus.None);
-        }
+        protected override UserState GetInitialState() => UserState.None;
     }
 
     /// <summary>
@@ -24,10 +19,11 @@ namespace StoryBlog.Web.Blazor.Client.Store
     /// </summary>
     public sealed class UserState
     {
+        public static readonly UserState None;
+
         public IPrincipal Principal
         {
             get;
-            set;
         }
 
         public ModelStatus Status
@@ -35,9 +31,29 @@ namespace StoryBlog.Web.Blazor.Client.Store
             get;
         }
 
-        public UserState(ModelStatus status)
+        private UserState(ModelStatus status, IPrincipal principal)
         {
             Status = status;
+            Principal = principal;
+        }
+
+        static UserState()
+        {
+            None = new UserState(ModelStatus.None, null);
+        }
+
+        public static UserState Loading() => new UserState(ModelStatus.Loading, null);
+
+        public static UserState Failed(string error) => new UserState(ModelStatus.Failed(error), null);
+
+        public static UserState Success(IPrincipal principal)
+        {
+            if (null == principal)
+            {
+                throw new ArgumentNullException(nameof(principal));
+            }
+
+            return new UserState(ModelStatus.Success, principal);
         }
     }
 }

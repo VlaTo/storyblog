@@ -9,7 +9,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     public sealed class SigninActionReducer : Reducer<UserState, SigninAction>
     {
         /// <inheritdoc cref="Reducer{TState,TAction}.Reduce" />
-        public override UserState Reduce(UserState state, SigninAction action) => new UserState(ModelStatus.None);
+        public override UserState Reduce(UserState state, SigninAction action) => UserState.None;
     }
 
     /// <summary>
@@ -17,7 +17,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     /// </summary>
     public sealed class SigninCallbackActionReducer : Reducer<UserState, SigninCallbackAction>
     {
-        public override UserState Reduce(UserState state, SigninCallbackAction action) => new UserState(ModelStatus.Loading);
+        public override UserState Reduce(UserState state, SigninCallbackAction action) => UserState.Loading();
     }
 
     /// <summary>
@@ -25,12 +25,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     /// </summary>
     public sealed class SigninCallbackSuccessActionReducer : Reducer<UserState, SigninCallbackSuccessAction>
     {
-        public override UserState Reduce(UserState state, SigninCallbackSuccessAction action)
-        {
-            return new UserState(ModelStatus.Success)
-            {
-                Principal = action.Principal
-            };
-        }
+        public override UserState Reduce(UserState state, SigninCallbackSuccessAction action) =>
+            UserState.Success(action.Principal);
     }
 }

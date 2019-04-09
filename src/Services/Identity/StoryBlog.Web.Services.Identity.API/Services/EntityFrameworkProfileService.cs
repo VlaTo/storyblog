@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace StoryBlog.Web.Services.Identity.API.Services
 {
@@ -19,14 +20,20 @@ namespace StoryBlog.Web.Services.Identity.API.Services
     public class EntityFrameworkProfileService : IProfileService
     {
         private readonly UserManager<Customer> userManager;
+        private readonly RoleManager<CustomerRole> roleManager;
         private readonly IUserClaimsPrincipalFactory<Customer> claimsFactory;
+        private readonly IdentityOptions identityOptions;
 
         public EntityFrameworkProfileService(
             UserManager<Customer> userManager,
-            IUserClaimsPrincipalFactory<Customer> claimsFactory)
+            RoleManager<CustomerRole> roleManager,
+            IUserClaimsPrincipalFactory<Customer> claimsFactory,
+            IOptions<IdentityOptions> identityOptionsAccessor)
         {
             this.userManager = userManager;
+            this.roleManager = roleManager;
             this.claimsFactory = claimsFactory;
+            identityOptions = identityOptionsAccessor.Value;
         }
 
         public async Task GetProfileDataAsync(ProfileDataRequestContext context)
@@ -56,7 +63,7 @@ namespace StoryBlog.Web.Services.Identity.API.Services
             }
 
             //var temp = await claimsFactory.CreateAsync(user);
-            var claims = await GetClaimsFromUserAsync(user, context.IssuedClaims, context.RequestedClaimTypes);
+            var claims = await GenerateClaimsAsync(user, context.IssuedClaims, context.RequestedClaimTypes);
 
             context.IssuedClaims = claims.ToList();
         }
@@ -109,16 +116,20 @@ namespace StoryBlog.Web.Services.Identity.API.Services
             }
         }
 
-        private async Task<IEnumerable<Claim>> GetClaimsFromUserAsync(
+        private async Task<IEnumerable<Claim>> GenerateClaimsAsync(
             Customer user,
             IList<Claim> issuedClaims,
             IEnumerable<string> requestedClaimTypes)
         {
+            var id = await userManager.GetUserIdAsync(user);
+            var name = await userManager.GetUserNameAsync(user);
             var claims = new List<Claim>
             {
-                new Claim(JwtClaimTypes.Subject, user.Id.ToString()),
-                new Claim(JwtClaimTypes.PreferredUserName, user.UserName),
-                new Claim(JwtClaimTypes.Name, user.UserName)
+                //new Claim(JwtClaimTypes.Subject, user.Id.ToString()),
+                new Claim(identityOptions.ClaimsIdentity.UserIdClaimType,id),
+                //new Claim(JwtClaimTypes.PreferredUserName, user.UserName),
+                new Claim(identityOptions.ClaimsIdentity.UserNameClaimType,name),
+                //new Claim(JwtClaimTypes.Name, user.UserName)
             };
 
             if (String.IsNullOrWhiteSpace(user.ContactName))
@@ -165,19 +176,41 @@ namespace StoryBlog.Web.Services.Identity.API.Services
 
             if (userManager.SupportsUserRole)
             {
-                const string claimType = JwtClaimTypes.Role;
+                var claimType = identityOptions.ClaimsIdentity.RoleClaimType;
 
                 if (requestedClaimTypes.Contains(claimType))
                 {
                     var roles = await userManager.GetRolesAsync(user);
-                    claims.AddRange(roles.Select(role => new Claim(claimType, role)));
+
+                    foreach (var roleName in roles)
+                    {
+                        claims.Add(new Claim(claimType, roleName));
+
+                        if (false == roleManager.SupportsRoleClaims)
+                        {
+                            continue;
+                        }
+
+                        var role = await roleManager.FindByNameAsync(roleName);
+
+                        if (null != role)
+                        {
+                            claims.AddRange(await roleManager.GetClaimsAsync(role));
+                        }
+                    }
                 }
             }
 
             if (userManager.SupportsUserSecurityStamp)
             {
                 var stamp = await userManager.GetSecurityStampAsync(user);
-                claims.Add(new Claim("security_stamp", stamp));
+                claims.Add(new Claim(identityOptions.ClaimsIdentity.SecurityStampClaimType, stamp));
+            }
+
+            if (userManager.SupportsUserClaim)
+            {
+                var userClaims = await userManager.GetClaimsAsync(user);
+                claims.AddRange(userClaims);
             }
 
             foreach (var issuedClaim in issuedClaims)
