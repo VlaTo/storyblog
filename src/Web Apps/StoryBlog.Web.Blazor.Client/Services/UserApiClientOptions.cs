@@ -6,10 +6,10 @@ namespace StoryBlog.Web.Blazor.Client.Services
     public sealed class UserApiClientOptions
     {
         private string clientId;
-        private Uri address;
+        private string address;
         private IEnumerable<string> scopes;
 
-        public Uri Address
+        public string Address
         {
             get => address;
             set

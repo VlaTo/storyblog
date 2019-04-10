@@ -172,15 +172,6 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
                             };
                         }
 
-                        /*var principal = new ClaimsPrincipal(new ClaimsIdentity(new[]
-                        {
-                            new Claim(ClaimTypes.Sid, customer.Id.ToString()),
-                            new Claim(ClaimTypes.Name, customer.UserName),
-                            new Claim(ClaimTypes.GivenName, customer.NormalizedUserName)
-                        }));
-    
-                        await HttpContext.SignInAsync(principal, properties);*/
-
                         await loginService.SigninAsync(customer, properties, IdentityServerConstants.LocalIdentityProvider);
 
                         if (null != context)
@@ -202,7 +193,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
                         {
                             return Redirect("~/");
                         }
-
+                        
                         var uri = new Uri(model.ReturnUrl);
 
                         if (uri.IsAbsoluteUri)
@@ -214,7 +205,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
                     }
                 }
 
-                var invalidCredentials = localizer.InvalidCredentials();
+                var invalidCredentials = localizer.InvalidCredentials(context?.UiLocales);
                 await eventService.RaiseAsync(new UserLoginFailureEvent(model.Email, invalidCredentials));
 
                 ModelState.AddModelError(String.Empty, "Invalid credentials");

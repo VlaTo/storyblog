@@ -6,7 +6,7 @@ namespace StoryBlog.Web.Services.Identity.API.Extensions
 {
     internal static class StringLocalizerExtensions
     {
-        public static string InvalidCredentials(this IStringLocalizer localizer)
+        public static string InvalidCredentials(this IStringLocalizer localizer, string uiLocales)
         {
             if (null == localizer)
             {

@@ -22,7 +22,7 @@ namespace StoryBlog.Web.Blazor.Client
                         .AddOptions<UserApiClientOptions>()
                         .Configure(options =>
                         {
-                            options.Address = new Uri("http://localhost:3100");
+                            options.Address = "http://localhost:3100";
                             options.ClientId = "client.application";
                             options.Scopes = new[]
                             {

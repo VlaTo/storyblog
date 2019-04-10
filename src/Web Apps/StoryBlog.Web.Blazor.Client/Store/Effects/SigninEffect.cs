@@ -23,7 +23,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
         {
             try
             {
-                await client.LoginAsync();
+                await client.SigninAsync();
             }
             catch (HttpRequestException)
             {

@@ -29,6 +29,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
+using System.Security.Claims;
 
 namespace StoryBlog.Web.Services.Identity.API
 {
@@ -142,18 +143,15 @@ namespace StoryBlog.Web.Services.Identity.API
                                 EnableUserInfoEndpoint = true
                             };
 
-                            /*options.Authentication = new AuthenticationOptions
+                            options.Authentication = new AuthenticationOptions
                             {
-                                CookieLifetime = TimeSpan.FromSeconds(300.0d),
-                                CookieAuthenticationScheme = IdentityServerConstants.DefaultCookieAuthenticationScheme
-                            };*/
+                                CookieLifetime = TimeSpan.FromSeconds(30.0d)
+                            };
 
                             options.Events.RaiseErrorEvents = true;
                             options.Events.RaiseFailureEvents = true;
                             options.Events.RaiseInformationEvents = true;
                             options.Events.RaiseSuccessEvents = true;
-
-                            //options.IssuerUri = null;
 
                             options.UserInteraction.LoginUrl = "/account/signin";
                             options.UserInteraction.ConsentUrl = "/consent/confirm";
@@ -181,42 +179,6 @@ namespace StoryBlog.Web.Services.Identity.API
                             }
                         );
 
-                    if (environment.IsDevelopment())
-                    {
-                        /*identityServerBuilder
-                            .AddSigningCredential(Certificate.Get())
-                            .AddInMemoryPersistedGrants()
-                            .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                            .AddInMemoryApiResources(Config.GetApiResources())
-                            .AddInMemoryClients(Config.GetClients())
-                            .AddAspNetIdentity<Customer>()
-                            ;*/
-                    }
-                    else
-                    {
-                        /*identityServerBuilder
-                            .AddSigningCredential((SigningCredentials)null)
-                            .AddAspNetIdentity<Customer>()
-                            .AddConfigurationStore(options =>
-                                options.ConfigureDbContext = builder =>
-                                {
-                                    builder.UseSqlite(connectionString, database =>
-                                    {
-                                        database.MigrationsAssembly(migrationAssemblyName);
-                                    });
-                                }
-                            )
-                            .AddOperationalStore(options =>
-                                options.ConfigureDbContext = builder =>
-                                {
-                                    builder.UseSqlite(connectionString, database =>
-                                    {
-                                        database.MigrationsAssembly(migrationAssemblyName);
-                                    });
-                                }
-                            );*/
-                    }
-
                     services
                         .AddDistributedMemoryCache()
                         .AddOidcStateDataFormatterCache()
@@ -232,14 +194,10 @@ namespace StoryBlog.Web.Services.Identity.API
                         });
 
                     services
-                        /*.ConfigureApplicationCookie(options =>
+                        .ConfigureApplicationCookie(options =>
                         {
                             options.Cookie.Name = "StoryBlog.Identity";
-                            options.Cookie.HttpOnly = true;
-                            options.Cookie.SameSite = SameSiteMode.Lax;
-                            options.ExpireTimeSpan = TimeSpan.FromHours(1.0d);
-                            options.SlidingExpiration = true;
-                        })*/
+                        })
                         .AddAntiforgery();
 
                     // remove it

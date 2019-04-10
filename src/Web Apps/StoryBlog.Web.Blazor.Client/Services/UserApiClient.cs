@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
@@ -32,12 +33,12 @@ namespace StoryBlog.Web.Blazor.Client.Services
             this.uri = uri;
             this.client = client;
             this.options = options.Value;
-            cache = new DiscoveryCache(this.options.Address.SchemeWithAuthority(), client);
+            cache = new DiscoveryCache(this.options.Address, client);
             crypto = new CryptoHelper();
         }
 
-        /// <inheritdoc cref="IUserApiClient.LoginAsync" />
-        public async Task LoginAsync()
+        /// <inheritdoc cref="IUserApiClient.SigninAsync" />
+        public async Task SigninAsync()
         {
             var scopes = options.Scopes.ToScopes();
             var redirect = new UriBuilder(client.BaseAddress)
@@ -46,7 +47,8 @@ namespace StoryBlog.Web.Blazor.Client.Services
             };
             var pkce = crypto.CreatePkceData();
             var disco = await cache.GetAsync();
-            var auth = new RequestUrl(disco.AuthorizeEndpoint).CreateAuthorizeUrl(
+            var url = new RequestUrl(disco.AuthorizeEndpoint);
+            var auth = url.CreateAuthorizeUrl(
                 options.ClientId,
                 OidcConstants.ResponseTypes.Code,
                 scopes,
@@ -54,7 +56,8 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 state: pkce.CodeVerifier,
                 responseMode: OidcConstants.ResponseModes.Query,
                 codeChallenge: pkce.CodeChallenge,
-                codeChallengeMethod: OidcConstants.CodeChallengeMethods.Sha256
+                codeChallengeMethod: OidcConstants.CodeChallengeMethods.Sha256,
+                uiLocales: CultureInfo.CurrentUICulture.EnglishName
             );
 
             uri.NavigateTo(auth);
@@ -76,11 +79,12 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 throw response.Exception;
             }
 
-            IIdentity identity = null != response.Claims
-                ? new ClaimsIdentity(response.Claims)
-                : new GenericIdentity("test1");
+            if (null != response.Claims)
+            {
+                return Principal.Create("local", response.Claims.ToArray());
+            }
 
-            return new ClaimsPrincipal(identity);
+            return Principal.Anonymous;
         }
 
         public async Task<IEnumerable<Claim>> GetUserInfoAsync(string token)

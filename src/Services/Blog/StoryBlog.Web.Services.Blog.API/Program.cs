@@ -117,7 +117,7 @@ namespace StoryBlog.Web.Services.Blog.API
                     services.AddAuthorization(options =>
                         options.AddPolicy(
                             Policies.Admins,
-                            policy => policy.RequireClaim(ClaimTypes.Role, StandardRoles.Admin)
+                            policy => policy.RequireClaim(ClaimTypes.Role, StandardRoles.Administrator)
                         )
                     );
 
