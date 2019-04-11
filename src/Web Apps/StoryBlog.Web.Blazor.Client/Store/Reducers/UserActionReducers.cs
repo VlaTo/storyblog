@@ -6,26 +6,27 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     /// <summary>
     /// 
     /// </summary>
-    public sealed class SigninActionReducer : Reducer<UserState, SigninAction>
+    public sealed class SigninRequestActionReducer : Reducer<UserState, SigninRequestAction>
     {
         /// <inheritdoc cref="Reducer{TState,TAction}.Reduce" />
-        public override UserState Reduce(UserState state, SigninAction action) => UserState.None;
+        public override UserState Reduce(UserState state, SigninRequestAction action) => UserState.None;
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed class SigninCallbackActionReducer : Reducer<UserState, SigninCallbackAction>
+    public sealed class SigninRequestFailedActionReducer : Reducer<UserState, SigninRequestFailedAction>
     {
-        public override UserState Reduce(UserState state, SigninCallbackAction action) => UserState.Loading();
+        public override UserState Reduce(UserState state, SigninRequestFailedAction action) =>
+            UserState.Failed(action.Error);
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed class SigninCallbackSuccessActionReducer : Reducer<UserState, SigninCallbackSuccessAction>
+    public sealed class SigninRequestCallbackSuccessActionReducer : Reducer<UserState, SigninRequestSuccessAction>
     {
-        public override UserState Reduce(UserState state, SigninCallbackSuccessAction action) =>
+        public override UserState Reduce(UserState state, SigninRequestSuccessAction action) =>
             UserState.Success(action.Principal);
     }
 }

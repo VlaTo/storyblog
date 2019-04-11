@@ -64,6 +64,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Common", "src\Servic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Interop", "src\Services\Blog\StoryBlog.Web.Services.Blog.Interop\Blog.Interop.csproj", "{BBC7D3A5-B3F0-49E6-97DA-6A37A2F2BE32}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Reactive", "src\Web Apps\StoryBlog.Web.Blazor.Reactive\Blazor.Reactive.csproj", "{2338ADBE-A128-478A-8E86-FC210422AADF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -138,6 +140,10 @@ Global
 		{BBC7D3A5-B3F0-49E6-97DA-6A37A2F2BE32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBC7D3A5-B3F0-49E6-97DA-6A37A2F2BE32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBC7D3A5-B3F0-49E6-97DA-6A37A2F2BE32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2338ADBE-A128-478A-8E86-FC210422AADF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2338ADBE-A128-478A-8E86-FC210422AADF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2338ADBE-A128-478A-8E86-FC210422AADF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2338ADBE-A128-478A-8E86-FC210422AADF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -166,9 +172,10 @@ Global
 		{120BED88-6971-4CEF-B161-8F1C6F5F8551} = {920EC233-08A7-47FB-A89C-B703CAFFB4C0}
 		{6F0C4807-C08D-44AE-8E2A-EBB661125E1C} = {920EC233-08A7-47FB-A89C-B703CAFFB4C0}
 		{BBC7D3A5-B3F0-49E6-97DA-6A37A2F2BE32} = {605EB559-AD43-4003-BA83-5B92664B2D2E}
+		{2338ADBE-A128-478A-8E86-FC210422AADF} = {88C57C89-346F-4F54-AF21-B2160F6CEE61}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		LessCompiler = a3b52c4e-54ca-4233-83ea-a4baa2669f90,193bea1a-7151-46db-aed1-e5fafe14f3c3
 		SolutionGuid = {2BDF20E6-9CFF-444E-88D4-B67EF316084F}
+		LessCompiler = a3b52c4e-54ca-4233-83ea-a4baa2669f90,193bea1a-7151-46db-aed1-e5fafe14f3c3
 	EndGlobalSection
 EndGlobal

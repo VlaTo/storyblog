@@ -9,52 +9,25 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
     /// <summary>
     /// 
     /// </summary>
-    public sealed class SigninActionEffect : Effect<SigninAction>
+    public sealed class SigninRequestActionEffect : Effect<SigninRequestAction>
     {
         private readonly IUserApiClient client;
 
-        public SigninActionEffect(IUserApiClient client)
+        public SigninRequestActionEffect(IUserApiClient client)
         {
             this.client = client;
         }
 
         /// <inheritdoc cref="Effect{TTriggerAction}.HandleAsync" />
-        protected override async Task HandleAsync(SigninAction action, IDispatcher dispatcher)
+        protected override async Task HandleAsync(SigninRequestAction action, IDispatcher dispatcher)
         {
             try
             {
                 await client.SigninAsync();
             }
-            catch (HttpRequestException)
+            catch (HttpRequestException exception)
             {
-                throw;
-            }
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public sealed class SigninCallbackActionEffect : Effect<SigninCallbackAction>
-    {
-        private readonly IUserApiClient client;
-
-        public SigninCallbackActionEffect(IUserApiClient client)
-        {
-            this.client = client;
-        }
-
-        /// <inheritdoc cref="Effect{TTriggerAction}.HandleAsync" />
-        protected override async Task HandleAsync(SigninCallbackAction action, IDispatcher dispatcher)
-        {
-            try
-            {
-                var principal = await client.SigninCallbackAsync();
-                dispatcher.Dispatch(new SigninCallbackSuccessAction(principal));
-            }
-            catch (HttpRequestException)
-            {
-                throw;
+                dispatcher.Dispatch(new SigninRequestFailedAction(exception.Message));
             }
         }
     }

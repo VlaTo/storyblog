@@ -1,17 +1,30 @@
 ﻿@page "/callback"
 
 @using global::Blazor.Fluxor
+@using Microsoft.AspNetCore.Components.Services
+@using StoryBlog.Web.Blazor.Client.Services
 @using StoryBlog.Web.Blazor.Client.Store.Actions
 
+@inject IUserApiClient Api
 @inject IDispatcher Dispatcher
+@inject IUriHelper Uri
 
 @functions
 {
     
-    protected override Task OnInitAsync()
+    protected override async Task OnInitAsync()
     {
-        Dispatcher.Dispatch(new SigninCallbackAction());
-        return base.OnInitAsync();
+        try
+        {
+            var principal = await Api.SigninCallbackAsync();
+
+            Dispatcher.Dispatch(new SigninRequestSuccessAction(principal));
+            Uri.NavigateTo("/");
+        }
+        catch (HttpRequestException exception)
+        {
+            Dispatcher.Dispatch(new SigninRequestCallbackFailedAction(exception.Message));
+        }
     }
 
 }

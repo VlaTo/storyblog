@@ -36,6 +36,9 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
             try
             {
+
+                client.SetBearerToken();
+
                 using (var response = await client.GetAsync(requestUri, CancellationToken.None))
                 {
                     response.EnsureSuccessStatusCode();

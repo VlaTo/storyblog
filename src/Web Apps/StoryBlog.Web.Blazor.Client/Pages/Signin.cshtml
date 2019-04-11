@@ -19,7 +19,7 @@
 
     private void OnSigninButtonClick(UIMouseEventArgs e)
     {
-        Dispatcher.Dispatch(new SigninAction());
+        Dispatcher.Dispatch(new SigninRequestAction());
 
         /*var disco = await Http.GetDiscoveryDocumentAsync("http://localhost:3100");
         var crypto = new CryptoHelper();

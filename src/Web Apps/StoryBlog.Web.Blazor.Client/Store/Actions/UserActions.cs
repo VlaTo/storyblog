@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
+﻿using Blazor.Fluxor;
 using System.Security.Principal;
-using Blazor.Fluxor;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Actions
 {
     /// <summary>
     /// 
     /// </summary>
-    public sealed class SigninAction : IAction
+    public sealed class SigninRequestAction : IAction
     {
-        public SigninAction()
+        public SigninRequestAction()
         {
         }
     }
@@ -18,26 +16,48 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class SigninCallbackAction : IAction
+    public sealed class SigninRequestFailedAction : IAction
     {
-        public SigninCallbackAction()
+        public string Error
         {
+            get;
+        }
+
+        public SigninRequestFailedAction(string error)
+        {
+            Error = error;
         }
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed class SigninCallbackSuccessAction : IAction
+    public sealed class SigninRequestSuccessAction : IAction
     {
         public IPrincipal Principal
         {
             get;
         }
 
-        public SigninCallbackSuccessAction(IPrincipal principal)
+        public SigninRequestSuccessAction(IPrincipal principal)
         {
             Principal = principal;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class SigninRequestCallbackFailedAction : IAction
+    {
+        public string Error
+        {
+            get;
+        }
+
+        public SigninRequestCallbackFailedAction(string error)
+        {
+            Error = error;
         }
     }
 }

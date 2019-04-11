@@ -7,6 +7,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
     {
         private string clientId;
         private string address;
+        private string redirectUri;
         private IEnumerable<string> scopes;
 
         public string Address
@@ -48,6 +49,20 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 }
 
                 scopes = value;
+            }
+        }
+
+        public string RedirectUri
+        {
+            get => redirectUri;
+            set
+            {
+                if (ReferenceEquals(redirectUri, value))
+                {
+                    return;
+                }
+
+                redirectUri = value;
             }
         }
 

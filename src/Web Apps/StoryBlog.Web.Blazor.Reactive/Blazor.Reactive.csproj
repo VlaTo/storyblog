@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>StoryBlog.Web.Blazor.Reactive</AssemblyName>
+    <RootNamespace>StoryBlog.Web.Blazor.Reactive</RootNamespace>
+  </PropertyGroup>
+
+</Project>

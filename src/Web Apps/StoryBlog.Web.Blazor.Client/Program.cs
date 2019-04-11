@@ -24,6 +24,7 @@ namespace StoryBlog.Web.Blazor.Client
                         {
                             options.Address = "http://localhost:3100";
                             options.ClientId = "client.application";
+                            options.RedirectUri = "http://localhost:62742/callback";
                             options.Scopes = new[]
                             {
                                 OidcConstants.StandardScopes.OpenId,
@@ -33,6 +34,7 @@ namespace StoryBlog.Web.Blazor.Client
                         });
 
                     services
+                        .AddSingleton<AuthorizationContext>()
                         .AddSingleton<IBlogApiClient, BlogApiClient>()
                         .AddSingleton<IUserApiClient, UserApiClient>();
                 })

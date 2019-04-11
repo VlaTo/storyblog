@@ -42,10 +42,24 @@ namespace StoryBlog.Web.Blazor.Client.Store
             None = new UserState(ModelStatus.None, null);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static UserState Loading() => new UserState(ModelStatus.Loading, null);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="error"></param>
+        /// <returns></returns>
         public static UserState Failed(string error) => new UserState(ModelStatus.Failed(error), null);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="principal"></param>
+        /// <returns></returns>
         public static UserState Success(IPrincipal principal)
         {
             if (null == principal)
