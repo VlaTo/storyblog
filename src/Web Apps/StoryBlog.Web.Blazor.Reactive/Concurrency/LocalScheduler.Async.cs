@@ -8,33 +8,41 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
     {
         private sealed class AsyncInvocation<TState> : IDisposable
         {
-            private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-            private IDisposable _run;
+            private readonly CancellationTokenSource cts = new CancellationTokenSource();
+            private IDisposable disposable;
 
-            public IDisposable Run(IScheduler self, TState s, Func<IScheduler, TState, CancellationToken, Task<IDisposable>> action)
+            public IDisposable Run(
+                IScheduler scheduler,
+                TState state,
+                Func<IScheduler, TState, CancellationToken, Task<IDisposable>> action)
             {
-                if (_cts.IsCancellationRequested)
+                if (cts.IsCancellationRequested)
+                {
                     return Disposable.Empty;
+                }
 
-                action(new CancelableScheduler(self, _cts.Token), s, _cts.Token).ContinueWith(
-                    (t, thisObject) =>
-                    {
-                        var @this = (AsyncInvocation<TState>)thisObject;
+                action
+                    .Invoke(new CancelableScheduler(scheduler, cts.Token), state, cts.Token)
+                    .ContinueWith(
+                        (t, thisObject) =>
+                        {
+                            var @this = (AsyncInvocation<TState>)thisObject;
 
-                        t.Exception?.Handle(e => e is OperationCanceledException);
+                            t.Exception?.Handle(e => e is OperationCanceledException);
 
-                        Disposable.SetSingle(ref @this._run, t.Result);
-                    },
-                    this,
-                    TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.NotOnCanceled);
+                            Disposable.SetSingle(ref @this.disposable, t.Result);
+                        },
+                        this,
+                        TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.NotOnCanceled
+                    );
 
                 return this;
             }
 
             public void Dispose()
             {
-                _cts.Cancel();
-                Disposable.TryDispose(ref _run);
+                cts.Cancel();
+                Disposable.TryDispose(ref disposable);
             }
         }
 
@@ -47,7 +55,7 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> is <c>null</c>.</exception>
         public static SchedulerOperation Yield(this IScheduler scheduler)
         {
-            if (scheduler == null)
+            if (null == scheduler)
             {
                 throw new ArgumentNullException(nameof(scheduler));
             }

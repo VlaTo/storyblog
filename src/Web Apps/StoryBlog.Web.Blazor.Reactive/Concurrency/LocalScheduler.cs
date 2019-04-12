@@ -67,7 +67,7 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// Platform-specific scheduler implementations should reimplement <see cref="IStopwatchProvider"/>
         /// to provide a more efficient <see cref="IStopwatch"/> implementation (if available).
         /// </remarks>
-        public virtual IStopwatch StartStopwatch() => ConcurrencyAbstractionLayer.Current.StartStopwatch();
+        public virtual IStopwatch StartStopwatch() => ConcurrencyAbstraction.Current.StartStopwatch();
 
         object IServiceProvider.GetService(Type serviceType) => GetService(serviceType);
 

@@ -8,9 +8,9 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
     /// </summary>
     public static partial class Scheduler
     {
-        private static readonly Lazy<IScheduler> _threadPool = new Lazy<IScheduler>(() => Initialize("ThreadPool"));
+        private static readonly Lazy<IScheduler> threadPool = new Lazy<IScheduler>(() => Initialize("ThreadPool"));
         private static readonly Lazy<IScheduler> _newThread = new Lazy<IScheduler>(() => Initialize("NewThread"));
-        private static readonly Lazy<IScheduler> _taskPool = new Lazy<IScheduler>(() => Initialize("TaskPool"));
+        private static readonly Lazy<IScheduler> taskPool = new Lazy<IScheduler>(() => Initialize("TaskPool"));
 
         // TODO - Review whether this is too eager.
         // Make first use of Scheduler trigger access to and initialization of the CAL.
@@ -82,12 +82,11 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
 
         private static IScheduler Initialize(string name)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
-            var res = PlatformEnlightenmentProvider.Current.GetService<IScheduler>(name);
-#pragma warning restore CS0618 // Type or member is obsolete
-            if (res == null)
+            var res = PlatformProvider.Current.GetService<IScheduler>(name);
+
+            if (null == res)
             {
-                throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings_Core.CANT_OBTAIN_SCHEDULER, name));
+                throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, ""));
             }
 
             return res;
