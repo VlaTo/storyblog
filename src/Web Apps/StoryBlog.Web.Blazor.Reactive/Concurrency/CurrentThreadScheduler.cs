@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel;
 
 namespace StoryBlog.Web.Blazor.Reactive.Concurrency
 {
@@ -12,6 +11,39 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
     {
         private static readonly Lazy<CurrentThreadScheduler> StaticInstance;
 
+        [ThreadStatic]
+        private static SchedulerQueue<TimeSpan> threadLocalQueue;
+
+        [ThreadStatic]
+        private static IStopwatch clock;
+
+        [ThreadStatic]
+        private static bool running;
+
+        /// <summary>
+        /// Gets a value that indicates whether the caller must call a Schedule method.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public static bool IsScheduleRequired => false == running;
+
+        /// <summary>
+        /// Gets the singleton instance of the current thread scheduler.
+        /// </summary>
+        public static CurrentThreadScheduler Instance => StaticInstance.Value;
+
+        private static TimeSpan Time
+        {
+            get
+            {
+                if (null == clock)
+                {
+                    clock = ConcurrencyAbstraction.Current.StartStopwatch();
+                }
+
+                return clock.Elapsed;
+            }
+        }
+
         private CurrentThreadScheduler()
         {
         }
@@ -21,53 +53,9 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
             StaticInstance = new Lazy<CurrentThreadScheduler>(() => new CurrentThreadScheduler());
         }
 
-        /// <summary>
-        /// Gets the singleton instance of the current thread scheduler.
-        /// </summary>
-        public static CurrentThreadScheduler Instance => StaticInstance.Value;
+        private static SchedulerQueue<TimeSpan> GetQueue() => threadLocalQueue;
 
-        [ThreadStatic]
-        private static SchedulerQueue<TimeSpan> _threadLocalQueue;
-
-        [ThreadStatic]
-        private static IStopwatch _clock;
-
-        [ThreadStatic]
-        private static bool _running;
-
-        private static SchedulerQueue<TimeSpan> GetQueue() => _threadLocalQueue;
-
-        private static void SetQueue(SchedulerQueue<TimeSpan> newQueue)
-        {
-            _threadLocalQueue = newQueue;
-        }
-
-        private static TimeSpan Time
-        {
-            get
-            {
-                if (_clock == null)
-                {
-                    _clock = ConcurrencyAbstractionLayer.Current.StartStopwatch();
-                }
-
-                return _clock.Elapsed;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value that indicates whether the caller must call a Schedule method.
-        /// </summary>
-        [Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Now marked as obsolete.")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete(Constants_Core.ObsoleteSchedulerequired)] // Preferring static method call over instance method call.
-        public bool ScheduleRequired => IsScheduleRequired;
-
-        /// <summary>
-        /// Gets a value that indicates whether the caller must call a Schedule method.
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public static bool IsScheduleRequired => !_running;
+        private static void SetQueue(SchedulerQueue<TimeSpan> newQueue) => threadLocalQueue = newQueue;
 
         /// <summary>
         /// Schedules an action to be executed after dueTime.
@@ -80,33 +68,34 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is <c>null</c>.</exception>
         public override IDisposable Schedule<TState>(TState state, TimeSpan dueTime, Func<IScheduler, TState, IDisposable> action)
         {
-            if (action == null)
+            if (null == action)
             {
                 throw new ArgumentNullException(nameof(action));
             }
 
-            var queue = default(SchedulerQueue<TimeSpan>);
+            SchedulerQueue<TimeSpan> queue;
 
             // There is no timed task and no task is currently running
-            if (!_running)
+            if (false == running)
             {
-                _running = true;
+                running = true;
 
-                if (dueTime > TimeSpan.Zero)
+                if (TimeSpan.Zero < dueTime)
                 {
-                    ConcurrencyAbstractionLayer.Current.Sleep(dueTime);
+                    ConcurrencyAbstraction.Current.Sleep(dueTime);
                 }
 
                 // execute directly without queueing
-                IDisposable d;
+                IDisposable disposable;
+
                 try
                 {
-                    d = action(this, state);
+                    disposable = action(this, state);
                 }
                 catch
                 {
                     SetQueue(null);
-                    _running = false;
+                    running = false;
                     throw;
                 }
 
@@ -114,7 +103,7 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
                 queue = GetQueue();
 
                 // yes, run those in the queue as well
-                if (queue != null)
+                if (null != queue)
                 {
                     try
                     {
@@ -123,21 +112,21 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
                     finally
                     {
                         SetQueue(null);
-                        _running = false;
+                        running = false;
                     }
                 }
                 else
                 {
-                    _running = false;
+                    running = false;
                 }
 
-                return d;
+                return disposable;
             }
 
             queue = GetQueue();
 
             // if there is a task running or there is a queue
-            if (queue == null)
+            if (null == queue)
             {
                 queue = new SchedulerQueue<TimeSpan>(4);
                 SetQueue(queue);
@@ -147,29 +136,38 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
 
             // queue up more work
             var si = new ScheduledItem<TimeSpan, TState>(this, state, action, dt);
+
             queue.Enqueue(si);
+
             return si;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private static class Trampoline
         {
             public static void Run(SchedulerQueue<TimeSpan> queue)
             {
-                while (queue.Count > 0)
+                while (0 < queue.Count)
                 {
                     var item = queue.Dequeue();
-                    if (!item.IsCanceled)
-                    {
-                        var wait = item.DueTime - Time;
-                        if (wait.Ticks > 0)
-                        {
-                            ConcurrencyAbstractionLayer.Current.Sleep(wait);
-                        }
 
-                        if (!item.IsCanceled)
-                        {
-                            item.Invoke();
-                        }
+                    if (item.IsCanceled)
+                    {
+                        continue;
+                    }
+
+                    var wait = item.DueTime - Time;
+
+                    if (wait.Ticks > 0)
+                    {
+                        ConcurrencyAbstraction.Current.Sleep(wait);
+                    }
+
+                    if (false == item.IsCanceled)
+                    {
+                        item.Invoke();
                     }
                 }
             }

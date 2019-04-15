@@ -8,22 +8,28 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using StoryBlog.Web.Blazor.Reactive;
 
 namespace StoryBlog.Web.Blazor.Client.Services
 {
-    internal sealed class BlogApiClient : IBlogApiClient
+    internal sealed class BlogApiClient : IBlogApiClient, IDisposable
     {
         private readonly HttpClient client;
+        private readonly AuthorizationContext authorizationContext;
         private readonly Uri baseUri = new Uri("http://localhost:3000/api/v1/");
+        private AuthorizationToken authorizationToken;
+        private readonly IDisposable disposable;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="client"></param>
-        /// <param name="logger"></param>
-        public BlogApiClient(HttpClient client)
+        /// <param name="authorizationContext"></param>
+        public BlogApiClient(HttpClient client, AuthorizationContext authorizationContext)
         {
             this.client = client;
+            this.authorizationContext = authorizationContext;
+            disposable = authorizationContext.Subscribe(value => authorizationToken = value);
         }
 
         /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync" />
@@ -36,8 +42,10 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
             try
             {
-
-                client.SetBearerToken();
+                if (null != authorizationToken)
+                {
+                    client.SetBearerToken(authorizationToken.Token);
+                }
 
                 using (var response = await client.GetAsync(requestUri, CancellationToken.None))
                 {
@@ -138,6 +146,11 @@ namespace StoryBlog.Web.Blazor.Client.Services
             {
                 return false;
             }
+        }
+
+        public void Dispose()
+        {
+            disposable.Dispose();
         }
     }
 }

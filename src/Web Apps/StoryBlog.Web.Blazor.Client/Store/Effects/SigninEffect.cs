@@ -31,4 +31,30 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
             }
         }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /*public sealed class SigninRequestSuccessActionEffect : Effect<SigninRequestSuccessAction>
+    {
+        private readonly AuthorizationContext context;
+
+        public SigninRequestSuccessActionEffect(AuthorizationContext context)
+        {
+            this.context = context;
+        }
+
+        /// <inheritdoc cref="Effect{TTriggerAction}.HandleAsync" />
+        protected override async Task HandleAsync(SigninRequestSuccessAction action, IDispatcher dispatcher)
+        {
+            try
+            {
+                context.Token=action.Principal
+            }
+            catch (HttpRequestException exception)
+            {
+                dispatcher.Dispatch(new SigninRequestFailedAction(exception.Message));
+            }
+        }
+    }*/
 }

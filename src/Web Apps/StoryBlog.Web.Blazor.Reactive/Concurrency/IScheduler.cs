@@ -10,7 +10,10 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <summary>
         /// Gets the scheduler's notion of current time.
         /// </summary>
-        DateTimeOffset Now { get; }
+        DateTimeOffset Now
+        {
+            get;
+        }
 
         /// <summary>
         /// Schedules an action to be executed.

@@ -60,7 +60,7 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
                 throw new ArgumentNullException(nameof(scheduler));
             }
 
-            return new SchedulerOperation(a => scheduler.Schedule(a), scheduler.GetCancellationToken());
+            return new SchedulerOperation(action => scheduler.Schedule(action), scheduler.GetCancellationToken());
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> is <c>null</c>.</exception>
         public static SchedulerOperation Yield(this IScheduler scheduler, CancellationToken cancellationToken)
         {
-            if (scheduler == null)
+            if (null == scheduler)
             {
                 throw new ArgumentNullException(nameof(scheduler));
             }
@@ -91,7 +91,7 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> is <c>null</c>.</exception>
         public static SchedulerOperation Sleep(this IScheduler scheduler, TimeSpan dueTime)
         {
-            if (scheduler == null)
+            if (null == scheduler)
             {
                 throw new ArgumentNullException(nameof(scheduler));
             }
@@ -110,7 +110,7 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> is <c>null</c>.</exception>
         public static SchedulerOperation Sleep(this IScheduler scheduler, TimeSpan dueTime, CancellationToken cancellationToken)
         {
-            if (scheduler == null)
+            if (null == scheduler)
             {
                 throw new ArgumentNullException(nameof(scheduler));
             }
@@ -128,7 +128,7 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> is <c>null</c>.</exception>
         public static SchedulerOperation Sleep(this IScheduler scheduler, DateTimeOffset dueTime)
         {
-            if (scheduler == null)
+            if (null == scheduler)
             {
                 throw new ArgumentNullException(nameof(scheduler));
             }
@@ -147,7 +147,7 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> is <c>null</c>.</exception>
         public static SchedulerOperation Sleep(this IScheduler scheduler, DateTimeOffset dueTime, CancellationToken cancellationToken)
         {
-            if (scheduler == null)
+            if (null == scheduler)
             {
                 throw new ArgumentNullException(nameof(scheduler));
             }
@@ -166,12 +166,12 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> or <paramref name="action"/> is <c>null</c>.</exception>
         public static IDisposable ScheduleAsync<TState>(this IScheduler scheduler, TState state, Func<IScheduler, TState, CancellationToken, Task> action)
         {
-            if (scheduler == null)
+            if (null == scheduler)
             {
                 throw new ArgumentNullException(nameof(scheduler));
             }
 
-            if (action == null)
+            if (null == action)
             {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -190,12 +190,12 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> or <paramref name="action"/> is <c>null</c>.</exception>
         public static IDisposable ScheduleAsync<TState>(this IScheduler scheduler, TState state, Func<IScheduler, TState, CancellationToken, Task<IDisposable>> action)
         {
-            if (scheduler == null)
+            if (null == scheduler)
             {
                 throw new ArgumentNullException(nameof(scheduler));
             }
 
-            if (action == null)
+            if (null == action)
             {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -212,12 +212,12 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> or <paramref name="action"/> is <c>null</c>.</exception>
         public static IDisposable ScheduleAsync(this IScheduler scheduler, Func<IScheduler, CancellationToken, Task> action)
         {
-            if (scheduler == null)
+            if (null == scheduler)
             {
                 throw new ArgumentNullException(nameof(scheduler));
             }
 
-            if (action == null)
+            if (null == action)
             {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -234,12 +234,12 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> or <paramref name="action"/> is <c>null</c>.</exception>
         public static IDisposable ScheduleAsync(this IScheduler scheduler, Func<IScheduler, CancellationToken, Task<IDisposable>> action)
         {
-            if (scheduler == null)
+            if (null == scheduler)
             {
                 throw new ArgumentNullException(nameof(scheduler));
             }
 
-            if (action == null)
+            if (null == action)
             {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -259,12 +259,12 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> or <paramref name="action"/> is <c>null</c>.</exception>
         public static IDisposable ScheduleAsync<TState>(this IScheduler scheduler, TState state, TimeSpan dueTime, Func<IScheduler, TState, CancellationToken, Task> action)
         {
-            if (scheduler == null)
+            if (null == scheduler)
             {
                 throw new ArgumentNullException(nameof(scheduler));
             }
 
-            if (action == null)
+            if (null == action)
             {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -284,12 +284,12 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> or <paramref name="action"/> is <c>null</c>.</exception>
         public static IDisposable ScheduleAsync<TState>(this IScheduler scheduler, TState state, TimeSpan dueTime, Func<IScheduler, TState, CancellationToken, Task<IDisposable>> action)
         {
-            if (scheduler == null)
+            if (null == scheduler)
             {
                 throw new ArgumentNullException(nameof(scheduler));
             }
 
-            if (action == null)
+            if (null == action)
             {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -307,12 +307,12 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> or <paramref name="action"/> is <c>null</c>.</exception>
         public static IDisposable ScheduleAsync(this IScheduler scheduler, TimeSpan dueTime, Func<IScheduler, CancellationToken, Task> action)
         {
-            if (scheduler == null)
+            if (null == scheduler)
             {
                 throw new ArgumentNullException(nameof(scheduler));
             }
 
-            if (action == null)
+            if (null == action)
             {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -330,12 +330,12 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> or <paramref name="action"/> is <c>null</c>.</exception>
         public static IDisposable ScheduleAsync(this IScheduler scheduler, TimeSpan dueTime, Func<IScheduler, CancellationToken, Task<IDisposable>> action)
         {
-            if (scheduler == null)
+            if (null == scheduler)
             {
                 throw new ArgumentNullException(nameof(scheduler));
             }
 
-            if (action == null)
+            if (null == action)
             {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -355,12 +355,12 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> or <paramref name="action"/> is <c>null</c>.</exception>
         public static IDisposable ScheduleAsync<TState>(this IScheduler scheduler, TState state, DateTimeOffset dueTime, Func<IScheduler, TState, CancellationToken, Task> action)
         {
-            if (scheduler == null)
+            if (null == scheduler)
             {
                 throw new ArgumentNullException(nameof(scheduler));
             }
 
-            if (action == null)
+            if (null == action)
             {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -380,12 +380,12 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> or <paramref name="action"/> is <c>null</c>.</exception>
         public static IDisposable ScheduleAsync<TState>(this IScheduler scheduler, TState state, DateTimeOffset dueTime, Func<IScheduler, TState, CancellationToken, Task<IDisposable>> action)
         {
-            if (scheduler == null)
+            if (null == scheduler)
             {
                 throw new ArgumentNullException(nameof(scheduler));
             }
 
-            if (action == null)
+            if (null == action)
             {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -403,12 +403,12 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> or <paramref name="action"/> is <c>null</c>.</exception>
         public static IDisposable ScheduleAsync(this IScheduler scheduler, DateTimeOffset dueTime, Func<IScheduler, CancellationToken, Task> action)
         {
-            if (scheduler == null)
+            if (null == scheduler)
             {
                 throw new ArgumentNullException(nameof(scheduler));
             }
 
-            if (action == null)
+            if (null == action)
             {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -426,12 +426,12 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
         /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> or <paramref name="action"/> is <c>null</c>.</exception>
         public static IDisposable ScheduleAsync(this IScheduler scheduler, DateTimeOffset dueTime, Func<IScheduler, CancellationToken, Task<IDisposable>> action)
         {
-            if (scheduler == null)
+            if (null == scheduler)
             {
                 throw new ArgumentNullException(nameof(scheduler));
             }
 
-            if (action == null)
+            if (null == action)
             {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -484,37 +484,37 @@ namespace StoryBlog.Web.Blazor.Reactive.Concurrency
             return scheduler is CancelableScheduler cs ? cs.Token : CancellationToken.None;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private sealed class CancelableScheduler : IScheduler
         {
-            private readonly IScheduler _scheduler;
-            private readonly CancellationToken _cancellationToken;
+            private readonly IScheduler scheduler;
+            private readonly CancellationToken cancellationToken;
 
             public CancelableScheduler(IScheduler scheduler, CancellationToken cancellationToken)
             {
-                _scheduler = scheduler;
-                _cancellationToken = cancellationToken;
+                this.scheduler = scheduler;
+                this.cancellationToken = cancellationToken;
             }
 
-            public CancellationToken Token
-            {
-                get { return _cancellationToken; }
-            }
+            public CancellationToken Token => cancellationToken;
 
-            public DateTimeOffset Now => _scheduler.Now;
+            public DateTimeOffset Now => scheduler.Now;
 
             public IDisposable Schedule<TState>(TState state, Func<IScheduler, TState, IDisposable> action)
             {
-                return _scheduler.Schedule(state, action);
+                return scheduler.Schedule(state, action);
             }
 
             public IDisposable Schedule<TState>(TState state, TimeSpan dueTime, Func<IScheduler, TState, IDisposable> action)
             {
-                return _scheduler.Schedule(state, dueTime, action);
+                return scheduler.Schedule(state, dueTime, action);
             }
 
             public IDisposable Schedule<TState>(TState state, DateTimeOffset dueTime, Func<IScheduler, TState, IDisposable> action)
             {
-                return _scheduler.Schedule(state, dueTime, action);
+                return scheduler.Schedule(state, dueTime, action);
             }
         }
     }

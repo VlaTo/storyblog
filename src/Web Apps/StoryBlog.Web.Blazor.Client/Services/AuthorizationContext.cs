@@ -1,29 +1,41 @@
 ﻿using System;
+using StoryBlog.Web.Blazor.Reactive;
 
 namespace StoryBlog.Web.Blazor.Client.Services
 {
-    internal sealed class AuthorizationContext : Obser IObservable<string>
+    public sealed class AuthorizationContext : IObservable<AuthorizationToken>
     {
-        private string token;
+        private readonly Subject<AuthorizationToken> subject;
+        private AuthorizationToken token;
 
-        public string Token
+        public AuthorizationToken Token
         {
             get => token;
             set
             {
                 if (null == value)
                 {
-                    throw new ArgumentNullException(nameof(value));
+                    throw new ArgumentNullException();
+                }
+
+                if (token == value)
+                {
+                    return;
                 }
 
                 token = value;
-
+                subject.OnNext(value);
             }
         }
 
-        public IDisposable Subscribe(IObserver<string> observer)
+        public AuthorizationContext()
         {
-            throw new NotImplementedException();
+            subject = new Subject<AuthorizationToken>();
+        }
+
+        public IDisposable Subscribe(IObserver<AuthorizationToken> observer)
+        {
+            return subject.Subscribe(observer);
         }
     }
 }

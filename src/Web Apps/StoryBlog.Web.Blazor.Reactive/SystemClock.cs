@@ -80,7 +80,7 @@ namespace StoryBlog.Web.Blazor.Reactive
         private static INotifySystemClockChanged InitializeSystemClockChanged()
         {
 #pragma warning disable CS0618 // Type or member is obsolete
-            return PlatformEnlightenmentProvider.Current.GetService<INotifySystemClockChanged>() ?? new DefaultSystemClockMonitor();
+            return PlatformProvider.Current.GetService<INotifySystemClockChanged>() ?? new DefaultSystemClockMonitor();
 #pragma warning restore CS0618 // Type or member is obsolete
         }
 

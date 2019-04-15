@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace StoryBlog.Web.Blazor.Reactive.Concurrency
 {
-    internal class ConcurrencyAbstractionLayerImpl : IConcurrencyAbstraction
+    internal class ConcurrencyAbstractionImpl : IConcurrencyAbstraction
     {
         private sealed class WorkItem
         {
