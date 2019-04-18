@@ -103,15 +103,11 @@ namespace StoryBlog.Web.Services.Blog.API
                         })
                         .AddJwtBearer(options =>
                         {
-                            options.Authority = "http://localhost:63655";
+                            var section = context.Configuration.GetSection("Authentication:JwtBearer");
+
+                            options.Authority = section.GetValue<string>(nameof(options.Authority));
                             options.Audience = "api.blog";
-                            options.RequireHttpsMetadata = false;
-
-                            /*var section = context.Configuration.GetSection("Bearer");
-
-                            options.Authority = section.GetValue<string>("Authority");
-                            options.Audience = section.GetValue<string>("Audience");
-                            options.RequireHttpsMetadata = false;*/
+                            options.RequireHttpsMetadata = section.GetValue<bool>(nameof(options.RequireHttpsMetadata));
                         });
 
                     services.AddAuthorization(options =>

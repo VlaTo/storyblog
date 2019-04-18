@@ -52,6 +52,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         }
 
         // GET api/v1/landing?include=hero,featured,stories
+        //[Authorize(Policy = "Default")]
         [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(typeof(LandingModel), (int) HttpStatusCode.OK)]
