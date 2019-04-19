@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using StoryBlog.Web.Services.Identity.API.Data.Models;
+using StoryBlog.Web.Services.Identity.Persistence.Models;
+using System.Threading.Tasks;
 
-namespace StoryBlog.Web.Services.Identity.API.Services
+namespace StoryBlog.Web.Services.Identity.Application.Services
 {
     /// <summary>
     /// 

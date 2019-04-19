@@ -1,7 +1,8 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using StoryBlog.Web.Services.Identity.Application.Models;
+using System.Threading.Tasks;
 
-namespace StoryBlog.Web.Services.Identity.API.Services
+namespace StoryBlog.Web.Services.Identity.Application.Services
 {
     /// <summary>
     /// 

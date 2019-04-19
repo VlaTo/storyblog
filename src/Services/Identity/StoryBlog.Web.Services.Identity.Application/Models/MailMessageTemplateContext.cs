@@ -2,7 +2,7 @@
 using System.Collections.Specialized;
 using System.Net.Mail;
 
-namespace StoryBlog.Web.Services.Identity.API.Services
+namespace StoryBlog.Web.Services.Identity.Application.Models
 {
     public sealed class MailMessageTemplateContext
     {

@@ -1,11 +1,19 @@
-﻿using System;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace StoryBlog.Web.Services.Identity.API.Data.Models
+namespace StoryBlog.Web.Services.Identity.Persistence.Models
 {
-    [Table(nameof(Card))]
-    public class Card
+    public enum AddressTypes
+    {
+        NotUsed = 0,
+        Home,
+        Billing,
+        Delivery,
+    }
+
+    [Table(nameof(Address))]
+    public class Address
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -16,29 +24,40 @@ namespace StoryBlog.Web.Services.Identity.API.Data.Models
         }
 
         [Required]
-        [StringLength(20, MinimumLength = 16)]
-        public string Number
+        public string City
+        {
+            get;
+            set;
+        }
+
+        public string Street
+        {
+            get;
+            set;
+        }
+
+        public string State
         {
             get;
             set;
         }
 
         [Required]
-        [StringLength(3)]
-        public string Code
+        public string Country
         {
             get;
             set;
         }
 
         [Required]
-        [DataType(DataType.DateTime)]
-        public DateTime Expiration
+        [DefaultValue(AddressTypes.NotUsed)]
+        public AddressTypes AddressTypes
         {
             get;
             set;
         }
 
+        [Required]
         public long CustomerId
         {
             get;
@@ -49,7 +68,7 @@ namespace StoryBlog.Web.Services.Identity.API.Data.Models
         public Customer Customer
         {
             get;
-            set;
+            internal set;
         }
     }
 }

@@ -1,18 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using StoryBlog.Web.Services.Identity.API.Configuration.IdentityServer;
-using StoryBlog.Web.Services.Identity.API.Data.Models;
-using StoryBlog.Web.Services.Identity.Domain;
+using StoryBlog.Web.Services.Identity.Persistence.Models;
 using StoryBlog.Web.Services.Shared.Common;
 
-namespace StoryBlog.Web.Services.Identity.API.Data
+namespace StoryBlog.Web.Services.Identity.Persistence
 {
     public sealed class StoryBlogIdentitySetup
     {
@@ -39,7 +37,10 @@ namespace StoryBlog.Web.Services.Identity.API.Data
             this.logger = logger;
         }
 
-        public async Task SeedAsync()
+        public async Task SeedAsync(
+            IEnumerable<IdentityServer4.Models.Client> definedClients,
+            IEnumerable<IdentityServer4.Models.IdentityResource> definedIdentityResources,
+            IEnumerable<IdentityServer4.Models.ApiResource> definedApiResources)
         {
             if (customerManager.SupportsUserRole)
             {
@@ -150,7 +151,7 @@ namespace StoryBlog.Web.Services.Identity.API.Data
             {
                 var clients = configurationContext.Clients;
 
-                foreach (var client in Config.GetClients())
+                foreach (var client in definedClients)
                 {
                     if (clients.Any(existing => existing.ClientName == client.ClientName))
                     {
@@ -162,7 +163,7 @@ namespace StoryBlog.Web.Services.Identity.API.Data
 
                 var identityResources = configurationContext.IdentityResources;
 
-                foreach (var resource in Config.GetIdentityResources())
+                foreach (var resource in definedIdentityResources)
                 {
                     if (identityResources.Any(existing => existing.Name == resource.Name))
                     {
@@ -174,7 +175,7 @@ namespace StoryBlog.Web.Services.Identity.API.Data
 
                 var apiResources = configurationContext.ApiResources;
 
-                foreach (var resource in Config.GetApiResources())
+                foreach (var resource in definedApiResources)
                 {
                     if (apiResources.Any(existing => existing.Name == resource.Name))
                     {

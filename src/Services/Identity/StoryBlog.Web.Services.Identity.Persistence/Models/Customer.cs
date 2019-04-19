@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
-namespace StoryBlog.Web.Services.Identity.API.Data.Models
+namespace StoryBlog.Web.Services.Identity.Persistence.Models
 {
     public class Customer : IdentityUser<long>
     {

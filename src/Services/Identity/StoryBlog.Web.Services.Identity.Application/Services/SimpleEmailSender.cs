@@ -3,7 +3,7 @@ using System;
 using System.Net.Mail;
 using System.Threading.Tasks;
 
-namespace StoryBlog.Web.Services.Identity.API.Services
+namespace StoryBlog.Web.Services.Identity.Application.Services
 {
     /// <summary>
     /// 

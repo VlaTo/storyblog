@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using StoryBlog.Web.Services.Shared.Persistence;
 
-namespace StoryBlog.Web.Services.Identity.API.Data
+namespace StoryBlog.Web.Services.Identity.Persistence
 {
     public sealed class StoryBlogIdentityDbContextFactory : DesignTimeDbContextFactoryBase<StoryBlogIdentityDbContext>
     {
         public StoryBlogIdentityDbContextFactory()
-            : base("StoryBlog", typeof(Program).Assembly.GetName().Name)
+            : base("StoryBlog", typeof(StoryBlogIdentityDbContext).Assembly.GetName().Name)
         {
         }
 

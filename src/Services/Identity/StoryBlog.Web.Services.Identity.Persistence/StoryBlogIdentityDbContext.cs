@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using StoryBlog.Web.Services.Identity.API.Data.Models;
+using StoryBlog.Web.Services.Identity.Persistence.Models;
 
-namespace StoryBlog.Web.Services.Identity.API.Data
+namespace StoryBlog.Web.Services.Identity.Persistence
 {
     public class StoryBlogIdentityDbContext : IdentityDbContext<Customer, CustomerRole, long>
     {

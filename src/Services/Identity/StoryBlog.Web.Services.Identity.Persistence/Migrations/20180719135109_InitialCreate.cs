@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace StoryBlog.Web.Services.Identity.API.Migrations
+namespace StoryBlog.Web.Services.Identity.Persistence.Migrations
 {
     public partial class InitialCreate : Migration
     {

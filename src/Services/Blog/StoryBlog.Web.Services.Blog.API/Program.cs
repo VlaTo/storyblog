@@ -18,20 +18,13 @@ using StoryBlog.Web.Services.Blog.Application.Extensions;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Blog.Persistence;
+using StoryBlog.Web.Services.Shared.Common;
 using StoryBlog.Web.Services.Shared.Communication;
 using System;
-using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Mime;
-using System.Reflection;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using IdentityServer4.AccessTokenValidation;
-using Microsoft.IdentityModel.Logging;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using StoryBlog.Web.Services.Blog.API.Extensions;
-using StoryBlog.Web.Services.Shared.Common;
 
 namespace StoryBlog.Web.Services.Blog.API
 {
@@ -91,7 +84,7 @@ namespace StoryBlog.Web.Services.Blog.API
                         });
 
                     // remove it
-                    IdentityModelEventSource.ShowPII = true;
+                    //IdentityModelEventSource.ShowPII = true;
 
                     JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -108,6 +101,10 @@ namespace StoryBlog.Web.Services.Blog.API
                             options.Authority = section.GetValue<string>(nameof(options.Authority));
                             options.Audience = "api.blog";
                             options.RequireHttpsMetadata = section.GetValue<bool>(nameof(options.RequireHttpsMetadata));
+                            options.SaveToken = section.GetValue<bool>(nameof(options.SaveToken));
+
+                            options.TokenValidationParameters.NameClaimType = "name";
+                            options.TokenValidationParameters.RoleClaimType = "role";
                         });
 
                     services.AddAuthorization(options =>

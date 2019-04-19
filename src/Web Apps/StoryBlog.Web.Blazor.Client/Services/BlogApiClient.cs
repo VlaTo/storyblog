@@ -57,7 +57,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
                     return data;
                 }
             }
-            catch (HttpRequestException exception)
+            catch (HttpRequestException)
             {
                 return new LandingModel();
             }

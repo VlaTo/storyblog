@@ -11,15 +11,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using StoryBlog.Web.Services.Identity.API.Configuration;
-using StoryBlog.Web.Services.Identity.API.Data.Models;
 using StoryBlog.Web.Services.Identity.API.Extensions;
 using StoryBlog.Web.Services.Identity.API.Models;
-using StoryBlog.Web.Services.Identity.API.Services;
+using StoryBlog.Web.Services.Identity.Application.Models;
+using StoryBlog.Web.Services.Identity.Application.Services;
+using StoryBlog.Web.Services.Identity.Persistence.Models;
 using StoryBlog.Web.Services.Shared.Captcha;
 using System;
 using System.Linq;
 using System.Net.Mail;
-using System.Net.Mime;
 using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Services.Identity.API.Controllers

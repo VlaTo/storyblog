@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
-namespace StoryBlog.Web.Services.Identity.API.Services
+namespace StoryBlog.Web.Services.Identity.Application.Services
 {
     /// <summary>
     /// 

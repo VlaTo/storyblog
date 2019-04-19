@@ -3,10 +3,8 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using StoryBlog.Web.Services.Identity.API.Data;
 
-namespace StoryBlog.Web.Services.Identity.API.Migrations
+namespace StoryBlog.Web.Services.Identity.Persistence.Migrations
 {
     [DbContext(typeof(StoryBlogIdentityDbContext))]
     [Migration("20180719161939_CustomerContactNameAdded")]

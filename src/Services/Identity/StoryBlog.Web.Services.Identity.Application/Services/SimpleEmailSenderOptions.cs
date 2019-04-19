@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace StoryBlog.Web.Services.Identity.API.Services
+namespace StoryBlog.Web.Services.Identity.Application.Services
 {
     public sealed class SimpleEmailSenderOptions
     {

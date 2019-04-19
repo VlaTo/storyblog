@@ -2,15 +2,15 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using StoryBlog.Web.Services.Identity.API.Data;
+using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace StoryBlog.Web.Services.Identity.API.Migrations
+namespace StoryBlog.Web.Services.Identity.Persistence.Migrations
 {
     [DbContext(typeof(StoryBlogIdentityDbContext))]
-    partial class StoryBlogIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180719135109_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -156,9 +156,6 @@ namespace StoryBlog.Web.Services.Identity.API.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
-
-                    b.Property<string>("ContactName")
-                        .IsRequired();
 
                     b.Property<string>("Email")
                         .HasMaxLength(256);

@@ -3,7 +3,6 @@ using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
-using StoryBlog.Web.Services.Identity.API.Data.Models;
 using StoryBlog.Web.Services.Identity.Domain;
 using System;
 using System.Collections.Generic;
@@ -11,8 +10,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using StoryBlog.Web.Services.Identity.Persistence.Models;
 
-namespace StoryBlog.Web.Services.Identity.API.Services
+namespace StoryBlog.Web.Services.Identity.Application.Services
 {
     /// <summary>
     /// 
@@ -125,21 +125,11 @@ namespace StoryBlog.Web.Services.Identity.API.Services
             var name = await userManager.GetUserNameAsync(user);
             var claims = new List<Claim>
             {
-                //new Claim(JwtClaimTypes.Subject, user.Id.ToString()),
                 new Claim(identityOptions.ClaimsIdentity.UserIdClaimType,id),
-                //new Claim(JwtClaimTypes.PreferredUserName, user.UserName),
                 new Claim(identityOptions.ClaimsIdentity.UserNameClaimType,name),
-                //new Claim(JwtClaimTypes.Name, user.UserName)
             };
 
-            if (String.IsNullOrWhiteSpace(user.ContactName))
-            {
-                claims.Add(new Claim(CustomerClaimTypes.Name, user.NormalizedUserName));
-            }
-            else
-            {
-                claims.Add(new Claim(JwtClaimTypes.GivenName, user.ContactName));
-            }
+            //AddCustomRequestedClaim(user, requestedClaimTypes, claims);
 
             var address = user.Addresses?.FirstOrDefault(x => x.AddressTypes == AddressTypes.Home);
 
@@ -227,6 +217,19 @@ namespace StoryBlog.Web.Services.Identity.API.Services
 
             return claims;
         }
+
+        /*private static void AddCustomRequestedClaim(IList<Claim> claims, string claimType, string claimValue, IEnumerable<string> requestedClaimTypes)
+        {
+            if (String.IsNullOrWhiteSpace(claimValue))
+            {
+                return;
+            }
+
+            if (requestedClaimTypes.Has(claimType))
+            {
+                claims.Add(new Claim(claimType, claimValue));
+            }
+        }*/
 
         private static bool IsUserActive(Customer user)
         {

@@ -14,13 +14,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 using StoryBlog.Web.Services.Identity.API.Configuration;
-using StoryBlog.Web.Services.Identity.API.Data;
-using StoryBlog.Web.Services.Identity.API.Data.Models;
 using StoryBlog.Web.Services.Identity.API.Extensions;
-using StoryBlog.Web.Services.Identity.API.Services;
+using StoryBlog.Web.Services.Identity.Application.Services;
+using StoryBlog.Web.Services.Identity.Persistence;
+using StoryBlog.Web.Services.Identity.Persistence.Models;
 using StoryBlog.Web.Services.Shared.Captcha;
 using StoryBlog.Web.Services.Shared.Captcha.Extensions;
 using System;
@@ -29,7 +28,6 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
-using System.Security.Claims;
 
 namespace StoryBlog.Web.Services.Identity.API
 {
