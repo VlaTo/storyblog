@@ -1,7 +1,7 @@
-﻿using System;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using StoryBlog.Web.Services.Blog.Application.Infrastructure;
+using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
+using System;
 
 namespace StoryBlog.Web.Services.Blog.API.Infrastructure
 {

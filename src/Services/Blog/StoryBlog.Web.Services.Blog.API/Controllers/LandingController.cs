@@ -1,20 +1,20 @@
 ﻿using AutoMapper;
+using IdentityServer4.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
-using StoryBlog.Web.Services.Blog.Application.Extensions;
 using StoryBlog.Web.Services.Blog.Application.Landing.Queries;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Shared.Common;
+using StoryBlog.Web.Services.Shared.Infrastructure.Extensions;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using IdentityServer4.Extensions;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {

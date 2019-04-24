@@ -8,6 +8,7 @@ using StoryBlog.Web.Services.Blog.Persistence.Models;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Shared.Infrastructure.Results;
 using Story = StoryBlog.Web.Services.Blog.Application.Stories.Models.Story;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers

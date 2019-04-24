@@ -7,22 +7,22 @@ using Microsoft.Extensions.Options;
 using StoryBlog.Web.Services.Blog.API.Extensions;
 using StoryBlog.Web.Services.Blog.API.Infrastructure;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
-using StoryBlog.Web.Services.Blog.Application.Extensions;
-using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Application.Stories.Commands;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
 using StoryBlog.Web.Services.Blog.Interop;
+using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Shared.Common;
 using StoryBlog.Web.Services.Shared.Communication;
 using StoryBlog.Web.Services.Shared.Communication.Commands;
+using StoryBlog.Web.Services.Shared.Infrastructure.Extensions;
+using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Blog.Interop.Includes;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {

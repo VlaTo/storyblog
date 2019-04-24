@@ -1,8 +1,6 @@
-﻿using System;
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.AspNetCore.Routing;
-using StoryBlog.Web.Services.Blog.Application.Infrastructure;
+﻿using Microsoft.AspNetCore.Routing;
+using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
+using System;
 
 namespace StoryBlog.Web.Services.Blog.API.Infrastructure
 {
@@ -19,8 +17,6 @@ namespace StoryBlog.Web.Services.Blog.API.Infrastructure
                 var token = NavigationCursorEncoder.ToEncodedString(cursor);
                 return token;
             }
-
-            Debug.WriteLine($"[NavigationCursorParameterTransformer.TransformOutbound] Value: {value}");
 
             return Convert.ToString(value);
         }

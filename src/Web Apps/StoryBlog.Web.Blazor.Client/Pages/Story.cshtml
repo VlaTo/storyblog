@@ -8,47 +8,51 @@
 
 @inherits global::Blazor.Fluxor.Components.FluxorComponent
 
-@inject IState<StoryState> State
+@inject IState<StoryState> TheStory
+@inject IState<UserState> TheUser
 @inject IDispatcher Dispatcher
 
-@if (null == State)
+@if (null == TheStory)
 {
 
 }
-else if (State.Value.Status.IsNone())
+else if (TheStory.Value.Status.IsNone())
 {
     <p class="text-muted">Loading...</p>
 }
 else
 {
+    var story = TheStory.Value;
+    var user = TheUser.Value.Principal ?? null;
+
     <section>
         <div class="container">
             <div class="row">
                 <div class="col-lg-9">
-                    @if (null != State.Value.Status.Error)
+                    @if (null != story.Status.Error)
                     {
-                        <p>@State.Value.Status.Error</p>
+                        <p>@story.Status.Error</p>
                     }
 
-                    @if (null != State.Value)
+                    @if (null != story)
                     {
-                        <article id="@State.Value.Slug" class="">
+                        <article id="@story.Slug" class="">
                             <div class="mb-5">
-                                <h2 class="">@State.Value.Title</h2>
+                                <h2 class="">@story.Title</h2>
                                 <ul class="list-unstyled list-inline">
                                     <li class="list-inline-item">
                                         <i class="mdi mdi-calendar"></i>
-                                        <TimeLabel DateTime=@State.Value.Published/>
+                                        <TimeLabel DateTime=@story.Published/>
                                     </li>
                                     <li class="list-inline-item">
                                         <i class="mdi mdi-comment-multiple-outline"></i>
-                                        @State.Value.AllCommentsCount Comments
+                                        @story.AllCommentsCount Comments
                                     </li>
                                 </ul>
-                                <div class="justify-content-md-start">@State.Value.Content</div>
+                                <div class="justify-content-md-start">@story.Content</div>
                             </div>
 
-                            @if (0 == State.Value.AllCommentsCount)
+                            @if (0 == story.AllCommentsCount)
                             {
                                 <div class="alert alert-secondary" role="alert">
                                     <h4>No comments yet</h4>
@@ -56,7 +60,7 @@ else
                             }
                             else
                             {
-                                if (State.Value.Closed)
+                                if (story.Closed)
                                 {
                                     <div class="alert alert-warning" role="alert">
                                         <h4>Comments are closed</h4>
@@ -65,7 +69,7 @@ else
 
                                 <div class="m-lg-2">
                                     <ul class="list-unstyled">
-                                        @foreach (var comment in State.Value.Comments)
+                                        @foreach (var comment in story.Comments)
                                         {
                                             <StoryBlogComment Comment=@comment Level=0/>
                                         }

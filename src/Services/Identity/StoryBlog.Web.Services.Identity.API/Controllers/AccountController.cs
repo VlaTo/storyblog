@@ -21,6 +21,14 @@ using System;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using MediatR;
+using Microsoft.AspNetCore.Http;
+using StoryBlog.Web.Services.Identity.Application.Configuration;
+using StoryBlog.Web.Services.Identity.Application.Signin.Commands;
+using StoryBlog.Web.Services.Identity.Application.Signin.Models;
+using StoryBlog.Web.Services.Identity.Application.Signin.Queries;
+using StoryBlog.Web.Services.Identity.Application.Signup.Commands;
+using StoryBlog.Web.Services.Shared.Infrastructure.Extensions;
 
 namespace StoryBlog.Web.Services.Identity.API.Controllers
 {
@@ -31,15 +39,13 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
     [Route("[controller]")]
     public sealed class AccountController : Controller
     {
+        private readonly IMediator mediator;
         private readonly IIdentityServerInteractionService interactions;
-        private readonly ILoginService<Customer> loginService;
         private readonly IClientStore clientStore;
         private readonly IAuthenticationSchemeProvider schemeProvider;
         private readonly UserManager<Customer> customerManager;
         private readonly ICaptcha captcha;
         private readonly IHostingEnvironment environment;
-        private readonly ISimpleEmailSender emailSender;
-        private readonly IEmailTemplateGenerator templateGenerator;
         private readonly IEventService eventService;
         private readonly IStringLocalizer<AccountController> localizer;
         private readonly ILogger<AccountController> logger;
@@ -60,28 +66,24 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
         /// <param name="localizer"></param>
         /// <param name="logger"></param>
         public AccountController(
+            IMediator mediator,
             IIdentityServerInteractionService interactions,
-            ILoginService<Customer> loginService,
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
             UserManager<Customer> customerManager,
             ICaptcha captcha,
             IHostingEnvironment environment,
-            ISimpleEmailSender emailSender,
-            IEmailTemplateGenerator templateGenerator,
             IEventService eventService,
             IStringLocalizer<AccountController> localizer,
             ILogger<AccountController> logger)
         {
+            this.mediator = mediator;
             this.interactions = interactions;
-            this.loginService = loginService;
             this.clientStore = clientStore;
             this.schemeProvider = schemeProvider;
             this.customerManager = customerManager;
             this.captcha = captcha;
             this.environment = environment;
-            this.emailSender = emailSender;
-            this.templateGenerator = templateGenerator;
             this.eventService = eventService;
             this.localizer = localizer;
             this.logger = logger;
@@ -105,7 +107,12 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
             return View(model);
         }
 
-        // POST account/signin
+        /// <summary>
+        /// POST account/signin
+        /// </summary>
+        /// <param name="model">The <see cref="SigninInputModel" /> model</param>
+        /// <param name="button"></param>
+        /// <returns></returns>
         [HttpPost("signin")]
         [Consumes("application/x-www-form-urlencoded")]
         [ValidateAntiForgeryToken]
@@ -124,7 +131,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
 
                     if (await clientStore.IsPkceClientAsync(context.ClientId))
                     {
-                        return View("Redirect", new RedirectModel { RedirectUrl = model.ReturnUrl });
+                        return View("Redirect", new RedirectModel {RedirectUrl = model.ReturnUrl});
                     }
 
                     return Redirect(model.ReturnUrl);
@@ -135,81 +142,71 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
 
             if (ModelState.IsValid)
             {
-                var customer = await loginService.FindByEmailAsync(model.Email);
+                var result = await mediator.Send(new GetCustomerQuery(model.Email, model.Password), HttpContext.RequestAborted);
 
-                if (null != customer)
+                if (false == result.IsSuccess())
                 {
-                    var result = await loginService.ValidateCredentialsAsync(customer, model.Password);
-
-                    if (result.IsNotAllowed)
-                    {
-                        return View();
-                    }
-
-                    if (result.IsLockedOut)
-                    {
-                        return View();
-                    }
-
-                    if (result.Succeeded)
-                    {
-                        await eventService.RaiseAsync(new UserLoginSuccessEvent(
-                            IdentityServerConstants.LocalIdentityProvider,
-                            customer.NormalizedUserName,
-                            customer.UserName,
-                            customer.ContactName)
-                        );
-
-                        AuthenticationProperties properties = null;
-
-                        if (AccountOptions.AllowRememberMe && model.RememberMe)
-                        {
-                            properties = new AuthenticationProperties
-                            {
-                                IsPersistent = true,
-                                IssuedUtc = DateTimeOffset.UtcNow,
-                                ExpiresUtc = DateTimeOffset.UtcNow + AccountOptions.RememberMeSigninDuration
-                            };
-                        }
-
-                        await loginService.SigninAsync(customer, properties, IdentityServerConstants.LocalIdentityProvider);
-
-                        if (null != context)
-                        {
-                            if (await clientStore.IsPkceClientAsync(context.ClientId))
-                            {
-                                return View("Redirect", new RedirectModel { RedirectUrl = model.ReturnUrl });
-                            }
-
-                            return Redirect(model.ReturnUrl);
-                        }
-
-                        if (Url.IsLocalUrl(model.ReturnUrl))
-                        {
-                            return Redirect(model.ReturnUrl);
-                        }
-
-                        if (String.IsNullOrEmpty(model.ReturnUrl))
-                        {
-                            return Redirect("~/");
-                        }
-                        
-                        var uri = new Uri(model.ReturnUrl);
-
-                        if (uri.IsAbsoluteUri)
-                        {
-                            return Redirect(model.ReturnUrl);
-                        }
-
-                        throw new Exception("Invalid redirect url");
-                    }
+                    return View();
                 }
 
-                var invalidCredentials = localizer.InvalidCredentials(context?.UiLocales);
-                await eventService.RaiseAsync(new UserLoginFailureEvent(model.Email, invalidCredentials));
+                if (result.Data.IsNotAllowed)
+                {
+                    return View();
+                }
 
-                ModelState.AddModelError(String.Empty, "Invalid credentials");
+                if (result.Data.IsLockedOut)
+                {
+                    return View();
+                }
+
+                if (result.Data.Success)
+                {
+                    var customer = result.Data.Customer;
+
+                    await eventService.RaiseAsync(new UserLoginSuccessEvent(
+                        IdentityServerConstants.LocalIdentityProvider,
+                        customer.NormalizedUserName,
+                        customer.UserName,
+                        customer.ContactName)
+                    );
+
+                    await mediator.Send(new SigninCommand(customer, model.RememberMe), HttpContext.RequestAborted);
+
+                    if (null != context)
+                    {
+                        if (await clientStore.IsPkceClientAsync(context.ClientId))
+                        {
+                            return View("Redirect", new RedirectModel {RedirectUrl = model.ReturnUrl});
+                        }
+
+                        return Redirect(model.ReturnUrl);
+                    }
+
+                    if (Url.IsLocalUrl(model.ReturnUrl))
+                    {
+                        return Redirect(model.ReturnUrl);
+                    }
+
+                    if (String.IsNullOrEmpty(model.ReturnUrl))
+                    {
+                        return Redirect("~/");
+                    }
+
+                    var uri = new Uri(model.ReturnUrl);
+
+                    if (uri.IsAbsoluteUri)
+                    {
+                        return Redirect(model.ReturnUrl);
+                    }
+
+                    throw new Exception("Invalid redirect url");
+                }
             }
+
+            var invalidCredentials = localizer.InvalidCredentials(context?.UiLocales);
+            await eventService.RaiseAsync(new UserLoginFailureEvent(model.Email, invalidCredentials));
+
+            ModelState.AddModelError(String.Empty, "Invalid credentials");
 
             return View(await CreateSigninModelAsync(model));
         }
@@ -240,30 +237,9 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
 
             if (customerManager.SupportsUserEmail)
             {
-                var customer = new Customer
-                {
+                var customer = new Customer();
 
-                };
-                var token = await customerManager.GenerateEmailConfirmationTokenAsync(customer);
-                var template = await templateGenerator.ResolveTemplateAsync("create");
-                var context = new MailMessageTemplateContext
-                {
-                    From = new MailAddress("noreply@storyblog.org"),
-                    To =
-                    {
-                        new MailAddress("test@storyblog.org")
-                    },
-                    Subject = "",
-                    Replacements =
-                    {
-                        [nameof(token)] = token
-                    }
-                };
-
-                var message = await template.GenerateAsync(context);
-                await emailSender.SendMessageAsync(message);
-
-                ;
+                await mediator.Send(new SendConfirmationEmailCommand(customer));
             }
 
             return View("Signup", new SignupViewModel());

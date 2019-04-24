@@ -1,4 +1,6 @@
-﻿namespace StoryBlog.Web.Services.Blog.Application.Infrastructure
+﻿using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
+
+namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
 {
     /// <summary>
     /// 

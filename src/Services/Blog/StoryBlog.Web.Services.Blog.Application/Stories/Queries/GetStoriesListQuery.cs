@@ -1,6 +1,7 @@
 ﻿using MediatR;
-using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Application.Stories.Models;
+using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
+using StoryBlog.Web.Services.Shared.Infrastructure.Results;
 using System;
 using System.Security.Principal;
 

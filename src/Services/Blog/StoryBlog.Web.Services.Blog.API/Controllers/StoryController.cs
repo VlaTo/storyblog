@@ -21,6 +21,7 @@ using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using StoryBlog.Web.Services.Blog.API.Infrastructure;
+using StoryBlog.Web.Services.Shared.Infrastructure.Extensions;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {

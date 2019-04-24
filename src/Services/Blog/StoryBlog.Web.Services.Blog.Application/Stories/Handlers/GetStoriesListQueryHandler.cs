@@ -2,10 +2,11 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
 using StoryBlog.Web.Services.Blog.Persistence;
 using StoryBlog.Web.Services.Blog.Persistence.Models;
+using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
+using StoryBlog.Web.Services.Shared.Infrastructure.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;

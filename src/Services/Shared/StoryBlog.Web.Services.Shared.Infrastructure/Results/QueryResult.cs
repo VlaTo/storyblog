@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace StoryBlog.Web.Services.Blog.Application.Infrastructure
+namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
 {
     /// <summary>
     /// 

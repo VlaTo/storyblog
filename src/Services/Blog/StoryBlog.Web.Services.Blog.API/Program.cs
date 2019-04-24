@@ -20,11 +20,11 @@ using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Blog.Persistence;
 using StoryBlog.Web.Services.Shared.Common;
 using StoryBlog.Web.Services.Shared.Communication;
+using StoryBlog.Web.Services.Shared.Infrastructure.Results;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Mime;
-using System.Security.Claims;
 
 namespace StoryBlog.Web.Services.Blog.API
 {
@@ -110,7 +110,7 @@ namespace StoryBlog.Web.Services.Blog.API
                     services.AddAuthorization(options =>
                         options.AddPolicy(
                             Policies.Admins,
-                            policy => policy.RequireClaim(ClaimTypes.Role, StandardRoles.Administrator)
+                            policy => policy.RequireClaim("role", StandardRoles.Administrator)
                         )
                     );
 

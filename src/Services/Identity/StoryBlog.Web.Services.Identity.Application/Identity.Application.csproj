@@ -8,11 +8,18 @@
 
   <ItemGroup>
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="2.4.0" />
+    <PackageReference Include="MediatR" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.IISIntegration" Version="2.2.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\StoryBlog.Web.Services.Shared.Infrastructure\Shared.Infrastructure.csproj" />
     <ProjectReference Include="..\StoryBlog.Web.Services.Identity.Domain\Identity.Domain.csproj" />
     <ProjectReference Include="..\StoryBlog.Web.Services.Identity.Persistence\Identity.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Signup\Models\" />
   </ItemGroup>
 
 </Project>

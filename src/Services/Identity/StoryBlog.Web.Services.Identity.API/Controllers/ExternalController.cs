@@ -19,6 +19,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Identity.Application.Configuration;
 
 namespace StoryBlog.Web.Services.Identity.API.Controllers
 {

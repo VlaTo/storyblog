@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace StoryBlog.Web.Services.Blog.Application.Infrastructure
+namespace StoryBlog.Web.Services.Blog.API.Infrastructure
 {
     /// <summary>
     /// 

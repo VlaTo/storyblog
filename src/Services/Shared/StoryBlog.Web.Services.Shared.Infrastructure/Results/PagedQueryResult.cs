@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
 
-namespace StoryBlog.Web.Services.Blog.Application.Infrastructure
+namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
 {
     /// <summary>
     /// 

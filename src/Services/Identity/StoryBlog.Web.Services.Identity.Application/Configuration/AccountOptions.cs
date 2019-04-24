@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Server.IISIntegration;
 
-namespace StoryBlog.Web.Services.Identity.API.Configuration
+namespace StoryBlog.Web.Services.Identity.Application.Configuration
 {
     public static class AccountOptions
     {

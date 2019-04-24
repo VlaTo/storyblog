@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Internal;
-using StoryBlog.Web.Services.Blog.Application.Infrastructure;
-using System;
+﻿using System;
+using System.Linq;
+using StoryBlog.Web.Services.Shared.Infrastructure.Results;
 
-namespace StoryBlog.Web.Services.Blog.Application.Extensions
+namespace StoryBlog.Web.Services.Shared.Infrastructure.Extensions
 {
     /// <summary>
     /// 
