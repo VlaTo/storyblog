@@ -6,7 +6,9 @@ namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
     /// 
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public interface IPagedQueryResult<out TEntity> : IQueryResult<TEntity>
+    /// <typeparam name="TResources"></typeparam>
+    public interface IPagedQueryResult<out TEntity, out TResources> : IQueryResult<TEntity, TResources>
+        where TResources : IQueryResultResources
     {
         /// <summary>
         /// 
@@ -14,7 +16,6 @@ namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
         NavigationCursor Backward
         {
             get;
-            set;
         }
 
         /// <summary>
@@ -23,7 +24,6 @@ namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
         NavigationCursor Forward
         {
             get;
-            set;
         }
     }
 }

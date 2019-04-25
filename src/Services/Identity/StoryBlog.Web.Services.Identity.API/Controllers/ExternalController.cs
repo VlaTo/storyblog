@@ -176,7 +176,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
 
             await Task.CompletedTask;
 
-            return View("Signup", new SignupViewModel
+            return View("Signup", new SignUpViewModel
             {
                 Email = email,
                 UserName = GetUserNameFromClaims(claims) ?? name

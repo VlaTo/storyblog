@@ -110,14 +110,14 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
         /// <summary>
         /// POST account/signin
         /// </summary>
-        /// <param name="model">The <see cref="SigninInputModel" /> model</param>
+        /// <param name="model">The <see cref="SignInInputModel" /> model</param>
         /// <param name="button"></param>
         /// <returns></returns>
         [HttpPost("signin")]
         [Consumes("application/x-www-form-urlencoded")]
         [ValidateAntiForgeryToken]
         [ValidateCaptcha]
-        public async Task<IActionResult> Signin([FromForm] SigninInputModel model, [FromForm] string button)
+        public async Task<IActionResult> Signin([FromForm] SignInInputModel model, [FromForm] string button)
         {
             var context = await interactions.GetAuthorizationContextAsync(model.ReturnUrl);
 
@@ -159,6 +159,11 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
                     return View();
                 }
 
+                if (result.Data.RequiresTwoFactor)
+                {
+                    return View();
+                }
+
                 if (result.Data.Success)
                 {
                     var customer = result.Data.Customer;
@@ -170,7 +175,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
                         customer.ContactName)
                     );
 
-                    await mediator.Send(new SigninCommand(customer, model.RememberMe), HttpContext.RequestAborted);
+                    await mediator.Send(new SignInCommand(customer, model.RememberMe), HttpContext.RequestAborted);
 
                     if (null != context)
                     {
@@ -215,7 +220,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
         [HttpGet("create")]
         public async Task<IActionResult> Create([FromQuery] string returnUrl)
         {
-            var model = await CreateSignupModelAsync(returnUrl);
+            var model = await CreateSignUpModelAsync(returnUrl);
 
             return View("Signup", model);
         }
@@ -228,11 +233,11 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
         [HttpPost("create")]
         [Consumes("application/x-www-form-urlencoded")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromForm] SignupModel model)
+        public async Task<IActionResult> Create([FromForm] SignUpModel model)
         {
             if (false == ModelState.IsValid)
             {
-                return View("Signup", model);
+                return View("SignUp", await CreateSignUpModelAsync(model));
             }
 
             if (customerManager.SupportsUserEmail)
@@ -242,7 +247,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
                 await mediator.Send(new SendConfirmationEmailCommand(customer));
             }
 
-            return View("Signup", new SignupViewModel());
+            return View("SignUp", new SignUpViewModel());
         }
 
         /// <summary>
@@ -270,13 +275,13 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
             return View(new ErrorViewModel(message));
         }
 
-        private async Task<SigninViewModel> CreateSigninModelAsync(string returnUrl)
+        private async Task<SignInViewModel> CreateSigninModelAsync(string returnUrl)
         {
             var context = await interactions.GetAuthorizationContextAsync(returnUrl);
 
             if (null != context?.IdP)
             {
-                return new SigninViewModel
+                return new SignInViewModel
                 {
                     EnableLocalLogin = false,
                     ReturnUrl = returnUrl,
@@ -327,7 +332,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
 
             captcha.Create(HttpContext);
 
-            return new SigninViewModel
+            return new SignInViewModel
             {
                 AllowRememberMe = AccountOptions.AllowRememberMe,
                 EnableLocalLogin = canSigninLocal && AccountOptions.AllowLocalLogin,
@@ -337,19 +342,26 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
             };
         }
 
-        private async Task<SigninViewModel> CreateSigninModelAsync(SigninInputModel signin)
+        private async Task<SignInViewModel> CreateSigninModelAsync(SignInInputModel signIn)
         {
-            var model = await CreateSigninModelAsync(signin.ReturnUrl);
+            var model = await CreateSigninModelAsync(signIn.ReturnUrl);
 
-            model.Email = signin.Email;
-            model.RememberMe = signin.RememberMe;
+            model.Email = signIn.Email;
+            model.RememberMe = signIn.RememberMe;
 
             return model;
         }
 
-        private Task<SignupViewModel> CreateSignupModelAsync(string returnUrl)
+        private Task<SignUpViewModel> CreateSignUpModelAsync(string returnUrl)
         {
-            var model = new SignupViewModel();
+            var model = new SignUpViewModel();
+
+            return Task.FromResult(model);
+        }
+
+        private Task<SignUpViewModel> CreateSignUpModelAsync(SignUpModel signUp)
+        {
+            var model = new SignUpViewModel();
 
             return Task.FromResult(model);
         }

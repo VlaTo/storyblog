@@ -6,12 +6,22 @@ namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
     /// 
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public interface IQueryResult<out TEntity> : IRequestResult, IEnumerable<TEntity>
+    /// <typeparam name="TResources"></typeparam>
+    public interface IQueryResult<out TEntity, out TResources> : IRequestResult, IEnumerable<TEntity>
+    where TResources : IQueryResultResources
     {
         /// <summary>
         /// 
         /// </summary>
-        IReadOnlyCollection<TEntity> Entities
+        IReadOnlyCollection<TEntity> Data
+        {
+            get;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        TResources Resources
         {
             get;
         }

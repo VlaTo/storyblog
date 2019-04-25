@@ -2,16 +2,19 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
 using StoryBlog.Web.Services.Blog.Persistence;
 using StoryBlog.Web.Services.Blog.Persistence.Models;
 using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
-using StoryBlog.Web.Services.Shared.Infrastructure.Results;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Author = StoryBlog.Web.Services.Blog.Application.Stories.Models.Author;
+using Comment = StoryBlog.Web.Services.Blog.Application.Stories.Models.Comment;
 using Story = StoryBlog.Web.Services.Blog.Application.Stories.Models.Story;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
@@ -19,7 +22,8 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoriesListQueryHandler : IRequestHandler<GetStoriesListQuery, IPagedQueryResult<Story>>
+    // ReSharper disable once UnusedMember.Global
+    public sealed class GetStoriesListQueryHandler : IRequestHandler<GetStoriesListQuery, PagedStoriesQueryResult>
     {
         private readonly StoryBlogDbContext context;
         private readonly IMapper mapper;
@@ -47,7 +51,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<IPagedQueryResult<Story>> Handle(GetStoriesListQuery request, CancellationToken cancellationToken)
+        public async Task<PagedStoriesQueryResult> Handle(GetStoriesListQuery request, CancellationToken cancellationToken)
         {
             if (null == request)
             {
@@ -96,15 +100,17 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
                 }
             }
 
-            var stories = await queryable
-                .Take(request.Cursor.Count)
-                .Select(story => mapper.Map<Story>(story))
-                .ToListAsync(cancellationToken);
+            var entities = await queryable.Take(request.Cursor.Count).ToListAsync(cancellationToken);
+            var stories = new Collection<Story>();
+            var authors = new Collection<Author>();
 
-            return PagedQueryResult<Story>.Success(
+            CreateMappedStories(stories, authors, entities, request.IncludeAuthors);
+
+            return PagedStoriesQueryResult.Create(
                 stories,
-                GetBackwardCursor(id, stories, request.Cursor.Count),
-                GetForwardCursor(stories, request.Cursor.Count)
+                authors,
+                backward: GetBackwardCursor(id, stories, request.Cursor.Count),
+                forward: GetForwardCursor(stories, request.Cursor.Count)
             );
         }
 
@@ -140,6 +146,67 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
             var id = stories[stories.Count - 1].Id;
 
             return NavigationCursor.Forward(id, pageSize);
+        }
+
+        private void CreateMappedStories(
+            IList<Story> stories,
+            IList<Author> authors,
+            IEnumerable<Persistence.Models.Story> source,
+            bool includeAuthors)
+        {
+            var indices = new Dictionary<long, int>();
+            var getOrCreateIndex = new Func<Persistence.Models.Author, int>(author =>
+            {
+                if (false == indices.TryGetValue(author.Id, out var index))
+                {
+                    var entity = mapper.Map<Author>(author);
+
+                    index = authors.Count;
+                    authors.Add(entity);
+                    indices[author.Id] = index;
+                }
+
+                return index;
+            });
+
+            for (var index = 0; index < authors.Count; index++)
+            {
+                var author = authors[index];
+                indices[author.Id] = index;
+            }
+
+            foreach (var story in source)
+            {
+                var model = mapper.Map<Story>(story);
+
+                if (includeAuthors && null != story.Author)
+                {
+                    model.AuthorIndex = getOrCreateIndex.Invoke(story.Author);
+                }
+
+                CreateMappedCommentsForStory(model.Comments, story.Comments, getOrCreateIndex, includeAuthors);
+
+                stories.Add(model);
+            }
+        }
+
+        private void CreateMappedCommentsForStory(
+            ICollection<Comment> comments,
+            IEnumerable<Persistence.Models.Comment> source,
+            Func<Persistence.Models.Author, int> getOrCreateIndex,
+            bool includeAuthors)
+        {
+            foreach (var entity in source)
+            {
+                var comment = mapper.Map<Comment>(entity);
+
+                if (includeAuthors && null != entity.Author)
+                {
+                    comment.AuthorIndex = getOrCreateIndex.Invoke(entity.Author);
+                }
+
+                comments.Add(comment);
+            }
         }
     }
 }

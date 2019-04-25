@@ -22,7 +22,6 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
         /// 
         /// </summary>
         [DataMember(Name = "comments")]
-        //public IReadOnlyCollection<CommentModel> Comments
         public CommentModel[] Comments
         {
             get;
@@ -34,7 +33,6 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
         /// </summary>
         public StoryModel()
         {
-            //Comments = Enumerable.Empty<CommentModel>();
             Comments = new CommentModel[0];
         }
     }

@@ -12,16 +12,16 @@ using System.Threading.Tasks;
 namespace StoryBlog.Web.Services.Identity.Application.Signin.Handlers
 {
     // ReSharper disable once UnusedMember.Global
-    public class SigninCommandHandler : IRequestHandler<SigninCommand>
+    public class SignInCommandHandler : IRequestHandler<SignInCommand>
     {
         private readonly ILoginService<Customer> loginService;
 
-        public SigninCommandHandler(ILoginService<Customer> loginService)
+        public SignInCommandHandler(ILoginService<Customer> loginService)
         {
             this.loginService = loginService;
         }
 
-        public async Task<Unit> Handle(SigninCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(SignInCommand request, CancellationToken cancellationToken)
         {
             AuthenticationProperties properties = null;
 

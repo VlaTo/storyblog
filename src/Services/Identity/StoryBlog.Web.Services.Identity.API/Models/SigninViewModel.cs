@@ -7,7 +7,7 @@ namespace StoryBlog.Web.Services.Identity.API.Models
     /// <summary>
     /// 
     /// </summary>
-    public sealed class SigninViewModel : SigninInputModel
+    public sealed class SignInViewModel : SignInInputModel
     {
         /// <summary>
         /// 

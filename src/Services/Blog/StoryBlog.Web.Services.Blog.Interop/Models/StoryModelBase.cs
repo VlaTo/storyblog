@@ -28,7 +28,7 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
         }
 
         [DataMember(Name = "author")]
-        public AuthorModel Author
+        public int Author
         {
             get;
             set;

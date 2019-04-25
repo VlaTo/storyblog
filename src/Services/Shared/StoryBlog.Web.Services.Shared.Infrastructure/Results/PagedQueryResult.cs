@@ -11,7 +11,8 @@ namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
     /// 
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public struct PagedQueryResult<TEntity> : IPagedQueryResult<TEntity>
+    public struct PagedQueryResult<TEntity, TResources> : IPagedQueryResult<TEntity, TResources>
+        where TResources : IQueryResultResources
     {
         private IEnumerable<Exception> exceptions;
         private IReadOnlyCollection<TEntity> entities;
@@ -19,25 +20,15 @@ namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
         /// <inheritdoc cref="IRequestResult.Exceptions" />
         public IEnumerable<Exception> Exceptions => exceptions ?? (exceptions = Enumerable.Empty<Exception>());
 
-        /// <inheritdoc cref="IQueryResult{TEntity}.Entities" />
-        public IReadOnlyCollection<TEntity> Entities => entities ?? (entities = new TEntity[0]);
+        /// <inheritdoc cref="IQueryResult{TEntity}.Data" />
+        public IReadOnlyCollection<TEntity> Data => entities ?? (entities = new TEntity[0]);
 
         /// <summary>
         /// 
         /// </summary>
-        public NavigationCursor Backward
+        public TResources Resources
         {
             get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public NavigationCursor Forward
-        {
-            get;
-            set;
         }
 
         /// <summary>
@@ -49,19 +40,14 @@ namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
             this.entities = entities;
             exceptions = null;
 
+            Resources = default;
             Backward = null;
             Forward = null;
         }
 
-        public IEnumerator<TEntity> GetEnumerator()
-        {
-            return Entities.GetEnumerator();
-        }
+        public IEnumerator<TEntity> GetEnumerator() => Data.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <summary>
         /// 
@@ -70,18 +56,14 @@ namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
         /// <param name="backward"></param>
         /// <param name="forward"></param>
         /// <returns></returns>
-        public static IPagedQueryResult<TEntity> Success(
+        public static IPagedQueryResult<TEntity, TResources> Success(
             IEnumerable<TEntity> entities,
             NavigationCursor backward = null,
             NavigationCursor forward = null)
         {
             var list = new List<TEntity>(entities);
             var collection = new ReadOnlyCollection<TEntity>(list);
-            return new PagedQueryResult<TEntity>(collection)
-            {
-                Backward = backward,
-                Forward = forward
-            };
+            return new PagedQueryResult<TEntity, TResources>(collection);
         }
 
         /// <summary>
@@ -89,10 +71,13 @@ namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
         /// </summary>
         /// <param name="entities"></param>
         /// <returns></returns>
-        public static IPagedQueryResult<TEntity> Success(IList<TEntity> entities)
+        public static IPagedQueryResult<TEntity, TResources> Success(IList<TEntity> entities)
         {
             var collection = new ReadOnlyCollection<TEntity>(entities);
-            return new PagedQueryResult<TEntity>(collection);
+            return new PagedQueryResult<TEntity, TResources>(collection);
         }
+
+        public NavigationCursor Backward { get; }
+        public NavigationCursor Forward { get; }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
-using StoryBlog.Web.Services.Shared.Infrastructure.Results;
 using System;
 using System.Security.Principal;
 
@@ -10,7 +9,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoriesListQuery : IRequest<IPagedQueryResult<Story>>
+    public sealed class GetStoriesListQuery : IRequest<PagedStoriesQueryResult>
     {
         /// <summary>
         /// 

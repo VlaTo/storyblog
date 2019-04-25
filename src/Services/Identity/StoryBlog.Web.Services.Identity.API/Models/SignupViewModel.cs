@@ -1,6 +1,6 @@
 ﻿namespace StoryBlog.Web.Services.Identity.API.Models
 {
-    public sealed class SignupViewModel : SignupModel
+    public sealed class SignUpViewModel : SignUpModel
     {
 
     }

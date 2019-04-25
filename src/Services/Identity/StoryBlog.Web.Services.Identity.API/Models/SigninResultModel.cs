@@ -3,7 +3,7 @@
 namespace StoryBlog.Web.Services.Identity.API.Models
 {
     [DataContract(Name = "result")]
-    public class SigninResultModel
+    public class SignInResultModel
     {
         [DataMember(Name = "email")]
         public string Email

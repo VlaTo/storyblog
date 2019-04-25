@@ -28,6 +28,8 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
+using AutoMapper;
+using MediatR;
 
 namespace StoryBlog.Web.Services.Identity.API
 {
@@ -62,7 +64,7 @@ namespace StoryBlog.Web.Services.Identity.API
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    var environment = context.HostingEnvironment;
+                    //var environment = context.HostingEnvironment;
                     var connectionString = context.Configuration.GetConnectionString("StoryBlog");
                     var migrationAssemblyName = typeof(Program).Assembly.GetName().Name;
 
@@ -245,6 +247,11 @@ namespace StoryBlog.Web.Services.Identity.API
                             options.Cookie.HttpOnly = true;
                             options.Cookie.SameSite = SameSiteMode.Strict;
                         })
+                        .AddMediatR()
+                        .AddAutoMapper(config =>
+                        {
+
+                        });
                         /*
                             .AddAutoMapper(config =>
                             {

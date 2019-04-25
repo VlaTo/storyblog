@@ -6,7 +6,7 @@ namespace StoryBlog.Web.Services.Identity.Application.Signin.Commands
     /// <summary>
     /// 
     /// </summary>
-    public class SigninCommand : IRequest
+    public class SignInCommand : IRequest
     {
         public bool ShouldPersist
         {
@@ -18,7 +18,7 @@ namespace StoryBlog.Web.Services.Identity.Application.Signin.Commands
             get;
         }
 
-        public SigninCommand(Customer customer, bool shouldPersist = true)
+        public SignInCommand(Customer customer, bool shouldPersist = true)
         {
             Customer = customer;
             ShouldPersist = shouldPersist;

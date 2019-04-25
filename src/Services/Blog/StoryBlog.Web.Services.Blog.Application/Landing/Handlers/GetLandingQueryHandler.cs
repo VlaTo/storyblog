@@ -96,7 +96,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Handlers
                     Content = story.Content,
                     Created = story.Created,
                     Modified = story.Modified,
-                    Author = mapper.Map<Author>(story.Author),
+                    //Author = mapper.Map<Author>(story.Author),
                     CommentsCount = story.Comments.Count(
                         comment => comment.Status == CommentStatus.Published && (authenticated || comment.IsPublic)
                     )
@@ -125,7 +125,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Handlers
                     Content = TrimContent(story.Content),
                     Created = story.Created,
                     Modified = story.Modified,
-                    Author = mapper.Map<Author>(story.Author),
+                    //Author = mapper.Map<Author>(story.Author),
                     CommentsCount = story.Comments.Count(
                         comment => comment.Status == CommentStatus.Published && (authenticated || comment.IsPublic)
                     )
@@ -158,7 +158,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Handlers
                     Content = story.Content,
                     Created = story.Created,
                     Modified = story.Modified,
-                    Author = mapper.Map<Author>(story.Author),
+                    //Author = mapper.Map<Author>(story.Author),
                     CommentsCount = story.Comments.Count(
                         comment => comment.Status == CommentStatus.Published && (authenticated || comment.IsPublic)
                     )

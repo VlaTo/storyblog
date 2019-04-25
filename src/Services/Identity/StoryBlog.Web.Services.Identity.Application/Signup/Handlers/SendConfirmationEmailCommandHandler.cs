@@ -41,7 +41,7 @@ namespace StoryBlog.Web.Services.Identity.Application.Signup.Handlers
                 From = new MailAddress("noreply@storyblog.org"),
                 To =
                 {
-                    new MailAddress("test@storyblog.org")
+                    new MailAddress(request.Customer.Email)
                 },
                 Subject = "",
                 Replacements =

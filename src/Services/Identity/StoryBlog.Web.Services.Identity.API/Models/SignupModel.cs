@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace StoryBlog.Web.Services.Identity.API.Models
 {
     [DataContract]
-    public class SignupModel : CredentialsModel
+    public class SignUpModel : CredentialsModel
     {
         [Display(Name = "UserNameField", Prompt = "UserNamePrompt")]
         [DataMember]
@@ -28,7 +28,7 @@ namespace StoryBlog.Web.Services.Identity.API.Models
 
         [Required]
         [DataMember]
-        public bool PrivacyPolicyReaded
+        public bool AgreeWithPrivacyPolicy
         {
             get;
             set;

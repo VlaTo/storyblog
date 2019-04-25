@@ -27,18 +27,6 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
             set;
         }
 
-        public Author Author
-        {
-            get;
-            set;
-        }
-
-        /*public bool IsPublic
-        {
-            get;
-            set;
-        }*/
-
         public DateTime Created
         {
             get;

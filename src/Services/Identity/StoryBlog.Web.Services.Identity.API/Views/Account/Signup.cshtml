@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
-@model StoryBlog.Web.Services.Identity.API.Models.SignupViewModel
+@model StoryBlog.Web.Services.Identity.API.Models.SignUpViewModel
 @inject IViewLocalizer Localizer
 
 <div class="row h-100 align-items-center justify-content-center">
@@ -26,8 +26,8 @@
                         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                     </div>
                     <div class="form-check mt-4">
-                        <label class="form-check-label" asp-for="PrivacyPolicyReaded">
-                            <input class="form-check-input" asp-for="PrivacyPolicyReaded"/>
+                        <label class="form-check-label" asp-for="AgreeWithPrivacyPolicy">
+                            <input class="form-check-input" asp-for="AgreeWithPrivacyPolicy"/>
                             @Localizer["PrivacyPolicyText"]
                             <a asp-action="Show" asp-controller="Policy">@Localizer["PrivacyPolicyLinkText"]</a>
                         </label>

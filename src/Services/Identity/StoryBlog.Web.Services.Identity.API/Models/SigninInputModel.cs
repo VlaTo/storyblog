@@ -7,7 +7,7 @@ namespace StoryBlog.Web.Services.Identity.API.Models
     /// 
     /// </summary>
     [DataContract]
-    public class SigninInputModel : CredentialsModel
+    public class SignInInputModel : CredentialsModel
     {
         /// <summary>
         /// 

@@ -33,10 +33,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                     comment => comment.Content,
                     mapping => mapping.MapFrom(source => source.Content)
                 )
-                .ForMember(
-                    comment => comment.Author,
+                /*.ForMember(
+                    comment => comment.AuthorIndex,
                     mapping => mapping.MapFrom(source => source.Author)
-                )
+                )*/
                 .ForMember(
                     comment => comment.Created,
                     mapping => mapping.MapFrom(source => source.Created)
@@ -73,14 +73,17 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                     story => story.Modified,
                     mapping => mapping.MapFrom(source => source.Modified)
                 )
-                .ForMember(
+                /*.ForMember(
                     story => story.Author,
                     mapping => mapping.MapFrom(source => source.Author)
-                )
-                .AfterMap((source, story, context) => story.Comments.AddRange(
+                )*/
+                /*.AfterMap((source, story, context) =>
+                {
+                    story.Comments.AddRange(
                         source.Comments?.Select(comment => context.Mapper.Map<Stories.Models.Comment>(comment))
-                    )
-                );
+                    );
+                })*/
+                ;
 
             configuration
                 .CreateMap<Persistence.Models.Story, Stories.Models.FeedStory>()
@@ -109,10 +112,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                     story => story.Modified,
                     mapping => mapping.MapFrom(source => source.Modified)
                 )
-                .ForMember(
+                /*.ForMember(
                     story => story.Author,
                     mapping => mapping.MapFrom(source => source.Author)
-                )
+                )*/
                 .AfterMap((source, story, context) => story.CommentsCount = source.Comments.Count());
 
             configuration
@@ -142,10 +145,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                     story => story.Modified,
                     mapping => mapping.MapFrom(source => source.Modified)
                 )
-                .ForMember(
+                /*.ForMember(
                     story => story.Author,
                     mapping => mapping.MapFrom(source => source.Author)
-                )
+                )*/
                 .AfterMap((source, story, context) => story.CommentsCount = source.Comments.Count);
 
             return configuration;

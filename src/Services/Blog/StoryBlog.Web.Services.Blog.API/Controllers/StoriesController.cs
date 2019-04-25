@@ -23,6 +23,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -108,7 +109,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         // GET api/v1/stories
         [AllowAnonymous]
         [HttpGet("{page?}")]
-        [ProducesResponseType(typeof(ListResult<StoryModel>), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ListResult<StoryModel, ResourcesMeta>), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Get(string page, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
         {
             var flags = EnumFlags.Parse<StoryIncludes>(includes);
@@ -155,11 +156,15 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 });
             }
 
-            return Ok(new ListResult<StoryModel>
+            return Ok(new ListResult<StoryModel, ResourcesMeta>
             {
                 Data = result.Select(story => mapper.Map<StoryModel>(story)),
-                Meta = new ListResultMetaInformation
+                Meta = new ResourcesMeta
                 {
+                    Resources = new AuthorsResource
+                    {
+                        Authors = result.Resources.Authors.Select(author => mapper.Map<AuthorModel>(author))
+                    },
                     Navigation = new Navigation
                     {
                         Previous = backward,
