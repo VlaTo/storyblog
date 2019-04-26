@@ -26,7 +26,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Helpers
                     Content = comment.Content,
                     Author = new AuthorModel
                     {
-                        Name = comment.Author.Name
+                        Name = "(none)" //comment.Author.Name
                     },
                     Published = comment.Modified.GetValueOrDefault(comment.Created)
                 };
@@ -53,7 +53,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Helpers
                     Content = comment.Content,
                     Author = new AuthorModel
                     {
-                        Name = comment.Author.Name
+                        Name = "(none)" //comment.Author.Name
                     },
                     Published = comment.Modified.GetValueOrDefault(comment.Created)
                 };

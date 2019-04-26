@@ -1,4 +1,5 @@
-﻿using Blazor.Fluxor;
+﻿using System;
+using Blazor.Fluxor;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
 using StoryBlog.Web.Blazor.Client.Store.Helpers;
 using StoryBlog.Web.Blazor.Client.Store.Models;
@@ -41,7 +42,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
                     Slug = story.Slug,
                     Content = story.Content,
                     AllCommentsCount = story.Comments.Length,
-                    Published = story.Modified.GetValueOrDefault(story.Created)
+                    Published = DateTime.Now //story.Modified.GetValueOrDefault(story.Created)
                 };
 
                 Comments.CreateCommentsTree(model.Comments, story.Comments);

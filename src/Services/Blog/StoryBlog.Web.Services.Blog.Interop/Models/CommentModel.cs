@@ -62,7 +62,7 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
 
             return Id == other.Id
                    && String.Equals(Content, other.Content)
-                   && Equals(Author, other.Author)
+                   && Author.Equals(other.Author)
                    && Created.Equals(other.Created)
                    && Modified.Equals(other.Modified);
         }
@@ -89,7 +89,7 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
                 var hashCode = Id.GetHashCode();
 
                 hashCode = (hashCode * 397) ^ (Content != null ? Content.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (Author != null ? Author.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ Author.GetHashCode();
                 hashCode = (hashCode * 397) ^ Created.GetHashCode();
                 hashCode = (hashCode * 397) ^ Modified.GetHashCode();
 

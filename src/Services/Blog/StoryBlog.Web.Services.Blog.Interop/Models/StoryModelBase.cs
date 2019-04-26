@@ -3,9 +3,15 @@ using System.Runtime.Serialization;
 
 namespace StoryBlog.Web.Services.Blog.Interop.Models
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [DataContract(Namespace = "http://storyblog.org/schemas/json/models/base/story")]
     public abstract class StoryModelBase
     {
+        /// <summary>
+        /// 
+        /// </summary>
         [DataMember(Name = "title")]
         public string Title
         {
@@ -13,6 +19,9 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [DataMember(Name = "slug")]
         public string Slug
         {
@@ -20,6 +29,9 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [DataMember(Name = "content")]
         public string Content
         {
@@ -27,6 +39,9 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [DataMember(Name = "author")]
         public int Author
         {
@@ -34,6 +49,9 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [DataMember(Name = "created")]
         public DateTime Created
         {
@@ -41,8 +59,11 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
             set;
         }
 
-        [DataMember(Name = "modified")]
-        public DateTime? Modified
+        /// <summary>
+        /// 
+        /// </summary>
+        [DataMember(Name = "published")]
+        public DateTime? Published
         {
             get;
             set;

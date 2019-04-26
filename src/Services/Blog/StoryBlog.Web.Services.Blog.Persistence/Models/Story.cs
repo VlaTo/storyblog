@@ -6,29 +6,30 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace StoryBlog.Web.Services.Blog.Persistence.Models
 {
     /// <summary>
-    /// 
+    /// The status of the story.
     /// </summary>
     public enum StoryStatus
     {
         /// <summary>
-        /// 
+        /// The story is draft.
         /// </summary>
         Draft,
 
         /// <summary>
-        /// 
+        /// The story is published.
         /// </summary>
         Published
     }
 
     /// <summary>
-    /// 
+    /// The <see cref="Story" /> entity definition.
+    /// Describes stored story representation and fields definition.
     /// </summary>
     [Table("Stories")]
     public class Story
     {
         /// <summary>
-        /// 
+        /// Gets or sets the identifier of the <see cref="Story" /> object.
         /// </summary>
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -39,7 +40,7 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets the <see cref="Title"/> of the <see cref="Story" /> object.
         /// </summary>
         [Required]
         public string Title
@@ -49,7 +50,7 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets the <see cref="Slug"/> of the <see cref="Story" /> object.
         /// </summary>
         [DataType(DataType.Text)]
         public string Slug
@@ -59,7 +60,7 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets the <see cref="Content"/> of the <see cref="Story" /> object.
         /// </summary>
         [DataType(DataType.MultilineText)]
         public string Content
@@ -69,7 +70,7 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets the <see cref="AuthorId"/> of the <see cref="Story" /> object.
         /// </summary>
         public long AuthorId
         {
@@ -78,7 +79,7 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets the <see cref="Author"/> of the <see cref="Story" /> object.
         /// </summary>
         [ForeignKey(nameof(AuthorId))]
         public Author Author
@@ -88,7 +89,7 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets the <see cref="Status"/> of the <see cref="Story" /> object.
         /// </summary>
         public StoryStatus Status
         {
@@ -97,7 +98,7 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets the <see cref="Created"/> date and time of the <see cref="Story" /> object.
         /// </summary>
         [DataType(DataType.DateTime)]
         public DateTime Created
@@ -107,7 +108,7 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets the <see cref="Modified"/> date and time of the <see cref="Story" /> object.
         /// </summary>
         [DataType(DataType.DateTime)]
         public DateTime? Modified
@@ -117,7 +118,17 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets the <see cref="Published"/> date and time of the <see cref="Story" /> object.
+        /// </summary>
+        [DataType(DataType.DateTime)]
+        public DateTime? Published
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="IsPublic"/> of the <see cref="Story" /> object.
         /// </summary>
         public bool IsPublic
         {
@@ -126,7 +137,7 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
         }
 
         /// <summary>
-        /// 
+        /// Gets the <see cref="Comments"/> of the <see cref="Story" /> object.
         /// </summary>
         public IList<Comment> Comments
         {
@@ -134,7 +145,7 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
         }
 
         /// <summary>
-        /// 
+        /// Instantiates new instance of the <see cref="Story" /> object.
         /// </summary>
         public Story()
         {

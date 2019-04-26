@@ -2,8 +2,14 @@
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class StoryBase
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public long Id
         {
             get;
@@ -27,13 +33,28 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public DateTime Created
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public DateTime? Modified
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime? Published
         {
             get;
             set;

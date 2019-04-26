@@ -61,10 +61,6 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                     story => story.Content,
                     mapping => mapping.MapFrom(source => source.Content)
                 )
-                /*.ForMember(
-                    story => story.IsPublic,
-                    mapping => mapping.MapFrom(source => source.IsPublic)
-                )*/
                 .ForMember(
                     story => story.Created,
                     mapping => mapping.MapFrom(source => source.Created)
@@ -73,17 +69,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                     story => story.Modified,
                     mapping => mapping.MapFrom(source => source.Modified)
                 )
-                /*.ForMember(
-                    story => story.Author,
-                    mapping => mapping.MapFrom(source => source.Author)
-                )*/
-                /*.AfterMap((source, story, context) =>
-                {
-                    story.Comments.AddRange(
-                        source.Comments?.Select(comment => context.Mapper.Map<Stories.Models.Comment>(comment))
-                    );
-                })*/
-                ;
+                .ForMember(
+                    story => story.Published,
+                    mapping => mapping.MapFrom(source => source.Published)
+                );
 
             configuration
                 .CreateMap<Persistence.Models.Story, Stories.Models.FeedStory>()

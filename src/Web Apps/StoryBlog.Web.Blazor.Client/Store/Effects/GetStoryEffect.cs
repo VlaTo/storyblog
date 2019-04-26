@@ -35,8 +35,8 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
                     Title = story.Title,
                     Content = story.Content,
                     Closed = story.Closed,
-                    Author = story.Author,
-                    Published = story.Modified.GetValueOrDefault(story.Created),
+                    //Author = story.Author,
+                    //Published = story.Modified.GetValueOrDefault(story.Created),
                 };
 
                 dispatcher.Dispatch(result);

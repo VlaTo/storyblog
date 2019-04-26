@@ -8,8 +8,7 @@ namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
     /// <summary>
     /// 
     /// </summary>
-    public struct QueryResult<TEntity, TResources> : IQueryResult<TEntity, TResources>
-        where TResources : IQueryResultResources
+    public struct QueryResult<TEntity> : IQueryResult<TEntity>
     {
         private IEnumerable<Exception> exceptions;
         private IReadOnlyCollection<TEntity> entities;
@@ -20,12 +19,7 @@ namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
         /// <summary>
         /// 
         /// </summary>
-        public IReadOnlyCollection<TEntity> Data => entities ?? (entities = new TEntity[0]);
-
-        public TResources Resources
-        {
-            get;
-        }
+        public IReadOnlyCollection<TEntity> Entities => entities ?? (entities = new TEntity[0]);
 
         /// <summary>
         /// 
@@ -35,19 +29,12 @@ namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
         {
             this.entities = entities;
             exceptions = null;
-            Resources = default;
         }
 
         /// <inheritdoc cref="IEnumerable{T}.GetEnumerator" />
-        public IEnumerator<TEntity> GetEnumerator()
-        {
-            return Data.GetEnumerator();
-        }
+        public IEnumerator<TEntity> GetEnumerator()=> Entities.GetEnumerator();
 
         /// <inheritdoc cref="IEnumerable.GetEnumerator" />
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator()=> GetEnumerator();
     }
 }

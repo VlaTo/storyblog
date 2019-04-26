@@ -19,7 +19,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
             set;
         }
 
-        public int AuthorIndex
+        public Author Author
         {
             get;
             set;

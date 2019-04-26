@@ -6,7 +6,7 @@ namespace StoryBlog.Web.Services.Blog.API.Extensions
     /// <summary>
     /// 
     /// </summary>
-    public static class LoggerExtension
+    public static class LoggerExtensions
     {
         /// <summary>
         /// 

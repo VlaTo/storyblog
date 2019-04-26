@@ -171,7 +171,7 @@ namespace StoryBlog.Web.Services.Blog.API
                                 )
                                 .ForMember(
                                     story => story.Author,
-                                    mapping => mapping.MapFrom(source => source.AuthorIndex)
+                                    mapping => mapping.MapFrom(source => source.Author)
                                 )
                                 .ForMember(
                                     story => story.Created,
@@ -200,14 +200,14 @@ namespace StoryBlog.Web.Services.Blog.API
                                     story => story.Author,
                                     mapping => mapping.MapFrom(source => source.Author)
                                 )*/
-                                .ForMember(
+                                /*.ForMember(
                                     story => story.Created,
                                     mapping => mapping.MapFrom(source => source.Created)
-                                )
-                                .ForMember(
+                                )*/
+                                /*.ForMember(
                                     story => story.Modified,
                                     mapping => mapping.MapFrom(source => source.Modified)
-                                )
+                                )*/
                                 .ForMember(
                                     test => test.Comments,
                                     mapping => mapping.MapFrom(source => source.CommentsCount)
@@ -223,26 +223,25 @@ namespace StoryBlog.Web.Services.Blog.API
                                     story => story.Slug,
                                     mapping => mapping.MapFrom(source => source.Slug)
                                 )
-                                .ForMember(
-                                    story => story.Content,
-                                    mapping => mapping.MapFrom(source => source.Content)
-                                )
+                                .ForMember(story => story.Content, mapping =>
+                                {
+                                    mapping.AllowNull();
+                                    mapping.MapFrom(source => source.Content);
+                                })
                                 .ForMember(
                                     story => story.Closed,
                                     mapping => mapping.MapFrom((source, dest) => false)
                                 )
-                                .ForMember(
-                                    story => story.Author,
-                                    mapping => mapping.MapFrom(source => source.AuthorIndex)
-                                )
+                                .ForMember(story => story.Author, mapping => mapping.Ignore())
                                 .ForMember(
                                     story => story.Created,
                                     mapping => mapping.MapFrom(source => source.Created)
                                 )
-                                .ForMember(
-                                    story => story.Modified,
-                                    mapping => mapping.MapFrom(source => source.Modified)
-                                )
+                                .ForMember(story => story.Published, mapping =>
+                                {
+                                    mapping.AllowNull();
+                                    mapping.MapFrom(source => source.Published);
+                                })
                                 .AfterMap((source, story, ctx) =>
                                     story.Comments = source.Comments
                                         .Select(comment => ctx.Mapper.Map<CommentModel>(comment))
@@ -267,14 +266,14 @@ namespace StoryBlog.Web.Services.Blog.API
                                     story => story.Author,
                                     mapping => mapping.MapFrom(source => source.Author)
                                 )*/
-                                .ForMember(
+                                /*.ForMember(
                                     story => story.Created,
                                     mapping => mapping.MapFrom(source => source.Created)
-                                )
-                                .ForMember(
+                                )*/
+                                /*.ForMember(
                                     story => story.Modified,
                                     mapping => mapping.MapFrom(source => source.Modified)
-                                )
+                                )*/
                                 .ForMember(
                                     story => story.Comments,
                                     mapping => mapping.MapFrom(source => source.CommentsCount)

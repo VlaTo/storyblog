@@ -23,6 +23,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using IdentityServer4.Extensions;
+using StoryBlog.Web.Services.Blog.Application.Extensions;
 using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
@@ -158,12 +160,21 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
             return Ok(new ListResult<StoryModel, ResourcesMeta>
             {
-                Data = result.Select(story => mapper.Map<StoryModel>(story)),
+                Data = result
+                    .Select(story =>
+                    {
+                        var model = mapper.Map<StoryModel>(story);
+
+                        model.Author = result.Authors.FindIndex(story.Author);
+
+                        return model;
+                    })
+,
                 Meta = new ResourcesMeta
                 {
                     Resources = new AuthorsResource
                     {
-                        Authors = result.Resources.Authors.Select(author => mapper.Map<AuthorModel>(author))
+                        Authors = result.Authors.Select(author => mapper.Map<AuthorModel>(author))
                     },
                     Navigation = new Navigation
                     {

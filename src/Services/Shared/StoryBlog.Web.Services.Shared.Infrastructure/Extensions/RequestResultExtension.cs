@@ -29,15 +29,14 @@ namespace StoryBlog.Web.Services.Shared.Infrastructure.Extensions
         /// </summary>
         /// <param name="result"></param>
         /// <returns></returns>
-        public static bool IsEmpty<TData, TResources>(this IQueryResult<TData, TResources> result)
-            where TResources : IQueryResultResources
+        public static bool IsEmpty<TData>(this IQueryResult<TData> result)
         {
             if (null == result)
             {
                 throw new ArgumentNullException(nameof(result));
             }
 
-            return false == (result.Exceptions.Any() || result.Data.Any());
+            return false == (result.Exceptions.Any() || result.Entities.Any());
         }
     }
 }

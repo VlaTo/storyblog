@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Blog.Application.Extensions;
 using Author = StoryBlog.Web.Services.Blog.Application.Stories.Models.Author;
 using Comment = StoryBlog.Web.Services.Blog.Application.Stories.Models.Comment;
 using Story = StoryBlog.Web.Services.Blog.Application.Stories.Models.Story;
@@ -58,6 +59,8 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
                 throw new ArgumentNullException(nameof(request));
             }
 
+            var authenticated = request.User.Identity.IsAuthenticated;
+            var temp = request.User.GetId();
             var queryable = context.Stories.AsNoTracking();
 
             queryable = queryable
@@ -149,30 +152,30 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
         }
 
         private void CreateMappedStories(
-            IList<Story> stories,
-            IList<Author> authors,
+            ICollection<Story> stories,
+            ICollection<Author> authors,
             IEnumerable<Persistence.Models.Story> source,
             bool includeAuthors)
         {
-            var indices = new Dictionary<long, int>();
-            var getOrCreateIndex = new Func<Persistence.Models.Author, int>(author =>
+            var cache = new Dictionary<long, Author>();
+            var getMappedAuthor = new Func<Persistence.Models.Author, Author>(author =>
             {
-                if (false == indices.TryGetValue(author.Id, out var index))
+                if (cache.TryGetValue(author.Id, out var entity))
                 {
-                    var entity = mapper.Map<Author>(author);
-
-                    index = authors.Count;
-                    authors.Add(entity);
-                    indices[author.Id] = index;
+                    return entity;
                 }
 
-                return index;
+                entity = mapper.Map<Author>(author);
+
+                authors.Add(entity);
+                cache[author.Id] = entity;
+
+                return entity;
             });
 
-            for (var index = 0; index < authors.Count; index++)
+            foreach (var author in authors)
             {
-                var author = authors[index];
-                indices[author.Id] = index;
+                cache[author.Id] = author;
             }
 
             foreach (var story in source)
@@ -181,10 +184,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
 
                 if (includeAuthors && null != story.Author)
                 {
-                    model.AuthorIndex = getOrCreateIndex.Invoke(story.Author);
+                    model.Author = getMappedAuthor.Invoke(story.Author);
                 }
 
-                CreateMappedCommentsForStory(model.Comments, story.Comments, getOrCreateIndex, includeAuthors);
+                CreateMappedCommentsForStory(model.Comments, story.Comments, getMappedAuthor, includeAuthors);
 
                 stories.Add(model);
             }
@@ -193,7 +196,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
         private void CreateMappedCommentsForStory(
             ICollection<Comment> comments,
             IEnumerable<Persistence.Models.Comment> source,
-            Func<Persistence.Models.Author, int> getOrCreateIndex,
+            Func<Persistence.Models.Author, Author> getMappedAuthor,
             bool includeAuthors)
         {
             foreach (var entity in source)
@@ -202,7 +205,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
 
                 if (includeAuthors && null != entity.Author)
                 {
-                    comment.AuthorIndex = getOrCreateIndex.Invoke(entity.Author);
+                    comment.Author = getMappedAuthor.Invoke(entity.Author);
                 }
 
                 comments.Add(comment);

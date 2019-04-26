@@ -25,32 +25,31 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
     /// <summary>
     /// 
     /// </summary>
-    public struct PagedStoriesQueryResult : IPagedQueryResult<Story, PagedStoriesQueryResources>
+    public struct PagedStoriesQueryResult : IPagedQueryResult<Story>
     {
         private IEnumerable<Exception> exceptions;
         private IReadOnlyCollection<Story> stories;
+        private IReadOnlyCollection<Author> authors;
 
         /// <inheritdoc cref="IRequestResult.Exceptions" />
         public IEnumerable<Exception> Exceptions => exceptions ?? (exceptions = Enumerable.Empty<Exception>());
 
-        /// <inheritdoc cref="IQueryResult{TEntity,TResources}.Data" />
-        public IReadOnlyCollection<Story> Data => stories ?? (stories = new Story[0]);
+        /// <inheritdoc cref="IQueryResult{TEntity}.Entities" />
+        public IReadOnlyCollection<Story> Entities => stories ?? (stories = new Story[0]);
 
-        /// <inheritdoc cref="IQueryResult{TEntity,TResources}.Resources" />
-        public PagedStoriesQueryResources Resources
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public IReadOnlyCollection<Author> Authors => authors ?? (authors = new Author[0]);
 
-        /// <inheritdoc cref="IPagedQueryResult{TEntity,TResources}.Backward" />
+        /// <inheritdoc cref="IPagedQueryResult{TEntity}.Backward" />
         public NavigationCursor Backward
         {
             get;
             private set;
         }
 
-        /// <inheritdoc cref="IPagedQueryResult{TEntity,TResources}.Forward" />
+        /// <inheritdoc cref="IPagedQueryResult{TEntity}.Forward" />
         public NavigationCursor Forward
         {
             get;
@@ -58,7 +57,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
         }
 
         /// <inheritdoc cref="IEnumerable{T}.GetEnumerator" />
-        public IEnumerator<Story> GetEnumerator() => Data.GetEnumerator();
+        public IEnumerator<Story> GetEnumerator() => Entities.GetEnumerator();
 
         /// <inheritdoc cref="IEnumerable.GetEnumerator" />
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -80,10 +79,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
             return new PagedStoriesQueryResult
             {
                 stories = stories,
-                Resources = new PagedStoriesQueryResources
-                {
-                    Authors = authors
-                },
+                authors = authors,
                 Backward = backward,
                 Forward = forward
             };
