@@ -59,13 +59,22 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
                 throw new ArgumentNullException(nameof(request));
             }
 
-            var authenticated = request.User.Identity.IsAuthenticated;
-            var temp = request.User.GetId();
+            logger.LogDebug($"Executing request: {request.GetType().Name}");
+
             var queryable = context.Stories.AsNoTracking();
 
-            queryable = queryable
-                .OrderBy(story => story.Id)
-                .Where(story => story.Status == StoryStatus.Published && story.IsPublic);
+            if (request.User.Identity.IsAuthenticated)
+            {
+                var authorId = 0;
+                queryable = queryable.Where(story => story.Status == StoryStatus.Published || story.AuthorId == authorId);
+            }
+            else
+            {
+                queryable = queryable.Where(story => story.Status == StoryStatus.Published && story.IsPublic);
+            }
+
+            queryable = queryable.OrderBy(story => story.Id);
+
             var id = queryable.Select(story => story.Id).FirstOrDefault();
 
             switch (request.Cursor.Direction)

@@ -160,16 +160,14 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
             return Ok(new ListResult<StoryModel, ResourcesMeta>
             {
-                Data = result
-                    .Select(story =>
-                    {
-                        var model = mapper.Map<StoryModel>(story);
+                Data = result.Select(story =>
+                {
+                    var model = mapper.Map<StoryModel>(story);
 
-                        model.Author = result.Authors.FindIndex(story.Author);
+                    model.Author = result.Authors.FindIndex(story.Author);
 
-                        return model;
-                    })
-,
+                    return model;
+                }),
                 Meta = new ResourcesMeta
                 {
                     Resources = new AuthorsResource

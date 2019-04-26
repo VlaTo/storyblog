@@ -56,11 +56,11 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
                 .Where(user => user.Id == 1)
                 .FirstOrDefaultAsync(cancellationToken);*/
 
-            var authorId = request.User.GetId();
+            var name = request.User.Identity.Name;
 
-            if (story.Author.Id != authorId)
+            if (story.Author.UserName != name)
             {
-                return RequestResult.Error<Story>(new ArgumentException());
+                return RequestResult.Error<Story>(new ArgumentException("", nameof(name)));
             }
 
             if (story.Title != request.Title)
