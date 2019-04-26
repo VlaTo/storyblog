@@ -11,18 +11,6 @@
       ]
     },
     {
-      "library": "open-iconic@1.1.1",
-      "destination": "wwwroot/lib/open-iconic",
-      "files": [
-        "font/css/open-iconic-bootstrap.min.css",
-        "font/fonts/open-iconic.eot",
-        "font/fonts/open-iconic.otf",
-        "font/fonts/open-iconic.svg",
-        "font/fonts/open-iconic.ttf",
-        "font/fonts/open-iconic.woff"
-      ]
-    },
-    {
       "library": "font-awesome@4.7.0",
       "destination": "wwwroot/lib/font-awesome",
       "files": [

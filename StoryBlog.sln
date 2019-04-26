@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		bitbucket-pipelines.yml = bitbucket-pipelines.yml
 		interop.txt = interop.txt
+		material-kit-master.zip = material-kit-master.zip
 		README.md = README.md
 		StoryBlog.cer = StoryBlog.cer
 		StoryBlog.pfx = StoryBlog.pfx
@@ -66,7 +67,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Interop", "src\Service
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Reactive", "src\Web Apps\StoryBlog.Web.Blazor.Reactive\Blazor.Reactive.csproj", "{2338ADBE-A128-478A-8E86-FC210422AADF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Persistence", "src\Services\Shared\StoryBlog.Web.Services.Shared.Persistence\Shared.Persistence.csproj", "{D84D1688-ACBC-4531-82C0-2E9051578946}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Persistence", "src\Services\Shared\StoryBlog.Web.Services.Shared.Persistence\Shared.Persistence.csproj", "{D84D1688-ACBC-4531-82C0-2E9051578946}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -182,7 +183,7 @@ Global
 		{D84D1688-ACBC-4531-82C0-2E9051578946} = {920EC233-08A7-47FB-A89C-B703CAFFB4C0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		LessCompiler = a3b52c4e-54ca-4233-83ea-a4baa2669f90,193bea1a-7151-46db-aed1-e5fafe14f3c3
 		SolutionGuid = {2BDF20E6-9CFF-444E-88D4-B67EF316084F}
+		LessCompiler = a3b52c4e-54ca-4233-83ea-a4baa2669f90,193bea1a-7151-46db-aed1-e5fafe14f3c3
 	EndGlobalSection
 EndGlobal
