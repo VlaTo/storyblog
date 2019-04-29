@@ -25,15 +25,27 @@
       ]
     },
     {
-      "library": "MaterialDesign-Webfont@3.5.95",
+      "library": "MaterialDesign-Webfont@3.6.95",
       "destination": "wwwroot/lib/materialdesignicons",
       "files": [
         "css/materialdesignicons.min.css",
+        "css/materialdesignicons.css",
         "fonts/materialdesignicons-webfont.eot",
         "fonts/materialdesignicons-webfont.svg",
         "fonts/materialdesignicons-webfont.ttf",
         "fonts/materialdesignicons-webfont.woff",
         "fonts/materialdesignicons-webfont.woff2"
+      ]
+    },
+    {
+      "library": "material-kit@2.0.4",
+      "destination": "wwwroot/lib/material-kit",
+      "files": [
+        "css/material-kit.css",
+        "css/material-kit.min.css",
+        "js/material-kit.js",
+        "js/material-kit.js.map",
+        "js/material-kit.min.js"
       ]
     }
   ]

@@ -1,7 +1,28 @@
-﻿// lessc "../wwwroot/css/site.css"
+﻿
+@import url('../lib/materialdesignicons/css/materialdesignicons.min.css');
+@import url('https://fonts.googleapis.com/css?family=Playfair+Display');
 
-@color: aabbcc;
+html, body {
+}
 
 body {
-    color: @color;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: url('https://source.unsplash.com/BtbjCFUvBXs/1920x1080') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.storyblog-loading {
+    height: 100vh;
+    min-height: 500px;
+}
+
+.storyblog-container {
+    .storyblog-header {
+        line-height: 1;
+
+        .storyblog-blog-logo {
+            font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+            font-size: 2.25rem;
+        }
+    }
 }

@@ -6,6 +6,7 @@ namespace StoryBlog.Web.Blazor.Client.Store
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     public sealed class StoriesFeature : Feature<StoriesState>
     {
         public override string GetName() => nameof(StoriesState);

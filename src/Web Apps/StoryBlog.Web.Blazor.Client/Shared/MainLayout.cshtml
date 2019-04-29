@@ -7,14 +7,15 @@
 
 @Store.Initialize()
 
-<div class="container-fluid storyblog-wrapper">
+<div class="container bg-white rounded-lg storyblog-container">
+    <StoryBlogTitle Title="Sample Blog" />
+    <StoryBlogCategoriesNavigation />
     <main class="row storyblog-main">
         <aside class="left col-md-2 storyblog-main-menu">
-            <StoryBlogTitle Title="Sample Blog" Description="lorem ipsum dolor sit amet" />
             <BlogMenu>
-                <BlogMenuItem Title="Home" Link="/" Class="ml-3" />
-                <BlogMenuItem Title="Stories" Link="/Stories" Class="ml-3" />
-                <BlogMenuItem Title="Signin" Link="/Signin" Class="ml-3" />
+                <BlogMenuItem Title="Home" Link="/" Class="ml-3"/>
+                <BlogMenuItem Title="Stories" Link="/Stories" Class="ml-3"/>
+                <BlogMenuItem Title="Signin" Link="/Signin" Class="ml-3"/>
             </BlogMenu>
         </aside>
         <section class="col-md-10 storyblog-main-content">
