@@ -10,21 +10,6 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
     /// <summary>
     /// 
     /// </summary>
-    public sealed class PagedStoriesQueryResources : IQueryResultResources
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public IReadOnlyCollection<Author> Authors
-        {
-            get;
-            set;
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
     public struct PagedStoriesQueryResult : IPagedQueryResult<Story>
     {
         private IEnumerable<Exception> exceptions;

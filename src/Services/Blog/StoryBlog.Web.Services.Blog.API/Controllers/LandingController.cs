@@ -12,9 +12,11 @@ using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Shared.Common;
 using StoryBlog.Web.Services.Shared.Infrastructure.Extensions;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Blog.Interop;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -58,8 +60,6 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         [ProducesResponseType(typeof(LandingModel), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Get([FromCommaSeparatedQuery(Name = "include")]IEnumerable<string> includes)
         {
-            logger.LogDebug($"[LandingController.Get] User: {User.GetDisplayName()} authenticated: {User.Identity.IsAuthenticated}");
-
             var flags = EnumFlags.Parse<LandingIncludes>(includes);
             var query = new GetLandingQuery(User)
             {
@@ -84,7 +84,23 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return BadRequest(result.Exceptions);
             }
 
-            return Ok(mapper.Map<LandingModel>(result.Data));
+            //return Ok(mapper.Map<LandingModel>(result.Data));
+
+            return Ok(new LandingModel
+            {
+                Title = "",
+                Description = "",
+                Data = Enumerable.Empty<FeedStoryModel>(),
+                Hero = new HeroStoryModel(),
+                Featured = Enumerable.Empty<FeedStoryModel>(),
+                Meta = new ResourcesMeta
+                {
+                    Resources = new AuthorsResource
+                    {
+                        Authors = Enumerable.Empty<AuthorModel>()
+                    }
+                }
+            });
         }
     }
 }

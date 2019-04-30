@@ -13,7 +13,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Blog.Application.Extensions;
 using Author = StoryBlog.Web.Services.Blog.Application.Stories.Models.Author;
 using Comment = StoryBlog.Web.Services.Blog.Application.Stories.Models.Comment;
 using Story = StoryBlog.Web.Services.Blog.Application.Stories.Models.Story;

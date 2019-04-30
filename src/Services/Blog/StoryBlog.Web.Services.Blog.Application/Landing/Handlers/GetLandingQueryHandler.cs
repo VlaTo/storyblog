@@ -8,6 +8,7 @@ using StoryBlog.Web.Services.Blog.Persistence;
 using StoryBlog.Web.Services.Blog.Persistence.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -16,12 +17,14 @@ using StoryBlog.Web.Services.Blog.Application.Landing.Models;
 using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 using StoryBlog.Web.Services.Shared.Infrastructure.Results;
 using Author = StoryBlog.Web.Services.Blog.Application.Stories.Models.Author;
+using Story = StoryBlog.Web.Services.Blog.Persistence.Models.Story;
 
 namespace StoryBlog.Web.Services.Blog.Application.Landing.Handlers
 {
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     public sealed class GetLandingQueryHandler : IRequestHandler<GetLandingQuery, IRequestResult<Models.Landing>>
     {
         private readonly StoryBlogDbContext context;
@@ -59,23 +62,36 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Handlers
 
             try
             {
-                var authenticated = request.User.Identity.IsAuthenticated;
-                var queryable = context.Settings.AsNoTracking();
-                var landing = new Models.Landing
+                //var authenticated = request.User.Identity.IsAuthenticated;
+                //var queryable = context.Settings.AsNoTracking();
+                /*var landing = new LandingQueryResult
                 {
                     Title = await GetStringValueAsync(queryable.Where(story => story.Name == "Landing.Title")),
                     Description = await GetStringValueAsync(queryable.Where(story => story.Name == "Landing.Description")),
                     HeroStory = await GetHeroStoryAsync(request.IncludeHeroStory, authenticated)
-                };
+                };*/
 
-                FillFeaturedStories(landing.FeaturedStories, request.FeaturedStoriesCount, authenticated);
-                FillStoriesFeed(landing.FeedStories, request.StoriesFeedCount, authenticated);
+                var featuredStories = await GetFeedStoriesAsync(
+                    request.FeaturedStoriesCount,
+                    //request.User.Identity.IsAuthenticated,
+                    CancellationToken.None
+                );
 
-                return RequestResult.Success(landing);
+                var featured = new List<FeedStory>();
+                var rubrics=
+                var authors = new Collection<Author>();
+
+                CreateMappedFeedStories(featured, authors, featuredStories);
+
+                //FillFeaturedStories(landing.FeaturedStories, request.FeaturedStoriesCount, authenticated);
+                //FillStoriesFeed(landing.FeedStories, request.StoriesFeedCount, authenticated);
+
+                return Models.Landing.Create(featured);
             }
             catch (Exception exception)
             {
-                return RequestResult.Error<Models.Landing>(exception);
+                // RequestResult.Error<Models.LandingQueryResult>(exception);
+                return Models.Landing.Error(exception);
             }
         }
 
@@ -105,37 +121,42 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Handlers
             return await stories.FirstOrDefaultAsync();
         }
 
-        private void FillFeaturedStories(ICollection<FeedStory> collection, int count, bool authenticated)
+        private void CreateMappedFeedStories(
+            ICollection<FeedStory> feed, 
+            ICollection<Author> authors,
+            IEnumerable<Story> stories)
+        {
+            ;
+        }
+
+        private Task<Story[]> GetFeedStoriesAsync(int count, /*bool authenticated,*/ CancellationToken cancellationToken)
         {
             if (0 == count)
             {
-                return;
+                return Task.FromResult(Array.Empty<Story>());
             }
 
-            var stories = context.Stories
+            /*.Select(story => new FeedStory(story.Id)
+            {
+                Title = story.Title,
+                Slug = story.Slug,
+                Content = TrimContent(story.Content),
+                Created = story.Created,
+                Modified = story.Modified,
+                //Author = mapper.Map<Author>(story.Author),
+                CommentsCount = story.Comments.Count(
+                    comment => comment.Status == CommentStatus.Published && (authenticated || comment.IsPublic)
+                )
+            })*/
+
+            return context.Stories
                 .AsNoTracking()
                 .Include(story => story.Author)
                 .Include(story => story.Comments)
                 .OrderBy(story => story.Id)
                 .Where(story => story.Status == StoryStatus.Published && (authenticated || story.IsPublic))
-                .Select(story => new FeedStory(story.Id)
-                {
-                    Title = story.Title,
-                    Slug = story.Slug,
-                    Content = TrimContent(story.Content),
-                    Created = story.Created,
-                    Modified = story.Modified,
-                    //Author = mapper.Map<Author>(story.Author),
-                    CommentsCount = story.Comments.Count(
-                        comment => comment.Status == CommentStatus.Published && (authenticated || comment.IsPublic)
-                    )
-                })
-                .Take(count);
-
-            foreach (var story in stories)
-            {
-                collection.Add(mapper.Map<FeedStory>(story));
-            }
+                .Take(count)
+                .ToArrayAsync(cancellationToken);
         }
 
         private void FillStoriesFeed(ICollection<FeedStory> collection, int count, bool authenticated)

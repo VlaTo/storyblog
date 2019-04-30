@@ -36,7 +36,7 @@ namespace StoryBlog.Web.Services.Blog.Interop
     /// <typeparam name="TValue"></typeparam>
     /// <typeparam name="TMeta"></typeparam>
     [DataContract(IsReference = false, Name = "result", Namespace = "http://storyblog.org/schemas/json/result/list")]
-    public sealed class ListResult<TValue, TMeta>
+    public class ListResult<TValue, TMeta>
         where TMeta : ListResultMeta
     {
         /// <summary>

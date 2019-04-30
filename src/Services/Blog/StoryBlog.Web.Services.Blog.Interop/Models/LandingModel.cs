@@ -9,7 +9,7 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
     /// 
     /// </summary>
     [DataContract(Namespace = "http://storyblog.org/schemas/json/models/landing")]
-    public sealed class LandingModel
+    public sealed class LandingModel : ListResult<FeedStoryModel, ResourcesMeta>
     {
         /// <summary>
         /// 
@@ -52,20 +52,12 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
             set;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        [DataMember(Name = "feed")]
-        public IEnumerable<FeedStoryModel> Feed
-        {
-            get;
-            set;
-        }
+        /*[DataMember(Name = "feed")]
+        public IEnumerable<FeedStoryModel> Feed { get; set; }*/
 
         public LandingModel()
         {
             Featured = Enumerable.Empty<FeedStoryModel>();
-            Feed = Enumerable.Empty<FeedStoryModel>();
         }
     }
 }

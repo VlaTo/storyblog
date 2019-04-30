@@ -14,6 +14,15 @@
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public Author Author
+        {
+            get;
+            set;
+        }
+
         public FeedStory(long id) 
             : base(id)
         {
