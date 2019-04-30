@@ -2,6 +2,8 @@
 
 Домашний проект для исследования возможностей платформы ASP.NET CORE 2.
 
+[![Build Status](https://dev.azure.com/tolmachewladimir/tolmachewladimir/_apis/build/status/VlaTo.storyblog?branchName=master)](https://dev.azure.com/tolmachewladimir/tolmachewladimir/_build/latest?definitionId=3&branchName=master)
+
 ### What is this repository for? ###
 
 * Quick summary

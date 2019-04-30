@@ -1,0 +1,30 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-2019'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- task: DotNetCoreInstaller@0
+  inputs:
+    version: '3.0.100-preview3-010431'
+    packageType: sdk
+
+- script: |
+    dotnet build --configuration $(buildConfiguration)
+    dotnet test tests  --configuration $(buildConfiguration) --logger trx
+  displayName: 'dotnet build $(buildConfiguration)'
+
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  inputs:
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'
