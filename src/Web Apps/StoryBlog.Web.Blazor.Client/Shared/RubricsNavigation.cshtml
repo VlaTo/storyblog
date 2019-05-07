@@ -1,0 +1,50 @@
+﻿@using global::Blazor.Fluxor
+@using StoryBlog.Web.Blazor.Client.Store
+@using StoryBlog.Web.Blazor.Client.Store.Actions
+
+@inherits global::Blazor.Fluxor.Components.FluxorComponent
+
+@inject IState<RubricsState> State
+@inject IDispatcher Dispatcher
+
+<div>
+    @if (State.Value.Status.IsNone())
+    {
+
+    }
+    else
+    {
+        if (State.Value.Status.IsLoading())
+        {
+
+        }
+        else if(State.Value.Status.IsFailed())
+        {
+            <div class="alert alert-danger">
+
+            </div>
+        }
+        else
+        {
+            <div class="storyblog-nav-scroller py-1 mb-2">
+                <nav class="nav d-flex justify-content-between">
+                    @foreach (var rubric in State.Value.Rubrics)
+                    {
+                        <a class="p-2 text-muted" href="@rubric.Slug">@rubric.Name</a>
+                    }
+                </nav>
+            </div>
+        }
+    }
+</div>
+
+@functions
+{
+
+    protected override void OnInit()
+    {
+        base.OnInit();
+        Dispatcher.Dispatch(new GetRubricsAction());
+    }
+
+}

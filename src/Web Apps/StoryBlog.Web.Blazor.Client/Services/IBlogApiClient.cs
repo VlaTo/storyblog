@@ -1,4 +1,5 @@
-﻿using StoryBlog.Web.Services.Blog.Interop;
+﻿using System.Collections.Generic;
+using StoryBlog.Web.Services.Blog.Interop;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
 using System.Threading.Tasks;
@@ -39,5 +40,11 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// <param name="story"></param>
         /// <returns></returns>
         Task<bool> CreateStoryAsync(StoryModel story);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<RubricModel>> GetRubricsAsync();
     }
 }

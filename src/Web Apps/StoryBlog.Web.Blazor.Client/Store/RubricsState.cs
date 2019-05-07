@@ -1,6 +1,7 @@
-﻿using System;
-using Blazor.Fluxor;
-using StoryBlog.Web.Blazor.Client.Store.Models;
+﻿using Blazor.Fluxor;
+using StoryBlog.Web.Services.Blog.Interop.Models;
+using System;
+using System.Collections.Generic;
 
 namespace StoryBlog.Web.Blazor.Client.Store
 {
@@ -22,12 +23,12 @@ namespace StoryBlog.Web.Blazor.Client.Store
             get;
         }
 
-        public RubricModel[] Rubrics
+        public IEnumerable<RubricModel> Rubrics
         {
             get;
         }
 
-        public RubricsState(ModelStatus status, RubricModel[] rubrics)
+        public RubricsState(ModelStatus status, IEnumerable<RubricModel> rubrics)
         {
             Status = status;
             Rubrics = rubrics;

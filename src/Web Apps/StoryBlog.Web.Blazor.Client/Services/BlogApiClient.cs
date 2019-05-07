@@ -4,6 +4,8 @@ using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Shared.Common;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -145,6 +147,32 @@ namespace StoryBlog.Web.Blazor.Client.Services
             catch (HttpRequestException exception)
             {
                 return false;
+            }
+        }
+
+        /// <inheritdoc cref="IBlogApiClient.GetRubricsAsync" />
+        public async Task<IEnumerable<RubricModel>> GetRubricsAsync()
+        {
+            var requestUri = new Uri(baseUri, "rubrics");
+
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                using (var response = await client.SendAsync(request, CancellationToken.None))
+                {
+                    var message = response.EnsureSuccessStatusCode();
+                    var json = await message.Content.ReadAsStringAsync();
+                    var result = Json.Deserialize<ListResult<RubricModel, ResultMetaInfo>>(json);
+
+                    return result.Data ?? Enumerable.Empty<RubricModel>();
+                }
+            }
+            catch (HttpRequestException)
+            {
+                return null;
             }
         }
 
