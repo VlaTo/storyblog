@@ -54,6 +54,15 @@ namespace StoryBlog.Web.Services.Blog.Persistence
         }
 
         /// <summary>
+        /// Rubric collection.
+        /// </summary>
+        public DbSet<Rubric> Rubrics
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         public DbSet<Settings> Settings

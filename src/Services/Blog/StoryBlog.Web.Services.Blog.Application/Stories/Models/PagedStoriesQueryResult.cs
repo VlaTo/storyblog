@@ -1,4 +1,5 @@
-﻿using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
+﻿using StoryBlog.Web.Services.Blog.Application.Models;
+using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
 using StoryBlog.Web.Services.Shared.Infrastructure.Results;
 using System;
 using System.Collections;

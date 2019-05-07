@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using AutoMapper;
+using StoryBlog.Web.Services.Blog.Application.Models;
 
 namespace StoryBlog.Web.Services.Blog.Application.Extensions
 {
@@ -16,11 +17,11 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
         public static IMapperConfigurationExpression AddBlogApplicationTypeMappings(this IMapperConfigurationExpression configuration)
         {
             configuration
-                .CreateMap<Persistence.Models.Author, Stories.Models.Author>()
-                .ConstructUsing(author => new Stories.Models.Author(author.Id, author.UserName));
+                .CreateMap<Persistence.Models.Author, Author>()
+                .ConstructUsing(author => new Author(author.Id, author.UserName));
 
             configuration
-                .CreateMap<Persistence.Models.Comment, Stories.Models.Comment>()
+                .CreateMap<Persistence.Models.Comment, Comment>()
                 .ForMember(
                     comment => comment.Id,
                     mapping => mapping.MapFrom(source => source.Id)
@@ -47,8 +48,8 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                 );
 
             configuration
-                .CreateMap<Persistence.Models.Story, Stories.Models.Story>()
-                .ConstructUsing(story => new Stories.Models.Story(story.Id))
+                .CreateMap<Persistence.Models.Story, Story>()
+                .ConstructUsing(story => new Story(story.Id))
                 .ForMember(
                     story => story.Slug,
                     mapping => mapping.MapFrom(source => source.Slug)
@@ -139,6 +140,21 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                     mapping => mapping.MapFrom(source => source.Author)
                 )*/
                 .AfterMap((source, story, context) => story.CommentsCount = source.Comments.Count);
+
+            configuration
+                .CreateMap<Persistence.Models.Rubric, Rubric>()
+                .ForMember(
+                    rubric => rubric.Id,
+                    mapping => mapping.MapFrom(source => source.Id)
+                )
+                .ForMember(
+                    rubric => rubric.Name,
+                    mapping => mapping.MapFrom(source => source.Name)
+                )
+                .ForMember(
+                    rubric => rubric.Slug,
+                    mapping => mapping.MapFrom(source => source.Slug)
+                );
 
             return configuration;
         }

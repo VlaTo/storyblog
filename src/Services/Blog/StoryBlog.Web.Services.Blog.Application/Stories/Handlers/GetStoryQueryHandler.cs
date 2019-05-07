@@ -4,18 +4,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
 using StoryBlog.Web.Services.Blog.Persistence;
+using StoryBlog.Web.Services.Shared.Infrastructure.Results;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Blog.Application.Infrastructure;
-using StoryBlog.Web.Services.Shared.Infrastructure.Results;
-using Story = StoryBlog.Web.Services.Blog.Application.Stories.Models.Story;
+using Story = StoryBlog.Web.Services.Blog.Application.Models.Story;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
 {
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     public sealed class GetStoryQueryHandler : IRequestHandler<GetStoryQuery, IRequestResult<Story>>
     {
         private readonly StoryBlogDbContext context;

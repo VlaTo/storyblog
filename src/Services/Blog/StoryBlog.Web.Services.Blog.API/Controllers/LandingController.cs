@@ -61,15 +61,15 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         public async Task<IActionResult> Get([FromCommaSeparatedQuery(Name = "include")]IEnumerable<string> includes)
         {
             var flags = EnumFlags.Parse<LandingIncludes>(includes);
-            var query = new GetLandingQuery(User)
+            var query = new GetLandingQuery
             {
                 IncludeHeroStory = LandingIncludes.HeroStory == (flags & LandingIncludes.HeroStory),
                 FeaturedStoriesCount = LandingIncludes.FeaturedStories == (flags & LandingIncludes.FeaturedStories)
                     ? blogSettings.FeaturedStoriesCount
-                    : 0,
-                StoriesFeedCount = LandingIncludes.StoriesFeed == (flags & LandingIncludes.StoriesFeed)
-                    ? blogSettings.FeedStoriesCount
                     : 0
+                //StoriesFeedCount = LandingIncludes.StoriesFeed == (flags & LandingIncludes.StoriesFeed)
+                //    ? blogSettings.FeedStoriesCount
+                //    : 0
             };
 
             var result = await mediator.Send(query, HttpContext.RequestAborted);
@@ -93,7 +93,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 Data = Enumerable.Empty<FeedStoryModel>(),
                 Hero = new HeroStoryModel(),
                 Featured = Enumerable.Empty<FeedStoryModel>(),
-                Meta = new ResourcesMeta
+                Meta = new ResourcesMetaInfo
                 {
                     Resources = new AuthorsResource
                     {

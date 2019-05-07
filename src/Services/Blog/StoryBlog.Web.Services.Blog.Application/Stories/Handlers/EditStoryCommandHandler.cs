@@ -1,21 +1,21 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using StoryBlog.Web.Services.Blog.Application.Extensions;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Application.Stories.Commands;
 using StoryBlog.Web.Services.Blog.Persistence;
+using StoryBlog.Web.Services.Shared.Infrastructure.Results;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Shared.Infrastructure.Results;
-using Story = StoryBlog.Web.Services.Blog.Application.Stories.Models.Story;
+using Story = StoryBlog.Web.Services.Blog.Application.Models.Story;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
 {
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     public sealed class EditStoryCommandHandler : IRequestHandler<EditStoryCommand, IRequestResult<Story>>
     {
         private readonly StoryBlogDbContext context;

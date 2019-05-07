@@ -1,4 +1,4 @@
-﻿using StoryBlog.Web.Services.Blog.Application.Stories.Models;
+﻿using StoryBlog.Web.Services.Blog.Application.Models;
 
 namespace StoryBlog.Web.Services.Blog.Application.Landing.Models
 {

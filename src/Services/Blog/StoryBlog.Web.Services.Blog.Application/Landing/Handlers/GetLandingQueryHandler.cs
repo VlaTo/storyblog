@@ -14,9 +14,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using StoryBlog.Web.Services.Blog.Application.Landing.Models;
+using StoryBlog.Web.Services.Blog.Application.Models;
 using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 using StoryBlog.Web.Services.Shared.Infrastructure.Results;
-using Author = StoryBlog.Web.Services.Blog.Application.Stories.Models.Author;
+using Author = StoryBlog.Web.Services.Blog.Application.Models.Author;
 using Story = StoryBlog.Web.Services.Blog.Persistence.Models.Story;
 
 namespace StoryBlog.Web.Services.Blog.Application.Landing.Handlers
@@ -78,7 +79,6 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Handlers
                 );
 
                 var featured = new List<FeedStory>();
-                var rubrics=
                 var authors = new Collection<Author>();
 
                 CreateMappedFeedStories(featured, authors, featuredStories);
@@ -86,12 +86,14 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Handlers
                 //FillFeaturedStories(landing.FeaturedStories, request.FeaturedStoriesCount, authenticated);
                 //FillStoriesFeed(landing.FeedStories, request.StoriesFeedCount, authenticated);
 
-                return Models.Landing.Create(featured);
+                //return Models.Landing.Create(featured);
+                return null;
             }
             catch (Exception exception)
             {
                 // RequestResult.Error<Models.LandingQueryResult>(exception);
-                return Models.Landing.Error(exception);
+                //return Models.Landing.Error(exception);
+                return null;
             }
         }
 
@@ -154,7 +156,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Handlers
                 .Include(story => story.Author)
                 .Include(story => story.Comments)
                 .OrderBy(story => story.Id)
-                .Where(story => story.Status == StoryStatus.Published && (authenticated || story.IsPublic))
+                //.Where(story => story.Status == StoryStatus.Published && (authenticated || story.IsPublic))
                 .Take(count)
                 .ToArrayAsync(cancellationToken);
         }

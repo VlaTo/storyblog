@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using StoryBlog.Web.Services.Blog.Application.Models;
 
 namespace StoryBlog.Web.Services.Blog.Application.Landing.Models
 {
@@ -57,15 +58,6 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Models
         /// <summary>
         /// 
         /// </summary>
-        public IReadOnlyCollection<Rubric> Rubrics
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public IEnumerable<Exception> Exceptions
         {
             get;
@@ -74,14 +66,11 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Models
 
         public IEnumerator<FeedStory> GetEnumerator() => Entities.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        public static Landing Create(IList<FeedStory> feed, IList<Rubric> rubrics)
+        public static Landing Create(IList<FeedStory> feed)
         {
             return new Landing
             {
                 Entities = new ReadOnlyCollection<FeedStory>(feed),
-                Rubrics = new ReadOnlyCollection<Rubric>(rubrics)
             };
         }
 

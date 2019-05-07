@@ -2,6 +2,7 @@
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Shared.Common;
 
 namespace StoryBlog.Web.Blazor.Client.Services
 {
@@ -22,7 +23,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// </summary>
         /// <param name="include"></param>
         /// <returns></returns>
-        Task<ListResult<StoryModel, ResourcesMeta>> GetStoriesAsync(StoryIncludes include);
+        Task<ListResult<StoryModel, ResourcesMetaInfo>> GetStoriesAsync(StoryIncludes include);
 
         /// <summary>
         /// 

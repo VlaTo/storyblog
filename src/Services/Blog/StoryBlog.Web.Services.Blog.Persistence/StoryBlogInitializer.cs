@@ -26,6 +26,7 @@ namespace StoryBlog.Web.Services.Blog.Persistence
             SeedAuthors(context, resourceAssembly, logger);
             SeedStories(context, resourceAssembly, logger);
             SeedComments(context, resourceAssembly, logger);
+            SeedRubrics(context, resourceAssembly, logger);
         }
 
         private static void SeedAuthors(StoryBlogDbContext context, Assembly resourceAssembly, ILogger logger)
@@ -105,6 +106,27 @@ namespace StoryBlog.Web.Services.Blog.Persistence
                     {
                         var comment = CreateCommentFromRow(context, row);
                         logger.LogDebug($"[SeedComment] Comment \'{comment.Id}\' created");
+                    }
+
+                    transaction.Commit();
+                }
+            }
+        }
+
+        private static void SeedRubrics(StoryBlogDbContext context, Assembly resourceAssembly, ILogger logger)
+        {
+            var resource = resourceAssembly.GetManifestResourceStream("StoryBlog.Web.Services.Blog.API.Data.Rubrics.csv");
+
+            using (var reader = new StreamReader(resource, Encoding.UTF8))
+            {
+                var document = CsvDocument.CreateFrom(reader);
+
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    foreach (var row in document.Rows)
+                    {
+                        var rubric = CreateRubricFromRow(context, row);
+                        logger.LogDebug($"[SeedRubric] Rubric \'{rubric.Id}\' created");
                     }
 
                     transaction.Commit();
@@ -217,6 +239,31 @@ namespace StoryBlog.Web.Services.Blog.Persistence
             };
 
             context.Comments.Add(entity);
+            context.SaveChanges();
+
+            return entity;
+        }
+
+        private static Rubric CreateRubricFromRow(StoryBlogDbContext context, CsvRow row)
+        {
+            var id = row.Fields[0].ReadAs<long>();
+            var entity = context.Rubrics
+                .AsNoTracking()
+                .SingleOrDefault(rubric => rubric.Id == id);
+
+            if (null != entity)
+            {
+                return entity;
+            }
+
+            entity = new Rubric
+            {
+                Id = id,
+                Name = row.Fields[1].Text,
+                Slug = row.Fields[2].Text
+            };
+
+            context.Rubrics.Add(entity);
             context.SaveChanges();
 
             return entity;

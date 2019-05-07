@@ -29,6 +29,21 @@ namespace StoryBlog.Web.Services.Shared.Infrastructure.Extensions
         /// </summary>
         /// <param name="result"></param>
         /// <returns></returns>
+        public static bool IsFailed(this IRequestResult result)
+        {
+            if (null == result)
+            {
+                throw new ArgumentNullException(nameof(result));
+            }
+
+            return result.Exceptions.Any();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
         public static bool IsEmpty<TData>(this IQueryResult<TData> result)
         {
             if (null == result)

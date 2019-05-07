@@ -145,11 +145,20 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
         }
 
         /// <summary>
+        /// Gets the <see cref="Rubrics"/> collection of the related <see cref="Rubric" /> objects.
+        /// </summary>
+        public IList<Rubric> Rubrics
+        {
+            get;
+        }
+
+        /// <summary>
         /// Instantiates new instance of the <see cref="Story" /> object.
         /// </summary>
         public Story()
         {
             Comments = new List<Comment>();
+            Rubrics = new List<Rubric>();
         }
     }
 }

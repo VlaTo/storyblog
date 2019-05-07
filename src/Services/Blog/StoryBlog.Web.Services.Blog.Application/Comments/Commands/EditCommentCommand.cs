@@ -1,8 +1,7 @@
-﻿using System.Security.Principal;
-using MediatR;
-using StoryBlog.Web.Services.Blog.Application.Infrastructure;
-using StoryBlog.Web.Services.Blog.Application.Stories.Models;
+﻿using MediatR;
+using StoryBlog.Web.Services.Blog.Application.Models;
 using StoryBlog.Web.Services.Shared.Infrastructure.Results;
+using System.Security.Principal;
 
 namespace StoryBlog.Web.Services.Blog.Application.Comments.Commands
 {

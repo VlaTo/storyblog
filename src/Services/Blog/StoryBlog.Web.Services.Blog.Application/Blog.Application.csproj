@@ -23,6 +23,8 @@
   <ItemGroup>
     <Folder Include="Comments\Models\" />
     <Folder Include="Landing\Commands\" />
+    <Folder Include="Rubrics\Commands\" />
+    <Folder Include="Rubrics\Models\" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
+﻿namespace StoryBlog.Web.Services.Blog.Application.Models
 {
     /// <summary>
     /// 

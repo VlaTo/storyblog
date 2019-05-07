@@ -13,9 +13,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Author = StoryBlog.Web.Services.Blog.Application.Stories.Models.Author;
-using Comment = StoryBlog.Web.Services.Blog.Application.Stories.Models.Comment;
-using Story = StoryBlog.Web.Services.Blog.Application.Stories.Models.Story;
+using Author = StoryBlog.Web.Services.Blog.Application.Models.Author;
+using Comment = StoryBlog.Web.Services.Blog.Application.Models.Comment;
+using Story = StoryBlog.Web.Services.Blog.Application.Models.Story;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
 {

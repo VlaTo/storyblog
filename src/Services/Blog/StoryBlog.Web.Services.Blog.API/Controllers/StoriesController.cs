@@ -111,7 +111,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         // GET api/v1/stories
         [AllowAnonymous]
         [HttpGet("{page?}")]
-        [ProducesResponseType(typeof(ListResult<StoryModel, ResourcesMeta>), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ListResult<StoryModel, ResourcesMetaInfo>), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Get(string page, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
         {
             var flags = EnumFlags.Parse<StoryIncludes>(includes);
@@ -158,7 +158,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 });
             }
 
-            return Ok(new ListResult<StoryModel, ResourcesMeta>
+            return Ok(new ListResult<StoryModel, ResourcesMetaInfo>
             {
                 Data = result.Select(story =>
                 {
@@ -168,7 +168,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
                     return model;
                 }),
-                Meta = new ResourcesMeta
+                Meta = new ResourcesMetaInfo
                 {
                     Resources = new AuthorsResource
                     {

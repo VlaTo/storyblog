@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
+using StoryBlog.Web.Services.Shared.Common;
 
 namespace StoryBlog.Web.Services.Blog.Interop.Models
 {
@@ -9,7 +10,7 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
     /// 
     /// </summary>
     [DataContract(Namespace = "http://storyblog.org/schemas/json/models/landing")]
-    public sealed class LandingModel : ListResult<FeedStoryModel, ResourcesMeta>
+    public sealed class LandingModel : ListResult<FeedStoryModel, ResourcesMetaInfo>
     {
         /// <summary>
         /// 
