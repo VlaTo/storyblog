@@ -34,7 +34,7 @@ namespace StoryBlog.Tests.Services.Data.Csv.Reader.Create
         [TestMethod]
         public void Test3()
         {
-            Assert.AreEqual(2, Document.Names.Count);
+            Assert.AreEqual(5, Document.Names.Count);
         }
 
         [TestMethod]
