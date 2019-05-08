@@ -10,27 +10,27 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoriesListActionReducer : Reducer<StoriesState, GetStoriesListAction>
+    public sealed class GetStoriesListActionReducer : Reducer<StoriesState, GetStoriesAction>
     {
-        public override StoriesState Reduce(StoriesState state, GetStoriesListAction action)
+        public override StoriesState Reduce(StoriesState state, GetStoriesAction action)
             => new StoriesState(ModelStatus.Loading, state.Stories);
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoriesListFailedActionReducer : Reducer<StoriesState, GetStoriesListFailedAction>
+    public sealed class GetStoriesListFailedActionReducer : Reducer<StoriesState, GetStoriesFailedAction>
     {
-        public override StoriesState Reduce(StoriesState state, GetStoriesListFailedAction action)
+        public override StoriesState Reduce(StoriesState state, GetStoriesFailedAction action)
             => new StoriesState(ModelStatus.Failed(action.Error), state.Stories);
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoriesListSuccessActionReducer : Reducer<StoriesState, GetStoriesListSuccessAction>
+    public sealed class GetStoriesListSuccessActionReducer : Reducer<StoriesState, GetStoriesSuccessAction>
     {
-        public override StoriesState Reduce(StoriesState state, GetStoriesListSuccessAction action)
+        public override StoriesState Reduce(StoriesState state, GetStoriesSuccessAction action)
         {
             var stories = new List<StoryModel>();
 

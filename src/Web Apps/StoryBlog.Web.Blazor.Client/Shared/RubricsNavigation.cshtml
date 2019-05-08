@@ -1,4 +1,5 @@
 ﻿@using global::Blazor.Fluxor
+@using Microsoft.AspNetCore.Components.Services
 @using StoryBlog.Web.Blazor.Client.Store
 @using StoryBlog.Web.Blazor.Client.Store.Actions
 
@@ -6,6 +7,7 @@
 
 @inject IState<RubricsState> State
 @inject IDispatcher Dispatcher
+@inject IUriHelper Uri
 
 <div>
     @if (State.Value.Status.IsNone())
@@ -30,7 +32,7 @@
                 <nav class="nav d-flex justify-content-between">
                     @foreach (var rubric in State.Value.Rubrics)
                     {
-                        <a class="p-2 text-muted" href="@rubric.Slug">@rubric.Name</a>
+                        <a class="p-2 text-muted" href="#" onclick=@(e => OnRubricClick(rubric.Slug, e))>@rubric.Name</a>
                     }
                 </nav>
             </div>
@@ -40,11 +42,14 @@
 
 @functions
 {
-
     protected override void OnInit()
     {
         base.OnInit();
         Dispatcher.Dispatch(new GetRubricsAction());
     }
 
+    private void OnRubricClick(string slug, UIMouseEventArgs e)
+    {
+        Uri.NavigateTo($"/rubric/{slug}");
+    }
 }

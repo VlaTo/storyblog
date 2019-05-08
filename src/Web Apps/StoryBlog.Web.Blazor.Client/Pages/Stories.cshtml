@@ -48,6 +48,6 @@ else
 
         await base.OnInitAsync();
 
-        Dispatcher.Dispatch(new GetStoriesListAction(includes));
+        Dispatcher.Dispatch(new GetStoriesAction(includes));
     }
 }

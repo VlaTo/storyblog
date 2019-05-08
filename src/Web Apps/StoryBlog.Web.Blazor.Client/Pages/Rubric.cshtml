@@ -1,0 +1,23 @@
+﻿@page "/rubric/{Slug}"
+
+@using global::Blazor.Fluxor
+@using StoryBlog.Web.Blazor.Client.Store.Actions
+@using StoryBlog.Web.Services.Blog.Interop.Includes
+
+@inject IDispatcher Dispatcher
+
+@functions
+{
+    [Parameter]
+    protected string Slug
+    {
+        get;
+        set;
+    }
+
+    protected override void OnParametersSet()
+    {
+        const StoryIncludes includes = StoryIncludes.Authors | StoryIncludes.Comments;
+        Dispatcher.Dispatch(new GetRubricStoriesAction(Slug, includes));
+    }
+}

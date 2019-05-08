@@ -2,15 +2,44 @@
 
 @using global::Blazor.Fluxor
 @using StoryBlog.Web.Blazor.Client.Store
-@using StoryBlog.Web.Blazor.Client.Store.Actions
-@using StoryBlog.Web.Services.Blog.Interop.Includes
 
 @inherits global::Blazor.Fluxor.Components.FluxorComponent
 
-@inject IState<LandingState> State
+@inject IState<StoriesState> State
 @inject IDispatcher Dispatcher
 
-@if (null == State)
+<div class="row">
+    @if (State.Value.Status.IsLoading())
+    {
+        <div class="container storyblog-loading">
+            <div class="row h-100 align-items-center">
+                <div class="col-12 justify-content-center text-center">
+                    <i class="mdi mdi-loading mdi-spin mdi-48px"></i>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        if (State.Value.Status.IsFailed())
+        {
+
+        }
+        else if(State.Value.Status.IsNone())
+        {
+
+        }
+        else
+        {
+            <section class="col-8">
+            </section>
+            <aside class="col-4">
+            </aside>
+        }
+    }
+</div>
+
+@*if (null == State)
 {
 
 }
@@ -62,16 +91,13 @@ else
     {
         <p>Empty Content</p>
     }
-}
+}*@
 
 @functions
 {
     protected override async Task OnInitAsync()
     {
-        const LandingIncludes includes = LandingIncludes.HeroStory | LandingIncludes.FeaturedStories | LandingIncludes.StoriesFeed;
-
         await base.OnInitAsync();
-
-        Dispatcher.Dispatch(new GetLandingAction(includes));
+        //Dispatcher.Dispatch(new GetStoriesAction(StoryIncludes.Authors | StoryIncludes.Comments));
     }
 }

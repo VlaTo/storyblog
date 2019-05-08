@@ -9,7 +9,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoriesListEffect : Effect<GetStoriesListAction>
+    public sealed class GetStoriesListEffect : Effect<GetStoriesAction>
     {
         private readonly IBlogApiClient client;
 
@@ -22,7 +22,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
             this.client = client;
         }
 
-        protected override async Task HandleAsync(GetStoriesListAction action, IDispatcher dispatcher)
+        protected override async Task HandleAsync(GetStoriesAction action, IDispatcher dispatcher)
         {
             try
             {
@@ -33,11 +33,11 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
                     throw new Exception("No result received");
                 }
 
-                dispatcher.Dispatch(new GetStoriesListSuccessAction(result.Data));
+                dispatcher.Dispatch(new GetStoriesSuccessAction(result.Data));
             }
             catch (Exception exception)
             {
-                dispatcher.Dispatch(new GetStoriesListFailedAction(exception.Message));
+                dispatcher.Dispatch(new GetStoriesFailedAction(exception.Message));
             }
         }
     }

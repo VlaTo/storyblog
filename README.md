@@ -4,7 +4,7 @@
 
 [![Build Status](https://dev.azure.com/tolmachewladimir/tolmachewladimir/_apis/build/status/VlaTo.storyblog?branchName=master)](https://dev.azure.com/tolmachewladimir/tolmachewladimir/_build/latest?definitionId=3&branchName=master)
 
-### What is this repository for? ###
+### Общие сведения ###
 
 * Quick summary
 * Version
@@ -14,5 +14,11 @@
 * [Using Identity with IdentityServer4](https://github.com/IdentityServer/IdentityServer4.Samples/tree/master/Quickstarts/8_AspNetIdentity)
 * [OpenID Connect Client](https://github.com/IdentityModel/IdentityModel.OidcClient2)
 * [Base for the OIDC Client](https://github.com/IdentityModel/IdentityModel2)
-* Создать новую миграцию
-  > `dotnet ef migrations add InitialCreate -c StoryBlogDataContext`
+
+### Работа с .NET Core Entity Framework ###
+
+Открыть консоль диспетчера пакетов. Выбрать проект `src\Services\Blog\Blog.Persistent`, команды выполнять в этом окне
+* Создаем новую миграцию
+  > `Add-Migration <NameOfTheMigration>`
+* Синхронизируем структуру база данных
+  > `Update-Database`
