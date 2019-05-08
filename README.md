@@ -14,6 +14,8 @@
 * [Using Identity with IdentityServer4](https://github.com/IdentityServer/IdentityServer4.Samples/tree/master/Quickstarts/8_AspNetIdentity)
 * [OpenID Connect Client](https://github.com/IdentityModel/IdentityModel.OidcClient2)
 * [Base for the OIDC Client](https://github.com/IdentityModel/IdentityModel2)
+* [Material Kit](https://demos.creative-tim.com/marketplace/material-kit-pro/index.html)
+* [MDBootstrap](https://mdbootstrap.com/docs/jquery/components/demo/)
 
 ### Работа с .NET Core Entity Framework ###
 

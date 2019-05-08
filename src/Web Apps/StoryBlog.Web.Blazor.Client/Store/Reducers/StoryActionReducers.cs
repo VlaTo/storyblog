@@ -27,14 +27,14 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
                 Slug = action.Slug,
                 Content = action.Content,
                 Closed = action.Closed,
-                Author = new AuthorModel
+                Author = new Author
                 {
                     Name = action.Author.Name
                 },
                 AllCommentsCount = action.Comments.Count
             };
 
-            Comments.CreateCommentsTree(result.Comments, action.Comments);
+            //Comments.CreateCommentsTree(result.Comments, action.Comments);
 
             return result;
         }

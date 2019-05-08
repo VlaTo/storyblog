@@ -16,7 +16,7 @@ namespace StoryBlog.Web.Blazor.Client.Store
         }
     }
 
-    public sealed class RubricsState
+    public sealed class RubricsState : IHasModelStatus
     {
         public ModelStatus Status
         {

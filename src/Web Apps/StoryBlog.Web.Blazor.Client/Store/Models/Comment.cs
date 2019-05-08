@@ -3,15 +3,15 @@
     /// <summary>
     /// 
     /// </summary>
-    public sealed class AuthorModel
+    public sealed class Comment : CommentBase<Comment>
     {
         /// <summary>
         /// 
         /// </summary>
-        public string Name
+        /// <param name="parent"></param>
+        public Comment(Comment parent)
+            : base(parent)
         {
-            get;
-            set;
         }
     }
 }

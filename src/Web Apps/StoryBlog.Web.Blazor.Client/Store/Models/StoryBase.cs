@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Models
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public sealed class StoryModel
+    public abstract class StoryBase
     {
         /// <summary>
         /// 
@@ -29,15 +25,6 @@ namespace StoryBlog.Web.Blazor.Client.Store.Models
         /// <summary>
         /// 
         /// </summary>
-        public AuthorModel Author
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public string Content
         {
             get;
@@ -47,7 +34,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Models
         /// <summary>
         /// 
         /// </summary>
-        public DateTime Published
+        public Author Author
         {
             get;
             set;
@@ -56,26 +43,14 @@ namespace StoryBlog.Web.Blazor.Client.Store.Models
         /// <summary>
         /// 
         /// </summary>
-        public int AllCommentsCount
+        public DateTimeOffset Published
         {
             get;
             set;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public IList<CommentModel> Comments
+        protected StoryBase()
         {
-            get;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public StoryModel()
-        {
-            Comments = new List<CommentModel>();
         }
     }
 }

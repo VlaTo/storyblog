@@ -66,7 +66,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         }
 
         /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync" />
-        public async Task<ListResult<StoryModel, ResourcesMetaInfo>> GetStoriesAsync(StoryIncludes flags)
+        public async Task<ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>>> GetStoriesAsync(StoryIncludes flags)
         {
             var path = new Uri(baseUri, "stories");
             var include = EnumFlags.ToQueryString(flags);
@@ -77,17 +77,16 @@ namespace StoryBlog.Web.Blazor.Client.Services
             {
                 using (var response = await client.GetAsync(requestUri, CancellationToken.None))
                 {
-                    response.EnsureSuccessStatusCode();
-
-                    var json = await response.Content.ReadAsStringAsync();
-                    var data = Json.Deserialize<ListResult<StoryModel, ResourcesMetaInfo>>(json);
+                    var message = response.EnsureSuccessStatusCode();
+                    var json = await message.Content.ReadAsStringAsync();
+                    var data = Json.Deserialize<ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>>>(json);
 
                     return data;
                 }
             }
-            catch (HttpRequestException exception)
+            catch (HttpRequestException)
             {
-                return new ListResult<StoryModel, ResourcesMetaInfo>();
+                return new ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>>();
             }
         }
 

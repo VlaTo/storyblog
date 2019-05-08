@@ -2,13 +2,13 @@
 {
     public static class ModelStatusExtensions
     {
-        public static bool IsNone(this ModelStatus status)
-        {
-            return ModelStatus.None.Equals(status);
-        }
+        public static bool IsNone(this IHasModelStatus model) =>
+            null != model && ModelStatus.None == model.Status;
 
-        public static bool IsFailed(this ModelStatus status) => status == null && ModelState.Error == status.State;
+        public static bool IsFailed(this IHasModelStatus model) => 
+            null == model || ModelState.Error == model.Status.State;
 
-        public static bool IsLoading(this ModelStatus status) => ModelStatus.Loading.Equals(status);
+        public static bool IsLoading(this IHasModelStatus model) =>
+            null != model && ModelStatus.Loading == model.Status;
     }
 }

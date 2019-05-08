@@ -10,7 +10,7 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
     /// 
     /// </summary>
     [DataContract(Namespace = "http://storyblog.org/schemas/json/models/landing")]
-    public sealed class LandingModel : ListResult<FeedStoryModel, ResourcesMetaInfo>
+    public sealed class LandingModel : ListResult<FeedStoryModel, ResultMetaInfo>
     {
         /// <summary>
         /// 

@@ -1,5 +1,8 @@
-﻿using Blazor.Fluxor;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Blazor.Fluxor;
 using StoryBlog.Web.Blazor.Client.Store.Models;
+using StoryBlog.Web.Services.Shared.Common;
 
 namespace StoryBlog.Web.Blazor.Client.Store
 {
@@ -12,28 +15,34 @@ namespace StoryBlog.Web.Blazor.Client.Store
         public override string GetName() => nameof(StoriesState);
 
         protected override StoriesState GetInitialState() =>
-            new StoriesState(ModelStatus.None, new StoryModel[0]);
+            new StoriesState(ModelStatus.None, Enumerable.Empty<FeedStory>(), null);
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed class StoriesState
+    public sealed class StoriesState : IHasModelStatus
     {
         public ModelStatus Status
         {
             get;
         }
-        
-        public StoryModel[] Stories
+
+        public IEnumerable<FeedStory> Stories
         {
             get;
         }
 
-        public StoriesState(ModelStatus status, StoryModel[] stories)
+        public Navigation Navigation
+        {
+            get;
+        }
+
+        public StoriesState(ModelStatus status, IEnumerable<FeedStory> stories, Navigation navigation)
         {
             Status = status;
             Stories = stories;
+            Navigation = navigation;
         }
     }
 }

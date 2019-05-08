@@ -1,33 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Models
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public sealed class CommentModel
+    public abstract class CommentBase<TComment>
     {
         /// <summary>
         /// 
         /// </summary>
-        public long Id
-        {
-            get;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public CommentModel Parent
-        {
-            get;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public AuthorModel Author
+        public Author Author
         {
             get;
             set;
@@ -45,7 +27,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Models
         /// <summary>
         /// 
         /// </summary>
-        public DateTime Published
+        public DateTimeOffset Published
         {
             get;
             set;
@@ -54,7 +36,15 @@ namespace StoryBlog.Web.Blazor.Client.Store.Models
         /// <summary>
         /// 
         /// </summary>
-        public IList<CommentModel> Comments
+        public TComment Parent
+        {
+            get;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ICollection<TComment> Comments
         {
             get;
         }
@@ -64,11 +54,10 @@ namespace StoryBlog.Web.Blazor.Client.Store.Models
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="id"></param>
-        public CommentModel(CommentModel parent, long id)
+        protected CommentBase(TComment parent)
         {
             Parent = parent;
-            Id = id;
-            Comments = new List<CommentModel>();
+            Comments = new Collection<TComment>();
         }
     }
 }

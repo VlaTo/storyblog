@@ -10,17 +10,17 @@
 @inject IUriHelper Uri
 
 <div>
-    @if (State.Value.Status.IsNone())
+    @if (State.Value.IsNone())
     {
 
     }
     else
     {
-        if (State.Value.Status.IsLoading())
+        if (State.Value.IsLoading())
         {
 
         }
-        else if(State.Value.Status.IsFailed())
+        else if(State.Value.IsFailed())
         {
             <div class="alert alert-danger">
 

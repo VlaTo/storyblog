@@ -24,7 +24,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// </summary>
         /// <param name="include"></param>
         /// <returns></returns>
-        Task<ListResult<StoryModel, ResourcesMetaInfo>> GetStoriesAsync(StoryIncludes include);
+        Task<ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>>> GetStoriesAsync(StoryIncludes include);
 
         /// <summary>
         /// 

@@ -2,6 +2,8 @@
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
 using System.Collections.Generic;
+using StoryBlog.Web.Blazor.Client.Store.Models;
+using StoryBlog.Web.Services.Shared.Common;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Actions
 {
@@ -48,14 +50,20 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// </summary>
     public sealed class GetStoriesSuccessAction : IAction
     {
-        public IEnumerable<StoryModel> Stories
+        public IEnumerable<FeedStory> Stories
         {
             get;
         }
 
-        public GetStoriesSuccessAction(IEnumerable<StoryModel> stories)
+        public Navigation Navigation
+        {
+            get;
+        }
+
+        public GetStoriesSuccessAction(IEnumerable<FeedStory> stories, Navigation navigation)
         {
             Stories = stories;
+            Navigation = navigation;
         }
     }
 

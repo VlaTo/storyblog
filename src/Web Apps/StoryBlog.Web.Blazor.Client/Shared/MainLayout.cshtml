@@ -8,13 +8,18 @@
 @Store.Initialize()
 
 <div class="container bg-white rounded-lg storyblog-main">
-    <StoryBlogTitle Title="Sample Blog" />
+    <BlogTitle Title="Sample Blog" />
     <RubricsNavigation />
 
     <main class="container" role="main">
         @Body
     </main>
 
-    <footer class="storyblog-footer bg-dark mt-3">
+    <footer class="container storyblog-footer bg-dark mt-3 border-top border-light">
+        <div class="row">
+            <div class="col-auto">
+                <span>footer</span>
+            </div>
+        </div>
     </footer>
 </div>

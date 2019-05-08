@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Helpers
 {
-    internal static class Comments
+    /*internal static class Comments
     {
         /// <summary>
         /// 
@@ -11,7 +11,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Helpers
         /// <param name="collection"></param>
         /// <param name="comments"></param>
         public static void CreateCommentsTree(
-            ICollection<CommentModel> collection,
+            ICollection<Comment> collection,
             IReadOnlyCollection<Web.Services.Blog.Interop.Models.CommentModel> comments)
         {
             foreach (var comment in comments)
@@ -21,10 +21,10 @@ namespace StoryBlog.Web.Blazor.Client.Store.Helpers
                     continue;
                 }
 
-                var model = new CommentModel(null, comment.Id)
+                var model = new Comment(null)
                 {
                     Content = comment.Content,
-                    Author = new AuthorModel
+                    Author = new Author
                     {
                         Name = "(none)" //comment.Author.Name
                     },
@@ -38,7 +38,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Helpers
         }
 
         private static void CreateNestedComments(
-            CommentModel parent,
+            Comment parent,
             IReadOnlyCollection<Web.Services.Blog.Interop.Models.CommentModel> comments)
         {
             foreach (var comment in comments)
@@ -48,10 +48,10 @@ namespace StoryBlog.Web.Blazor.Client.Store.Helpers
                     continue;
                 }
 
-                var model = new CommentModel(parent, comment.Id)
+                var model = new Comment(parent, comment.Id)
                 {
                     Content = comment.Content,
-                    Author = new AuthorModel
+                    Author = new Author
                     {
                         Name = "(none)" //comment.Author.Name
                     },
@@ -63,5 +63,5 @@ namespace StoryBlog.Web.Blazor.Client.Store.Helpers
                 CreateNestedComments(model, comments);
             }
         }
-    }
+    }*/
 }

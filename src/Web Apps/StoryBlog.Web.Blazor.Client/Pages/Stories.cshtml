@@ -14,13 +14,13 @@
 {
 
 }
-else if (State.Value.Status.IsLoading())
+else if (State.Value.IsLoading())
 {
     <p class="text-muted">Loading...</p>
 }
 else
 {
-    if (State.Value.Status.IsFailed())
+    if (State.Value.IsFailed())
     {
         <p>@State.Value.Status.Error</p>
     }

@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using Blazor.Fluxor;
+﻿using Blazor.Fluxor;
 using StoryBlog.Web.Blazor.Client.Store.Models;
+using System;
+using System.Collections.Generic;
 
 namespace StoryBlog.Web.Blazor.Client.Store
 {
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     public sealed class StoryFeature : Feature<StoryState>
     {
         public override string GetName() => nameof(StoryState);
@@ -19,7 +19,7 @@ namespace StoryBlog.Web.Blazor.Client.Store
     /// <summary>
     /// 
     /// </summary>
-    public class StoryState
+    public class StoryState : IHasModelStatus
     {
         public ModelStatus Status
         {
@@ -53,7 +53,7 @@ namespace StoryBlog.Web.Blazor.Client.Store
         /// <summary>
         /// 
         /// </summary>
-        public AuthorModel Author
+        public Author Author
         {
             get;
             set;
@@ -74,7 +74,7 @@ namespace StoryBlog.Web.Blazor.Client.Store
             set;
         }
 
-        public IList<CommentModel> Comments
+        public IList<Comment> Comments
         {
             get;
         }
@@ -82,7 +82,7 @@ namespace StoryBlog.Web.Blazor.Client.Store
         public StoryState(ModelStatus status)
         {
             Status = status;
-            Comments = new List<CommentModel>();
+            Comments = new List<Comment>();
         }
     }
 }

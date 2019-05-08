@@ -3,28 +3,6 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "twitter-bootstrap@4.3.1",
-      "destination": "wwwroot/lib/twitter-bootstrap",
-      "files": [
-        "css/bootstrap.min.css",
-        "css/bootstrap.min.css.map"
-      ]
-    },
-    {
-      "library": "font-awesome@4.7.0",
-      "destination": "wwwroot/lib/font-awesome",
-      "files": [
-        "css/font-awesome.css",
-        "css/font-awesome.min.css",
-        "fonts/FontAwesome.otf",
-        "fonts/fontawesome-webfont.eot",
-        "fonts/fontawesome-webfont.svg",
-        "fonts/fontawesome-webfont.ttf",
-        "fonts/fontawesome-webfont.woff",
-        "fonts/fontawesome-webfont.woff2"
-      ]
-    },
-    {
       "library": "MaterialDesign-Webfont@3.6.95",
       "destination": "wwwroot/lib/materialdesignicons",
       "files": [
@@ -35,17 +13,6 @@
         "fonts/materialdesignicons-webfont.ttf",
         "fonts/materialdesignicons-webfont.woff",
         "fonts/materialdesignicons-webfont.woff2"
-      ]
-    },
-    {
-      "library": "material-kit@2.0.4",
-      "destination": "wwwroot/lib/material-kit",
-      "files": [
-        "css/material-kit.css",
-        "css/material-kit.min.css",
-        "js/material-kit.js",
-        "js/material-kit.js.map",
-        "js/material-kit.min.js"
       ]
     }
   ]

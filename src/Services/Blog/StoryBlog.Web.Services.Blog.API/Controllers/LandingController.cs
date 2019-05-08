@@ -93,7 +93,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 Data = Enumerable.Empty<FeedStoryModel>(),
                 Hero = new HeroStoryModel(),
                 Featured = Enumerable.Empty<FeedStoryModel>(),
-                Meta = new ResourcesMetaInfo
+                Meta = new ResourcesMetaInfo<AuthorsResource>
                 {
                     Resources = new AuthorsResource
                     {

@@ -23,9 +23,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using IdentityServer4.Extensions;
-using StoryBlog.Web.Services.Blog.Application.Extensions;
-using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -111,7 +108,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         // GET api/v1/stories
         [AllowAnonymous]
         [HttpGet("{page?}")]
-        [ProducesResponseType(typeof(ListResult<StoryModel, ResourcesMetaInfo>), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>>), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Get(string page, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
         {
             var flags = EnumFlags.Parse<StoryIncludes>(includes);
@@ -158,7 +155,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 });
             }
 
-            return Ok(new ListResult<StoryModel, ResourcesMetaInfo>
+            return Ok(new ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>>
             {
                 Data = result.Select(story =>
                 {
@@ -168,7 +165,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
                     return model;
                 }),
-                Meta = new ResourcesMetaInfo
+                Meta = new ResourcesMetaInfo<AuthorsResource>
                 {
                     Resources = new AuthorsResource
                     {

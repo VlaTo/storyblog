@@ -14,13 +14,14 @@ namespace StoryBlog.Web.Services.Shared.Common
     /// 
     /// </summary>
     [DataContract(IsReference = false, Name = "meta", Namespace = "http://storyblog.org/schemas/json/result/resources")]
-    public sealed class ResourcesMetaInfo : NavigationMetaInfo
+    public sealed class ResourcesMetaInfo<TResources> : NavigationMetaInfo
+        where TResources : ResultResources
     {
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name = "resources")]
-        public ResultResources Resources
+        public TResources Resources
         {
             get;
             set;
