@@ -2,6 +2,8 @@
 @import url('../lib/materialdesignicons/css/materialdesignicons.min.css');
 @import url('https://fonts.googleapis.com/css?family=Playfair+Display');
 
+@link-color-primary: #black;
+
 html, body {
 }
 
@@ -34,5 +36,18 @@ body {
 
     .storyblog-footer {
 
+    }
+
+    article.storyblog-story {
+        .storyblog-story-header {
+
+            .storyblog-story-title {
+
+                a, a:hover, a:visited {
+                    color: @link-color-primary;
+                    text-decoration: none;
+                }
+            }
+        }
     }
 }
