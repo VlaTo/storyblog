@@ -1,6 +1,5 @@
 ﻿using IdentityModel;
 using IdentityModel.Client;
-using Microsoft.AspNetCore.Components.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using StoryBlog.Web.Blazor.Client.Extensions;
@@ -12,6 +11,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 
 namespace StoryBlog.Web.Blazor.Client.Services
 {

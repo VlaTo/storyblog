@@ -142,186 +142,193 @@ namespace StoryBlog.Web.Services.Blog.API
                         .AddSingleton<ICommandBus, NullCommandBus>();
 
                     services
-                        .AddMediatR()
+                        .AddMediatR(
+                            options => { options.AsScoped(); },
+                            AppDomain.CurrentDomain.GetAssemblies()
+                        );
+
+                    services
                         .AddAutoMapper(config =>
-                        {
-                            config.AddBlogApplicationTypeMappings();
+                            {
+                                config.AddBlogApplicationTypeMappings();
 
-                            config
-                                .CreateMap<Author, AuthorModel>()
-                                .ForMember(
-                                    landing => landing.Name,
-                                    mapping => mapping.MapFrom(source => source.UserName)
-                                );
-
-                            config
-                                .CreateMap<Comment, CommentModel>()
-                                .ForMember(
-                                    story => story.Id,
-                                    mapping => mapping.MapFrom(source => source.Id)
-                                )
-                                .ForMember(
-                                    story => story.Parent,
-                                    mapping => mapping.MapFrom(source => source.ParentId)
-                                )
-                                .ForMember(
-                                    story => story.Content,
-                                    mapping => mapping.MapFrom(source => source.Content)
-                                )
-                                .ForMember(
-                                    story => story.Author,
-                                    mapping => mapping.MapFrom(source => source.Author)
-                                )
-                                .ForMember(
-                                    story => story.Created,
-                                    mapping => mapping.MapFrom(source => source.Created)
-                                )
-                                .ForMember(
-                                    story => story.Modified,
-                                    mapping => mapping.MapFrom(source => source.Modified)
-                                );
-
-                            config
-                                .CreateMap<Application.Landing.Models.HeroStory, HeroStoryModel>()
-                                .ForMember(
-                                    story => story.Title,
-                                    mapping => mapping.MapFrom(source => source.Title)
-                                )
-                                .ForMember(
-                                    story => story.Slug,
-                                    mapping => mapping.MapFrom(source => source.Slug)
-                                )
-                                .ForMember(
-                                    story => story.Content,
-                                    mapping => mapping.MapFrom(source => source.Content)
-                                )
-                                /*.ForMember(
-                                    story => story.Author,
-                                    mapping => mapping.MapFrom(source => source.Author)
-                                )*/
-                                /*.ForMember(
-                                    story => story.Created,
-                                    mapping => mapping.MapFrom(source => source.Created)
-                                )*/
-                                /*.ForMember(
-                                    story => story.Modified,
-                                    mapping => mapping.MapFrom(source => source.Modified)
-                                )*/
-                                .ForMember(
-                                    test => test.Comments,
-                                    mapping => mapping.MapFrom(source => source.CommentsCount)
-                                );
-
-                            config
-                                .CreateMap<Story, StoryModel>()
-                                .ForMember(
-                                    story => story.Title,
-                                    mapping => mapping.MapFrom(source => source.Title)
-                                )
-                                .ForMember(
-                                    story => story.Slug,
-                                    mapping => mapping.MapFrom(source => source.Slug)
-                                )
-                                .ForMember(story => story.Content, mapping =>
-                                {
-                                    mapping.AllowNull();
-                                    mapping.MapFrom(source => source.Content);
-                                })
-                                .ForMember(
-                                    story => story.Closed,
-                                    mapping => mapping.MapFrom((source, dest) => false)
-                                )
-                                .ForMember(story => story.Author, mapping => mapping.Ignore())
-                                .ForMember(
-                                    story => story.Created,
-                                    mapping => mapping.MapFrom(source => source.Created)
-                                )
-                                .ForMember(story => story.Published, mapping =>
-                                {
-                                    mapping.AllowNull();
-                                    mapping.MapFrom(source => source.Published);
-                                })
-                                .AfterMap((source, story, ctx) =>
-                                    story.Comments = source.Comments
-                                        .Select(comment => ctx.Mapper.Map<CommentModel>(comment))
-                                        .ToArray()
-                                );
-
-                            config
-                                .CreateMap<Application.Stories.Models.FeedStory, FeedStoryModel>()
-                                .ForMember(
-                                    story => story.Title,
-                                    mapping => mapping.MapFrom(source => source.Title)
-                                )
-                                .ForMember(
-                                    story => story.Slug,
-                                    mapping => mapping.MapFrom(source => source.Slug)
-                                )
-                                .ForMember(
-                                    story => story.Content,
-                                    mapping => mapping.MapFrom(source => source.Content)
-                                )
-                                /*.ForMember(
-                                    story => story.Author,
-                                    mapping => mapping.MapFrom(source => source.Author)
-                                )*/
-                                /*.ForMember(
-                                    story => story.Created,
-                                    mapping => mapping.MapFrom(source => source.Created)
-                                )*/
-                                /*.ForMember(
-                                    story => story.Modified,
-                                    mapping => mapping.MapFrom(source => source.Modified)
-                                )*/
-                                .ForMember(
-                                    story => story.Comments,
-                                    mapping => mapping.MapFrom(source => source.CommentsCount)
-                                );
-
-                            config
-                                .CreateMap<Application.Landing.Models.Landing, LandingModel>()
-                                /*.ForMember(
-                                    landing => landing.Title,
-                                    mapping => mapping.MapFrom(source => source.Title)
-                                )*/
-                                /*.ForMember(
-                                    landing => landing.Description,
-                                    mapping => mapping.MapFrom(source => source.Description)
-                                )*/
-                                /*.ForMember(
-                                    landing => landing.Hero,
-                                    mapping => mapping.MapFrom(source => source.HeroStory)
-                                )*/
-                                /*.AfterMap((source, landing, ctx) =>
-                                {
-                                    landing.Featured = source.FeaturedStories.Select(
-                                        story => ctx.Mapper.Map<FeedStoryModel>(story)
+                                config
+                                    .CreateMap<Author, AuthorModel>()
+                                    .ForMember(
+                                        landing => landing.Name,
+                                        mapping => mapping.MapFrom(source => source.UserName)
                                     );
-                                    landing.Feed = source.FeedStories.Select(
-                                        story => ctx.Mapper.Map<FeedStoryModel>(story)
-                                    );
-                                })*/
-                                ;
 
-                            /*config
-                                .CreateMap<Application.Stories.Models.FeedStory, StoryModel>()
-                                .ForMember(
-                                    story => story.Id,
-                                    mapping => mapping.MapFrom(source => source.Id)
-                                )
-                                .ForMember(
-                                    story => story.Title,
-                                    mapping => mapping.MapFrom(source => source.Title)
-                                )
-                                .ForMember(
-                                    story => story.Slug,
-                                    mapping => mapping.MapFrom(source => source.Slug)
-                                )
-                                .ForMember(
-                                    story => story.Content,
-                                    mapping => mapping.MapFrom(source => source.Content)
-                                );*/
-                        });
+                                config
+                                    .CreateMap<Comment, CommentModel>()
+                                    .ForMember(
+                                        story => story.Id,
+                                        mapping => mapping.MapFrom(source => source.Id)
+                                    )
+                                    .ForMember(
+                                        story => story.Parent,
+                                        mapping => mapping.MapFrom(source => source.ParentId)
+                                    )
+                                    .ForMember(
+                                        story => story.Content,
+                                        mapping => mapping.MapFrom(source => source.Content)
+                                    )
+                                    .ForMember(
+                                        story => story.Author,
+                                        mapping => mapping.MapFrom(source => source.Author)
+                                    )
+                                    .ForMember(
+                                        story => story.Created,
+                                        mapping => mapping.MapFrom(source => source.Created)
+                                    )
+                                    .ForMember(
+                                        story => story.Modified,
+                                        mapping => mapping.MapFrom(source => source.Modified)
+                                    );
+
+                                config
+                                    .CreateMap<Application.Landing.Models.HeroStory, HeroStoryModel>()
+                                    .ForMember(
+                                        story => story.Title,
+                                        mapping => mapping.MapFrom(source => source.Title)
+                                    )
+                                    .ForMember(
+                                        story => story.Slug,
+                                        mapping => mapping.MapFrom(source => source.Slug)
+                                    )
+                                    .ForMember(
+                                        story => story.Content,
+                                        mapping => mapping.MapFrom(source => source.Content)
+                                    )
+                                    /*.ForMember(
+                                        story => story.Author,
+                                        mapping => mapping.MapFrom(source => source.Author)
+                                    )*/
+                                    /*.ForMember(
+                                        story => story.Created,
+                                        mapping => mapping.MapFrom(source => source.Created)
+                                    )*/
+                                    /*.ForMember(
+                                        story => story.Modified,
+                                        mapping => mapping.MapFrom(source => source.Modified)
+                                    )*/
+                                    .ForMember(
+                                        test => test.Comments,
+                                        mapping => mapping.MapFrom(source => source.CommentsCount)
+                                    );
+
+                                config
+                                    .CreateMap<Story, StoryModel>()
+                                    .ForMember(
+                                        story => story.Title,
+                                        mapping => mapping.MapFrom(source => source.Title)
+                                    )
+                                    .ForMember(
+                                        story => story.Slug,
+                                        mapping => mapping.MapFrom(source => source.Slug)
+                                    )
+                                    .ForMember(story => story.Content, mapping =>
+                                    {
+                                        mapping.AllowNull();
+                                        mapping.MapFrom(source => source.Content);
+                                    })
+                                    .ForMember(
+                                        story => story.Closed,
+                                        mapping => mapping.MapFrom((source, dest) => false)
+                                    )
+                                    .ForMember(story => story.Author, mapping => mapping.Ignore())
+                                    .ForMember(
+                                        story => story.Created,
+                                        mapping => mapping.MapFrom(source => source.Created)
+                                    )
+                                    .ForMember(story => story.Published, mapping =>
+                                    {
+                                        mapping.AllowNull();
+                                        mapping.MapFrom(source => source.Published);
+                                    })
+                                    .AfterMap((source, story, ctx) =>
+                                        story.Comments = source.Comments
+                                            .Select(comment => ctx.Mapper.Map<CommentModel>(comment))
+                                            .ToArray()
+                                    );
+
+                                config
+                                    .CreateMap<Application.Stories.Models.FeedStory, FeedStoryModel>()
+                                    .ForMember(
+                                        story => story.Title,
+                                        mapping => mapping.MapFrom(source => source.Title)
+                                    )
+                                    .ForMember(
+                                        story => story.Slug,
+                                        mapping => mapping.MapFrom(source => source.Slug)
+                                    )
+                                    .ForMember(
+                                        story => story.Content,
+                                        mapping => mapping.MapFrom(source => source.Content)
+                                    )
+                                    /*.ForMember(
+                                        story => story.Author,
+                                        mapping => mapping.MapFrom(source => source.Author)
+                                    )*/
+                                    /*.ForMember(
+                                        story => story.Created,
+                                        mapping => mapping.MapFrom(source => source.Created)
+                                    )*/
+                                    /*.ForMember(
+                                        story => story.Modified,
+                                        mapping => mapping.MapFrom(source => source.Modified)
+                                    )*/
+                                    .ForMember(
+                                        story => story.Comments,
+                                        mapping => mapping.MapFrom(source => source.CommentsCount)
+                                    );
+
+                                config
+                                    .CreateMap<Application.Landing.Models.Landing, LandingModel>()
+                                    /*.ForMember(
+                                        landing => landing.Title,
+                                        mapping => mapping.MapFrom(source => source.Title)
+                                    )*/
+                                    /*.ForMember(
+                                        landing => landing.Description,
+                                        mapping => mapping.MapFrom(source => source.Description)
+                                    )*/
+                                    /*.ForMember(
+                                        landing => landing.Hero,
+                                        mapping => mapping.MapFrom(source => source.HeroStory)
+                                    )*/
+                                    /*.AfterMap((source, landing, ctx) =>
+                                    {
+                                        landing.Featured = source.FeaturedStories.Select(
+                                            story => ctx.Mapper.Map<FeedStoryModel>(story)
+                                        );
+                                        landing.Feed = source.FeedStories.Select(
+                                            story => ctx.Mapper.Map<FeedStoryModel>(story)
+                                        );
+                                    })*/
+                                    ;
+
+                                /*config
+                                    .CreateMap<Application.Stories.Models.FeedStory, StoryModel>()
+                                    .ForMember(
+                                        story => story.Id,
+                                        mapping => mapping.MapFrom(source => source.Id)
+                                    )
+                                    .ForMember(
+                                        story => story.Title,
+                                        mapping => mapping.MapFrom(source => source.Title)
+                                    )
+                                    .ForMember(
+                                        story => story.Slug,
+                                        mapping => mapping.MapFrom(source => source.Slug)
+                                    )
+                                    .ForMember(
+                                        story => story.Content,
+                                        mapping => mapping.MapFrom(source => source.Content)
+                                    );*/
+                            },
+                            AppDomain.CurrentDomain.GetAssemblies()
+                        );
 
                     services
                         .AddOptions<StoryBlogSettings>()

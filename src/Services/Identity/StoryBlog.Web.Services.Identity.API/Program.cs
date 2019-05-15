@@ -247,11 +247,21 @@ namespace StoryBlog.Web.Services.Identity.API
                             options.Cookie.HttpOnly = true;
                             options.Cookie.SameSite = SameSiteMode.Strict;
                         })
-                        .AddMediatR()
-                        .AddAutoMapper(config =>
-                        {
+                        .AddMediatR(
+                            config =>
+                            {
+                                config.AsScoped();
+                            },
+                            AppDomain.CurrentDomain.GetAssemblies()
+                        )
+                        .AddAutoMapper(
+                            config =>
+                            {
+                                ;
+                            },
+                            AppDomain.CurrentDomain.GetAssemblies()
+                        );
 
-                        });
                         /*
                             .AddAutoMapper(config =>
                             {

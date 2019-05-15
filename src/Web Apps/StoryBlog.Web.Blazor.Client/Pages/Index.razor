@@ -1,7 +1,6 @@
 ﻿@page "/"
 
 @using global::Blazor.Fluxor
-@using Microsoft.AspNetCore.Components.Services
 @using StoryBlog.Web.Blazor.Client.Store
 @using StoryBlog.Web.Blazor.Client.Store.Actions
 @using StoryBlog.Web.Services.Blog.Interop.Includes
@@ -57,7 +56,7 @@
                         </h5>
                         <div class="card-text mt-2">@story.Content</div>
                         @*<button class="btn btn-outline-primary mt-4" role="button" onclick="">Читать полностью</button>*@
-                        <BootstrapButton Type=@BootstrapButtonTypes.Primary Size=@BootstrapButtonSizes.Default Outline=true Class="mt-4" OnClick=@OnArticleButtonClick>Читать полностью</BootstrapButton>
+                        <BootstrapButton Type=BootstrapButtonTypes.Primary Size=BootstrapButtonSizes.Default Outline=true Class="mt-4" OnClick=@OnArticleButtonClick>Читать полностью</BootstrapButton>
                     </div>
                 </article>
             }

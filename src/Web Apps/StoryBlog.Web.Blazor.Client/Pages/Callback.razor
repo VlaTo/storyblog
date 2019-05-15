@@ -1,7 +1,6 @@
 ﻿@page "/callback"
 
 @using global::Blazor.Fluxor
-@using Microsoft.AspNetCore.Components.Services
 @using StoryBlog.Web.Blazor.Client.Services
 @using StoryBlog.Web.Blazor.Client.Store.Actions
 
@@ -21,7 +20,8 @@
             Dispatcher.Dispatch(new SigninRequestSuccessAction(principal));
             Uri.NavigateTo("/");
         }
-        catch (HttpRequestException exception)
+        //catch (HttpRequestException exception)
+        catch (Exception exception)
         {
             Dispatcher.Dispatch(new SigninRequestCallbackFailedAction(exception.Message));
         }

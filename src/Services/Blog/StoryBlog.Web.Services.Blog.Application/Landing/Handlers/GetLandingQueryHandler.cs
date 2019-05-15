@@ -89,7 +89,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Landing.Handlers
                 //return Models.Landing.Create(featured);
                 return null;
             }
-            catch (Exception exception)
+            catch
             {
                 // RequestResult.Error<Models.LandingQueryResult>(exception);
                 //return Models.Landing.Error(exception);
