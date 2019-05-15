@@ -37,7 +37,7 @@
         <section class="col-8">
             @foreach (var story in State.Value.Stories)
             {
-                <article id=@story.Slug class="card storyblog-story mt-5">
+                <article id=@story.Slug class="card storyblog-story">
                     <div class="card-header">
                         <ul class="card-subtitle text-muted list-unstyled list-inline">
                             <li class="list-inline-item">
@@ -56,7 +56,10 @@
                         </h5>
                         <div class="card-text mt-2">@story.Content</div>
                         @*<button class="btn btn-outline-primary mt-4" role="button" onclick="">Читать полностью</button>*@
-                        <BootstrapButton Type=BootstrapButtonTypes.Primary Size=BootstrapButtonSizes.Default Outline=true Class="mt-4" OnClick=@OnArticleButtonClick>Читать полностью</BootstrapButton>
+                        <BootstrapButton Type=BootstrapButtonTypes.Primary Size=BootstrapButtonSizes.Small Outline=true Class="mt-4" OnClick=@OnArticleButtonClick>
+                            Читать полностью
+                            <i class="mdi mdi-arrow-right"></i>
+                        </BootstrapButton>
                     </div>
                 </article>
             }
@@ -82,7 +85,39 @@
                 </nav>
             }
         </section>
-        <aside class="col-4">
+
+        <aside class="col-4 storyblog-aside">
+            <div class="card storyblog-widget">
+                <div class="card-body">
+                    <h4 class="card-title">About Blog</h4>
+                    <p class="card-text">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                        Pellentesque id tempus odio, quis tincidunt nisi.
+                        In hac habitasse platea dictumst.
+                        Cras rhoncus tincidunt egestas.
+                        Vivamus rutrum maximus vulputate.
+                        Praesent vestibulum justo vel cursus volutpat.
+                        Phasellus vitae justo velit.
+                    </p>
+                </div>
+            </div>
+                
+            <div class="card storyblog-widget">
+                <div class="card-body">
+                    <h4 class="card-title">Tags</h4>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Cras justo odio <span class="badge badge-pill badge-secondary">1</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Dapibus ac facilisis in <span class="badge badge-pill badge-secondary">3</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Vestibulum at eros <span class="badge badge-pill badge-secondary">9</span>
+                        </li>
+                    </ul>                
+                </div>
+            </div>
         </aside>
     }
 </div>

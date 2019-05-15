@@ -1,5 +1,4 @@
 @using global::Blazor.Fluxor
-@using Microsoft.AspNetCore.Components.Layouts
 
 @inherits LayoutComponentBase
 
@@ -7,7 +6,7 @@
 
 @Store.Initialize()
 
-<div class="container bg-white rounded-lg storyblog-main">
+<div class="container bg-white rounded-lg my-4 storyblog-main">
     <BlogTitle Title="Sample Blog" />
     <RubricsNavigation />
 
@@ -15,7 +14,7 @@
         @Body
     </main>
 
-    <footer class="container storyblog-footer bg-dark mt-3 border-top border-light">
+    <footer class="container bg-dark border-top border-light storyblog-footer">
         <div class="row">
             <div class="col-auto">
                 <span>footer</span>

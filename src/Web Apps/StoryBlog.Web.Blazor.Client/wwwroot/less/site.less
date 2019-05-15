@@ -1,8 +1,9 @@
 ﻿
-@import url('../lib/materialdesignicons/css/materialdesignicons.min.css');
-@import url('https://fonts.googleapis.com/css?family=Playfair+Display');
-
 @link-color-primary: #black;
+
+.margin-bottom-mixin(@distance: 1.5rem) {
+    margin-bottom: @distance !important;
+}
 
 html, body {
 }
@@ -35,7 +36,6 @@ body {
     }
 
     .storyblog-footer {
-
     }
 
     article.storyblog-story {
@@ -48,6 +48,21 @@ body {
                     text-decoration: none;
                 }
             }
+        }
+    }
+
+    article.storyblog-story:not(:last-of-type) {
+        .margin-bottom-mixin();
+    }
+
+    /* side bar */
+
+    .storyblog-aside {
+        .storyblog-widget {
+        }
+
+        .storyblog-widget:not(:last-of-type) {
+            .margin-bottom-mixin(1rem);
         }
     }
 }
