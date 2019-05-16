@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>StoryBlog.Web.Services.Shared.Infrastructure</AssemblyName>
     <RootNamespace>StoryBlog.Web.Services.Shared.Infrastructure</RootNamespace>
   </PropertyGroup>

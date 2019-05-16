@@ -15,7 +15,7 @@ variables:
 steps:
 - task: DotNetCoreInstaller@0
   inputs:
-    version: '3.0.100-preview3-010431'
+    version: '3.0.100-preview5-011568'
     packageType: sdk
 
 - script: |

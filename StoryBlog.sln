@@ -5,13 +5,12 @@ VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{00989F37-18E7-4BCC-BC5F-5DBF8E97D15F}"
 	ProjectSection(SolutionItems) = preProject
-		bitbucket-pipelines.yml = bitbucket-pipelines.yml
+		azure-pipelines.yml = azure-pipelines.yml
 		interop.txt = interop.txt
 		README.md = README.md
 		StoryBlog.cer = StoryBlog.cer
 		StoryBlog.pfx = StoryBlog.pfx
 		StoryBlog.pvk = StoryBlog.pvk
-		StoryBlog.zip = StoryBlog.zip
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8D410B54-BC2F-4A74-96A2-F3042826E2FA}"
@@ -182,7 +181,7 @@ Global
 		{D84D1688-ACBC-4531-82C0-2E9051578946} = {920EC233-08A7-47FB-A89C-B703CAFFB4C0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		LessCompiler = a3b52c4e-54ca-4233-83ea-a4baa2669f90,193bea1a-7151-46db-aed1-e5fafe14f3c3
 		SolutionGuid = {2BDF20E6-9CFF-444E-88D4-B67EF316084F}
+		LessCompiler = a3b52c4e-54ca-4233-83ea-a4baa2669f90,193bea1a-7151-46db-aed1-e5fafe14f3c3
 	EndGlobalSection
 EndGlobal

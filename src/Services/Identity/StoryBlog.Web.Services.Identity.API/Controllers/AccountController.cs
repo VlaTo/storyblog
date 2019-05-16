@@ -3,32 +3,28 @@ using IdentityServer4.Events;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
+using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+//using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using StoryBlog.Web.Services.Identity.API.Configuration;
 using StoryBlog.Web.Services.Identity.API.Extensions;
 using StoryBlog.Web.Services.Identity.API.Models;
-using StoryBlog.Web.Services.Identity.Application.Models;
-using StoryBlog.Web.Services.Identity.Application.Services;
-using StoryBlog.Web.Services.Identity.Persistence.Models;
-using StoryBlog.Web.Services.Shared.Captcha;
-using System;
-using System.Linq;
-using System.Net.Mail;
-using System.Threading.Tasks;
-using MediatR;
-using Microsoft.AspNetCore.Http;
 using StoryBlog.Web.Services.Identity.Application.Configuration;
 using StoryBlog.Web.Services.Identity.Application.Signin.Commands;
-using StoryBlog.Web.Services.Identity.Application.Signin.Models;
 using StoryBlog.Web.Services.Identity.Application.Signin.Queries;
 using StoryBlog.Web.Services.Identity.Application.Signup.Commands;
+using StoryBlog.Web.Services.Identity.Persistence.Models;
+using StoryBlog.Web.Services.Shared.Captcha;
 using StoryBlog.Web.Services.Shared.Infrastructure.Extensions;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Services.Identity.API.Controllers
 {
@@ -45,7 +41,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
         private readonly IAuthenticationSchemeProvider schemeProvider;
         private readonly UserManager<Customer> customerManager;
         private readonly ICaptcha captcha;
-        private readonly IHostingEnvironment environment;
+        private readonly IWebHostEnvironment environment;
         private readonly IEventService eventService;
         private readonly IStringLocalizer<AccountController> localizer;
         private readonly ILogger<AccountController> logger;
@@ -53,15 +49,13 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="mediator"></param>
         /// <param name="interactions"></param>
-        /// <param name="loginService"></param>
         /// <param name="clientStore"></param>
         /// <param name="schemeProvider"></param>
         /// <param name="customerManager"></param>
         /// <param name="captcha"></param>
         /// <param name="environment"></param>
-        /// <param name="emailSender"></param>
-        /// <param name="templateGenerator"></param>
         /// <param name="eventService"></param>
         /// <param name="localizer"></param>
         /// <param name="logger"></param>
@@ -72,7 +66,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
             IAuthenticationSchemeProvider schemeProvider,
             UserManager<Customer> customerManager,
             ICaptcha captcha,
-            IHostingEnvironment environment,
+            IWebHostEnvironment environment,
             IEventService eventService,
             IStringLocalizer<AccountController> localizer,
             ILogger<AccountController> logger)
@@ -91,7 +85,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
 
         // GET /account/signin
         [HttpGet("signin")]
-        public async Task<IActionResult> Signin([FromQuery] string returnUrl)
+        public async Task<IActionResult> SigninAsync([FromQuery] string returnUrl)
         {
             var model = await CreateSigninModelAsync(returnUrl);
 
@@ -117,7 +111,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
         [Consumes("application/x-www-form-urlencoded")]
         [ValidateAntiForgeryToken]
         [ValidateCaptcha]
-        public async Task<IActionResult> Signin([FromForm] SignInInputModel model, [FromForm] string button)
+        public async Task<IActionResult> SigninAsync([FromForm] SignInInputModel model, [FromForm] string button)
         {
             var context = await interactions.GetAuthorizationContextAsync(model.ReturnUrl);
 
@@ -218,7 +212,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
 
         // GET account/create
         [HttpGet("create")]
-        public async Task<IActionResult> Create([FromQuery] string returnUrl)
+        public async Task<IActionResult> CreateAsync([FromQuery] string returnUrl)
         {
             var model = await CreateSignUpModelAsync(returnUrl);
 
@@ -233,7 +227,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
         [HttpPost("create")]
         [Consumes("application/x-www-form-urlencoded")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromForm] SignUpModel model)
+        public async Task<IActionResult> CreateAsync([FromForm] SignUpModel model)
         {
             if (false == ModelState.IsValid)
             {
@@ -256,7 +250,7 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
         /// <param name="errorId"></param>
         /// <returns></returns>
         [HttpGet("error")]
-        public async Task<IActionResult> Error(string errorId)
+        public async Task<IActionResult> ErrorAsync(string errorId)
         {
             // retrieve error details from identityserver
             var message = await interactions.GetErrorContextAsync(errorId);

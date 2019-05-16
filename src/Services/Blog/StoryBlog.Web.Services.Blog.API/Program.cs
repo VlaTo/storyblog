@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Serialization;
 using StoryBlog.Web.Services.Blog.API.Infrastructure;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Filters;
 using StoryBlog.Web.Services.Blog.Application.Extensions;
@@ -69,19 +69,22 @@ namespace StoryBlog.Web.Services.Blog.API
                         });
 
                     services
-                        .AddCors()
                         .AddRouting()
-                        .AddMvc(options =>
+                        .AddControllers(options =>
                         {
+                            options.SerializerOptions.WriteIndented = false;
+                            options.SuppressAsyncSuffixInActionNames = true;
+
                             options.Filters.Add<HttpGlobalExceptionFilter>();
                             options.Conventions.Add(new CommaSeparatedFlagsQueryStringConvention());
                         })
-                        .AddControllersAsServices()
-                        .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                        .AddJsonOptions(options =>
+                        //.AddControllersAsServices()
+                        .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                        /*.AddJsonOptions(options =>
                         {
                             options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-                        });
+                        })*/
+                        ;
 
                     // remove it
                     //IdentityModelEventSource.ShowPII = true;
@@ -89,6 +92,14 @@ namespace StoryBlog.Web.Services.Blog.API
                     JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
                     services
+                        .AddCors(options =>
+                            options.AddPolicy("default", policy =>
+                                policy
+                                    .AllowAnyHeader()
+                                    .AllowAnyMethod()
+                                    .AllowAnyOrigin()
+                            )
+                        )
                         .AddAuthentication(options =>
                         {
                             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -107,23 +118,15 @@ namespace StoryBlog.Web.Services.Blog.API
                             options.TokenValidationParameters.RoleClaimType = "role";
                         });
 
-                    services.AddAuthorization(options =>
-                        options.AddPolicy(
-                            Policies.Admins,
-                            policy => policy.RequireClaim("role", StandardRoles.Administrator)
-                        )
-                    );
+                    services
+                        .AddAuthorization(options =>
+                            options.AddPolicy(
+                                Policies.Admins,
+                                policy => policy.RequireClaim("role", StandardRoles.Administrator)
+                            )
+                        );
 
                     services.AddOidcStateDataFormatterCache("aad");
-
-                    services.AddCors(options =>
-                        options.AddPolicy("default", policy =>
-                            policy
-                                .AllowAnyHeader()
-                                .AllowAnyMethod()
-                                .AllowAnyOrigin()
-                        )
-                    );
 
                     services
                         .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
@@ -336,7 +339,7 @@ namespace StoryBlog.Web.Services.Blog.API
                 })
                 .Configure(app =>
                 {
-                    var environment = app.ApplicationServices.GetRequiredService<IHostingEnvironment>();
+                    var environment = app.ApplicationServices.GetRequiredService<IWebHostEnvironment>();
 
                     if (environment.IsDevelopment())
                     {
@@ -364,7 +367,7 @@ namespace StoryBlog.Web.Services.Blog.API
 
                 try
                 {
-                    var environment = services.GetRequiredService<IHostingEnvironment>();
+                    var environment = services.GetRequiredService<IWebHostEnvironment>();
 
                     if (environment.IsDevelopment())
                     {

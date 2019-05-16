@@ -1,7 +1,7 @@
-﻿@using Microsoft.AspNetCore.Authentication.Google
-@using Microsoft.AspNetCore.Http
+﻿@using Microsoft.AspNetCore.Http
 @using Microsoft.AspNetCore.Mvc.Localization
 @using StoryBlog.Web.Services.Shared.Captcha
+@using StoryBlog.Web.Services.Shared.Common
 @model StoryBlog.Web.Services.Identity.API.Models.SignInViewModel
 @inject ICaptcha Captcha
 @inject IViewLocalizer Localizer
@@ -21,7 +21,7 @@
                         {
                             switch (provider.AuthenticationScheme)
                             {
-                                case GoogleDefaults.AuthenticationScheme:
+                                case AuthenticationSchemeNames.Google:
                                 {
                                     <a class="btn btn-block btn-google-plus" asp-controller="External" asp-action="Challenge" asp-route-scheme="@provider.AuthenticationScheme" asp-route-returnUrl="@Model.ReturnUrl">
                                         <span class="fa fa-google-plus mr-2"></span>@Localizer["SocialSigninFormat", provider.DisplayName]
@@ -45,7 +45,7 @@
                         <span class="text-uppercase">@Localizer["DelimiterText"]</span>
                     </p>
                 }
-                <form asp-controller="Account" asp-action="Signin" method="POST" novalidate>
+                <form asp-controller="Account" asp-action="SigninAsync" method="POST" novalidate>
                     <fieldset>
                         <input type="hidden" asp-for="ReturnUrl" />
                         <div class="form-label-group">
@@ -57,7 +57,7 @@
                         <div class="form-label-group mt-4">
                             <input asp-for="Password" class="form-control" autocomplete="off">
                             <label asp-for="Password"></label>
-                            <a class="float-right" asp-controller="Account" asp-action="Signin">
+                            <a class="float-right" asp-controller="Account" asp-action="SigninAsync">
                                 <small>@Localizer["ForgetPasswordLinkText"]</small>
                             </a>
                             <span asp-validation-for="Password"></span>

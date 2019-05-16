@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using Microsoft.Extensions.Localization;
 
 namespace StoryBlog.Web.Services.Identity.API.Extensions
@@ -13,7 +12,7 @@ namespace StoryBlog.Web.Services.Identity.API.Extensions
                 throw new ArgumentNullException(nameof(localizer));
             }
 
-            var result = localizer.WithCulture(CultureInfo.CurrentUICulture)["InvalidCredentials"];
+            var result = localizer["InvalidCredentials"];
 
             return result.ResourceNotFound ? result.Name : result.Value;
         }

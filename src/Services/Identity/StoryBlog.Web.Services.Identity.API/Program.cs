@@ -1,7 +1,9 @@
-﻿using IdentityServer4;
+﻿using AutoMapper;
+using IdentityServer4;
 using IdentityServer4.Configuration;
 using IdentityServer4.Events;
 using IdentityServer4.Services;
+using MediatR;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Serialization;
 using StoryBlog.Web.Services.Identity.API.Configuration;
 using StoryBlog.Web.Services.Identity.API.Extensions;
@@ -25,11 +28,12 @@ using StoryBlog.Web.Services.Shared.Captcha.Extensions;
 using System;
 using System.Drawing;
 using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
-using AutoMapper;
-using MediatR;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using StoryBlog.Web.Services.Shared.Common;
 
 namespace StoryBlog.Web.Services.Identity.API
 {
@@ -64,7 +68,6 @@ namespace StoryBlog.Web.Services.Identity.API
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    //var environment = context.HostingEnvironment;
                     var connectionString = context.Configuration.GetConnectionString("StoryBlog");
                     var migrationAssemblyName = typeof(Program).Assembly.GetName().Name;
 
@@ -115,12 +118,13 @@ namespace StoryBlog.Web.Services.Identity.API
                             options.AddDefaultPolicy(policy =>
                                 policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()
                             );
-                        })
-                        .AddMvc()
-                        .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                        .AddJsonOptions(options =>
+                        });
+
+                    services
+                        .AddControllers(options =>
                         {
-                            options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                            options.SerializerOptions.WriteIndented = false;
+                            options.SuppressAsyncSuffixInActionNames = true;
                         })
                         .AddViewLocalization(
                             LanguageViewLocationExpanderFormat.Suffix,
@@ -130,6 +134,18 @@ namespace StoryBlog.Web.Services.Identity.API
                             }
                         )
                         .AddDataAnnotationsLocalization();
+
+                    services
+                        .AddRazorPages(options =>
+                        {
+                            options.RootDirectory = "";
+                        })
+                        .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                        /*.AddJsonOptions(options =>
+                        {
+                            options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                        })*/
+                        ;
 
                     services
                         .AddIdentityServer(options =>
@@ -183,7 +199,26 @@ namespace StoryBlog.Web.Services.Identity.API
                         .AddDistributedMemoryCache()
                         .AddOidcStateDataFormatterCache()
                         .AddAuthentication(IdentityConstants.ApplicationScheme)
-                        .AddGoogle(options =>
+                        /*.AddLocalApi(options =>
+                        {
+                            options.
+                        })*/
+                        .AddOpenIdConnect(AuthenticationSchemeNames.Google, options =>
+                        {
+                            var google = context.Configuration.GetSection("Authentication:Google");
+
+                            options.ClientId = google.GetValue<string>("ClientId");
+                            options.ClientSecret = google.GetValue<string>("ClientSecret");
+
+                            options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                            options.CallbackPath = "/callback/google/authorize";
+
+                            options.Authority = "https://accounts.google.com";
+                            options.ResponseType = OpenIdConnectResponseType.Code;
+
+                            options.Scope.Add("email");
+                        })
+                        /*.AddGoogle(options =>
                         {
                             var google = context.Configuration.GetSection("Authentication:Google");
 
@@ -191,7 +226,10 @@ namespace StoryBlog.Web.Services.Identity.API
                             options.CallbackPath = "/callback/google/authorize";
                             options.ClientId = google.GetValue<string>("ClientId");
                             options.ClientSecret = google.GetValue<string>("ClientSecret");
-                        });
+                        })*/
+                        ;
+
+                    JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
                     services
                         .ConfigureApplicationCookie(options =>
@@ -277,7 +315,7 @@ namespace StoryBlog.Web.Services.Identity.API
                 })
                 .Configure(app =>
                 {
-                    var environment = app.ApplicationServices.GetRequiredService<IHostingEnvironment>();
+                    var environment = app.ApplicationServices.GetRequiredService<IWebHostEnvironment>();
 
                     if (environment.IsDevelopment())
                     {

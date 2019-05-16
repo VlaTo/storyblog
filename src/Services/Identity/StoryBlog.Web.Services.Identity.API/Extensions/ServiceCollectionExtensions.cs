@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using StoryBlog.Web.Services.Identity.Application.Services;
 using System;
