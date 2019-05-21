@@ -9,7 +9,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoriesListQuery : IRequest<PagedStoriesQueryResult>
+    public sealed class GetStoriesQuery : IRequest<PagedStoriesQueryResult>
     {
         /// <summary>
         /// 
@@ -51,7 +51,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
         /// </summary>
         /// <param name="user"></param>
         /// <param name="includes"></param>
-        public GetStoriesListQuery(IPrincipal user)
+        public GetStoriesQuery(IPrincipal user)
         {
             if (null == user)
             {

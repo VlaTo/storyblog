@@ -53,7 +53,7 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
         /// 
         /// </summary>
         [DataMember(Name = "created")]
-        public DateTime Created
+        public DateTimeOffset Created
         {
             get;
             set;
@@ -63,7 +63,7 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
         /// 
         /// </summary>
         [DataMember(Name = "published")]
-        public DateTime? Published
+        public DateTimeOffset? Published
         {
             get;
             set;

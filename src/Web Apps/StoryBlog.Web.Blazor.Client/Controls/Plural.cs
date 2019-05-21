@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.RenderTree;
 
-namespace StoryBlog.Web.Blazor.Components
+namespace StoryBlog.Web.Blazor.Client.Controls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Plural : ComponentBase
     {
         private string content;

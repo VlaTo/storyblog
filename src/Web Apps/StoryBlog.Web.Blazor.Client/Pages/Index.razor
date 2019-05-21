@@ -37,12 +37,18 @@
         <section class="col-8">
             @foreach (var story in State.Value.Stories)
             {
+                var linkSrc = "story/" + story.Slug;
+
                 <article id=@story.Slug class="card storyblog-story">
                     <div class="card-header">
                         <ul class="card-subtitle text-muted list-unstyled list-inline">
                             <li class="list-inline-item">
                                 <i class="mdi mdi-calendar"></i>
-                                @story.Published
+                                <TimeLabel DateTime=@story.Published />
+                            </li>
+                            <li class="list-inline-item">
+                                <i class="mdi mdi-account-outline"></i>
+                                @story.Author.Name
                             </li>
                             <li class="list-inline-item">
                                 <i class="mdi mdi-comment-multiple-outline"></i>
@@ -52,18 +58,14 @@
                     </div>
                     <div class=" card-body storyblog-story-header">
                         <h5 class="card-title storyblog-story-title">
-                            <a href="/Story/@story.Slug">@story.Title</a>
+                            <a href=@linkSrc>@story.Title</a>
                         </h5>
                         <div class="card-text mt-2">@story.Content</div>
-                        @*<button class="btn btn-outline-primary mt-4" role="button" onclick="">Читать полностью</button>*@
-                        <BootstrapButton Type=BootstrapButtonTypes.Primary Size=BootstrapButtonSizes.Small Outline=true Class="mt-4" OnClick=@OnArticleButtonClick>
-                            Читать полностью
-                            <i class="mdi mdi-arrow-right"></i>
-                        </BootstrapButton>
+                        <BootstrapButton Type=BootstrapButtonTypes.Primary Size=BootstrapButtonSizes.Small Outline=true Class="mt-4" OnClick=@(e => UriHelper.NavigateTo(linkSrc))>Читать полностью<i class="mdi mdi-arrow-right"></i></BootstrapButton>
                     </div>
                 </article>
             }
-            
+
             @if (null != State.Value.Navigation.Next || null != State.Value.Navigation.Previous)
             {
                 <nav aria-label="pages">
@@ -128,11 +130,5 @@
     {
         base.OnInit();
         Dispatcher.Dispatch(new GetStoriesAction(StoryIncludes.Authors | StoryIncludes.Comments));
-    }
-
-    private void OnArticleButtonClick(UIMouseEventArgs e)
-    {
-        var slug = "";
-        UriHelper.NavigateTo($"story/{slug}");
     }
 }

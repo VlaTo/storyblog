@@ -20,7 +20,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
     {
         private readonly StoryBlogDbContext context;
         private readonly IMapper mapper;
-        private readonly ILogger<GetStoriesListQuery> logger;
+        private readonly ILogger<GetStoriesQuery> logger;
 
         /// <summary>
         /// 
@@ -31,7 +31,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
         public GetStoryQueryHandler(
             StoryBlogDbContext context,
             IMapper mapper,
-            ILogger<GetStoriesListQuery> logger)
+            ILogger<GetStoriesQuery> logger)
         {
             this.context = context;
             this.mapper = mapper;

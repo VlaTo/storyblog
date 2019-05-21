@@ -1,4 +1,6 @@
 ﻿using Microsoft.JSInterop;
+using StoryBlog.Web.Blazor.Client.Store.Models;
+using StoryBlog.Web.Blazor.Reactive;
 using StoryBlog.Web.Services.Blog.Interop;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
@@ -10,14 +12,12 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using StoryBlog.Web.Blazor.Reactive;
 
 namespace StoryBlog.Web.Blazor.Client.Services
 {
     internal sealed class BlogApiClient : IBlogApiClient, IDisposable
     {
         private readonly HttpClient client;
-        private readonly AuthorizationContext authorizationContext;
         private readonly Uri baseUri = new Uri("http://localhost:3000/api/v1/");
         private AuthorizationToken authorizationToken;
         private readonly IDisposable disposable;
@@ -27,11 +27,14 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// </summary>
         /// <param name="client"></param>
         /// <param name="authorizationContext"></param>
-        public BlogApiClient(HttpClient client, AuthorizationContext authorizationContext)
+        public BlogApiClient(HttpClient client, IObservable<AuthorizationToken> authorizationContext)
         {
             this.client = client;
-            this.authorizationContext = authorizationContext;
-            disposable = authorizationContext.Subscribe(value => authorizationToken = value);
+
+            disposable = authorizationContext.Subscribe(value =>
+            {
+                authorizationToken = value;
+            });
         }
 
         /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync" />
@@ -46,7 +49,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
             {
                 if (null != authorizationToken)
                 {
-                    client.SetBearerToken(authorizationToken.Token);
+                    client.SetBearerToken(authorizationToken.Payload);
                 }
 
                 using (var response = await client.GetAsync(requestUri, CancellationToken.None))
@@ -66,7 +69,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         }
 
         /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync" />
-        public async Task<ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>>> GetStoriesAsync(StoryIncludes flags)
+        public async Task<IEnumerable<FeedStory>> GetStoriesAsync(StoryIncludes flags)
         {
             var path = new Uri(baseUri, "stories");
             var include = EnumFlags.ToQueryString(flags);
@@ -75,18 +78,34 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
             try
             {
-                using (var response = await client.GetAsync(requestUri, CancellationToken.None))
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = requestUri
+                };
+
+                if (null != authorizationToken)
+                {
+                    request.Headers.Authorization = new AuthenticationHeaderValue(
+                        authorizationToken.Scheme,
+                        authorizationToken.Payload
+                    );
+                }
+
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json", 1.0d));
+
+                using (var response = await client.SendAsync(request))
                 {
                     var message = response.EnsureSuccessStatusCode();
                     var json = await message.Content.ReadAsStringAsync();
                     var data = Json.Deserialize<ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>>>(json);
 
-                    return data;
+                    return ProcessResult(data);
                 }
             }
             catch (HttpRequestException)
             {
-                return new ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>>();
+                return Enumerable.Empty<FeedStory>();
             }
         }
 
@@ -178,6 +197,43 @@ namespace StoryBlog.Web.Blazor.Client.Services
         public void Dispose()
         {
             disposable.Dispose();
+        }
+
+        private static IEnumerable<FeedStory> ProcessResult(ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>> result)
+        {
+            var authors = GetAuthorIndex(result.Meta.Resources.Authors);
+
+            return result.Data.Select(story => new FeedStory
+            {
+                Title = story.Title,
+                Slug = story.Slug,
+                Author = authors[story.Author],
+                Content = story.Content,
+                Published = GetPublishedDate(story.Published, story.Created),
+                CommentsCount = story.Comments.Length
+            });
+        }
+
+        private static IReadOnlyDictionary<int, Author> GetAuthorIndex(IEnumerable<AuthorModel> authors)
+        {
+            var dictionary = new Dictionary<int, Author>();
+            var index = 0;
+
+            foreach (var author in authors)
+            {
+                dictionary[index++] = new Author
+                {
+                    Name = author.Name
+                };
+            }
+
+            return dictionary;
+        }
+
+        private static DateTime GetPublishedDate(DateTimeOffset? source, DateTimeOffset fallback)
+        {
+            var value = source.GetValueOrDefault(fallback);
+            return value.ToLocalTime().DateTime;
         }
     }
 }

@@ -43,7 +43,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Models
         /// <summary>
         /// 
         /// </summary>
-        public DateTimeOffset Published
+        public DateTime Published
         {
             get;
             set;

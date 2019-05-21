@@ -2,14 +2,20 @@
 {
     public class AuthorizationToken
     {
-        public string Token
+        public string Scheme
         {
             get;
         }
 
-        public AuthorizationToken(string token)
+        public string Payload
         {
-            Token = token;
+            get;
+        }
+
+        public AuthorizationToken(string scheme, string payload)
+        {
+            Scheme = scheme;
+            Payload = payload;
         }
     }
 }

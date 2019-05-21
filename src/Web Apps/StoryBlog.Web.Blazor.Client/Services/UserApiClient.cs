@@ -70,7 +70,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 throw new Exception();
             }
 
-            authorizationContext.Token = new AuthorizationToken(token);
+            authorizationContext.Token = new AuthorizationToken("Bearer", token);
 
             var response = await client.GetUserInfoAsync(new UserInfoRequest
             {

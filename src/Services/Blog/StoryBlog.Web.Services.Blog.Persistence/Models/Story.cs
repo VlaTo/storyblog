@@ -101,7 +101,7 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
         /// Gets or sets the <see cref="Created"/> date and time of the <see cref="Story" /> object.
         /// </summary>
         [DataType(DataType.DateTime)]
-        public DateTime Created
+        public DateTimeOffset Created
         {
             get;
             set;
@@ -111,7 +111,7 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
         /// Gets or sets the <see cref="Modified"/> date and time of the <see cref="Story" /> object.
         /// </summary>
         [DataType(DataType.DateTime)]
-        public DateTime? Modified
+        public DateTimeOffset? Modified
         {
             get;
             set;
@@ -121,7 +121,7 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
         /// Gets or sets the <see cref="Published"/> date and time of the <see cref="Story" /> object.
         /// </summary>
         [DataType(DataType.DateTime)]
-        public DateTime? Published
+        public DateTimeOffset? Published
         {
             get;
             set;

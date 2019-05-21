@@ -36,7 +36,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Models
         /// <summary>
         /// 
         /// </summary>
-        public DateTime Created
+        public DateTimeOffset Created
         {
             get;
             set;
@@ -45,7 +45,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Models
         /// <summary>
         /// 
         /// </summary>
-        public DateTime? Modified
+        public DateTimeOffset? Modified
         {
             get;
             set;
@@ -54,7 +54,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Models
         /// <summary>
         /// 
         /// </summary>
-        public DateTime? Published
+        public DateTimeOffset? Published
         {
             get;
             set;

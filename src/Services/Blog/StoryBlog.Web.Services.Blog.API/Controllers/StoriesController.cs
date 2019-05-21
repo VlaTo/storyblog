@@ -46,13 +46,13 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         /// <param name="mediator"></param>
         /// <param name="mapper"></param>
         /// <param name="commandBus"></param>
-        /// <param name="storyBlogSettings"></param>
+        /// <param name="settingsAccessor"></param>
         /// <param name="logger"></param>
         public StoriesController(
             IMediator mediator,
             IMapper mapper,
             ICommandBus commandBus,
-            IOptionsSnapshot<StoryBlogSettings> storyBlogSettings,
+            IOptionsSnapshot<StoryBlogSettings> settingsAccessor,
             ILogger<StoriesController> logger)
         {
             this.mediator = mediator;
@@ -60,7 +60,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
             this.commandBus = commandBus;
             this.logger = logger;
 
-            blogSettings = storyBlogSettings.Value;
+            blogSettings = settingsAccessor.Value;
         }
 
         // POST api/v1/stories
@@ -105,14 +105,19 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
             );
         }
 
-        // GET api/v1/stories
+        /// <summary>
+        /// Gets available stories chunk based on <paramref name="page" /> specified.
+        /// </summary>
+        /// <param name="page">The navigation token.</param>
+        /// <param name="includes"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet("{page?}")]
         [ProducesResponseType(typeof(ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>>), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Get(string page, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
         {
             var flags = EnumFlags.Parse<StoryIncludes>(includes);
-            var query = new GetStoriesListQuery(User)
+            var query = new GetStoriesQuery(User)
             {
                 IncludeAuthors = StoryIncludes.Authors == (flags & StoryIncludes.Authors),
                 IncludeComments = StoryIncludes.Comments == (flags & StoryIncludes.Comments),
@@ -133,25 +138,24 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return BadRequest(result.Exceptions);
             }
 
-            var include = EnumFlags.ToQueryString(flags);
+            var include = EnumFlags.ToQueryString(flags).ToString();
             string backward = null;
-            string forward = null;
 
             if (null != result.Backward)
             {
-                backward = Url.Action("Get", "Stories", new
+                backward = Url.Action(nameof(Get), "Stories", new
                 {
-                    page = NavigationCursorEncoder.ToEncodedString(result.Backward),
-                    include = include.ToString()
+                    page = NavigationCursorEncoder.ToEncodedString(result.Backward), include
                 });
             }
 
+            string forward = null;
+
             if (null != result.Forward)
             {
-                forward = Url.Action("Get", "Stories", new
+                forward = Url.Action(nameof(Get), "Stories", new
                 {
-                    page = NavigationCursorEncoder.ToEncodedString(result.Forward),
-                    include = include.ToString()
+                    page = NavigationCursorEncoder.ToEncodedString(result.Forward), include
                 });
             }
 

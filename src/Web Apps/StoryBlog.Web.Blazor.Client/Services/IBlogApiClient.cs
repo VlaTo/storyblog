@@ -3,6 +3,7 @@ using StoryBlog.Web.Services.Blog.Interop;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
 using System.Threading.Tasks;
+using StoryBlog.Web.Blazor.Client.Store.Models;
 using StoryBlog.Web.Services.Shared.Common;
 
 namespace StoryBlog.Web.Blazor.Client.Services
@@ -24,7 +25,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// </summary>
         /// <param name="include"></param>
         /// <returns></returns>
-        Task<ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>>> GetStoriesAsync(StoryIncludes include);
+        Task<IEnumerable<FeedStory>> GetStoriesAsync(StoryIncludes include);
 
         /// <summary>
         /// 

@@ -23,11 +23,11 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
     /// 
     /// </summary>
     // ReSharper disable once UnusedMember.Global
-    public sealed class GetStoriesListQueryHandler : IRequestHandler<GetStoriesListQuery, PagedStoriesQueryResult>
+    public sealed class GetStoriesQueryHandler : IRequestHandler<GetStoriesQuery, PagedStoriesQueryResult>
     {
         private readonly StoryBlogDbContext context;
         private readonly IMapper mapper;
-        private readonly ILogger<GetStoriesListQuery> logger;
+        private readonly ILogger<GetStoriesQuery> logger;
 
         /// <summary>
         /// 
@@ -35,10 +35,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
         /// <param name="context"></param>
         /// <param name="mapper"></param>
         /// <param name="logger"></param>
-        public GetStoriesListQueryHandler(
+        public GetStoriesQueryHandler(
             StoryBlogDbContext context,
             IMapper mapper,
-            ILogger<GetStoriesListQuery> logger)
+            ILogger<GetStoriesQuery> logger)
         {
             this.context = context;
             this.mapper = mapper;
@@ -51,7 +51,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<PagedStoriesQueryResult> Handle(GetStoriesListQuery request, CancellationToken cancellationToken)
+        public async Task<PagedStoriesQueryResult> Handle(GetStoriesQuery request, CancellationToken cancellationToken)
         {
             if (null == request)
             {

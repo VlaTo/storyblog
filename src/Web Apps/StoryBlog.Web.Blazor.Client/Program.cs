@@ -33,8 +33,11 @@ namespace StoryBlog.Web.Blazor.Client
                             };
                         });
 
+                    var authorizationContext = new AuthorizationContext();
+
                     services
-                        .AddSingleton<AuthorizationContext>()
+                        .AddSingleton<IObservable<AuthorizationToken>>(provider => authorizationContext)
+                        .AddSingleton(provider => authorizationContext)
                         .AddSingleton<IBlogApiClient, BlogApiClient>()
                         .AddSingleton<IUserApiClient, UserApiClient>();
                 })

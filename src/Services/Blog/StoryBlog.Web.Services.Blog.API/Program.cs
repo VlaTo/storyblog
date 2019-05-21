@@ -73,7 +73,7 @@ namespace StoryBlog.Web.Services.Blog.API
                         .AddControllers(options =>
                         {
                             options.SerializerOptions.WriteIndented = false;
-                            options.SuppressAsyncSuffixInActionNames = true;
+                            //options.SuppressAsyncSuffixInActionNames = true;
 
                             options.Filters.Add<HttpGlobalExceptionFilter>();
                             options.Conventions.Add(new CommaSeparatedFlagsQueryStringConvention());
@@ -353,9 +353,13 @@ namespace StoryBlog.Web.Services.Blog.API
 
                     app
                         .UseForwardedHeaders()
-                        .UseCors("default")
+                        .UseRouting()
                         .UseAuthentication()
-                        .UseMvc()
+                        .UseCors("default")
+                        .UseEndpoints(config =>
+                        {
+                            config.MapControllers();
+                        })
                         .UseResponseCompression();
                 })
                 .Build();

@@ -19,7 +19,7 @@ namespace StoryBlog.Web.Services.Shared.Communication
         /// <summary>
         /// 
         /// </summary>
-        public DateTime Sent
+        public DateTimeOffset Sent
         {
             get;
             set;

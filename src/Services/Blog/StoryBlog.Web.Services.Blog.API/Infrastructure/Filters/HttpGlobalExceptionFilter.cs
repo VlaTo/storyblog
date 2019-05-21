@@ -1,7 +1,7 @@
-using System.Collections.Specialized;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using StoryBlog.Web.Services.Blog.Domain.Exceptions;
 using System.Net;
@@ -14,7 +14,7 @@ namespace StoryBlog.Web.Services.Blog.API.Infrastructure.Filters
     /// </summary>
     public sealed class HttpGlobalExceptionFilter : IExceptionFilter
     {
-        private readonly IHostingEnvironment environment;
+        private readonly IWebHostEnvironment environment;
         private readonly ILogger<HttpGlobalExceptionFilter> logger;
 
         /// <summary>
@@ -23,9 +23,8 @@ namespace StoryBlog.Web.Services.Blog.API.Infrastructure.Filters
         /// <param name="environment"></param>
         /// <param name="logger"></param>
         public HttpGlobalExceptionFilter(
-            IHostingEnvironment environment,
-            ILogger<HttpGlobalExceptionFilter> logger
-        )
+            IWebHostEnvironment environment,
+            ILogger<HttpGlobalExceptionFilter> logger)
         {
             this.environment = environment;
             this.logger = logger;
