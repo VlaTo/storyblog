@@ -10,7 +10,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
     /// 
     /// </summary>
     // ReSharper disable once UnusedMember.Global
-    public sealed class GetRubricsActionEffect : Effect<GetRubricsAction>
+    internal sealed class GetRubricsActionEffect : Effect<GetRubricsAction>
     {
         private readonly IBlogApiClient client;
 

@@ -1,14 +1,8 @@
 ﻿using Blazor.Fluxor;
 using StoryBlog.Web.Blazor.Client.Services;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
-using StoryBlog.Web.Blazor.Client.Store.Models;
-using StoryBlog.Web.Services.Blog.Interop.Models;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Shared.Common;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Effects
 {
@@ -16,7 +10,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
     /// 
     /// </summary>
     // ReSharper disable once UnusedMember.Global
-    public sealed class GetStoriesActionEffect : Effect<GetStoriesAction>
+    internal sealed class GetStoriesActionEffect : Effect<GetStoriesAction>
     {
         private readonly IBlogApiClient client;
 
@@ -41,7 +35,83 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
                     throw new Exception("No result received");
                 }
 
-                dispatcher.Dispatch(new GetStoriesSuccessAction(result, new Navigation()));
+                dispatcher.Dispatch(new GetStoriesSuccessAction(result, result.BackwardUri, result.ForwardUri));
+            }
+            catch (Exception exception)
+            {
+                dispatcher.Dispatch(new GetStoriesFailedAction(exception.Message));
+            }
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    // ReSharper disable once UnusedMember.Global
+    internal sealed class GetStoriesBackwardActionEffect : Effect<GetStoriesBackwardAction>
+    {
+        private readonly IBlogApiClient client;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="client"></param>
+        public GetStoriesBackwardActionEffect(IBlogApiClient client)
+        {
+            this.client = client;
+        }
+
+        /// <inheritdoc cref="Effect{TTriggerAction}.HandleAsync" />
+        protected override async Task HandleAsync(GetStoriesBackwardAction action, IDispatcher dispatcher)
+        {
+            try
+            {
+                var result = await client.GetStoriesFromAsync(action.RequestUri);
+
+                if (null == result)
+                {
+                    throw new Exception("No result received");
+                }
+
+                dispatcher.Dispatch(new GetStoriesSuccessAction(result, result.BackwardUri, result.ForwardUri));
+            }
+            catch (Exception exception)
+            {
+                dispatcher.Dispatch(new GetStoriesFailedAction(exception.Message));
+            }
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    // ReSharper disable once UnusedMember.Global
+    internal sealed class GetStoriesForwardActionEffect : Effect<GetStoriesForwardAction>
+    {
+        private readonly IBlogApiClient client;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="client"></param>
+        public GetStoriesForwardActionEffect(IBlogApiClient client)
+        {
+            this.client = client;
+        }
+
+        /// <inheritdoc cref="Effect{TTriggerAction}.HandleAsync" />
+        protected override async Task HandleAsync(GetStoriesForwardAction action, IDispatcher dispatcher)
+        {
+            try
+            {
+                var result = await client.GetStoriesFromAsync(action.RequestUri);
+
+                if (null == result)
+                {
+                    throw new Exception("No result received");
+                }
+
+                dispatcher.Dispatch(new GetStoriesSuccessAction(result, result.BackwardUri, result.ForwardUri));
             }
             catch (Exception exception)
             {

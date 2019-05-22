@@ -1,10 +1,6 @@
 ﻿using Blazor.Fluxor;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
-using StoryBlog.Web.Blazor.Client.Store.Helpers;
 using StoryBlog.Web.Blazor.Client.Store.Models;
-using System;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Reducers
@@ -16,7 +12,27 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     public sealed class GetStoriesActionReducer : Reducer<StoriesState, GetStoriesAction>
     {
         public override StoriesState Reduce(StoriesState state, GetStoriesAction action)
-            => new StoriesState(ModelStatus.Loading, Enumerable.Empty<FeedStory>(), null);
+            => new StoriesState(ModelStatus.Loading, Enumerable.Empty<FeedStory>());
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    // ReSharper disable once UnusedMember.Global
+    public sealed class GetStoriesBackwardActionReducer : Reducer<StoriesState, GetStoriesBackwardAction>
+    {
+        public override StoriesState Reduce(StoriesState state, GetStoriesBackwardAction action)
+            => new StoriesState(ModelStatus.Loading, state.Stories, state.BackwardUri, state.ForwardUri);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    // ReSharper disable once UnusedMember.Global
+    public sealed class GetStoriesForwardActionReducer : Reducer<StoriesState, GetStoriesForwardAction>
+    {
+        public override StoriesState Reduce(StoriesState state, GetStoriesForwardAction action)
+            => new StoriesState(ModelStatus.Loading, state.Stories, state.BackwardUri, state.ForwardUri);
     }
 
     /// <summary>
@@ -26,7 +42,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     public sealed class GetStoriesFailedActionReducer : Reducer<StoriesState, GetStoriesFailedAction>
     {
         public override StoriesState Reduce(StoriesState state, GetStoriesFailedAction action)
-            => new StoriesState(ModelStatus.Failed(action.Error), state.Stories, state.Navigation);
+            => new StoriesState(ModelStatus.Failed(action.Error), state.Stories);
     }
 
     /// <summary>
@@ -36,6 +52,6 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     public sealed class GetStoriesSuccessActionReducer : Reducer<StoriesState, GetStoriesSuccessAction>
     {
         public override StoriesState Reduce(StoriesState state, GetStoriesSuccessAction action)
-            => new StoriesState(ModelStatus.Success, action.Stories, action.Navigation);
+            => new StoriesState(ModelStatus.Success, action.Stories, action.BackwardUri, action.ForwardUri);
     }
 }

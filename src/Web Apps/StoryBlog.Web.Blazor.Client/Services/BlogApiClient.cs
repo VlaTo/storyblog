@@ -69,44 +69,27 @@ namespace StoryBlog.Web.Blazor.Client.Services
         }
 
         /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync" />
-        public async Task<IEnumerable<FeedStory>> GetStoriesAsync(StoryIncludes flags)
+        public Task<EntityListResult<FeedStory>> GetStoriesAsync(StoryIncludes flags)
         {
             var path = new Uri(baseUri, "stories");
             var include = EnumFlags.ToQueryString(flags);
             var query = QueryString.Create(nameof(include), include);
             var requestUri = new UriBuilder(path) {Query = query.ToUriComponent()}.Uri;
 
-            try
+            return GetStoriesFromAsync(requestUri);
+        }
+
+        /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync(System.Uri)" />
+        public Task<EntityListResult<FeedStory>> GetStoriesFromAsync(Uri requestUri)
+        {
+            if (null == requestUri)
             {
-                var request = new HttpRequestMessage
-                {
-                    Method = HttpMethod.Get,
-                    RequestUri = requestUri
-                };
-
-                if (null != authorizationToken)
-                {
-                    request.Headers.Authorization = new AuthenticationHeaderValue(
-                        authorizationToken.Scheme,
-                        authorizationToken.Payload
-                    );
-                }
-
-                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json", 1.0d));
-
-                using (var response = await client.SendAsync(request))
-                {
-                    var message = response.EnsureSuccessStatusCode();
-                    var json = await message.Content.ReadAsStringAsync();
-                    var data = Json.Deserialize<ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>>>(json);
-
-                    return ProcessResult(data);
-                }
+                throw new ArgumentNullException(nameof(requestUri));
             }
-            catch (HttpRequestException)
-            {
-                return Enumerable.Empty<FeedStory>();
-            }
+
+            var path = new Uri(baseUri, requestUri);
+
+            return GetStoriesInternalAsync(path);
         }
 
         /// <summary>
@@ -199,19 +182,60 @@ namespace StoryBlog.Web.Blazor.Client.Services
             disposable.Dispose();
         }
 
-        private static IEnumerable<FeedStory> ProcessResult(ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>> result)
+        private async Task<EntityListResult<FeedStory>> GetStoriesInternalAsync(Uri requestUri)
+        {
+            const string mediaType = "application/json";
+
+            try
+            {
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = requestUri
+                };
+
+                if (null != authorizationToken)
+                {
+                    request.Headers.Authorization = new AuthenticationHeaderValue(
+                        authorizationToken.Scheme,
+                        authorizationToken.Payload
+                    );
+                }
+
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(mediaType, 1.0d));
+
+                using (var response = await client.SendAsync(request))
+                {
+                    var message = response.EnsureSuccessStatusCode();
+                    var json = await message.Content.ReadAsStringAsync();
+                    var data = Json.Deserialize<ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>>>(json);
+
+                    return ProcessResult(data);
+                }
+            }
+            catch (HttpRequestException)
+            {
+                return new EntityListResult<FeedStory>(Enumerable.Empty<FeedStory>());
+            }
+        }
+
+        private static EntityListResult<FeedStory> ProcessResult(ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>> result)
         {
             var authors = GetAuthorIndex(result.Meta.Resources.Authors);
 
-            return result.Data.Select(story => new FeedStory
-            {
-                Title = story.Title,
-                Slug = story.Slug,
-                Author = authors[story.Author],
-                Content = story.Content,
-                Published = GetPublishedDate(story.Published, story.Created),
-                CommentsCount = story.Comments.Length
-            });
+            return new EntityListResult<FeedStory>(
+                result.Data.Select(story => new FeedStory
+                {
+                    Title = story.Title,
+                    Slug = story.Slug,
+                    Author = authors[story.Author],
+                    Content = story.Content,
+                    Published = GetPublishedDate(story.Published, story.Created),
+                    CommentsCount = story.Comments.Length
+                }),
+                GetNavigationUri(result.Meta.Navigation.Previous),
+                GetNavigationUri(result.Meta.Navigation.Next)
+            );
         }
 
         private static IReadOnlyDictionary<int, Author> GetAuthorIndex(IEnumerable<AuthorModel> authors)
@@ -235,5 +259,8 @@ namespace StoryBlog.Web.Blazor.Client.Services
             var value = source.GetValueOrDefault(fallback);
             return value.ToLocalTime().DateTime;
         }
+
+        private static Uri GetNavigationUri(string source)
+            => String.IsNullOrEmpty(source) ? null : new Uri(source, UriKind.Relative);
     }
 }

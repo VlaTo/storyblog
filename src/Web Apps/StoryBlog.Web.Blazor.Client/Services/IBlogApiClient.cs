@@ -1,17 +1,16 @@
-﻿using System.Collections.Generic;
-using StoryBlog.Web.Services.Blog.Interop;
+﻿using StoryBlog.Web.Blazor.Client.Store.Models;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using StoryBlog.Web.Blazor.Client.Store.Models;
-using StoryBlog.Web.Services.Shared.Common;
 
 namespace StoryBlog.Web.Blazor.Client.Services
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface IBlogApiClient
+    internal interface IBlogApiClient
     {
         /// <summary>
         /// 
@@ -25,7 +24,13 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// </summary>
         /// <param name="include"></param>
         /// <returns></returns>
-        Task<IEnumerable<FeedStory>> GetStoriesAsync(StoryIncludes include);
+        Task<EntityListResult<FeedStory>> GetStoriesAsync(StoryIncludes include);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        Task<EntityListResult<FeedStory>> GetStoriesFromAsync(Uri requestUri);
 
         /// <summary>
         /// 

@@ -111,7 +111,8 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
                 }
             }
 
-            var entities = await queryable.Take(request.Cursor.Count).ToListAsync(cancellationToken);
+            //var entities = await queryable.Take(request.Cursor.Count).ToListAsync(cancellationToken);
+            var entities = await queryable.ToListAsync(cancellationToken);
             var stories = new Collection<Story>();
             var authors = new Collection<Author>();
 
@@ -125,21 +126,21 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
             );
         }
 
-        private static NavigationCursor GetBackwardCursor(long? firstId, IList<Story> stories, int pageSize)
+        private static NavigationCursor GetBackwardCursor(long? minId, IList<Story> stories, int pageSize)
         {
-            if (0 == stories.Count)
+            if (0 == stories.Count || false == minId.HasValue)
             {
                 return null;
             }
 
             var id = stories[0].Id;
 
-            if (firstId >= id)
+            if (minId.Value >= id)
             {
                 return null;
             }
 
-            return NavigationCursor.Backward(id - pageSize, pageSize);
+            return NavigationCursor.Backward(id, pageSize);
         }
 
         private static NavigationCursor GetForwardCursor(IList<Story> stories, int pageSize)

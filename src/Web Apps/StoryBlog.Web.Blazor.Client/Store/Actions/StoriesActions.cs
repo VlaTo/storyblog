@@ -1,7 +1,7 @@
 ﻿using Blazor.Fluxor;
 using StoryBlog.Web.Blazor.Client.Store.Models;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
-using StoryBlog.Web.Services.Shared.Common;
+using System;
 using System.Collections.Generic;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Actions
@@ -19,6 +19,38 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
         public GetStoriesAction(StoryIncludes includes)
         {
             Includes = includes;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class GetStoriesBackwardAction : IAction
+    {
+        public Uri RequestUri
+        {
+            get;
+        }
+
+        public GetStoriesBackwardAction(Uri requestUri)
+        {
+            RequestUri = requestUri;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class GetStoriesForwardAction : IAction
+    {
+        public Uri RequestUri
+        {
+            get;
+        }
+
+        public GetStoriesForwardAction(Uri requestUri)
+        {
+            RequestUri = requestUri;
         }
     }
 
@@ -54,15 +86,21 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
             get;
         }
 
-        public Navigation Navigation
+        public Uri BackwardUri
         {
             get;
         }
 
-        public GetStoriesSuccessAction(IEnumerable<FeedStory> stories, Navigation navigation)
+        public Uri ForwardUri
+        {
+            get;
+        }
+
+        public GetStoriesSuccessAction(IEnumerable<FeedStory> stories, Uri backwardUri = null, Uri forwardUri = null)
         {
             Stories = stories;
-            Navigation = navigation;
+            BackwardUri = backwardUri;
+            ForwardUri = forwardUri;
         }
     }
 

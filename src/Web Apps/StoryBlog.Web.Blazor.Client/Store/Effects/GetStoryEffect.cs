@@ -9,7 +9,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoryEffect : Effect<GetStoryAction>
+    internal sealed class GetStoryEffect : Effect<GetStoryAction>
     {
         private readonly IBlogApiClient client;
 

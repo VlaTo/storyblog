@@ -12,19 +12,22 @@
 @inject IUriHelper UriHelper
 
 <div class="row">
-    @if (State.Value.IsNone())
-    {
-        <p>None</p>
-    }
-    else if (State.Value.IsLoading())
+    @if (State.Value.IsLoading())
     {
         <div class="container storyblog-loading">
             <div class="row h-100 align-items-center">
                 <div class="col-12 justify-content-center text-center">
-                    <i class="mdi mdi-loading mdi-spin mdi-48px"></i>
+                    <div class="spinner-border text-dark storyblog-spinner" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
                 </div>
             </div>
         </div>
+    }
+
+    @if (State.Value.IsNone())
+    {
+        <p>None</p>
     }
     else if (State.Value.IsFailed())
     {
@@ -66,26 +69,21 @@
                 </article>
             }
 
-            @if (null != State.Value.Navigation.Next || null != State.Value.Navigation.Previous)
-            {
-                <nav aria-label="pages">
-                    <ul class="pagination">
-                        @if (null != State.Value.Navigation.Previous)
-                        {
-                            <li class="page-item">
-                                <a class="page-link">Previous</a>
+            <div class="container mt-4">
+                <div class="row justify-content-center">
+                    <nav aria-label="pages">
+                        <ul class="pagination">
+                            <li class=@("page-item" + (null == State.Value.BackwardUri ? " disabled" : String.Empty))>
+                                <a href="#" class="page-link" onclick=@(e => OnPaginationClick(new GetStoriesBackwardAction(State.Value.BackwardUri)))>Назад</a>
                             </li>
-                        }
 
-                        @if (null != State.Value.Navigation.Next)
-                        {
-                            <li class="page-item">
-                                <a class="page-link">Previous</a>
+                            <li class=@("page-item" + (null == State.Value.ForwardUri ? " disabled" : String.Empty))>
+                                <a href="#" class="page-link" onclick=@(e => OnPaginationClick(new GetStoriesForwardAction(State.Value.ForwardUri)))>Вперед</a>
                             </li>
-                        }
-                    </ul>
-                </nav>
-            }
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </section>
 
         <aside class="col-4 storyblog-aside">
@@ -130,5 +128,10 @@
     {
         base.OnInit();
         Dispatcher.Dispatch(new GetStoriesAction(StoryIncludes.Authors | StoryIncludes.Comments));
+    }
+
+    private void OnPaginationClick(IAction action)
+    {
+        Dispatcher.Dispatch(action);
     }
 }

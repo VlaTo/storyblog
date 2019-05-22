@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Blazor.Fluxor;
+﻿using Blazor.Fluxor;
 using StoryBlog.Web.Blazor.Client.Store.Models;
-using StoryBlog.Web.Services.Shared.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace StoryBlog.Web.Blazor.Client.Store
 {
@@ -33,16 +33,22 @@ namespace StoryBlog.Web.Blazor.Client.Store
             get;
         }
 
-        public Navigation Navigation
+        public Uri BackwardUri
         {
             get;
         }
 
-        public StoriesState(ModelStatus status, IEnumerable<FeedStory> stories, Navigation navigation)
+        public Uri ForwardUri
+        {
+            get;
+        }
+
+        public StoriesState(ModelStatus status, IEnumerable<FeedStory> stories, Uri backwardUri = null, Uri forwardUri = null)
         {
             Status = status;
             Stories = stories;
-            Navigation = navigation;
+            BackwardUri = backwardUri;
+            ForwardUri = forwardUri;
         }
     }
 }
