@@ -32,7 +32,9 @@ steps:
 - task: NuGetCommand@2
   displayName: 'Nuget push'
   inputs:
-    command: push
-    nuGetFeedType: external
-    publishFeedCredentials: ''
-    versioningScheme: byBuildNumber
+    command: 'push'
+    feedsToUse: 'select'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: 'myFeed'
+    versioningScheme: 'off'
