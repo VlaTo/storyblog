@@ -28,3 +28,11 @@ steps:
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
+
+- task: NuGetCommand@2
+  displayName: 'Nuget push'
+  inputs:
+    command: push
+    nuGetFeedType: external
+    publishFeedCredentials: ''
+    versioningScheme: byBuildNumber
