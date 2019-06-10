@@ -22,6 +22,7 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using StoryBlog.Web.Services.Blog.API.Infrastructure;
 using StoryBlog.Web.Services.Shared.Infrastructure.Extensions;
+using StoryBlog.Web.Services.Blog.Interop;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -68,7 +69,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         // GET api/v1/story/<slug>
         [AllowAnonymous]
         [HttpGet("{slug:required}")]
-        [ProducesResponseType(typeof(StoryModel), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Result<StoryModel, ResourcesMetaInfo<AuthorsResource>>), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Get(string slug, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
         {
             var flags = EnumFlags.Parse<StoryIncludes>(includes);
@@ -85,7 +86,17 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return NotFound();
             }
 
-            return Ok(mapper.Map<StoryModel>(result.Data));
+            return Ok(new Result<StoryModel, ResourcesMetaInfo<AuthorsResource>>
+            {
+                Data = mapper.Map<StoryModel>(result.Data),
+                Meta = new ResourcesMetaInfo<AuthorsResource>
+                {
+                    Resources = new AuthorsResource
+                    {
+                        Authors=
+                    }
+                }
+            });
         }
 
         // PUT api/v1/story/<slug>

@@ -339,17 +339,17 @@ namespace StoryBlog.Web.Services.Blog.API
                 })
                 .Configure(app =>
                 {
-                    var environment = app.ApplicationServices.GetRequiredService<IWebHostEnvironment>();
+                    /*var environment = app.ApplicationServices.GetRequiredService<IWebHostEnvironment>();
 
                     if (environment.IsDevelopment())
                     {
-                        //var logging = app.ApplicationServices.GetRequiredService<ILoggerFactory>();
-                        //var logger = logging.CreateLogger<Program>();
+                        var logging = app.ApplicationServices.GetRequiredService<ILoggerFactory>();
+                        var logger = logging.CreateLogger<Program>();
 
-                        //logger.LogDebug("Application run in development mode");
+                        logger.LogDebug("Application run in development mode");
 
-                        //app.UseDeveloperExceptionPage();
-                    }
+                        app.UseDeveloperExceptionPage();
+                    }*/
 
                     app
                         .UseForwardedHeaders()

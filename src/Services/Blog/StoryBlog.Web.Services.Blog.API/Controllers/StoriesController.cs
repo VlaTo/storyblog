@@ -64,8 +64,8 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         }
 
         // POST api/v1/stories
-        //[Authorize]
-        [AllowAnonymous]
+        [Authorize]
+        //[AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(StoryModel), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Create([FromBody] CreateStoryModel model)

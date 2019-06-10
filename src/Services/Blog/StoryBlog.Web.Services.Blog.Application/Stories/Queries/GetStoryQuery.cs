@@ -8,7 +8,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoryQuery : IRequest<IRequestResult<Story>>
+    public sealed class GetStoryQuery : IRequest<StoryRequestResult>
     {
         /// <summary>
         /// 

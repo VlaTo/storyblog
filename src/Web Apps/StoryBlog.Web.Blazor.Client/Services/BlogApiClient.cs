@@ -100,21 +100,37 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// <returns></returns>
         public async Task<StoryModel> GetStoryAsync(string slug, StoryIncludes flags)
         {
+            const string mediaType = "application/json";
+
             var path = new Uri(baseUri, $"story/{slug}");
             var include = EnumFlags.ToQueryString(flags);
             var query = QueryString.Create(nameof(include), include);
             var requestUri = new UriBuilder(path) { Query = query.ToUriComponent() }.Uri;
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = requestUri
+            };
+
+            if (null != authorizationToken)
+            {
+                request.Headers.Authorization = new AuthenticationHeaderValue(
+                    authorizationToken.Scheme,
+                    authorizationToken.Payload
+                );
+            }
+
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(mediaType, 1.0d));
 
             try
             {
-                using (var response = await client.GetAsync(requestUri, CancellationToken.None))
+                using (var response = await client.SendAsync(request, CancellationToken.None))
                 {
-                    response.EnsureSuccessStatusCode();
-
-                    var json = await response.Content.ReadAsStringAsync();
+                    var httpResponse = response.EnsureSuccessStatusCode();
+                    var json = await httpResponse.Content.ReadAsStringAsync();
                     var data = Json.Deserialize<StoryModel>(json);
 
-                    return data;
+                    return ProcessResult(data);
                 }
             }
             catch (HttpRequestException exception)
@@ -217,6 +233,11 @@ namespace StoryBlog.Web.Blazor.Client.Services
             {
                 return new EntityListResult<FeedStory>(Enumerable.Empty<FeedStory>());
             }
+        }
+
+        private static EntityListResult<FeedStory> ProcessResult(StoryModel result)
+        {
+
         }
 
         private static EntityListResult<FeedStory> ProcessResult(ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>> result)
