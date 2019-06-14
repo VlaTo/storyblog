@@ -14,7 +14,6 @@ using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Shared.Common;
 using StoryBlog.Web.Services.Shared.Communication;
 using StoryBlog.Web.Services.Shared.Communication.Commands;
-using StoryBlog.Web.Services.Shared.Infrastructure.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -77,12 +76,12 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
             var result = await mediator.Send(query, HttpContext.RequestAborted);
 
-            if (false == result.IsSuccess())
+            if (result.IsFailed)
             {
                 return NotFound();
             }
 
-            return Ok(mapper.Map<StoryModel>(result.Data));
+            return Ok(mapper.Map<StoryModel>(result.Entity));
         }
 
         // PUT api/v1/comment/<id>
@@ -101,9 +100,9 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 HttpContext.RequestAborted
             );
 
-            if (false == result.IsSuccess())
+            if (result.IsFailed)
             {
-                return BadRequest(result.Exceptions);
+                return BadRequest();
             }
 
             await commandBus.SendAsync(new CommentUpdatedIntegrationCommand
@@ -113,9 +112,9 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 Sent = dateTimeProvider.Now
             });
 
-            logger.StoryUpdated(result.Data.Id);
+            logger.StoryUpdated(result.Entity.Id);
 
-            return Ok(mapper.Map<StoryModel>(result.Data));
+            return Ok(mapper.Map<StoryModel>(result.Entity));
         }
 
         // DELETE api/v1/comment/<id>
@@ -129,9 +128,9 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 HttpContext.RequestAborted
             );
 
-            if (false == result.IsSuccess())
+            if (result.IsFailed)
             {
-                return BadRequest(result.Exceptions);
+                return BadRequest();
             }
 
             await commandBus.SendAsync(new CommentDeletedIntegrationCommand

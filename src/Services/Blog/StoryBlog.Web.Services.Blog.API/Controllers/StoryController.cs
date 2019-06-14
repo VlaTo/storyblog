@@ -5,11 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StoryBlog.Web.Services.Blog.API.Extensions;
+using StoryBlog.Web.Services.Blog.API.Infrastructure;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
-using StoryBlog.Web.Services.Blog.Application.Extensions;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Application.Stories.Commands;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
+using StoryBlog.Web.Services.Blog.Interop;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Shared.Common;
@@ -17,12 +18,10 @@ using StoryBlog.Web.Services.Shared.Communication;
 using StoryBlog.Web.Services.Shared.Communication.Commands;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Blog.API.Infrastructure;
-using StoryBlog.Web.Services.Shared.Infrastructure.Extensions;
-using StoryBlog.Web.Services.Blog.Interop;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -81,19 +80,19 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
             var result = await mediator.Send(query, HttpContext.RequestAborted);
 
-            if (false == result.IsSuccess())
+            if (result.IsFailed)
             {
                 return NotFound();
             }
 
             return Ok(new Result<StoryModel, ResourcesMetaInfo<AuthorsResource>>
             {
-                Data = mapper.Map<StoryModel>(result.Data),
+                Data = mapper.Map<StoryModel>(result.Entity),
                 Meta = new ResourcesMetaInfo<AuthorsResource>
                 {
                     Resources = new AuthorsResource
                     {
-                        Authors=
+                        Authors = result.Authors.Select(author => mapper.Map<AuthorModel>(author))
                     }
                 }
             });
@@ -115,26 +114,26 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 HttpContext.RequestAborted
             );
 
-            if (false == result.IsSuccess())
+            if (result.IsFailed)
             {
-                return BadRequest(result.Exceptions);
+                return BadRequest();
             }
 
             await commandBus.SendAsync(new StoryUpdatedIntegrationCommand
             {
                 Id = Guid.NewGuid(),
-                StoryId = result.Data.Id,
+                StoryId = result.Entity.Id,
                 Sent = dateTimeProvider.Now
             });
 
-            logger.StoryUpdated(result.Data.Id);
+            logger.StoryUpdated(result.Entity.Id);
 
-            if (slug != result.Data.Slug)
+            if (slug != result.Entity.Slug)
             {
-                var url = Url.Action("Get", "Story", new {slug = result.Data.Slug});
+                var url = Url.Action("Get", "Story", new {slug = result.Entity.Slug});
             }
 
-            return Ok(mapper.Map<StoryModel>(result.Data));
+            return Ok(mapper.Map<StoryModel>(result.Entity));
         }
 
         // DELETE api/v1/story/<slug>
@@ -149,9 +148,9 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 HttpContext.RequestAborted
             );
 
-            if (false == result.IsSuccess())
+            if (result.IsFailed)
             {
-                return BadRequest(result.Exceptions);
+                return BadRequest();
             }
 
             await commandBus.SendAsync(new StoryDeletedIntegrationCommand

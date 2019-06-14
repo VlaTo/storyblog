@@ -72,7 +72,7 @@ namespace StoryBlog.Web.Services.Blog.API
                         .AddRouting()
                         .AddControllers(options =>
                         {
-                            options.SerializerOptions.WriteIndented = false;
+                            //options.SerializerOptions.WriteIndented = false;
                             //options.SuppressAsyncSuffixInActionNames = true;
 
                             options.Filters.Add<HttpGlobalExceptionFilter>();

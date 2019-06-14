@@ -2,6 +2,7 @@
 using StoryBlog.Web.Blazor.Client.Services;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Effects
@@ -23,7 +24,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
         {
             try
             {
-                var landing = await client.GetLandingAsync(action.Includes);
+                var landing = await client.GetLandingAsync(action.Includes, CancellationToken.None);
 
                 if (null == landing)
                 {

@@ -2,6 +2,7 @@
 using StoryBlog.Web.Blazor.Client.Services;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Effects
@@ -9,11 +10,11 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
     /// <summary>
     /// 
     /// </summary>
-    internal sealed class GetStoryEffect : Effect<GetStoryAction>
+    internal sealed class StoryEffect : Effect<GetStoryAction>
     {
         private readonly IBlogApiClient client;
 
-        public GetStoryEffect(IBlogApiClient client)
+        public StoryEffect(IBlogApiClient client)
         {
             this.client = client;
         }
@@ -22,22 +23,14 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
         {
             try
             {
-                var story = await client.GetStoryAsync(action.Slug, action.Flags);
+                var story = await client.GetStoryAsync(action.Slug, action.Flags, CancellationToken.None);
 
                 if (null == story)
                 {
                     throw new Exception("");
                 }
 
-                var result = new GetStorySuccessAction(story.Comments)
-                {
-                    Slug = story.Slug,
-                    Title = story.Title,
-                    Content = story.Content,
-                    Closed = story.Closed,
-                    //Author = story.Author,
-                    //Published = story.Modified.GetValueOrDefault(story.Created),
-                };
+                var result = new GetStorySuccessAction(story);
 
                 dispatcher.Dispatch(result);
             }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Blazor.Fluxor;
 using StoryBlog.Web.Blazor.Client.Services;
@@ -23,7 +24,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
         {
             try
             {
-                var rubrics = await client.GetRubricsAsync();
+                var rubrics = await client.GetRubricsAsync(CancellationToken.None);
 
                 if (null == rubrics)
                 {

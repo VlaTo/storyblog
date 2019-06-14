@@ -15,7 +15,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Author = StoryBlog.Web.Services.Blog.Application.Models.Author;
-using Comment = StoryBlog.Web.Services.Blog.Application.Models.Comment;
 using Story = StoryBlog.Web.Services.Blog.Application.Models.Story;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
@@ -24,7 +23,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
     /// 
     /// </summary>
     // ReSharper disable once UnusedMember.Global
-    public sealed class GetStoriesQueryHandler : IRequestHandler<GetStoriesQuery, PagedStoriesQueryResult>
+    public sealed class GetStoriesQueryHandler : IRequestHandler<GetStoriesQuery, StoriesQueryResult>
     {
         private readonly StoryBlogDbContext context;
         private readonly IMapper mapper;
@@ -52,7 +51,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<PagedStoriesQueryResult> Handle(GetStoriesQuery request, CancellationToken cancellationToken)
+        public async Task<StoriesQueryResult> Handle(GetStoriesQuery request, CancellationToken cancellationToken)
         {
             if (null == request)
             {
@@ -73,7 +72,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
                 queryable = queryable.Where(story => story.Status == StoryStatus.Published && story.IsPublic);
             }
 
-            long id = queryable
+            var id = queryable
                 .OrderBy(story => story.Id)
                 .Select(story => story.Id)
                 .FirstOrDefault();
@@ -124,7 +123,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
 
             AuthorResourcesHelper.CreateMappedStories(mapper, stories, authors, entities, request.IncludeAuthors);
 
-            return PagedStoriesQueryResult.Create(
+            return new StoriesQueryResult(
                 stories,
                 authors,
                 backward: GetBackwardCursor(id, stories, request.Cursor.Count),
@@ -132,7 +131,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
             );
         }
 
-        private NavigationCursor GetBackwardCursor(long? minId, IList<Story> stories, int pageSize)
+        private static NavigationCursor GetBackwardCursor(long? minId, IList<Story> stories, int pageSize)
         {
             if (0 == stories.Count || false == minId.HasValue)
             {
@@ -149,7 +148,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
             return NavigationCursor.Backward(id, pageSize);
         }
 
-        private NavigationCursor GetForwardCursor(IList<Story> stories, int pageSize)
+        private static NavigationCursor GetForwardCursor(IList<Story> stories, int pageSize)
         {
             if (0 == stories.Count)
             {

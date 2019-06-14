@@ -50,7 +50,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
                 transaction.Commit();
             }
 
-            return new RequestResult();
+            return RequestResult.Success();
         }
     }
 }

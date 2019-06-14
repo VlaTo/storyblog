@@ -14,7 +14,7 @@ namespace StoryBlog.Web.Services.Identity.Persistence
 {
     public sealed class StoryBlogIdentitySetup
     {
-        private readonly IHostingEnvironment environment;
+        private readonly IWebHostEnvironment environment;
         private readonly UserManager<Customer> customerManager;
         private readonly RoleManager<CustomerRole> roleManager;
         private readonly ConfigurationDbContext configurationContext;
@@ -22,7 +22,7 @@ namespace StoryBlog.Web.Services.Identity.Persistence
         private readonly ILogger<StoryBlogIdentitySetup> logger;
 
         public StoryBlogIdentitySetup(
-            IHostingEnvironment environment,
+            IWebHostEnvironment environment,
             UserManager<Customer> customerManager,
             RoleManager<CustomerRole> roleManager,
             ConfigurationDbContext configurationContext,

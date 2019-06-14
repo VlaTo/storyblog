@@ -1,6 +1,5 @@
 ﻿using MediatR;
-using StoryBlog.Web.Services.Blog.Application.Models;
-using StoryBlog.Web.Services.Shared.Infrastructure.Results;
+using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 using System.Security.Principal;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries

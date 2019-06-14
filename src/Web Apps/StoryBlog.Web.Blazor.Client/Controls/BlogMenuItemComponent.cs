@@ -2,6 +2,7 @@
 using StoryBlog.Web.Blazor.Components;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.Routing;
 
 namespace StoryBlog.Web.Blazor.Client.Controls
 {
@@ -101,7 +102,7 @@ namespace StoryBlog.Web.Blazor.Client.Controls
             UriHelper.OnLocationChanged -= OnLocationChanged;
         }
 
-        private void OnLocationChanged(object sender, string e)
+        private void OnLocationChanged(object sender, LocationChangedEventArgs e)
         {
             RefreshStyles();
             StateHasChanged();

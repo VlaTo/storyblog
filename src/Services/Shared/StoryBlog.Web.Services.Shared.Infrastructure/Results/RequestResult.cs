@@ -1,84 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
+﻿namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
 {
     /// <summary>
     /// 
     /// </summary>
-    public struct RequestResult : IRequestResult
+    public class RequestResult : IRequestResult
     {
-        private IEnumerable<Exception> exceptions;
+        public bool IsSucceeded { get; }
 
-        /// <inheritdoc cref="IRequestResult.Exceptions" />
-        public IEnumerable<Exception> Exceptions => exceptions ?? (exceptions = Enumerable.Empty<Exception>());
+        public bool IsFailed { get; }
+
+        protected RequestResult(bool isSucceeded = true, bool isFailed = false)
+        {
+            IsSucceeded = isSucceeded;
+            IsFailed = isFailed;
+        }
+
+        public static IRequestResult Success()
+        {
+            return new RequestResult();
+        }
+
+        public static IRequestResult<TEntity> Success<TEntity>(TEntity data)
+        {
+            return new EntityRequestResult<TEntity>(data);
+        }
+
+        public static IRequestResult<TEntity> Failed<TEntity>()
+        {
+            return new EntityRequestResult<TEntity>(isFailed: true);
+        }
+
+        public static IRequestResult Failed()
+        {
+            return new RequestResult(isFailed: true);
+        }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="exceptions"></param>
-        public RequestResult(IEnumerable<Exception> exceptions)
+        /// <typeparam name="TEntity"></typeparam>
+        private class EntityRequestResult<TEntity> : RequestResult, IRequestResult<TEntity>
         {
-            this.exceptions = exceptions ?? Enumerable.Empty<Exception>();
-        }
+            /// <summary>
+            /// 
+            /// </summary>
+            public TEntity Entity { get; }
 
-        public static IRequestResult<TData> Success<TData>(TData data)
-        {
-            return new RequestResult<TData>(data);
-        }
-
-        public static IRequestResult<TData> Error<TData>(params Exception[] exceptions)
-        {
-            if (null == exceptions)
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="entity"></param>
+            internal EntityRequestResult(TEntity entity)
             {
-                throw new ArgumentNullException(nameof(exceptions));
+                Entity = entity;
             }
 
-            return new RequestResult<TData>(exceptions);
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public struct RequestResult<TData> : IRequestResult<TData>
-    {
-        private IEnumerable<Exception> exceptions;
-
-        /// <inheritdoc cref="IRequestResult.Exceptions" />
-        public IEnumerable<Exception> Exceptions => exceptions ?? (exceptions = Enumerable.Empty<Exception>());
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public TData Data
-        {
-            get;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="exceptions"></param>
-        public RequestResult(IEnumerable<Exception> exceptions)
-            : this(default(TData), exceptions)
-        {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="data"></param>
-        public RequestResult(TData data)
-            : this(data, null)
-        {
-        }
-
-        private RequestResult(TData data, IEnumerable<Exception> exceptions)
-        {
-            this.exceptions = exceptions;
-            Data = data;
+            internal EntityRequestResult(bool isSucceeded = true, bool isFailed = false)
+                : base(isSucceeded, isFailed)
+            {
+            }
         }
     }
 }

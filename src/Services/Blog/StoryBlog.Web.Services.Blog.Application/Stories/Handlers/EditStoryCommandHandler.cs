@@ -60,7 +60,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
 
             if (story.Author.UserName != name)
             {
-                return RequestResult.Error<Story>(new ArgumentException("", nameof(name)));
+                throw new Exception();
             }
 
             if (story.Title != request.Title)

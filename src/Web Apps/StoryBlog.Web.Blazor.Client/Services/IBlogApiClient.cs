@@ -3,6 +3,7 @@ using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Blazor.Client.Services
@@ -16,29 +17,32 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// 
         /// </summary>
         /// <param name="flags"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<LandingModel> GetLandingAsync(LandingIncludes flags);
+        Task<LandingModel> GetLandingAsync(LandingIncludes flags, CancellationToken cancellationToken);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="include"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<EntityListResult<FeedStory>> GetStoriesAsync(StoryIncludes include);
+        Task<EntityListResult<FeedStory>> GetStoriesAsync(StoryIncludes include, CancellationToken cancellationToken);
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        Task<EntityListResult<FeedStory>> GetStoriesFromAsync(Uri requestUri);
+        Task<EntityListResult<FeedStory>> GetStoriesFromAsync(Uri requestUri, CancellationToken cancellationToken);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="slug"></param>
         /// <param name="flags"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<StoryModel> GetStoryAsync(string slug, StoryIncludes flags);
+        Task<Story> GetStoryAsync(string slug, StoryIncludes flags, CancellationToken cancellationToken);
 
         /// <summary>
         /// 
@@ -51,6 +55,6 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// 
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<RubricModel>> GetRubricsAsync();
+        Task<IEnumerable<RubricModel>> GetRubricsAsync(CancellationToken cancellationToken);
     }
 }

@@ -1,45 +1,40 @@
 ﻿using StoryBlog.Web.Services.Blog.Application.Models;
 using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
 using StoryBlog.Web.Services.Shared.Infrastructure.Results;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
 {
     /// <summary>
     /// 
     /// </summary>
-    public struct PagedStoriesQueryResult : IPagedQueryResult<Story>
+    public sealed class StoriesQueryResult : RequestResult, INavigateableQueryResult<Story>
     {
-        private IEnumerable<Exception> exceptions;
-        private IReadOnlyCollection<Story> stories;
-        private IReadOnlyCollection<Author> authors;
-
-        /// <inheritdoc cref="IRequestResult.Exceptions" />
-        public IEnumerable<Exception> Exceptions => exceptions ?? (exceptions = Enumerable.Empty<Exception>());
-
         /// <inheritdoc cref="IQueryResult{TEntity}.Entities" />
-        public IReadOnlyCollection<Story> Entities => stories ?? (stories = new Story[0]);
+        public IReadOnlyCollection<Story> Entities
+        {
+            get;
+        }
 
         /// <summary>
         /// 
         /// </summary>
-        public IReadOnlyCollection<Author> Authors => authors ?? (authors = new Author[0]);
+        public IReadOnlyCollection<Author> Authors
+        {
+            get;
+        }
 
-        /// <inheritdoc cref="IPagedQueryResult{TEntity}.Backward" />
+        /// <inheritdoc cref="INavigateableQueryResult{TEntity}.Backward" />
         public NavigationCursor Backward
         {
             get;
-            private set;
         }
 
-        /// <inheritdoc cref="IPagedQueryResult{TEntity}.Forward" />
+        /// <inheritdoc cref="INavigateableQueryResult{TEntity}.Forward" />
         public NavigationCursor Forward
         {
             get;
-            private set;
         }
 
         /// <inheritdoc cref="IEnumerable{T}.GetEnumerator" />
@@ -56,19 +51,17 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
         /// <param name="backward"></param>
         /// <param name="forward"></param>
         /// <returns></returns>
-        public static PagedStoriesQueryResult Create(
+        public StoriesQueryResult(
             IReadOnlyCollection<Story> stories,
-            IReadOnlyCollection<Author> authors,
+            IReadOnlyCollection<Author> authors = null,
             NavigationCursor backward = null,
             NavigationCursor forward = null)
+            : base(true, false)
         {
-            return new PagedStoriesQueryResult
-            {
-                stories = stories,
-                authors = authors,
-                Backward = backward,
-                Forward = forward
-            };
+            Entities = stories;
+            Authors = authors;
+            Backward = backward;
+            Forward = forward;
         }
     }
 }

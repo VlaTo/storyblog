@@ -74,14 +74,9 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
             var result = await mediator.Send(query, HttpContext.RequestAborted);
 
-            if (false == result.IsSuccess())
+            if (result.IsFailed)
             {
-                foreach (var exception in result.Exceptions)
-                {
-                    logger.LogError(exception, "[LandingController.Get] Exception");
-                }
-
-                return BadRequest(result.Exceptions);
+                return BadRequest();
             }
 
             //return Ok(mapper.Map<LandingModel>(result.Data));

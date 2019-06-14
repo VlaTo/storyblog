@@ -2,6 +2,7 @@
 using StoryBlog.Web.Blazor.Client.Services;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Effects
@@ -28,7 +29,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
         {
             try
             {
-                var result = await client.GetStoriesAsync(action.Includes);
+                var result = await client.GetStoriesAsync(action.Includes, CancellationToken.None);
 
                 if (null == result)
                 {
@@ -66,7 +67,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
         {
             try
             {
-                var result = await client.GetStoriesFromAsync(action.RequestUri);
+                var result = await client.GetStoriesFromAsync(action.RequestUri, CancellationToken.None);
 
                 if (null == result)
                 {
@@ -104,7 +105,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
         {
             try
             {
-                var result = await client.GetStoriesFromAsync(action.RequestUri);
+                var result = await client.GetStoriesFromAsync(action.RequestUri, CancellationToken.None);
 
                 if (null == result)
                 {

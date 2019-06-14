@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using Blazor.Fluxor;
+﻿using Blazor.Fluxor;
+using StoryBlog.Web.Blazor.Client.Store.Models;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
-using StoryBlog.Web.Services.Blog.Interop.Models;
+using System;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Actions
 {
@@ -71,72 +69,20 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
         /// <summary>
         /// 
         /// </summary>
-        public string Slug
+        public Story Story
         {
             get;
             set;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Title
+        public GetStorySuccessAction(Story story)
         {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Content
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public AuthorModel Author
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public DateTime Published
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool Closed
-        {
-            get;
-            set;
-        }
-
-        public IReadOnlyCollection<CommentModel> Comments
-        {
-            get;
-        }
-
-        public GetStorySuccessAction(IEnumerable<CommentModel> comments)
-        {
-            if (null == comments)
+            if (null == story)
             {
-                throw new ArgumentNullException(nameof(comments));
+                throw new ArgumentNullException(nameof(story));
             }
 
-            var list = new List<CommentModel>(comments);
-
-            Comments = new ReadOnlyCollection<CommentModel>(list);
+            Story = story;
         }
     }
 }

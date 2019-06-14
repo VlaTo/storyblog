@@ -1,8 +1,8 @@
 ﻿using IdentityModel;
 using IdentityModel.Client;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
-using StoryBlog.Web.Blazor.Client.Extensions;
 using StoryBlog.Web.Blazor.Client.Helpers;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Security.Principal;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
 
 namespace StoryBlog.Web.Blazor.Client.Services
 {
@@ -34,7 +33,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
             this.client = client;
             this.authorizationContext = authorizationContext;
             this.options = options.Value;
-            cache = new DiscoveryCache(this.options.Address, client);
+            cache = new DiscoveryCache(this.options.Address, () => client);
             crypto = new CryptoHelper();
         }
 
@@ -91,7 +90,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
             return Principal.Anonymous;
         }
 
-        private async Task<string> RetrieveTokenAsync(DiscoveryResponse disco)
+        private async Task<string> RetrieveTokenAsync(DiscoveryDocumentResponse disco)
         {
             var path = new Uri(uri.GetAbsoluteUri());
             var query = QueryHelpers.ParseQuery(path.Query);

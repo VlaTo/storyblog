@@ -1,34 +1,29 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
 {
     /// <summary>
     /// 
     /// </summary>
-    public struct QueryResult<TEntity> : IQueryResult<TEntity>
+    public class QueryResult<TEntity> : RequestResult, IQueryResult<TEntity>
     {
-        private IEnumerable<Exception> exceptions;
-        private IReadOnlyCollection<TEntity> entities;
-
-        /// <inheritdoc cref="IRequestResult.Exceptions" />
-        public IEnumerable<Exception> Exceptions => exceptions ?? (exceptions = Enumerable.Empty<Exception>());
-
         /// <summary>
         /// 
         /// </summary>
-        public IReadOnlyCollection<TEntity> Entities => entities ?? (entities = new TEntity[0]);
+        public IReadOnlyCollection<TEntity> Entities
+        {
+            get;
+        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="entities"></param>
         public QueryResult(IReadOnlyCollection<TEntity> entities)
+            : base(true, false)
         {
-            this.entities = entities;
-            exceptions = null;
+            Entities = entities;
         }
 
         /// <inheritdoc cref="IEnumerable{T}.GetEnumerator" />

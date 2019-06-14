@@ -15,7 +15,6 @@ using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Shared.Common;
 using StoryBlog.Web.Services.Shared.Communication;
 using StoryBlog.Web.Services.Shared.Communication.Commands;
-using StoryBlog.Web.Services.Shared.Infrastructure.Extensions;
 using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
 using System;
 using System.Collections.Generic;
@@ -80,28 +79,23 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 HttpContext.RequestAborted
             );
 
-            if (false == result.IsSuccess())
+            if (result.IsFailed)
             {
-                foreach (var exception in result.Exceptions)
-                {
-                    logger.LogError(exception, "[StoriesController.Create]");
-                }
-
-                return BadRequest(result.Exceptions);
+                return BadRequest();
             }
 
             await commandBus.SendAsync(new StoryCreatedIntegrationCommand
             {
                 Id = Guid.NewGuid(),
-                StoryId = result.Data.Id,
-                Sent = result.Data.Created
+                StoryId = result.Entity.Id,
+                Sent = result.Entity.Created
             });
 
-            logger.StoryCreated(result.Data.Id);
+            logger.StoryCreated(result.Entity.Id);
 
             return Created(
-                Url.Action("Get", "Story", new {slug = result.Data.Slug}),
-                mapper.Map<StoryModel>(result.Data)
+                Url.Action("Get", "Story", new {slug = result.Entity.Slug}),
+                mapper.Map<StoryModel>(result.Entity)
             );
         }
 
@@ -128,14 +122,9 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
             var result = await mediator.Send(query, HttpContext.RequestAborted);
 
-            if (false == result.IsSuccess())
+            if (result.IsFailed)
             {
-                foreach (var exception in result.Exceptions)
-                {
-                    logger.LogError(exception, "[StoriesController.Get]");
-                }
-
-                return BadRequest(result.Exceptions);
+                return BadRequest();
             }
 
             var include = EnumFlags.ToQueryString(flags).ToString();

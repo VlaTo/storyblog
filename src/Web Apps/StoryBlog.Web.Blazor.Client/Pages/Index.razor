@@ -42,7 +42,7 @@
             {
                 var linkSrc = "story/" + story.Slug;
 
-                <article id=@story.Slug class="card storyblog-story">
+                <article @key="story" id=@story.Slug class="card storyblog-story">
                     <div class="card-header">
                         <ul class="card-subtitle text-muted list-unstyled list-inline">
                             <li class="list-inline-item">
@@ -122,7 +122,7 @@
     }
 </div>
 
-@functions
+@code
 {
     protected override void OnInit()
     {

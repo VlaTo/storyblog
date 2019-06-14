@@ -8,6 +8,7 @@ using StoryBlog.Web.Services.Blog.Persistence;
 using StoryBlog.Web.Services.Shared.Infrastructure.Results;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -56,7 +57,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Rubrics.Handlers
             catch (Exception exception)
             {
                 logger.LogError(exception, $"{nameof(GetRubricsQueryHandler)}");
-                return RequestResult.Error<IReadOnlyCollection<Rubric>>(exception);
+                return RequestResult.Success(new ReadOnlyCollection<Rubric>(new List<Rubric>()));
             }
         }
     }

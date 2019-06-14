@@ -27,14 +27,14 @@ namespace StoryBlog.Web.Services.Identity.Application.Signin.Handlers
 
             if (null == customer)
             {
-                return RequestResult.Error<CustomerResult>(new InvalidOperationException());
+                throw new InvalidOperationException();
             }
 
             var signin = await loginService.ValidateCredentialsAsync(customer, request.Password);
 
             if (SignInResult.Failed == signin)
             {
-                return RequestResult.Error<CustomerResult>();
+                return RequestResult.Failed<CustomerResult>();
             }
 
             CustomerResult result = null;
