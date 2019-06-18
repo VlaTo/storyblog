@@ -17,24 +17,18 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
             get;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public IReadOnlyCollection<Author> Authors
-        {
-            get;
-        }
-
         /// <inheritdoc cref="INavigateableQueryResult{TEntity}.Backward" />
         public NavigationCursor Backward
         {
             get;
+            private set;
         }
 
         /// <inheritdoc cref="INavigateableQueryResult{TEntity}.Forward" />
         public NavigationCursor Forward
         {
             get;
+            private set;
         }
 
         /// <inheritdoc cref="IEnumerable{T}.GetEnumerator" />
@@ -43,25 +37,22 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Models
         /// <inheritdoc cref="IEnumerable.GetEnumerator" />
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="stories"></param>
-        /// <param name="authors"></param>
-        /// <param name="backward"></param>
-        /// <param name="forward"></param>
-        /// <returns></returns>
-        public StoriesQueryResult(
-            IReadOnlyCollection<Story> stories,
-            IReadOnlyCollection<Author> authors = null,
-            NavigationCursor backward = null,
-            NavigationCursor forward = null)
+        private StoriesQueryResult(IReadOnlyCollection<Story> stories)
             : base(true, false)
         {
             Entities = stories;
-            Authors = authors;
-            Backward = backward;
-            Forward = forward;
+        }
+
+        public static StoriesQueryResult Success(
+            IReadOnlyCollection<Story> stories,
+            NavigationCursor backward = null,
+            NavigationCursor forward = null)
+        {
+            return new StoriesQueryResult(stories)
+            {
+                Backward = backward,
+                Forward = forward
+            };
         }
     }
 }

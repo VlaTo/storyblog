@@ -18,10 +18,12 @@ using StoryBlog.Web.Services.Shared.Communication.Commands;
 using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Blog.Application.Models;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -148,21 +150,46 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 });
             }
 
+            var authors = new Collection<Author>();
+
+            int FindAuthorIndex(Author author)
+            {
+                var index = authors.FindIndex(candidate => candidate.Id == author.Id);
+
+                if (0 > index)
+                {
+                    index = authors.Count;
+                    authors.Add(author);
+                }
+
+                return index;
+            }
+
             return Ok(new ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>>
             {
                 Data = result.Select(story =>
                 {
-                    var model = mapper.Map<StoryModel>(story);
+                    var storyModel = mapper.Map<StoryModel>(story);
 
-                    model.Author = result.Authors.FindIndex(story.Author);
+                    storyModel.Author = FindAuthorIndex(story.Author);
+                    storyModel.Comments = story.Comments
+                        .Select(comment =>
+                        {
+                            var commentModel = mapper.Map<CommentModel>(comment);
 
-                    return model;
+                            commentModel.Author = FindAuthorIndex(comment.Author);
+
+                            return commentModel;
+                        })
+                        .ToArray();
+
+                    return storyModel;
                 }),
                 Meta = new ResourcesMetaInfo<AuthorsResource>
                 {
                     Resources = new AuthorsResource
                     {
-                        Authors = result.Authors.Select(author => mapper.Map<AuthorModel>(author))
+                        Authors = authors.Select(author => mapper.Map<AuthorModel>(author))
                     },
                     Navigation = new Navigation
                     {

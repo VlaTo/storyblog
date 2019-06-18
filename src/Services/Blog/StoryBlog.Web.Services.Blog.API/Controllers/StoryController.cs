@@ -18,10 +18,12 @@ using StoryBlog.Web.Services.Shared.Communication;
 using StoryBlog.Web.Services.Shared.Communication.Commands;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Blog.Application.Models;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -85,14 +87,48 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return NotFound();
             }
 
+            var authors = new Collection<Author>();
+
+            int FindAuthorIndex(Author author)
+            {
+                var index = authors.FindIndex(candidate => candidate.Id == author.Id);
+
+                if (0 > index)
+                {
+                    index = authors.Count;
+                    authors.Add(author);
+                }
+
+                return index;
+            }
+
+            StoryModel MapStory(Story story)
+            {
+                var storyModel = mapper.Map<StoryModel>(story);
+
+                storyModel.Author = FindAuthorIndex(story.Author);
+                storyModel.Comments = story.Comments
+                    .Select(comment =>
+                    {
+                        var commentModel = mapper.Map<CommentModel>(comment);
+
+                        commentModel.Author = FindAuthorIndex(comment.Author);
+
+                        return commentModel;
+                    })
+                    .ToArray();
+
+                return storyModel;
+            }
+
             return Ok(new Result<StoryModel, ResourcesMetaInfo<AuthorsResource>>
             {
-                Data = mapper.Map<StoryModel>(result.Entity),
+                Data = MapStory(result.Entity),
                 Meta = new ResourcesMetaInfo<AuthorsResource>
                 {
                     Resources = new AuthorsResource
                     {
-                        Authors = result.Authors.Select(author => mapper.Map<AuthorModel>(author))
+                        Authors = authors.Select(author => mapper.Map<AuthorModel>(author))
                     }
                 }
             });

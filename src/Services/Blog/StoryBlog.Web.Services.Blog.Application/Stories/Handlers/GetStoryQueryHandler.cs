@@ -2,13 +2,12 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
 using StoryBlog.Web.Services.Blog.Persistence;
+using StoryBlog.Web.Services.Shared.Infrastructure.Results;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Story = StoryBlog.Web.Services.Blog.Application.Models.Story;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
 {
@@ -16,7 +15,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
     /// 
     /// </summary>
     // ReSharper disable once UnusedMember.Global
-    public sealed class GetStoryQueryHandler : IRequestHandler<GetStoryQuery, StoryRequestResult>
+    public sealed class GetStoryQueryHandler : IRequestHandler<GetStoryQuery, IRequestResult<Application.Models.Story>>
     {
         private readonly StoryBlogDbContext context;
         private readonly IMapper mapper;
@@ -39,7 +38,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
         }
 
         /// <inheritdoc cref="IRequestHandler{TRequest,TResponse}.Handle" />
-        public async Task<StoryRequestResult> Handle(GetStoryQuery request, CancellationToken cancellationToken)
+        public async Task<IRequestResult<Application.Models.Story>> Handle(GetStoryQuery request, CancellationToken cancellationToken)
         {
             var authenticated = request.User.Identity.IsAuthenticated;
             var queryable = context.Stories.AsNoTracking();
@@ -70,7 +69,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
                 return null;
             }
 
-            return new StoryRequestResult(mapper.Map<Story>(story), null);
+            return RequestResult.Success(mapper.Map<Application.Models.Story>(story));
         }
     }
 }

@@ -1,10 +1,9 @@
 ﻿using MediatR;
 using StoryBlog.Web.Services.Identity.Application.Signin.Models;
-using StoryBlog.Web.Services.Shared.Infrastructure.Results;
 
 namespace StoryBlog.Web.Services.Identity.Application.Signin.Queries
 {
-    public sealed class GetCustomerQuery : IRequest<IRequestResult<CustomerResult>>
+    public sealed class GetCustomerQuery : IRequest<CustomerResult>
     {
         public string Email
         {

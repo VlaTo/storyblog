@@ -25,6 +25,8 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Mime;
+using System.Reflection;
+using StoryBlog.Web.Services.Blog.Domain.Exceptions;
 
 namespace StoryBlog.Web.Services.Blog.API
 {
@@ -146,8 +148,11 @@ namespace StoryBlog.Web.Services.Blog.API
 
                     services
                         .AddMediatR(
-                            options => { options.AsScoped(); },
-                            AppDomain.CurrentDomain.GetAssemblies()
+                            options =>
+                            {
+                                options.AsScoped();
+                            },
+                            Assembly.GetAssembly(typeof(ISlugGenerator))
                         );
 
                     services
@@ -178,7 +183,8 @@ namespace StoryBlog.Web.Services.Blog.API
                                     )
                                     .ForMember(
                                         story => story.Author,
-                                        mapping => mapping.MapFrom(source => source.Author)
+                                        //mapping => mapping.MapFrom(source => source.Author)
+                                        mapping => mapping.Ignore()
                                     )
                                     .ForMember(
                                         story => story.Created,
@@ -189,7 +195,7 @@ namespace StoryBlog.Web.Services.Blog.API
                                         mapping => mapping.MapFrom(source => source.Modified)
                                     );
 
-                                config
+                                /*config
                                     .CreateMap<Application.Landing.Models.HeroStory, HeroStoryModel>()
                                     .ForMember(
                                         story => story.Title,
@@ -203,22 +209,22 @@ namespace StoryBlog.Web.Services.Blog.API
                                         story => story.Content,
                                         mapping => mapping.MapFrom(source => source.Content)
                                     )
-                                    /*.ForMember(
+                                    --*.ForMember(
                                         story => story.Author,
                                         mapping => mapping.MapFrom(source => source.Author)
-                                    )*/
-                                    /*.ForMember(
+                                    )*--
+                                    --*.ForMember(
                                         story => story.Created,
                                         mapping => mapping.MapFrom(source => source.Created)
-                                    )*/
-                                    /*.ForMember(
+                                    )*--
+                                    --*.ForMember(
                                         story => story.Modified,
                                         mapping => mapping.MapFrom(source => source.Modified)
-                                    )*/
+                                    )*--
                                     .ForMember(
                                         test => test.Comments,
                                         mapping => mapping.MapFrom(source => source.CommentsCount)
-                                    );
+                                    );*/
 
                                 config
                                     .CreateMap<Story, StoryModel>()
@@ -249,11 +255,12 @@ namespace StoryBlog.Web.Services.Blog.API
                                         mapping.AllowNull();
                                         mapping.MapFrom(source => source.Published);
                                     })
-                                    .AfterMap((source, story, ctx) =>
+                                    /*.AfterMap((source, story, ctx) =>
                                         story.Comments = source.Comments
                                             .Select(comment => ctx.Mapper.Map<CommentModel>(comment))
                                             .ToArray()
-                                    );
+                                    )*/
+                                    ;
 
                                 config
                                     .CreateMap<Application.Stories.Models.FeedStory, FeedStoryModel>()
@@ -330,7 +337,10 @@ namespace StoryBlog.Web.Services.Blog.API
                                         mapping => mapping.MapFrom(source => source.Content)
                                     );*/
                             },
-                            AppDomain.CurrentDomain.GetAssemblies()
+                            Assembly.GetAssembly(typeof(ISlugGenerator)),
+                            Assembly.GetAssembly(typeof(DomainException)),
+                            Assembly.GetEntryAssembly()
+                            //AppDomain.CurrentDomain.GetAssemblies()
                         );
 
                     services

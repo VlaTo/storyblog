@@ -117,17 +117,16 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
 
             var entities = await queryable.ToListAsync(cancellationToken);
             var stories = new Collection<Story>();
-            var authors = new Collection<Author>();
+            //var authors = new Collection<Author>();
 
             entities.Sort(new StoryComparer());
 
-            AuthorResourcesHelper.CreateMappedStories(mapper, stories, authors, entities, request.IncludeAuthors);
+            //AuthorResourcesHelper.CreateMappedStories(mapper, stories, authors, entities, request.IncludeAuthors);
 
-            return new StoriesQueryResult(
+            return StoriesQueryResult.Success(
                 stories,
-                authors,
-                backward: GetBackwardCursor(id, stories, request.Cursor.Count),
-                forward: GetForwardCursor(stories, request.Cursor.Count)
+                GetBackwardCursor(id, stories, request.Cursor.Count),
+                GetForwardCursor(stories, request.Cursor.Count)
             );
         }
 

@@ -138,29 +138,29 @@ namespace StoryBlog.Web.Services.Identity.API.Controllers
             {
                 var result = await mediator.Send(new GetCustomerQuery(model.Email, model.Password), HttpContext.RequestAborted);
 
-                if (false == result.IsSuccess())
+                if (result.IsFailed)
                 {
                     return View();
                 }
 
-                if (result.Data.IsNotAllowed)
+                if (result.IsNotAllowed)
                 {
                     return View();
                 }
 
-                if (result.Data.IsLockedOut)
+                if (result.IsLockedOut)
                 {
                     return View();
                 }
 
-                if (result.Data.RequiresTwoFactor)
+                if (result.RequiresTwoFactor)
                 {
                     return View();
                 }
 
-                if (result.Data.Success)
+                if (result.IsSucceeded)
                 {
-                    var customer = result.Data.Customer;
+                    var customer = result.Customer;
 
                     await eventService.RaiseAsync(new UserLoginSuccessEvent(
                         IdentityServerConstants.LocalIdentityProvider,

@@ -34,10 +34,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                     comment => comment.Content,
                     mapping => mapping.MapFrom(source => source.Content)
                 )
-                /*.ForMember(
-                    comment => comment.AuthorIndex,
+                .ForMember(
+                    comment => comment.Author,
                     mapping => mapping.MapFrom(source => source.Author)
-                )*/
+                )
                 .ForMember(
                     comment => comment.Created,
                     mapping => mapping.MapFrom(source => source.Created)
@@ -73,6 +73,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                 .ForMember(
                     story => story.Published,
                     mapping => mapping.MapFrom(source => source.Published)
+                )
+                .ForMember(
+                    story => story.Author,
+                    mapping => mapping.MapFrom(source => source.Author)
                 );
 
             configuration
