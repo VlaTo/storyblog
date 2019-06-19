@@ -77,6 +77,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                 .ForMember(
                     story => story.Author,
                     mapping => mapping.MapFrom(source => source.Author)
+                )
+                .ForMember(
+                    story => story.Comments,
+                    mapping => mapping.MapFrom(source => source.Comments)
                 );
 
             configuration

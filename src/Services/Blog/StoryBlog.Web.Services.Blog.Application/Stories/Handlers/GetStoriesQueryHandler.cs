@@ -2,20 +2,17 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using StoryBlog.Web.Services.Blog.Application.Stories.Handlers.Helpers;
 using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
 using StoryBlog.Web.Services.Blog.Persistence;
 using StoryBlog.Web.Services.Blog.Persistence.Models;
+using StoryBlog.Web.Services.Shared.Infrastructure.Core;
 using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Author = StoryBlog.Web.Services.Blog.Application.Models.Author;
-using Story = StoryBlog.Web.Services.Blog.Application.Models.Story;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
 {
@@ -116,12 +113,11 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
             }
 
             var entities = await queryable.ToListAsync(cancellationToken);
-            var stories = new Collection<Story>();
-            //var authors = new Collection<Author>();
+            var stories = new SortedList<Application.Models.Story>(new StoryComparer());
 
-            entities.Sort(new StoryComparer());
-
-            //AuthorResourcesHelper.CreateMappedStories(mapper, stories, authors, entities, request.IncludeAuthors);
+            stories.AddRange(
+                entities.Select(story => mapper.Map<Application.Models.Story>(story))
+            );
 
             return StoriesQueryResult.Success(
                 stories,
@@ -130,7 +126,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
             );
         }
 
-        private static NavigationCursor GetBackwardCursor(long? minId, IList<Story> stories, int pageSize)
+        private static NavigationCursor GetBackwardCursor(long? minId, IList<Application.Models.Story> stories, int pageSize)
         {
             if (0 == stories.Count || false == minId.HasValue)
             {
@@ -147,7 +143,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
             return NavigationCursor.Backward(id, pageSize);
         }
 
-        private static NavigationCursor GetForwardCursor(IList<Story> stories, int pageSize)
+        private static NavigationCursor GetForwardCursor(IList<Application.Models.Story> stories, int pageSize)
         {
             if (0 == stories.Count)
             {
@@ -167,9 +163,9 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
         /// <summary>
         /// 
         /// </summary>
-        private class StoryComparer : IComparer<Persistence.Models.Story>
+        private class StoryComparer : IComparer<Application.Models.Story>
         {
-            public int Compare(Persistence.Models.Story x, Persistence.Models.Story y) =>
+            public int Compare(Application.Models.Story x, Application.Models.Story y) =>
                 x.Id == y.Id ? 0 : (x.Id > y.Id ? 1 : -1);
         }
     }
