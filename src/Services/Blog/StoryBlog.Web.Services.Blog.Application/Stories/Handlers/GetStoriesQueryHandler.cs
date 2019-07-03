@@ -6,7 +6,6 @@ using StoryBlog.Web.Services.Blog.Application.Stories.Models;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
 using StoryBlog.Web.Services.Blog.Persistence;
 using StoryBlog.Web.Services.Blog.Persistence.Models;
-using StoryBlog.Web.Services.Shared.Infrastructure.Core;
 using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
 using System;
 using System.Collections.Generic;
@@ -32,10 +31,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
         /// <param name="context"></param>
         /// <param name="mapper"></param>
         /// <param name="logger"></param>
-        public GetStoriesQueryHandler(
-            StoryBlogDbContext context,
-            IMapper mapper,
-            ILogger<GetStoriesQuery> logger)
+        public GetStoriesQueryHandler(StoryBlogDbContext context, IMapper mapper, ILogger<GetStoriesQuery> logger)
         {
             this.context = context;
             this.mapper = mapper;
@@ -113,11 +109,11 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
             }
 
             var entities = await queryable.ToListAsync(cancellationToken);
-            var stories = new SortedList<Application.Models.Story>(new StoryComparer());
 
-            stories.AddRange(
-                entities.Select(story => mapper.Map<Application.Models.Story>(story))
-            );
+            var stories = entities
+                .OrderBy(story => story.Id)
+                .Select(story => mapper.Map<Application.Models.Story>(story))
+                .ToArray();
 
             return StoriesQueryResult.Success(
                 stories,
@@ -158,15 +154,6 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
             var id = stories[stories.Count - 1].Id;
 
             return NavigationCursor.Forward(id, pageSize);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private class StoryComparer : IComparer<Application.Models.Story>
-        {
-            public int Compare(Application.Models.Story x, Application.Models.Story y) =>
-                x.Id == y.Id ? 0 : (x.Id > y.Id ? 1 : -1);
         }
     }
 }

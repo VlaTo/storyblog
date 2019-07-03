@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -27,10 +28,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
         /// <param name="context"></param>
         /// <param name="mapper"></param>
         /// <param name="logger"></param>
-        public GetStoryQueryHandler(
-            StoryBlogDbContext context,
-            IMapper mapper,
-            ILogger<GetStoriesQuery> logger)
+        public GetStoryQueryHandler(StoryBlogDbContext context, IMapper mapper, ILogger<GetStoriesQuery> logger)
         {
             this.context = context;
             this.mapper = mapper;
@@ -40,6 +38,13 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
         /// <inheritdoc cref="IRequestHandler{TRequest,TResponse}.Handle" />
         public async Task<IRequestResult<Application.Models.Story>> Handle(GetStoryQuery request, CancellationToken cancellationToken)
         {
+            if (null == request)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            logger.LogDebug($"Executing request: {request.GetType().Name}");
+
             var authenticated = request.User.Identity.IsAuthenticated;
             var queryable = context.Stories.AsNoTracking();
 

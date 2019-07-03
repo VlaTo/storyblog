@@ -14,35 +14,33 @@ using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Blazor.Client.Services
 {
-    internal sealed class UserApiClient : IUserApiClient
+    internal sealed class IdentityApiClient : IIdentityApiClient
     {
         private readonly IUriHelper uri;
         private readonly HttpClient client;
-        private readonly AuthorizationContext authorizationContext;
-        private readonly UserApiClientOptions options;
-        private readonly DiscoveryCache cache;
+        private readonly IdentityApiOptions options;
+        private readonly DiscoveryCache disco;
         private readonly CryptoHelper crypto;
 
-        public UserApiClient(
+        public IdentityApiClient(
             IUriHelper uri,
             HttpClient client,
-            AuthorizationContext authorizationContext,
-            IOptions<UserApiClientOptions> options)
+            IOptions<IdentityApiOptions> options)
         {
             this.uri = uri;
             this.client = client;
-            this.authorizationContext = authorizationContext;
             this.options = options.Value;
-            cache = new DiscoveryCache(this.options.Address, () => client);
+            var authority = this.options.Host.ToString();
+            disco = new DiscoveryCache(authority, () => client);
             crypto = new CryptoHelper();
         }
 
-        /// <inheritdoc cref="IUserApiClient.SigninAsync" />
+        /// <inheritdoc cref="IIdentityApiClient.SigninAsync" />
         public async Task SigninAsync()
         {
             var pkce = crypto.CreatePkceData();
-            var disco = await cache.GetAsync();
-            var url = new RequestUrl(disco.AuthorizeEndpoint);
+            var discovery = await disco.GetAsync();
+            var url = new RequestUrl(discovery.AuthorizeEndpoint);
             var auth = url.CreateAuthorizeUrl(
                 options.ClientId,
                 OidcConstants.ResponseTypes.Code,
@@ -58,22 +56,22 @@ namespace StoryBlog.Web.Blazor.Client.Services
             uri.NavigateTo(auth);
         }
 
-        /// <inheritdoc cref="IUserApiClient.SigninCallbackAsync" />
+        /// <inheritdoc cref="IIdentityApiClient.SigninCallbackAsync" />
         public async Task<IPrincipal> SigninCallbackAsync()
         {
-            var disco = await cache.GetAsync();
-            var token = await RetrieveTokenAsync(disco);
+            var discovery = await disco.GetAsync();
+            var token = await RetrieveTokenAsync(discovery);
 
             if (null == token)
             {
                 throw new Exception();
             }
 
-            authorizationContext.Token = new AuthorizationToken("Bearer", token);
+            client.SetBearerToken(token);
 
             var response = await client.GetUserInfoAsync(new UserInfoRequest
             {
-                Address = disco.UserInfoEndpoint,
+                Address = discovery.UserInfoEndpoint,
                 Token = token
             });
 
@@ -90,7 +88,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
             return Principal.Anonymous;
         }
 
-        private async Task<string> RetrieveTokenAsync(DiscoveryDocumentResponse disco)
+        private async Task<string> RetrieveTokenAsync(DiscoveryDocumentResponse discovery)
         {
             var path = new Uri(uri.GetAbsoluteUri());
             var query = QueryHelpers.ParseQuery(path.Query);
@@ -112,7 +110,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
             var response = await client.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
             {
-                Address = disco.TokenEndpoint,
+                Address = discovery.TokenEndpoint,
                 ClientId = options.ClientId,
                 Code = code,
                 CodeVerifier = state,

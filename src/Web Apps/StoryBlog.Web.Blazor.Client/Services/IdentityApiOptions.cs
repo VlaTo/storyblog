@@ -3,12 +3,28 @@ using System.Collections.Generic;
 
 namespace StoryBlog.Web.Blazor.Client.Services
 {
-    public sealed class UserApiClientOptions
+    internal sealed class IdentityApiOptions : ApiOptionsBase
     {
         private string clientId;
         private string address;
         private string redirectUri;
         private IEnumerable<string> scopes;
+        private Uri host;
+
+
+        public override Uri Host
+        {
+            get => host;
+            set
+            {
+                if (Uri.Equals(host, value))
+                {
+                    return;
+                }
+
+                host = value;
+            }
+        }
 
         public string Address
         {
@@ -66,7 +82,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
             }
         }
 
-        public UserApiClientOptions()
+        public IdentityApiOptions()
         {
         }
     }

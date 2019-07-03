@@ -1,6 +1,4 @@
-﻿using IdentityModel.Client;
-using StoryBlog.Web.Blazor.Client.Store.Models;
-using StoryBlog.Web.Blazor.Reactive;
+﻿using StoryBlog.Web.Blazor.Client.Store.Models;
 using StoryBlog.Web.Services.Blog.Interop;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
@@ -22,22 +20,14 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
         private readonly HttpClient client;
         private readonly Uri baseUri = new Uri("http://localhost:3000/api/v1/");
-        private AuthorizationToken authorizationToken;
-        private readonly IDisposable disposable;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="client"></param>
-        /// <param name="authorizationContext"></param>
-        public BlogApiClient(HttpClient client, IObservable<AuthorizationToken> authorizationContext)
+        public BlogApiClient(HttpClient client)
         {
             this.client = client;
-
-            disposable = authorizationContext.Subscribe(value =>
-            {
-                authorizationToken = value;
-            });
         }
 
         /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync" />
@@ -50,10 +40,10 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
             try
             {
-                if (null != authorizationToken)
+                /*if (null != authorizationToken)
                 {
                     client.SetBearerToken(authorizationToken.Payload);
-                }
+                }*/
 
                 using (var response = await client.GetAsync(requestUri, cancellationToken))
                 {
@@ -116,13 +106,14 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 RequestUri = requestUri
             };
 
+            /*authorizationOptions.AuthorizationToken
             if (null != authorizationToken)
             {
                 request.Headers.Authorization = new AuthenticationHeaderValue(
                     authorizationToken.Scheme,
                     authorizationToken.Payload
                 );
-            }
+            }*/
 
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(mediaType, 1.0d));
 
@@ -205,7 +196,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
         public void Dispose()
         {
-            disposable.Dispose();
+            //authorizationMonitorToken.Dispose();
         }
 
         private async Task<EntityListResult<FeedStory>> GetStoriesInternalAsync(Uri requestUri, CancellationToken cancellationToken)
@@ -214,13 +205,13 @@ namespace StoryBlog.Web.Blazor.Client.Services
             {
                 using (var request = new HttpRequestMessage(HttpMethod.Get, requestUri))
                 {
-                    if (null != authorizationToken)
+                    /*if (null != authorizationToken)
                     {
                         request.Headers.Authorization = new AuthenticationHeaderValue(
                             authorizationToken.Scheme,
                             authorizationToken.Payload
                         );
-                    }
+                    }*/
 
                     request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(JsonMediaType, 1.0d));
 
@@ -230,7 +221,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
                         using (var stream = await message.Content.ReadAsStreamAsync())
                         {
-                            var data = await JsonSerializer.ReadAsync<ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>>>(stream, cancellationToken: cancellationToken);
+                            var data = await JsonSerializer.ReadAsync<ListResult<StoryModel, ResourcesNavigationMetaInfo<AuthorsResource>>>(stream, cancellationToken: cancellationToken);
                             return ProcessResult(data);
                         }
                     }
@@ -248,7 +239,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
             return null;
         }
 
-        private static EntityListResult<FeedStory> ProcessResult(ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>> result)
+        private static EntityListResult<FeedStory> ProcessResult(ListResult<StoryModel, ResourcesNavigationMetaInfo<AuthorsResource>> result)
         {
             var authors = GetAuthorIndex(result.Meta.Resources.Authors);
 

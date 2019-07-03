@@ -19,9 +19,10 @@ namespace StoryBlog.Web.Blazor.Client
                     );
 
                     services
-                        .AddOptions<UserApiClientOptions>()
+                        .AddOptions<IdentityApiOptions>()
                         .Configure(options =>
                         {
+                            options.Host = new Uri("http://localhost:3100");
                             options.Address = "http://localhost:3100";
                             options.ClientId = "client.application";
                             options.RedirectUri = "http://localhost:62742/callback";
@@ -33,13 +34,16 @@ namespace StoryBlog.Web.Blazor.Client
                             };
                         });
 
-                    var authorizationContext = new AuthorizationContext();
+                    services
+                        .AddOptions<BlogApiOptions>()
+                        .Configure(options =>
+                        {
+                            options.Host = new Uri("http://localhost:3000");
+                        });
 
                     services
-                        .AddSingleton<IObservable<AuthorizationToken>>(provider => authorizationContext)
-                        .AddSingleton(provider => authorizationContext)
                         .AddSingleton<IBlogApiClient, BlogApiClient>()
-                        .AddSingleton<IUserApiClient, UserApiClient>();
+                        .AddSingleton<IIdentityApiClient, IdentityApiClient>();
                 })
                 .UseBlazorStartup<Startup>()
                 .Build();
