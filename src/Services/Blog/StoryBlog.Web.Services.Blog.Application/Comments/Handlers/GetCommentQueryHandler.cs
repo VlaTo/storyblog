@@ -53,7 +53,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Comments.Handlers
 
             if (null == comment)
             {
-                return new RequestResult<Comment>();
+                return null;
             }
 
             return RequestResult.Success(mapper.Map<Comment>(comment));

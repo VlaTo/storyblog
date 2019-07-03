@@ -23,15 +23,15 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
         {
             var result = new StoryState(ModelStatus.Success)
             {
-                Title = action.Title,
-                Slug = action.Slug,
+                Title = action.Story.Title,
+                /*Slug = action.Slug,
                 Content = action.Content,
                 Closed = action.Closed,
                 Author = new Author
                 {
                     Name = action.Author.Name
                 },
-                AllCommentsCount = action.Comments.Count
+                AllCommentsCount = action.Comments.Count*/
             };
 
             //Comments.CreateCommentsTree(result.Comments, action.Comments);

@@ -123,7 +123,6 @@ namespace StoryBlog.Web.Services.Identity.API
                     services
                         .AddControllers(options =>
                         {
-                            options.SerializerOptions.WriteIndented = false;
                             options.SuppressAsyncSuffixInActionNames = true;
                         })
                         .AddViewLocalization(

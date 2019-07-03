@@ -6,7 +6,7 @@ namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
     /// 
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public interface IPagedQueryResult<out TEntity> : IQueryResult<TEntity>
+    public interface INavigateableQueryResult<out TEntity> : IQueryResult<TEntity>
     {
         /// <summary>
         /// 

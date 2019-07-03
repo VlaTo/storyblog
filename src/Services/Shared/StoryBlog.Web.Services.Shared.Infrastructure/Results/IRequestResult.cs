@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
+﻿namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
 {
     /// <summary>
     /// 
     /// </summary>
     public interface IRequestResult
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        IEnumerable<Exception> Exceptions
+        bool IsSucceeded
+        {
+            get;
+        }
+
+        bool IsFailed
         {
             get;
         }
@@ -20,13 +19,13 @@ namespace StoryBlog.Web.Services.Shared.Infrastructure.Results
     /// <summary>
     /// 
     /// </summary>
-    /// <typeparam name="TData"></typeparam>
-    public interface IRequestResult<out TData> : IRequestResult
+    /// <typeparam name="TEntity"></typeparam>
+    public interface IRequestResult<out TEntity> : IRequestResult
     {
         /// <summary>
         /// 
         /// </summary>
-        TData Data
+        TEntity Entity
         {
             get;
         }

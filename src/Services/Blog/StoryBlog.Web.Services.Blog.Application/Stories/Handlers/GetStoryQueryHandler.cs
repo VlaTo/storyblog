@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -8,7 +9,6 @@ using StoryBlog.Web.Services.Shared.Infrastructure.Results;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Story = StoryBlog.Web.Services.Blog.Application.Models.Story;
 
 namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
 {
@@ -16,7 +16,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
     /// 
     /// </summary>
     // ReSharper disable once UnusedMember.Global
-    public sealed class GetStoryQueryHandler : IRequestHandler<GetStoryQuery, IRequestResult<Story>>
+    public sealed class GetStoryQueryHandler : IRequestHandler<GetStoryQuery, IRequestResult<Application.Models.Story>>
     {
         private readonly StoryBlogDbContext context;
         private readonly IMapper mapper;
@@ -28,10 +28,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
         /// <param name="context"></param>
         /// <param name="mapper"></param>
         /// <param name="logger"></param>
-        public GetStoryQueryHandler(
-            StoryBlogDbContext context,
-            IMapper mapper,
-            ILogger<GetStoriesQuery> logger)
+        public GetStoryQueryHandler(StoryBlogDbContext context, IMapper mapper, ILogger<GetStoriesQuery> logger)
         {
             this.context = context;
             this.mapper = mapper;
@@ -39,8 +36,15 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
         }
 
         /// <inheritdoc cref="IRequestHandler{TRequest,TResponse}.Handle" />
-        public async Task<IRequestResult<Story>> Handle(GetStoryQuery request, CancellationToken cancellationToken)
+        public async Task<IRequestResult<Application.Models.Story>> Handle(GetStoryQuery request, CancellationToken cancellationToken)
         {
+            if (null == request)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            logger.LogDebug($"Executing request: {request.GetType().Name}");
+
             var authenticated = request.User.Identity.IsAuthenticated;
             var queryable = context.Stories.AsNoTracking();
 
@@ -67,10 +71,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
 
             if (null == story)
             {
-                return new RequestResult<Story>();
+                return null;
             }
 
-            return RequestResult.Success(mapper.Map<Story>(story));
+            return RequestResult.Success(mapper.Map<Application.Models.Story>(story));
         }
     }
 }

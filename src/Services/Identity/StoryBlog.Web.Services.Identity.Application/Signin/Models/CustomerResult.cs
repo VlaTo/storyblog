@@ -1,15 +1,10 @@
 ﻿using StoryBlog.Web.Services.Identity.Persistence.Models;
+using StoryBlog.Web.Services.Shared.Infrastructure.Results;
 
 namespace StoryBlog.Web.Services.Identity.Application.Signin.Models
 {
-    public class CustomerResult
+    public class CustomerResult : IRequestResult
     {
-        public bool Success
-        {
-            get;
-            private set;
-        }
-
         public bool IsNotAllowed
         {
             get;
@@ -33,14 +28,31 @@ namespace StoryBlog.Web.Services.Identity.Application.Signin.Models
             get;
         }
 
+        public bool IsSucceeded
+        {
+            get;
+            private set;
+        }
+
+        public bool IsFailed
+        {
+            get;
+            private set;
+        }
+
         private CustomerResult(Customer customer)
         {
             Customer = customer;
         }
 
+        public static CustomerResult Failed() => new CustomerResult(null)
+        {
+            IsFailed = true
+        };
+
         public static CustomerResult Succeeded(Customer customer) => new CustomerResult(customer)
         {
-            Success = true
+            IsSucceeded = true
         };
 
         public static CustomerResult NotAllowed(Customer customer) => new CustomerResult(customer)

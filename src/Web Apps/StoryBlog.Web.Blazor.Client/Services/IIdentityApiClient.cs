@@ -6,7 +6,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
     /// <summary>
     /// 
     /// </summary>
-    public interface IUserApiClient
+    public interface IIdentityApiClient
     {
         /// <summary>
         /// 

@@ -15,14 +15,15 @@ using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Shared.Common;
 using StoryBlog.Web.Services.Shared.Communication;
 using StoryBlog.Web.Services.Shared.Communication.Commands;
-using StoryBlog.Web.Services.Shared.Infrastructure.Extensions;
 using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Blog.Application.Models;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -64,8 +65,8 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         }
 
         // POST api/v1/stories
-        //[Authorize]
-        [AllowAnonymous]
+        [Authorize]
+        //[AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(StoryModel), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Create([FromBody] CreateStoryModel model)
@@ -80,28 +81,23 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 HttpContext.RequestAborted
             );
 
-            if (false == result.IsSuccess())
+            if (result.IsFailed)
             {
-                foreach (var exception in result.Exceptions)
-                {
-                    logger.LogError(exception, "[StoriesController.Create]");
-                }
-
-                return BadRequest(result.Exceptions);
+                return BadRequest();
             }
 
             await commandBus.SendAsync(new StoryCreatedIntegrationCommand
             {
                 Id = Guid.NewGuid(),
-                StoryId = result.Data.Id,
-                Sent = result.Data.Created
+                StoryId = result.Entity.Id,
+                Sent = result.Entity.Created
             });
 
-            logger.StoryCreated(result.Data.Id);
+            logger.StoryCreated(result.Entity.Id);
 
             return Created(
-                Url.Action("Get", "Story", new {slug = result.Data.Slug}),
-                mapper.Map<StoryModel>(result.Data)
+                Url.Action("Get", "Story", new {slug = result.Entity.Slug}),
+                mapper.Map<StoryModel>(result.Entity)
             );
         }
 
@@ -113,7 +109,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet("{page?}")]
-        [ProducesResponseType(typeof(ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>>), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ListResult<StoryModel, ResourcesNavigationMetaInfo<AuthorsResource>>), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Get(string page, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
         {
             var flags = EnumFlags.Parse<StoryIncludes>(includes);
@@ -128,14 +124,9 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
             var result = await mediator.Send(query, HttpContext.RequestAborted);
 
-            if (false == result.IsSuccess())
+            if (result.IsFailed)
             {
-                foreach (var exception in result.Exceptions)
-                {
-                    logger.LogError(exception, "[StoriesController.Get]");
-                }
-
-                return BadRequest(result.Exceptions);
+                return BadRequest();
             }
 
             var include = EnumFlags.ToQueryString(flags).ToString();
@@ -159,21 +150,46 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 });
             }
 
-            return Ok(new ListResult<StoryModel, ResourcesMetaInfo<AuthorsResource>>
+            var authors = new Collection<Author>();
+
+            int FindAuthorIndex(Author author)
+            {
+                var index = authors.FindIndex(candidate => candidate.Id == author.Id);
+
+                if (0 > index)
+                {
+                    index = authors.Count;
+                    authors.Add(author);
+                }
+
+                return index;
+            }
+
+            return Ok(new ListResult<StoryModel, ResourcesNavigationMetaInfo<AuthorsResource>>
             {
                 Data = result.Select(story =>
                 {
-                    var model = mapper.Map<StoryModel>(story);
+                    var storyModel = mapper.Map<StoryModel>(story);
 
-                    model.Author = result.Authors.FindIndex(story.Author);
+                    storyModel.Author = FindAuthorIndex(story.Author);
+                    storyModel.Comments = story.Comments
+                        .Select(comment =>
+                        {
+                            var commentModel = mapper.Map<CommentModel>(comment);
 
-                    return model;
+                            commentModel.Author = FindAuthorIndex(comment.Author);
+
+                            return commentModel;
+                        })
+                        .ToArray();
+
+                    return storyModel;
                 }),
-                Meta = new ResourcesMetaInfo<AuthorsResource>
+                Meta = new ResourcesNavigationMetaInfo<AuthorsResource>
                 {
                     Resources = new AuthorsResource
                     {
-                        Authors = result.Authors.Select(author => mapper.Map<AuthorModel>(author))
+                        Authors = authors.Select(author => mapper.Map<AuthorModel>(author))
                     },
                     Navigation = new Navigation
                     {

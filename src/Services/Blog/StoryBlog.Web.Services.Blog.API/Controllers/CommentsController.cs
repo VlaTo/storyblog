@@ -9,7 +9,6 @@ using StoryBlog.Web.Services.Blog.Application.Comments.Commands;
 using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Shared.Communication;
 using StoryBlog.Web.Services.Shared.Communication.Commands;
-using StoryBlog.Web.Services.Shared.Infrastructure.Extensions;
 using System;
 using System.Net;
 using System.Net.Mime;
@@ -71,24 +70,24 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 HttpContext.RequestAborted
             );
 
-            if (false == result.IsSuccess())
+            if (result.IsFailed)
             {
-                return BadRequest(result.Exceptions);
+                return BadRequest();
             }
 
             await commandBus.SendAsync(new CommentCreatedIntegrationCommand
             {
                 Id = Guid.NewGuid(),
                 StorySlug = slug,
-                CommentId = result.Data.Id,
-                Sent = result.Data.Created
+                CommentId = result.Entity.Id,
+                Sent = result.Entity.Created
             });
 
-            logger.CommentCreated(slug, result.Data.Id);
+            logger.CommentCreated(slug, result.Entity.Id);
 
             return Created(
-                Url.Action("Get", "Comment", new {id = result.Data.Id}),
-                mapper.Map<CommentModel>(result.Data)
+                Url.Action("Get", "Comment", new {id = result.Entity.Id}),
+                mapper.Map<CommentModel>(result.Entity)
             );
         }
     }

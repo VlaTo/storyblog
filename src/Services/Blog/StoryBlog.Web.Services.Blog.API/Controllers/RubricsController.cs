@@ -3,15 +3,13 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using StoryBlog.Web.Services.Blog.Application.Rubrics.Queries;
 using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Shared.Common;
-using System;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Blog.Application.Rubrics.Queries;
-using StoryBlog.Web.Services.Shared.Infrastructure.Extensions;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -50,14 +48,14 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
             var result = await mediator.Send(query);
 
-            if (result.IsFailed())
+            if (result.IsFailed)
             {
                 return BadRequest();
             }
 
             return Ok(new ListResult<RubricModel, ResultMetaInfo>
             {
-                Data = result.Data.Select(rubric => mapper.Map<RubricModel>(rubric)),
+                Data = result.Entity.Select(rubric => mapper.Map<RubricModel>(rubric)),
                 Meta = null
             });
         }

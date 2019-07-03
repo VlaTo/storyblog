@@ -11,9 +11,9 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
     /// </summary>
     public sealed class SigninRequestActionEffect : Effect<SigninRequestAction>
     {
-        private readonly IUserApiClient client;
+        private readonly IIdentityApiClient client;
 
-        public SigninRequestActionEffect(IUserApiClient client)
+        public SigninRequestActionEffect(IIdentityApiClient client)
         {
             this.client = client;
         }
