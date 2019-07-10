@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.AspNetCore.Server.IISIntegration;
 
 namespace StoryBlog.Web.Services.Identity.Application.Configuration
 {
@@ -9,7 +8,7 @@ namespace StoryBlog.Web.Services.Identity.Application.Configuration
 
         public static readonly bool AllowRememberMe = true;
 
-        public static readonly string WindowsAuthenticationScheme = IISDefaults.AuthenticationScheme;
+        public static readonly string WindowsAuthenticationScheme = "Windows"; // IISDefaults.AuthenticationScheme;
 
         public static readonly TimeSpan RememberMeSigninDuration = TimeSpan.FromDays(30.0d);
 

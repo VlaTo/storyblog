@@ -17,14 +17,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json.Serialization;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using StoryBlog.Web.Services.Identity.API.Configuration;
 using StoryBlog.Web.Services.Identity.API.Extensions;
+using StoryBlog.Web.Services.Identity.Application.Configuration;
 using StoryBlog.Web.Services.Identity.Application.Services;
 using StoryBlog.Web.Services.Identity.Persistence;
 using StoryBlog.Web.Services.Identity.Persistence.Models;
 using StoryBlog.Web.Services.Shared.Captcha;
 using StoryBlog.Web.Services.Shared.Captcha.Extensions;
+using StoryBlog.Web.Services.Shared.Common;
 using System;
 using System.Drawing;
 using System.Globalization;
@@ -32,8 +34,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using StoryBlog.Web.Services.Shared.Common;
 
 namespace StoryBlog.Web.Services.Identity.API
 {
@@ -135,10 +135,7 @@ namespace StoryBlog.Web.Services.Identity.API
                         .AddDataAnnotationsLocalization();
 
                     services
-                        .AddRazorPages(options =>
-                        {
-                            options.RootDirectory = "";
-                        })
+                        .AddRazorPages()
                         .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                         /*.AddJsonOptions(options =>
                         {
@@ -289,14 +286,15 @@ namespace StoryBlog.Web.Services.Identity.API
                             {
                                 config.AsScoped();
                             },
-                            AppDomain.CurrentDomain.GetAssemblies()
+                            typeof(AccountOptions).Assembly
                         )
                         .AddAutoMapper(
                             config =>
                             {
                                 ;
                             },
-                            AppDomain.CurrentDomain.GetAssemblies()
+                            typeof(Program).Assembly,
+                            typeof(AccountOptions).Assembly
                         );
 
                         /*
@@ -337,10 +335,16 @@ namespace StoryBlog.Web.Services.Identity.API
                             options.SupportedUICultures = cultures;
                         })
                         .UseStaticFiles()
+                        .UseAuthorization()
                         .UseAuthentication()
                         .UseIdentityServer()
                         .UseCaptcha()
-                        .UseMvc();
+                        .UseRouting()
+                        //.UseMvc()
+                        .UseEndpoints(options =>
+                        {
+                            options.MapControllers();
+                        });
                 })
                 .Build();
 
