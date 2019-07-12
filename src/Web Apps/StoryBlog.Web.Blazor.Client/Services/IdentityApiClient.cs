@@ -31,7 +31,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
             this.client = client;
             this.options = options.Value;
             var authority = this.options.Host.ToString();
-            disco = new DiscoveryCache(authority, () => client);
+            disco = new DiscoveryCache(authority, () => this.client);
             crypto = new CryptoHelper();
         }
 
@@ -67,6 +67,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 throw new Exception();
             }
 
+            Console.WriteLine($"Setting bearer token: {token}");
             client.SetBearerToken(token);
 
             var response = await client.GetUserInfoAsync(new UserInfoRequest

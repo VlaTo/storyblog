@@ -26,6 +26,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Mime;
 using System.Reflection;
+using StoryBlog.Web.Services.Blog.API.Models;
 using StoryBlog.Web.Services.Blog.Domain.Exceptions;
 
 namespace StoryBlog.Web.Services.Blog.API

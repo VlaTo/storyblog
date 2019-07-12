@@ -23,6 +23,10 @@ using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Blog.API.Core;
+using StoryBlog.Web.Services.Blog.API.Models;
+using StoryBlog.Web.Services.Blog.API.Models.Flags;
+using StoryBlog.Web.Services.Blog.API.Models.Results.Resources;
 using StoryBlog.Web.Services.Blog.Application.Models;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers

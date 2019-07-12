@@ -213,6 +213,16 @@ namespace StoryBlog.Web.Blazor.Client.Services
                         );
                     }*/
 
+                    if (null != client.DefaultRequestHeaders.Authorization)
+                    {
+                        var auth = client.DefaultRequestHeaders.Authorization;
+                        Console.WriteLine($"Authorization header: {auth.Scheme} {auth.Parameter}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Authorization header not found");
+                    }
+
                     request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(JsonMediaType, 1.0d));
 
                     using (var response = await client.SendAsync(request, cancellationToken))
@@ -235,12 +245,15 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
         private static Story ProcessResult(StoryModel result)
         {
+            //new System.Text.Json.Serialization.JsonPropertyNameAttribute()
             //return new EntityListResult<FeedStory>(Enumerable.Empty<FeedStory>());
             return null;
         }
 
         private static EntityListResult<FeedStory> ProcessResult(ListResult<StoryModel, ResourcesNavigationMetaInfo<AuthorsResource>> result)
         {
+            Console.WriteLine($"result: {null != result}, result.Meta: {null != result?.Meta}, result.Meta.Resources: {null != result?.Meta?.Resources}, result.Meta.Resources.Authors: {null != result?.Meta?.Resources?.Authors}");
+
             var authors = GetAuthorIndex(result.Meta.Resources.Authors);
 
             return new EntityListResult<FeedStory>(

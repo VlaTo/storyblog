@@ -14,4 +14,8 @@
     <ProjectReference Include="..\..\Shared\StoryBlog.Web.Services.Shared.Common\Shared.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 </Project>

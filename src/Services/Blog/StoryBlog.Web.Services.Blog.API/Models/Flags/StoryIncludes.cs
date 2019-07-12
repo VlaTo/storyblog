@@ -1,7 +1,7 @@
 ﻿using System;
-using StoryBlog.Web.Services.Shared.Common.Annotations;
+using StoryBlog.Web.Services.Blog.API.Core.Annotations;
 
-namespace StoryBlog.Web.Services.Blog.Interop.Includes
+namespace StoryBlog.Web.Services.Blog.API.Models.Flags
 {
     /// <summary>
     /// 

@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
-namespace StoryBlog.Web.Services.Blog.Interop.Models
+namespace StoryBlog.Web.Services.Blog.API.Models
 {
     [DataContract]
-    public sealed class EditStoryModel
+    public sealed class CreateStoryModel
     {
         [Required]
         [DataType(DataType.Text)]
