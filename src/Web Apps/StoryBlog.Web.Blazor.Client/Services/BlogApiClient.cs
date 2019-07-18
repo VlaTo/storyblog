@@ -11,6 +11,7 @@ using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Blog.Interop.Core;
 
 namespace StoryBlog.Web.Blazor.Client.Services
 {
@@ -31,7 +32,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         }
 
         /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync" />
-        public async Task<LandingModel> GetLandingAsync(LandingIncludes flags, CancellationToken cancellationToken)
+        /*public async Task<LandingModel> GetLandingAsync(LandingIncludes flags, CancellationToken cancellationToken)
         {
             var path = new Uri(baseUri, "landing");
             var include = EnumFlags.ToQueryString(flags);
@@ -40,11 +41,6 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
             try
             {
-                /*if (null != authorizationToken)
-                {
-                    client.SetBearerToken(authorizationToken.Payload);
-                }*/
-
                 using (var response = await client.GetAsync(requestUri, cancellationToken))
                 {
                     var httpResponse = response.EnsureSuccessStatusCode();
@@ -60,10 +56,10 @@ namespace StoryBlog.Web.Blazor.Client.Services
             {
                 return new LandingModel();
             }
-        }
+        }*/
 
         /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync" />
-        public Task<EntityListResult<FeedStory>> GetStoriesAsync(StoryIncludes flags, CancellationToken cancellationToken)
+        public Task<EntityListResult<FeedStory>> GetStoriesAsync(StoryFlags flags, CancellationToken cancellationToken)
         {
             var path = new Uri(baseUri, "stories");
             var include = EnumFlags.ToQueryString(flags);
@@ -92,7 +88,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// <param name="slug"></param>
         /// <param name="flags"></param>
         /// <returns></returns>
-        public async Task<Story> GetStoryAsync(string slug, StoryIncludes flags, CancellationToken cancellationToken)
+        public async Task<Story> GetStoryAsync(string slug, StoryFlags flags, CancellationToken cancellationToken)
         {
             const string mediaType = "application/json";
 
@@ -166,7 +162,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         }
 
         /// <inheritdoc cref="IBlogApiClient.GetRubricsAsync" />
-        public async Task<IEnumerable<RubricModel>> GetRubricsAsync(CancellationToken cancellationToken)
+        /*public async Task<IEnumerable<RubricModel>> GetRubricsAsync(CancellationToken cancellationToken)
         {
             var requestUri = new Uri(baseUri, "rubrics");
 
@@ -192,7 +188,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
             {
                 return null;
             }
-        }
+        }*/
 
         public void Dispose()
         {
@@ -205,24 +201,6 @@ namespace StoryBlog.Web.Blazor.Client.Services
             {
                 using (var request = new HttpRequestMessage(HttpMethod.Get, requestUri))
                 {
-                    /*if (null != authorizationToken)
-                    {
-                        request.Headers.Authorization = new AuthenticationHeaderValue(
-                            authorizationToken.Scheme,
-                            authorizationToken.Payload
-                        );
-                    }*/
-
-                    if (null != client.DefaultRequestHeaders.Authorization)
-                    {
-                        var auth = client.DefaultRequestHeaders.Authorization;
-                        Console.WriteLine($"Authorization header: {auth.Scheme} {auth.Parameter}");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Authorization header not found");
-                    }
-
                     request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(JsonMediaType, 1.0d));
 
                     using (var response = await client.SendAsync(request, cancellationToken))
@@ -231,7 +209,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
                         using (var stream = await message.Content.ReadAsStreamAsync())
                         {
-                            var data = await JsonSerializer.ReadAsync<ListResult<StoryModel, ResourcesNavigationMetaInfo<AuthorsResource>>>(stream, cancellationToken: cancellationToken);
+                            var data = await JsonSerializer.ReadAsync<GetStoriesActionModel>(stream, cancellationToken: cancellationToken);
                             return ProcessResult(data);
                         }
                     }
@@ -250,9 +228,11 @@ namespace StoryBlog.Web.Blazor.Client.Services
             return null;
         }
 
-        private static EntityListResult<FeedStory> ProcessResult(ListResult<StoryModel, ResourcesNavigationMetaInfo<AuthorsResource>> result)
+        private static EntityListResult<FeedStory> ProcessResult(GetStoriesActionModel result)
         {
-            Console.WriteLine($"result: {null != result}, result.Meta: {null != result?.Meta}, result.Meta.Resources: {null != result?.Meta?.Resources}, result.Meta.Resources.Authors: {null != result?.Meta?.Resources?.Authors}");
+            var json = JsonSerializer.ToString(result);
+
+            Console.WriteLine($"Deserialized/serialized result: \'{json}\'");
 
             var authors = GetAuthorIndex(result.Meta.Resources.Authors);
 

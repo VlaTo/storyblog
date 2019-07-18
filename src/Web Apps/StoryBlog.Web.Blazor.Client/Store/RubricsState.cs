@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace StoryBlog.Web.Blazor.Client.Store
 {
     // ReSharper disable once UnusedMember.Global
-    public sealed class RubricsFeature : Feature<RubricsState>
+    /*public sealed class RubricsFeature : Feature<RubricsState>
     {
         public override string GetName() => nameof(RubricsState);
 
@@ -14,9 +14,9 @@ namespace StoryBlog.Web.Blazor.Client.Store
         {
             return new RubricsState(ModelStatus.None, Array.Empty<RubricModel>());
         }
-    }
+    }*/
 
-    public sealed class RubricsState : IHasModelStatus
+    /*public sealed class RubricsState : IHasModelStatus
     {
         public ModelStatus Status
         {
@@ -33,5 +33,5 @@ namespace StoryBlog.Web.Blazor.Client.Store
             Status = status;
             Rubrics = rubrics;
         }
-    }
+    }*/
 }

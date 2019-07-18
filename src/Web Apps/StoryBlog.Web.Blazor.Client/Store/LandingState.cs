@@ -6,17 +6,17 @@ namespace StoryBlog.Web.Blazor.Client.Store
     /// <summary>
     /// 
     /// </summary>
-    public sealed class LandingFeature : Feature<LandingState>
+    /*public sealed class LandingFeature : Feature<LandingState>
     {
         public override string GetName() => nameof(LandingState);
 
         protected override LandingState GetInitialState() => LandingState.Empty;
-    }
+    }*/
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed class LandingState
+    /*public sealed class LandingState
     {
         public static readonly LandingState Empty;
 
@@ -61,5 +61,5 @@ namespace StoryBlog.Web.Blazor.Client.Store
         {
             return new LandingState(false, model, error);
         }
-    }
+    }*/
 }

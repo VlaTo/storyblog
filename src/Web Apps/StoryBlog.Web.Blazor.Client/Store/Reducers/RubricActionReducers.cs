@@ -3,6 +3,7 @@ using StoryBlog.Web.Blazor.Client.Store.Actions;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Reducers
 {
+/*
     /// <summary>
     /// 
     /// </summary>
@@ -11,7 +12,9 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
         public override RubricsState Reduce(RubricsState state, GetRubricsAction action)
             => new RubricsState(ModelStatus.Loading, state.Rubrics);
     }
+*/
 
+/*
     /// <summary>
     /// 
     /// </summary>
@@ -20,7 +23,9 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
         public override RubricsState Reduce(RubricsState state, GetRubricsSuccessAction action)
             => new RubricsState(ModelStatus.Success, action.Rubrics);
     }
+*/
 
+/*
     /// <summary>
     /// 
     /// </summary>
@@ -29,4 +34,5 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
         public override RubricsState Reduce(RubricsState state, GetRubricsFailedAction action)
             => new RubricsState(ModelStatus.Failed(action.Error), state.Rubrics);
     }
+*/
 }

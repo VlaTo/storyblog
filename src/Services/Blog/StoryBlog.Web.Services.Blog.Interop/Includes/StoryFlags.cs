@@ -1,13 +1,13 @@
 ﻿using System;
-using StoryBlog.Web.Services.Blog.API.Core.Annotations;
+using StoryBlog.Web.Services.Blog.Interop.Core.Annotations;
 
-namespace StoryBlog.Web.Services.Blog.API.Models.Flags
+namespace StoryBlog.Web.Services.Blog.Interop.Includes
 {
     /// <summary>
     /// 
     /// </summary>
     [Flags]
-    public enum StoryIncludes
+    public enum StoryFlags
     {
         /// <summary>
         /// 
@@ -19,6 +19,6 @@ namespace StoryBlog.Web.Services.Blog.API.Models.Flags
         /// 
         /// </summary>
         [Flag(Key = "comments")]
-        Comments = 2,
+        Comments = 2
     }
 }

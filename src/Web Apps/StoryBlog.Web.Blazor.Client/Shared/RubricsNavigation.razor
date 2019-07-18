@@ -4,12 +4,12 @@
 
 @inherits global::Blazor.Fluxor.Components.FluxorComponent
 
-@inject IState<RubricsState> State
+@*@inject IState<RubricsState> State*@
 @inject IDispatcher Dispatcher
 @inject IUriHelper Uri
 
 <div>
-    @if (State.Value.IsNone())
+    @*@if (State.Value.IsNone())
     {
 
     }
@@ -36,7 +36,7 @@
                 </nav>
             </div>
         }
-    }
+    }*@
 </div>
 
 @functions
@@ -44,7 +44,7 @@
     protected override void OnInit()
     {
         base.OnInit();
-        Dispatcher.Dispatch(new GetRubricsAction());
+        /*Dispatcher.Dispatch(new GetRubricsAction());*/
     }
 
     private void OnRubricClick(string slug, UIMouseEventArgs e)

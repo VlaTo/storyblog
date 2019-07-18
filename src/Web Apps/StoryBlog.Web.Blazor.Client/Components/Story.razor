@@ -98,7 +98,7 @@ else
 
     protected override void OnParametersSet()
     {
-        const StoryIncludes includes = StoryIncludes.Authors | StoryIncludes.Comments;
+        const StoryFlags includes = StoryFlags.Authors | StoryFlags.Comments;
         Dispatcher.Dispatch(new GetStoryAction(Slug, includes));
     }
 }

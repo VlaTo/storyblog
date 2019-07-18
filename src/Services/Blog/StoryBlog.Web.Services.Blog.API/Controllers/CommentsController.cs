@@ -58,7 +58,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         //[Authorize]
         [AllowAnonymous]
         [HttpPost("{slug:required}")]
-        [ProducesResponseType(typeof(CommentModel), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Models.CommentModel), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Create(string slug, [FromBody] CreateCommentModel model)
         {
             if (false == ModelState.IsValid)
@@ -88,7 +88,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
             return Created(
                 Url.Action("Get", "Comment", new {id = result.Entity.Id}),
-                mapper.Map<CommentModel>(result.Entity)
+                mapper.Map<Models.CommentModel>(result.Entity)
             );
         }
     }

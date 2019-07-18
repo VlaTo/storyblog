@@ -1,5 +1,5 @@
 ﻿using System;
-using StoryBlog.Web.Services.Shared.Common.Annotations;
+using StoryBlog.Web.Services.Blog.Interop.Core.Annotations;
 
 namespace StoryBlog.Web.Services.Blog.Interop.Includes
 {

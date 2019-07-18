@@ -7,14 +7,14 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetRubricsAction : IAction
+    /*public sealed class GetRubricsAction : IAction
     {
-    }
+    }*/
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetRubricsSuccessAction : IAction
+    /*public sealed class GetRubricsSuccessAction : IAction
     {
         public IEnumerable<RubricModel> Rubrics
         {
@@ -25,12 +25,12 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
         {
             Rubrics = rubrics;
         }
-    }
+    }*/
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetRubricsFailedAction : IAction
+    /*public sealed class GetRubricsFailedAction : IAction
     {
         public string Error
         {
@@ -41,5 +41,5 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
         {
             Error = error;
         }
-    }
+    }*/
 }

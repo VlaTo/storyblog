@@ -11,14 +11,14 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// </summary>
     public sealed class GetStoriesAction : IAction
     {
-        public StoryIncludes Includes
+        public StoryFlags Flags
         {
             get;
         }
 
-        public GetStoriesAction(StoryIncludes includes)
+        public GetStoriesAction(StoryFlags flags)
         {
-            Includes = includes;
+            Flags = flags;
         }
     }
 
@@ -59,7 +59,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// </summary>
     public sealed class GetRubricStoriesAction : IAction
     {
-        public StoryIncludes Includes
+        public StoryFlags Flags
         {
             get;
         }
@@ -69,10 +69,10 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
             get;
         }
 
-        public GetRubricStoriesAction(string rubric, StoryIncludes includes)
+        public GetRubricStoriesAction(string rubric, StoryFlags flags)
         {
             Rubric = rubric;
-            Includes = includes;
+            Flags = flags;
         }
     }
 

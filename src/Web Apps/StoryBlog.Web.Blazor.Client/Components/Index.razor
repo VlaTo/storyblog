@@ -127,7 +127,7 @@
     protected override void OnInit()
     {
         base.OnInit();
-        Dispatcher.Dispatch(new GetStoriesAction(StoryIncludes.Authors | StoryIncludes.Comments));
+        Dispatcher.Dispatch(new GetStoriesAction(StoryFlags.Authors | StoryFlags.Comments));
     }
 
     private void OnPaginationClick(IAction action)
