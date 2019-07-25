@@ -24,6 +24,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using IdentityServer4.Validation;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
@@ -72,13 +73,15 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         [AllowAnonymous]
         [HttpGet("{slug:required}")]
         [ProducesResponseType(typeof(Result<Models.StoryModel, ResourcesMetaInfo<AuthorsResource>>), (int) HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(string slug, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
+        public async Task<IActionResult> Get(string slug, [FromQuery(Name = "include")] IEnumerable<string> includes)
         {
-            var flags = EnumFlags.Parse<StoryFlags>(includes);
+            //var flags = Enums.Parse<StoryFlags>(includes);
             var query = new GetStoryQuery(User, slug)
             {
-                WithAuthors = StoryFlags.Authors == (flags & StoryFlags.Authors),
-                WithComments = StoryFlags.Comments == (flags & StoryFlags.Comments)
+                //WithAuthors = StoryFlags.Authors == (flags & StoryFlags.Authors),
+                WithAuthors = true,
+                //WithComments = StoryFlags.Comments == (flags & StoryFlags.Comments)
+                WithComments = true
             };
 
             var result = await mediator.Send(query, HttpContext.RequestAborted);

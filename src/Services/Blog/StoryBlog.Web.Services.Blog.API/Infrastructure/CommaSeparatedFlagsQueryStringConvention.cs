@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Filters;
@@ -21,17 +23,19 @@ namespace StoryBlog.Web.Services.Blog.API.Infrastructure
 
             foreach (var parameter in action.Parameters)
             {
-                var attribute = parameter.Attributes.OfType<FromCommaSeparatedQueryAttribute>().FirstOrDefault();
+                var attribute = parameter.Attributes.OfType<IEnumValuesQuery>().FirstOrDefault();
 
                 if (null == attribute)
                 {
                     continue;
                 }
 
-                parameter.Action.Filters.Add(new CommaSeparatedFlagsQueryStringFilter(
-                    parameter.BindingInfo.BindingSource,
-                    attribute.Separator
-                ));
+                var context = new EnumValuesContext(
+                    parameter.ParameterType,
+                    CultureInfo.InvariantCulture.TextInfo.ListSeparator
+                );
+                
+                parameter.Action.Filters.Add(new SeparatedQueryFilter(parameter.BindingInfo.BindingSource, context));
             }
         }
     }

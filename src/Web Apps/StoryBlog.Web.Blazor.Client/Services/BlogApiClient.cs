@@ -62,7 +62,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         public Task<EntityListResult<FeedStory>> GetStoriesAsync(StoryFlags flags, CancellationToken cancellationToken)
         {
             var path = new Uri(baseUri, "stories");
-            var include = EnumFlags.ToQueryString(flags);
+            var include = Enums.ToQueryString(flags);
             var query = QueryString.Create(nameof(include), include);
             var requestUri = new UriBuilder(path) {Query = query.ToUriComponent()}.Uri;
 
@@ -93,7 +93,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
             const string mediaType = "application/json";
 
             var path = new Uri(baseUri, $"story/{slug}");
-            var include = EnumFlags.ToQueryString(flags);
+            var include = Enums.ToQueryString(flags);
             var query = QueryString.Create(nameof(include), include);
             var requestUri = new UriBuilder(path) { Query = query.ToUriComponent() }.Uri;
             var request = new HttpRequestMessage

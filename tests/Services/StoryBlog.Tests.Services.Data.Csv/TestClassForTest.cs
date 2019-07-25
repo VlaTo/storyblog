@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Globalization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoryBlog.Web.Blazor.Components;
-using StoryBlog.Web.Services.Shared.Common;
-using StoryBlog.Web.Services.Shared.Common.Annotations;
+using StoryBlog.Web.Services.Blog.Interop.Core;
+using StoryBlog.Web.Services.Blog.Interop.Core.Annotations;
 
 namespace StoryBlog.Tests.Services.Data.Csv
 {
@@ -35,16 +36,18 @@ namespace StoryBlog.Tests.Services.Data.Csv
         public void Test2()
         {
             //var include = EnumFlags.ToQueryString(TestFlags.Value1 | TestFlags.Value3);
-            var temp = EnumFlags.Parse<TestFlags>(new[] {"value-1", "Value3"}, StringComparer.InvariantCulture);
+            var value = String.Join(CultureInfo.InvariantCulture.TextInfo.ListSeparator, "value-1", "Value3");
+            var temp = Enums.Parse(typeof(TestFlags), value);
             //Assert.IsNotNull(include);
         }
 
         [TestMethod]
         public void Test3()
         {
-            var include = EnumFlags.ToQueryString(TestFlags.Value1 | TestFlags.Value2);
+            var value = (TestFlags.Value1 | TestFlags.Value2).ToString("F");
+            //var include = EnumFlags.ToQueryString(TestFlags.Value1 | TestFlags.Value2);
             //var temp = EnumFlags.Parse<TestFlags>(new[] {"value-1", "Value3"}, StringComparer.InvariantCulture);
-            Assert.IsNotNull(include);
+            //Assert.IsNotNull(include);
         }
     }
 

@@ -185,6 +185,7 @@ namespace StoryBlog.Web.Services.Blog.API
                                     .ForMember(
                                         story => story.Author,
                                         //mapping => mapping.MapFrom(source => source.Author)
+                                        //mapping=>mapping.MapFrom((source,dest)=>dest.Author=)
                                         mapping => mapping.Ignore()
                                     )
                                     .ForMember(

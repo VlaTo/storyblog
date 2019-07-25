@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Services\Blog\StoryBlog.Web.Services.Blog.Interop\Blog.Interop.csproj" />
     <ProjectReference Include="..\..\..\src\Services\Shared\StoryBlog.Web.Services.Shared.Common\Shared.Common.csproj" />
     <ProjectReference Include="..\..\..\src\Services\Shared\StoryBlog.Web.Services.Shared.Data.Csv\Shared.Data.Csv.csproj" />
     <ProjectReference Include="..\..\..\src\Web Apps\StoryBlog.Web.Blazor.Components\Blazor.Components.csproj" />

@@ -111,13 +111,14 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         [AllowAnonymous]
         [HttpGet("{page?}")]
         [ProducesResponseType(typeof(GetStoriesActionModel), (int) HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(string page, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
+        //public async Task<IActionResult> Get(string page, [FromCommaSeparatedQuery(Name = "include", EnumType = typeof(StoryFlags))] IEnumerable<string> includes)
+        public async Task<IActionResult> Get(string page, [FromQuery(Name = "include")] StoryFlags includes)
         {
-            var flags = EnumFlags.Parse<StoryFlags>(includes);
+            //var flags = EnumFlags.Parse<StoryFlags>(includes);
             var query = new GetStoriesQuery(User)
             {
-                IncludeAuthors = StoryFlags.Authors == (flags & StoryFlags.Authors),
-                IncludeComments = StoryFlags.Comments == (flags & StoryFlags.Comments),
+                IncludeAuthors = StoryFlags.Authors == (includes & StoryFlags.Authors),
+                IncludeComments = StoryFlags.Comments == (includes & StoryFlags.Comments),
                 Cursor = (null != page && NavigationCursorEncoder.TryParse(page, out var cursor))
                     ? cursor
                     : NavigationCursor.Forward(0, blogSettings.PageSize)
@@ -130,7 +131,8 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return BadRequest();
             }
 
-            var include = EnumFlags.ToQueryString(flags).ToString();
+            var include = Enums.Format(typeof(StoryFlags), StoryFlags.Authors, "F");
+            string forward = null;
             string backward = null;
 
             if (null != result.Backward)
@@ -140,8 +142,6 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                     page = NavigationCursorEncoder.ToEncodedString(result.Backward), include
                 });
             }
-
-            string forward = null;
 
             if (null != result.Forward)
             {
@@ -197,7 +197,11 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                             .ToArray()
 
                     },
-                    Navigation = new Interop.Models.Navigation {Previous = backward, Next = forward}
+                    Navigation = new Interop.Models.Navigation
+                    {
+                        Previous = backward,
+                        Next = forward
+                    }
                 }
             };
 

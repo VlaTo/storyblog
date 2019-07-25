@@ -58,15 +58,17 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(typeof(LandingModel), (int) HttpStatusCode.OK)]
-        public async Task<IActionResult> Get([FromCommaSeparatedQuery(Name = "include")]IEnumerable<string> includes)
+        public async Task<IActionResult> Get([FromQuery(Name = "include")]IEnumerable<string> includes)
         {
-            var flags = EnumFlags.Parse<LandingIncludes>(includes);
+            //var flags = Enums.Parse<LandingIncludes>(includes);
             var query = new GetLandingQuery
             {
-                IncludeHeroStory = LandingIncludes.HeroStory == (flags & LandingIncludes.HeroStory),
-                FeaturedStoriesCount = LandingIncludes.FeaturedStories == (flags & LandingIncludes.FeaturedStories)
-                    ? blogSettings.FeaturedStoriesCount
-                    : 0
+                //IncludeHeroStory = LandingIncludes.HeroStory == (flags & LandingIncludes.HeroStory),
+                IncludeHeroStory = false,
+                //FeaturedStoriesCount = LandingIncludes.FeaturedStories == (flags & LandingIncludes.FeaturedStories)
+                //    ? blogSettings.FeaturedStoriesCount
+                //    : 0
+                FeaturedStoriesCount = 0
                 //StoriesFeedCount = LandingIncludes.StoriesFeed == (flags & LandingIncludes.StoriesFeed)
                 //    ? blogSettings.FeedStoriesCount
                 //    : 0

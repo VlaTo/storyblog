@@ -67,12 +67,13 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         [AllowAnonymous]
         [HttpGet("{id:long}")]
         [ProducesResponseType(typeof(Models.CommentModel), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(long id, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
+        public async Task<IActionResult> Get(long id, [FromEnumQuery(typeof(CommentIncludes), Name = "include")] IEnumerable<string> includes)
         {
-            var flags = EnumFlags.Parse<CommentIncludes>(includes);
+            //var flags = Enums.Parse<CommentIncludes>(includes);
             var query = new GetCommentQuery(User, id)
             {
-                IncludeAuthor = CommentIncludes.Authors == (flags & CommentIncludes.Authors)
+                //IncludeAuthor = CommentIncludes.Authors == (flags & CommentIncludes.Authors)
+                IncludeAuthor = true
             };
 
             var result = await mediator.Send(query, HttpContext.RequestAborted);
