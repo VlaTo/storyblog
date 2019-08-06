@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StoryBlog.Web.Services.Shared.Communication
+namespace StoryBlog.Web.Services.Shared.Communication.Commands
 {
     /// <summary>
     /// 

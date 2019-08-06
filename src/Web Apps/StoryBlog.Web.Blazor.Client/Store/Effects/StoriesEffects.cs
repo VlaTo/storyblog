@@ -29,7 +29,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
         {
             try
             {
-                var result = await client.GetStoriesAsync(action.Includes, CancellationToken.None);
+                var result = await client.GetStoriesAsync(action.Flags, CancellationToken.None);
 
                 if (null == result)
                 {

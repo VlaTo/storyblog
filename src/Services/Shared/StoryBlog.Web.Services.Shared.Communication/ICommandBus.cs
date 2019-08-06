@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using StoryBlog.Web.Services.Shared.Communication.Commands;
 
 namespace StoryBlog.Web.Services.Shared.Communication
 {

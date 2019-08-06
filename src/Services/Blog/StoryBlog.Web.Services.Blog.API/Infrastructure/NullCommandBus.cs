@@ -2,6 +2,7 @@
 using StoryBlog.Web.Services.Shared.Communication;
 using System;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Shared.Communication.Commands;
 
 namespace StoryBlog.Web.Services.Blog.API.Infrastructure
 {

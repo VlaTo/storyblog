@@ -19,15 +19,15 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// <param name="flags"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<LandingModel> GetLandingAsync(LandingIncludes flags, CancellationToken cancellationToken);
+        //Task<LandingModel> GetLandingAsync(LandingIncludes flags, CancellationToken cancellationToken);
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="include"></param>
+        /// <param name="flag"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<EntityListResult<FeedStory>> GetStoriesAsync(StoryIncludes include, CancellationToken cancellationToken);
+        Task<EntityListResult<FeedStory>> GetStoriesAsync(StoryFlags flag, CancellationToken cancellationToken);
 
         /// <summary>
         /// 
@@ -42,7 +42,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// <param name="flags"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Story> GetStoryAsync(string slug, StoryIncludes flags, CancellationToken cancellationToken);
+        Task<Story> GetStoryAsync(string slug, StoryFlags flags, CancellationToken cancellationToken);
 
         /// <summary>
         /// 
@@ -55,6 +55,6 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// 
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<RubricModel>> GetRubricsAsync(CancellationToken cancellationToken);
+        //Task<IEnumerable<RubricModel>> GetRubricsAsync(CancellationToken cancellationToken);
     }
 }

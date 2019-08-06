@@ -1,36 +1,68 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace StoryBlog.Web.Services.Blog.Interop.Models
 {
-    /// <summary>
-    /// 
-    /// </summary>
     [DataContract(Namespace = "http://storyblog.org/schemas/json/models/story")]
-    public sealed class StoryModel : StoryModelBase
+    public sealed class StoryModel
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        [DataMember(Name = "closed")]
+        [JsonPropertyName("title")]
+        public string Title
+        {
+            get;
+            set;
+        }
+
+        [JsonPropertyName("slug")]
+        public string Slug
+        {
+            get;
+            set;
+        }
+
+        [JsonPropertyName("content")]
+        public string Content
+        {
+            get;
+            set;
+        }
+
+        [JsonPropertyName("closed")]
         public bool Closed
         {
             get;
             set;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        [DataMember(Name = "comments")]
+        [JsonPropertyName("author")]
+        public int Author
+        {
+            get;
+            set;
+        }
+
+        [JsonPropertyName("created")]
+        public DateTimeOffset Created
+        {
+            get;
+            set;
+        }
+
+        [JsonPropertyName("published")]
+        public DateTimeOffset? Published
+        {
+            get;
+            set;
+        }
+
+        [JsonPropertyName("comments")]
         public CommentModel[] Comments
         {
             get;
             set;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public StoryModel()
         {
             Comments = new CommentModel[0];

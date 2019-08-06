@@ -7,7 +7,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetLandingAction : IAction
+    /*public sealed class GetLandingAction : IAction
     {
         public LandingIncludes Includes
         {
@@ -18,12 +18,12 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
         {
             Includes = includes;
         }
-    }
+    }*/
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetLandingSuccessAction : IAction
+    /*public sealed class GetLandingSuccessAction : IAction
     {
         public LandingModel Data
         {
@@ -34,12 +34,12 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
         {
             Data = data;
         }
-    }
+    }*/
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetLandingFailedAction : IAction
+    /*public sealed class GetLandingFailedAction : IAction
     {
         public string Error
         {
@@ -50,5 +50,5 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
         {
             Error = error;
         }
-    }
+    }*/
 }

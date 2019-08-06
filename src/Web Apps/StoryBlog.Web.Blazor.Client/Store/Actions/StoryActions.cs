@@ -21,7 +21,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
         /// <summary>
         /// 
         /// </summary>
-        public StoryIncludes Flags
+        public StoryFlags Flags
         {
             get;
         }
@@ -31,7 +31,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
         /// </summary>
         /// <param name="slug"></param>
         /// <param name="flags"></param>
-        public GetStoryAction(string slug, StoryIncludes flags)
+        public GetStoryAction(string slug, StoryFlags flags)
         {
             Slug = slug;
             Flags = flags;

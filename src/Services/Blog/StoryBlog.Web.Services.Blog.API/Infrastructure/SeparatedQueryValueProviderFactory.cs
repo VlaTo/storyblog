@@ -4,22 +4,23 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace StoryBlog.Web.Services.Blog.API.Infrastructure
 {
-    public class SeparatedQueryStringValueProviderFactory : IValueProviderFactory
+    internal sealed class SeparatedQueryValueProviderFactory : IValueProviderFactory
     {
         private readonly BindingSource bindingSource;
-        private readonly char separator;
+        private readonly EnumValuesContext enumValuesContext;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="bindingSource"></param>
+        /// <param name="enumValuesContext"></param>
+        /// <param name="separator"></param>
         /// <param name="parameterType"></param>
         /// <param name="key"></param>
-        /// <param name="separator"></param>
-        public SeparatedQueryStringValueProviderFactory(BindingSource bindingSource, char separator)
+        public SeparatedQueryValueProviderFactory(BindingSource bindingSource, EnumValuesContext enumValuesContext)
         {
             this.bindingSource = bindingSource;
-            this.separator = separator;
+            this.enumValuesContext = enumValuesContext;
         }
 
         public Task CreateValueProviderAsync(ValueProviderFactoryContext context)
@@ -34,7 +35,7 @@ namespace StoryBlog.Web.Services.Blog.API.Infrastructure
             if (null != query && 0 < query.Count)
             {
                 context.ValueProviders.Add(
-                    new SeparatedQueryStringValueProvider(bindingSource, query, separator)
+                    new SeparatedQueryStringValueProvider(bindingSource, query, enumValuesContext)
                 );
             }
 

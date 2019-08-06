@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
+using StoryBlog.Web.Services.Blog.API.Models;
 using StoryBlog.Web.Services.Shared.Common;
 
 namespace StoryBlog.Web.Services.Blog.Interop.Models

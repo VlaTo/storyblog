@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using System;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace StoryBlog.Web.Services.Blog.API.Infrastructure.Filters
@@ -6,18 +7,18 @@ namespace StoryBlog.Web.Services.Blog.API.Infrastructure.Filters
     /// <summary>
     /// 
     /// </summary>
-    public class CommaSeparatedFlagsQueryStringFilter : IResourceFilter
+    internal class SeparatedQueryFilter : IResourceFilter
     {
-        private readonly SeparatedQueryStringValueProviderFactory factory;
+        private readonly SeparatedQueryValueProviderFactory factory;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="bindingSource"></param>
         /// <param name="separator"></param>
-        public CommaSeparatedFlagsQueryStringFilter(BindingSource bindingSource, char separator)
+        public SeparatedQueryFilter(BindingSource bindingSource, EnumValuesContext context)
         {
-            factory = new SeparatedQueryStringValueProviderFactory(bindingSource, separator);
+            factory = new SeparatedQueryValueProviderFactory(bindingSource, context);
         }
 
         /// <inheritdoc cref="IResourceFilter.OnResourceExecuting" />

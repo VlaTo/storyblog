@@ -7,12 +7,13 @@ using Microsoft.Extensions.Options;
 using StoryBlog.Web.Services.Blog.API.Extensions;
 using StoryBlog.Web.Services.Blog.API.Infrastructure;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
+using StoryBlog.Web.Services.Blog.API.Models;
+using StoryBlog.Web.Services.Blog.API.Models.Results.Resources;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
+using StoryBlog.Web.Services.Blog.Application.Models;
 using StoryBlog.Web.Services.Blog.Application.Stories.Commands;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
-using StoryBlog.Web.Services.Blog.Interop;
-using StoryBlog.Web.Services.Blog.Interop.Includes;
-using StoryBlog.Web.Services.Blog.Interop.Models;
+using StoryBlog.Web.Services.Blog.Interop.Core;
 using StoryBlog.Web.Services.Shared.Common;
 using StoryBlog.Web.Services.Shared.Communication;
 using StoryBlog.Web.Services.Shared.Communication.Commands;
@@ -23,7 +24,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Blog.Application.Models;
+using IdentityServer4.Validation;
+using StoryBlog.Web.Services.Blog.Interop.Includes;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -70,14 +72,16 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         // GET api/v1/story/<slug>
         [AllowAnonymous]
         [HttpGet("{slug:required}")]
-        [ProducesResponseType(typeof(Result<StoryModel, ResourcesMetaInfo<AuthorsResource>>), (int) HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(string slug, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
+        [ProducesResponseType(typeof(Result<Models.StoryModel, ResourcesMetaInfo<AuthorsResource>>), (int) HttpStatusCode.OK)]
+        public async Task<IActionResult> Get(string slug, [FromQuery(Name = "include")] IEnumerable<string> includes)
         {
-            var flags = EnumFlags.Parse<StoryIncludes>(includes);
+            //var flags = Enums.Parse<StoryFlags>(includes);
             var query = new GetStoryQuery(User, slug)
             {
-                IncludeAuthors = StoryIncludes.Authors == (flags & StoryIncludes.Authors),
-                IncludeComments = StoryIncludes.Comments == (flags & StoryIncludes.Comments)
+                //WithAuthors = StoryFlags.Authors == (flags & StoryFlags.Authors),
+                WithAuthors = true,
+                //WithComments = StoryFlags.Comments == (flags & StoryFlags.Comments)
+                WithComments = true
             };
 
             var result = await mediator.Send(query, HttpContext.RequestAborted);
@@ -102,15 +106,15 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return index;
             }
 
-            StoryModel MapStory(Story story)
+            Models.StoryModel MapStory(Story story)
             {
-                var storyModel = mapper.Map<StoryModel>(story);
+                var storyModel = mapper.Map<Models.StoryModel>(story);
 
                 storyModel.Author = FindAuthorIndex(story.Author);
                 storyModel.Comments = story.Comments
                     .Select(comment =>
                     {
-                        var commentModel = mapper.Map<CommentModel>(comment);
+                        var commentModel = mapper.Map<Models.CommentModel>(comment);
 
                         commentModel.Author = FindAuthorIndex(comment.Author);
 
@@ -121,14 +125,14 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return storyModel;
             }
 
-            return Ok(new Result<StoryModel, ResourcesMetaInfo<AuthorsResource>>
+            return Ok(new Result<Models.StoryModel, ResourcesMetaInfo<AuthorsResource>>
             {
                 Data = MapStory(result.Entity),
                 Meta = new ResourcesMetaInfo<AuthorsResource>
                 {
                     Resources = new AuthorsResource
                     {
-                        Authors = authors.Select(author => mapper.Map<AuthorModel>(author))
+                        Authors = authors.Select(author => mapper.Map<Models.AuthorModel>(author))
                     }
                 }
             });
@@ -137,7 +141,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         // PUT api/v1/story/<slug>
         [AllowAnonymous]
         [HttpPut("{slug:required}")]
-        [ProducesResponseType(typeof(StoryModel), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Models.StoryModel), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Put(string slug, [FromBody] EditStoryModel model)
         {
             if (false == ModelState.IsValid)
@@ -169,7 +173,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 var url = Url.Action("Get", "Story", new {slug = result.Entity.Slug});
             }
 
-            return Ok(mapper.Map<StoryModel>(result.Entity));
+            return Ok(mapper.Map<Models.StoryModel>(result.Entity));
         }
 
         // DELETE api/v1/story/<slug>

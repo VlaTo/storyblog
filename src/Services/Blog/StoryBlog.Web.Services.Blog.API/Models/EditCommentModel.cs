@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace StoryBlog.Web.Services.Blog.Interop.Models
+namespace StoryBlog.Web.Services.Blog.API.Models
 {
     [DataContract(Name = "comment")]
     public sealed class EditCommentModel

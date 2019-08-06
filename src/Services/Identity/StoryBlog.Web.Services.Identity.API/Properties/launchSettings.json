@@ -19,7 +19,6 @@
     },
     "StoryBlog.Web.Services.Identity": {
       "commandName": "Project",
-      "launchBrowser": true,
       "launchUrl": "account/signin?returnUrl=%2Fhome",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

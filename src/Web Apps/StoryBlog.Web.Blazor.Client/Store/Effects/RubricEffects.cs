@@ -7,6 +7,7 @@ using StoryBlog.Web.Blazor.Client.Store.Actions;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Effects
 {
+/*
     /// <summary>
     /// 
     /// </summary>
@@ -39,4 +40,5 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
             }
         }
     }
+*/
 }

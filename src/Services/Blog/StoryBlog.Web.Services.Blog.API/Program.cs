@@ -26,6 +26,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Mime;
 using System.Reflection;
+using StoryBlog.Web.Services.Blog.API.Models;
 using StoryBlog.Web.Services.Blog.Domain.Exceptions;
 
 namespace StoryBlog.Web.Services.Blog.API
@@ -161,14 +162,14 @@ namespace StoryBlog.Web.Services.Blog.API
                                 config.AddBlogApplicationTypeMappings();
 
                                 config
-                                    .CreateMap<Author, AuthorModel>()
+                                    .CreateMap<Author, Interop.Models.AuthorModel>()
                                     .ForMember(
                                         landing => landing.Name,
                                         mapping => mapping.MapFrom(source => source.UserName)
                                     );
 
                                 config
-                                    .CreateMap<Comment, CommentModel>()
+                                    .CreateMap<Comment, Interop.Models.CommentModel>()
                                     .ForMember(
                                         story => story.Id,
                                         mapping => mapping.MapFrom(source => source.Id)
@@ -184,6 +185,7 @@ namespace StoryBlog.Web.Services.Blog.API
                                     .ForMember(
                                         story => story.Author,
                                         //mapping => mapping.MapFrom(source => source.Author)
+                                        //mapping=>mapping.MapFrom((source,dest)=>dest.Author=)
                                         mapping => mapping.Ignore()
                                     )
                                     .ForMember(
@@ -227,7 +229,7 @@ namespace StoryBlog.Web.Services.Blog.API
                                     );*/
 
                                 config
-                                    .CreateMap<Story, StoryModel>()
+                                    .CreateMap<Story, Interop.Models.StoryModel>()
                                     .ForMember(
                                         story => story.Title,
                                         mapping => mapping.MapFrom(source => source.Title)
@@ -245,7 +247,10 @@ namespace StoryBlog.Web.Services.Blog.API
                                         story => story.Closed,
                                         mapping => mapping.MapFrom((source, dest) => false)
                                     )
-                                    .ForMember(story => story.Author, mapping => mapping.Ignore())
+                                    .ForMember(
+                                        story => story.Author, 
+                                        mapping => mapping.Ignore()
+                                    )
                                     .ForMember(
                                         story => story.Created,
                                         mapping => mapping.MapFrom(source => source.Created)
@@ -255,6 +260,10 @@ namespace StoryBlog.Web.Services.Blog.API
                                         mapping.AllowNull();
                                         mapping.MapFrom(source => source.Published);
                                     })
+                                    .ForMember(
+                                        story => story.Comments, 
+                                        mapping => mapping.Ignore()
+                                    )
                                     /*.AfterMap((source, story, ctx) =>
                                         story.Comments = source.Comments
                                             .Select(comment => ctx.Mapper.Map<CommentModel>(comment))

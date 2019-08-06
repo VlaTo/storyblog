@@ -11,7 +11,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
     /// 
     /// </summary>
     // ReSharper disable once UnusedMember.Global
-    internal sealed class GetLandingEffect : Effect<GetLandingAction>
+    /*internal sealed class GetLandingEffect : Effect<GetLandingAction>
     {
         private readonly IBlogApiClient client;
 
@@ -38,5 +38,5 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
                 dispatcher.Dispatch(new GetLandingFailedAction(exception.Message));
             }
         }
-    }
+    }*/
 }

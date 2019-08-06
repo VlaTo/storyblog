@@ -7,17 +7,16 @@ namespace StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter)]
-    public class FromCommaSeparatedQueryAttribute : FromQueryAttribute
+    public class FromEnumQueryAttribute : FromQueryAttribute, IEnumValuesQuery
     {
-        public char Separator
+        public Type EnumType
         {
             get;
-            set;
         }
 
-        public FromCommaSeparatedQueryAttribute()
+        public FromEnumQueryAttribute(Type enumType)
         {
-            Separator = ',';
+            EnumType = enumType;
         }
     }
 }

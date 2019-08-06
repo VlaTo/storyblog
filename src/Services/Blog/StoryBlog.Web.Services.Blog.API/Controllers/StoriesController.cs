@@ -7,12 +7,12 @@ using Microsoft.Extensions.Options;
 using StoryBlog.Web.Services.Blog.API.Extensions;
 using StoryBlog.Web.Services.Blog.API.Infrastructure;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
+using StoryBlog.Web.Services.Blog.API.Models;
+using StoryBlog.Web.Services.Blog.Application.Models;
 using StoryBlog.Web.Services.Blog.Application.Stories.Commands;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
-using StoryBlog.Web.Services.Blog.Interop;
-using StoryBlog.Web.Services.Blog.Interop.Includes;
+using StoryBlog.Web.Services.Blog.Interop.Core;
 using StoryBlog.Web.Services.Blog.Interop.Models;
-using StoryBlog.Web.Services.Shared.Common;
 using StoryBlog.Web.Services.Shared.Communication;
 using StoryBlog.Web.Services.Shared.Communication.Commands;
 using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
@@ -23,7 +23,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Blog.Application.Models;
+using StoryBlog.Web.Services.Blog.Interop.Includes;
+using AuthorModel = StoryBlog.Web.Services.Blog.Interop.Models.AuthorModel;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -68,7 +69,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         [Authorize]
         //[AllowAnonymous]
         [HttpPost]
-        [ProducesResponseType(typeof(StoryModel), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Models.StoryModel), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Create([FromBody] CreateStoryModel model)
         {
             if (false == ModelState.IsValid)
@@ -97,7 +98,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
             return Created(
                 Url.Action("Get", "Story", new {slug = result.Entity.Slug}),
-                mapper.Map<StoryModel>(result.Entity)
+                mapper.Map<Models.StoryModel>(result.Entity)
             );
         }
 
@@ -109,14 +110,15 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet("{page?}")]
-        [ProducesResponseType(typeof(ListResult<StoryModel, ResourcesNavigationMetaInfo<AuthorsResource>>), (int) HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(string page, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
+        [ProducesResponseType(typeof(GetStoriesActionModel), (int) HttpStatusCode.OK)]
+        //public async Task<IActionResult> Get(string page, [FromCommaSeparatedQuery(Name = "include", EnumType = typeof(StoryFlags))] IEnumerable<string> includes)
+        public async Task<IActionResult> Get(string page, [FromQuery(Name = "include")] StoryFlags includes)
         {
-            var flags = EnumFlags.Parse<StoryIncludes>(includes);
+            //var flags = EnumFlags.Parse<StoryFlags>(includes);
             var query = new GetStoriesQuery(User)
             {
-                IncludeAuthors = StoryIncludes.Authors == (flags & StoryIncludes.Authors),
-                IncludeComments = StoryIncludes.Comments == (flags & StoryIncludes.Comments),
+                IncludeAuthors = StoryFlags.Authors == (includes & StoryFlags.Authors),
+                IncludeComments = StoryFlags.Comments == (includes & StoryFlags.Comments),
                 Cursor = (null != page && NavigationCursorEncoder.TryParse(page, out var cursor))
                     ? cursor
                     : NavigationCursor.Forward(0, blogSettings.PageSize)
@@ -129,7 +131,8 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return BadRequest();
             }
 
-            var include = EnumFlags.ToQueryString(flags).ToString();
+            var include = Enums.Format(typeof(StoryFlags), StoryFlags.Authors, "F");
+            string forward = null;
             string backward = null;
 
             if (null != result.Backward)
@@ -139,8 +142,6 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                     page = NavigationCursorEncoder.ToEncodedString(result.Backward), include
                 });
             }
-
-            string forward = null;
 
             if (null != result.Forward)
             {
@@ -165,39 +166,46 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return index;
             }
 
-            return Ok(new ListResult<StoryModel, ResourcesNavigationMetaInfo<AuthorsResource>>
+            var actionResult = new GetStoriesActionModel
             {
-                Data = result.Select(story =>
-                {
-                    var storyModel = mapper.Map<StoryModel>(story);
-
-                    storyModel.Author = FindAuthorIndex(story.Author);
-                    storyModel.Comments = story.Comments
-                        .Select(comment =>
-                        {
-                            var commentModel = mapper.Map<CommentModel>(comment);
-
-                            commentModel.Author = FindAuthorIndex(comment.Author);
-
-                            return commentModel;
-                        })
-                        .ToArray();
-
-                    return storyModel;
-                }),
-                Meta = new ResourcesNavigationMetaInfo<AuthorsResource>
-                {
-                    Resources = new AuthorsResource
+                Data = result
+                    .Select(story =>
                     {
-                        Authors = authors.Select(author => mapper.Map<AuthorModel>(author))
+                        var storyModel = mapper.Map<Interop.Models.StoryModel>(story);
+
+                        storyModel.Author = FindAuthorIndex(story.Author);
+                        storyModel.Comments = story.Comments
+                            .Select(comment =>
+                            {
+                                var commentModel = mapper.Map<Interop.Models.CommentModel>(comment);
+
+                                commentModel.Author = FindAuthorIndex(comment.Author);
+
+                                return commentModel;
+                            })
+                            .ToArray();
+
+                        return storyModel;
+                    })
+                    .ToArray(),
+                Meta = new MetaInfo
+                {
+                    Resources = new StoryResources
+                    {
+                        Authors = authors
+                            .Select(author => mapper.Map<Interop.Models.AuthorModel>(author))
+                            .ToArray()
+
                     },
-                    Navigation = new Navigation
+                    Navigation = new Interop.Models.Navigation
                     {
                         Previous = backward,
                         Next = forward
                     }
                 }
-            });
+            };
+
+            return Ok(actionResult);
         }
     }
 }

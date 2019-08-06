@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StoryBlog.Web.Services.Shared.Common.Annotations
+namespace StoryBlog.Web.Services.Blog.Interop.Core.Annotations
 {
     /// <summary>
     /// 

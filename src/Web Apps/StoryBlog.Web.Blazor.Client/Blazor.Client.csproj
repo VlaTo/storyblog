@@ -12,6 +12,10 @@
     </RestoreAdditionalProjectSources>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;BLAZOR_CLIENT</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="compilerconfig.json" />
     <Content Remove="compilerconfig.json" />

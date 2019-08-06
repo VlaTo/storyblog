@@ -6,12 +6,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StoryBlog.Web.Services.Blog.API.Extensions;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
+using StoryBlog.Web.Services.Blog.API.Models;
 using StoryBlog.Web.Services.Blog.Application.Comments.Commands;
 using StoryBlog.Web.Services.Blog.Application.Comments.Queries;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
+using StoryBlog.Web.Services.Blog.Interop.Core;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
-using StoryBlog.Web.Services.Shared.Common;
 using StoryBlog.Web.Services.Shared.Communication;
 using StoryBlog.Web.Services.Shared.Communication.Commands;
 using System;
@@ -65,13 +66,14 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         // GET api/v1/comment/<id>
         [AllowAnonymous]
         [HttpGet("{id:long}")]
-        [ProducesResponseType(typeof(CommentModel), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(long id, [FromCommaSeparatedQuery(Name = "include")] IEnumerable<string> includes)
+        [ProducesResponseType(typeof(Models.CommentModel), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Get(long id, [FromEnumQuery(typeof(CommentIncludes), Name = "include")] IEnumerable<string> includes)
         {
-            var flags = EnumFlags.Parse<CommentIncludes>(includes);
+            //var flags = Enums.Parse<CommentIncludes>(includes);
             var query = new GetCommentQuery(User, id)
             {
-                IncludeAuthor = CommentIncludes.Authors == (flags & CommentIncludes.Authors)
+                //IncludeAuthor = CommentIncludes.Authors == (flags & CommentIncludes.Authors)
+                IncludeAuthor = true
             };
 
             var result = await mediator.Send(query, HttpContext.RequestAborted);
@@ -81,13 +83,13 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return NotFound();
             }
 
-            return Ok(mapper.Map<StoryModel>(result.Entity));
+            return Ok(mapper.Map<Models.StoryModel>(result.Entity));
         }
 
         // PUT api/v1/comment/<id>
         [AllowAnonymous]
         [HttpPut("{id:long}")]
-        [ProducesResponseType(typeof(CommentModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Models.CommentModel), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Edit(long id, [FromBody] EditCommentModel model)
         {
             if (false == ModelState.IsValid)
@@ -114,7 +116,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
             logger.StoryUpdated(result.Entity.Id);
 
-            return Ok(mapper.Map<StoryModel>(result.Entity));
+            return Ok(mapper.Map<Models.StoryModel>(result.Entity));
         }
 
         // DELETE api/v1/comment/<id>

@@ -29,7 +29,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
         /// <summary>
         /// 
         /// </summary>
-        public bool IncludeAuthors
+        public bool WithAuthors
         {
             get;
             set;
@@ -38,7 +38,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Queries
         /// <summary>
         /// 
         /// </summary>
-        public bool IncludeComments
+        public bool WithComments
         {
             get;
             set;

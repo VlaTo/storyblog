@@ -1,24 +1,27 @@
 ﻿using System;
-using StoryBlog.Web.Services.Shared.Common.Annotations;
+using System.ComponentModel;
+using StoryBlog.Web.Services.Blog.Interop.Core.Annotations;
+using StoryBlog.Web.Services.Blog.Interop.Core.Converters;
 
 namespace StoryBlog.Web.Services.Blog.Interop.Includes
 {
     /// <summary>
     /// 
     /// </summary>
+    [TypeConverter(typeof(StoryFlagsConverter))]
     [Flags]
-    public enum StoryIncludes
+    public enum StoryFlags
     {
         /// <summary>
         /// 
         /// </summary>
-        [Flag(Key = "author")]
+        [Flag(Key = "authors")]
         Authors = 1,
 
         /// <summary>
         /// 
         /// </summary>
         [Flag(Key = "comments")]
-        Comments = 2,
+        Comments = 2
     }
 }

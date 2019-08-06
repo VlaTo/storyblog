@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace StoryBlog.Web.Services.Blog.Interop.Models
 {
     [DataContract(Namespace = "http://storyblog.org/schemas/json/models/author")]
     public sealed class AuthorModel : IEquatable<AuthorModel>
     {
-        [DataMember(Name = "name")]
+        [JsonPropertyName("name")]
         public string Name
         {
             get;

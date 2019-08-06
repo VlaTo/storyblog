@@ -1,22 +1,22 @@
 ﻿using AutoMapper;
-using IdentityServer4.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
+using StoryBlog.Web.Services.Blog.API.Models;
+using StoryBlog.Web.Services.Blog.API.Models.Results.Resources;
 using StoryBlog.Web.Services.Blog.Application.Landing.Queries;
+using StoryBlog.Web.Services.Blog.Interop.Core;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Shared.Common;
-using StoryBlog.Web.Services.Shared.Infrastructure.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Blog.Interop;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -58,15 +58,17 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(typeof(LandingModel), (int) HttpStatusCode.OK)]
-        public async Task<IActionResult> Get([FromCommaSeparatedQuery(Name = "include")]IEnumerable<string> includes)
+        public async Task<IActionResult> Get([FromQuery(Name = "include")]IEnumerable<string> includes)
         {
-            var flags = EnumFlags.Parse<LandingIncludes>(includes);
+            //var flags = Enums.Parse<LandingIncludes>(includes);
             var query = new GetLandingQuery
             {
-                IncludeHeroStory = LandingIncludes.HeroStory == (flags & LandingIncludes.HeroStory),
-                FeaturedStoriesCount = LandingIncludes.FeaturedStories == (flags & LandingIncludes.FeaturedStories)
-                    ? blogSettings.FeaturedStoriesCount
-                    : 0
+                //IncludeHeroStory = LandingIncludes.HeroStory == (flags & LandingIncludes.HeroStory),
+                IncludeHeroStory = false,
+                //FeaturedStoriesCount = LandingIncludes.FeaturedStories == (flags & LandingIncludes.FeaturedStories)
+                //    ? blogSettings.FeaturedStoriesCount
+                //    : 0
+                FeaturedStoriesCount = 0
                 //StoriesFeedCount = LandingIncludes.StoriesFeed == (flags & LandingIncludes.StoriesFeed)
                 //    ? blogSettings.FeedStoriesCount
                 //    : 0
@@ -92,7 +94,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 {
                     Resources = new AuthorsResource
                     {
-                        Authors = Enumerable.Empty<AuthorModel>()
+                        Authors = Enumerable.Empty<Models.AuthorModel>()
                     }
                 }
             });
