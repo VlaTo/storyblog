@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -286,9 +287,11 @@ namespace StoryBlog.Web.Services.Blog.Interop.Core
             var comparer = StringComparer.InvariantCulture;
             var fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
             var names = value.ToString().Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
-            var values = Array.ConvertAll(names, name =>
+
+            var values = Array.ConvertAll(names, x =>
             {
-                var property = fields.First(field => comparer.Equals(field.Name, name));
+                var name = x.Trim();
+                var property = fields.FirstOrDefault(field => comparer.Equals(field.Name, name));
                 var attribute = property.GetCustomAttribute<FlagAttribute>();
                 return null == attribute ? name : attribute.Key;
             });

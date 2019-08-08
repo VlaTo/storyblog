@@ -1,8 +1,6 @@
 ﻿using StoryBlog.Web.Blazor.Client.Store.Models;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
-using StoryBlog.Web.Services.Blog.Interop.Models;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,14 +14,6 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="flags"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        //Task<LandingModel> GetLandingAsync(LandingIncludes flags, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="flag"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
@@ -33,7 +23,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// 
         /// </summary>
         /// <returns></returns>
-        Task<EntityListResult<FeedStory>> GetStoriesFromAsync(Uri requestUri, CancellationToken cancellationToken);
+        Task<EntityListResult<FeedStory>> GetStoriesAsync(Uri requestUri, CancellationToken cancellationToken);
 
         /// <summary>
         /// 
@@ -43,18 +33,5 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<Story> GetStoryAsync(string slug, StoryFlags flags, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="story"></param>
-        /// <returns></returns>
-        Task<bool> CreateStoryAsync(StoryModel story);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        //Task<IEnumerable<RubricModel>> GetRubricsAsync(CancellationToken cancellationToken);
     }
 }

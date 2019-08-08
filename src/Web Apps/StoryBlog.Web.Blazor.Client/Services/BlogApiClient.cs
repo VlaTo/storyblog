@@ -1,17 +1,18 @@
 ﻿using StoryBlog.Web.Blazor.Client.Store.Models;
-using StoryBlog.Web.Services.Blog.Interop;
+using StoryBlog.Web.Services.Blog.Interop.Core;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Shared.Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Blog.Interop.Core;
+using StoryBlog.Web.Blazor.Client.Store.Effects;
 
 namespace StoryBlog.Web.Blazor.Client.Services
 {
@@ -58,19 +59,19 @@ namespace StoryBlog.Web.Blazor.Client.Services
             }
         }*/
 
-        /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync" />
+        /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync(StoryFlags, CancellationToken)" />
         public Task<EntityListResult<FeedStory>> GetStoriesAsync(StoryFlags flags, CancellationToken cancellationToken)
         {
             var path = new Uri(baseUri, "stories");
-            var include = Enums.ToQueryString(flags);
+            var include = Enums.Format(typeof(StoryFlags), flags, "F");
             var query = QueryString.Create(nameof(include), include);
             var requestUri = new UriBuilder(path) {Query = query.ToUriComponent()}.Uri;
 
-            return GetStoriesFromAsync(requestUri, cancellationToken);
+            return GetStoriesInternalAsync(requestUri, cancellationToken);
         }
 
-        /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync(System.Uri)" />
-        public Task<EntityListResult<FeedStory>> GetStoriesFromAsync(Uri requestUri, CancellationToken cancellationToken)
+        /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync(Uri, CancellationToken)" />
+        public Task<EntityListResult<FeedStory>> GetStoriesAsync(Uri requestUri, CancellationToken cancellationToken)
         {
             if (null == requestUri)
             {
@@ -93,7 +94,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
             const string mediaType = "application/json";
 
             var path = new Uri(baseUri, $"story/{slug}");
-            var include = Enums.ToQueryString(flags);
+            var include = Enums.Format(typeof(StoryFlags), flags, "G");
             var query = QueryString.Create(nameof(include), include);
             var requestUri = new UriBuilder(path) { Query = query.ToUriComponent() }.Uri;
             var request = new HttpRequestMessage
@@ -209,8 +210,12 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
                         using (var stream = await message.Content.ReadAsStreamAsync())
                         {
-                            var data = await JsonSerializer.ReadAsync<GetStoriesActionModel>(stream, cancellationToken: cancellationToken);
-                            return ProcessResult(data);
+                            Console.WriteLine($"Stories content-stream size: \'{stream.Length}\'");
+                            var data = await JsonSerializer.ReadAsync<GetStoriesActionModel>(
+                                stream,
+                                cancellationToken: cancellationToken
+                            );
+                            return ProcessStoriesActionResult(data);
                         }
                     }
                 }
@@ -228,7 +233,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
             return null;
         }
 
-        private static EntityListResult<FeedStory> ProcessResult(GetStoriesActionModel result)
+        private static EntityListResult<FeedStory> ProcessStoriesActionResult(GetStoriesActionModel result)
         {
             var json = JsonSerializer.ToString(result);
 
