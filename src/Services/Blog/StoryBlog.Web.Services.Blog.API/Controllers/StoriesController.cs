@@ -2,29 +2,29 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StoryBlog.Web.Services.Blog.API.Extensions;
 using StoryBlog.Web.Services.Blog.API.Infrastructure;
-using StoryBlog.Web.Services.Blog.API.Infrastructure.Attributes;
 using StoryBlog.Web.Services.Blog.API.Models;
 using StoryBlog.Web.Services.Blog.Application.Models;
 using StoryBlog.Web.Services.Blog.Application.Stories.Commands;
 using StoryBlog.Web.Services.Blog.Application.Stories.Queries;
 using StoryBlog.Web.Services.Blog.Interop.Core;
+using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
+using StoryBlog.Web.Services.Shared.Common;
 using StoryBlog.Web.Services.Shared.Communication;
 using StoryBlog.Web.Services.Shared.Communication.Commands;
 using StoryBlog.Web.Services.Shared.Infrastructure.Navigation;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using StoryBlog.Web.Services.Blog.Interop.Includes;
-using AuthorModel = StoryBlog.Web.Services.Blog.Interop.Models.AuthorModel;
+using Navigation = StoryBlog.Web.Services.Blog.Interop.Models.Navigation;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -39,6 +39,8 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         private readonly IMediator mediator;
         private readonly IMapper mapper;
         private readonly ICommandBus commandBus;
+        private readonly IStringLocalizer<StoriesController> localizer;
+        private readonly IPluralLocalizer pluralizer;
         private readonly StoryBlogSettings blogSettings;
         private readonly ILogger<StoriesController> logger;
 
@@ -48,18 +50,23 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         /// <param name="mediator"></param>
         /// <param name="mapper"></param>
         /// <param name="commandBus"></param>
+        /// <param name="localizer"></param>
         /// <param name="settingsAccessor"></param>
         /// <param name="logger"></param>
         public StoriesController(
             IMediator mediator,
             IMapper mapper,
             ICommandBus commandBus,
+            IStringLocalizer<StoriesController> localizer,
+            IPluralLocalizer pluralizer,
             IOptionsSnapshot<StoryBlogSettings> settingsAccessor,
             ILogger<StoriesController> logger)
         {
             this.mediator = mediator;
             this.mapper = mapper;
             this.commandBus = commandBus;
+            this.localizer = localizer;
+            this.pluralizer = pluralizer;
             this.logger = logger;
 
             blogSettings = settingsAccessor.Value;
@@ -114,7 +121,6 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         //public async Task<IActionResult> Get(string page, [FromCommaSeparatedQuery(Name = "include", EnumType = typeof(StoryFlags))] IEnumerable<string> includes)
         public async Task<IActionResult> Get(string page, [FromQuery(Name = "include")] StoryFlags includes)
         {
-            //var flags = EnumFlags.Parse<StoryFlags>(includes);
             var query = new GetStoriesQuery(User)
             {
                 IncludeAuthors = StoryFlags.Authors == (includes & StoryFlags.Authors),
@@ -131,7 +137,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return BadRequest();
             }
 
-            var include = Enums.Format(typeof(StoryFlags), StoryFlags.Authors, "F");
+            var include = Flags.Format(typeof(StoryFlags), StoryFlags.Authors, "F");
             string forward = null;
             string backward = null;
 
@@ -166,29 +172,29 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return index;
             }
 
-            var actionResult = new GetStoriesActionModel
+            return Ok(new GetStoriesActionModel
             {
                 Data = result
                     .Select(story =>
                     {
-                        var storyModel = mapper.Map<Interop.Models.StoryModel>(story);
+                        var storyModel1 = mapper.Map<Interop.Models.StoryModel>(story);
 
-                        storyModel.Author = FindAuthorIndex(story.Author);
-                        storyModel.Comments = story.Comments
+                        storyModel1.Author = FindAuthorIndex(story.Author);
+                        storyModel1.Comments = story.Comments
                             .Select(comment =>
                             {
-                                var commentModel = mapper.Map<Interop.Models.CommentModel>(comment);
+                                var commentModel1 = mapper.Map<Interop.Models.CommentModel>(comment);
 
-                                commentModel.Author = FindAuthorIndex(comment.Author);
+                                commentModel1.Author = FindAuthorIndex(comment.Author);
 
-                                return commentModel;
+                                return commentModel1;
                             })
                             .ToArray();
 
-                        return storyModel;
+                        return storyModel1;
                     })
                     .ToArray(),
-                Meta = new MetaInfo
+                Meta = new MetaInfo<Navigation>
                 {
                     Resources = new StoryResources
                     {
@@ -197,15 +203,13 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                             .ToArray()
 
                     },
-                    Navigation = new Interop.Models.Navigation
+                    Navigation = new Navigation
                     {
                         Previous = backward,
                         Next = forward
                     }
                 }
-            };
-
-            return Ok(actionResult);
+            });
         }
     }
 }

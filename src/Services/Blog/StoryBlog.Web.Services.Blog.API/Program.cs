@@ -22,12 +22,16 @@ using StoryBlog.Web.Services.Blog.Persistence;
 using StoryBlog.Web.Services.Shared.Common;
 using StoryBlog.Web.Services.Shared.Communication;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Mime;
 using System.Reflection;
+using Microsoft.AspNetCore.Localization;
 using StoryBlog.Web.Services.Blog.API.Models;
 using StoryBlog.Web.Services.Blog.Domain.Exceptions;
+using StoryBlog.Web.Services.Shared.Infrastructure;
 
 namespace StoryBlog.Web.Services.Blog.API
 {
@@ -353,6 +357,13 @@ namespace StoryBlog.Web.Services.Blog.API
                         );
 
                     services
+                        .AddLocalization(options =>
+                        {
+                            options.ResourcesPath = "Resources";
+                        })
+                        .AddTransient<IPluralLocalizer, PluralLocalizer>();
+
+                    services
                         .AddOptions<StoryBlogSettings>()
                         .Bind(context.Configuration.GetSection(typeof(StoryBlogSettings).Name));
                 })
@@ -372,6 +383,15 @@ namespace StoryBlog.Web.Services.Blog.API
 
                     app
                         .UseForwardedHeaders()
+                        .UseRequestLocalization(new RequestLocalizationOptions
+                        {
+                            DefaultRequestCulture = new RequestCulture(CultureInfo.CurrentUICulture),
+                            SupportedCultures = new List<CultureInfo>
+                            {
+                                new CultureInfo("ru-RU"),
+                                new CultureInfo("en-US")
+                            }
+                        })
                         .UseRouting()
                         .UseAuthentication()
                         .UseCors("default")

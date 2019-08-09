@@ -1,18 +1,16 @@
-﻿using System;
+﻿using StoryBlog.Web.Services.Blog.Interop.Core.Annotations;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Extensions.Primitives;
-using StoryBlog.Web.Services.Blog.Interop.Core.Annotations;
 
 namespace StoryBlog.Web.Services.Blog.Interop.Core
 {
     /// <summary>
     /// 
     /// </summary>
-    public static class Enums
+    public static class Flags
     {
         /// <summary>
         /// Returns a Boolean telling whether a given integral value, or its name as a string, exists in a specified

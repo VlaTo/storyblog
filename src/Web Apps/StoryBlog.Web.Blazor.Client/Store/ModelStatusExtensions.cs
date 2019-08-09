@@ -10,5 +10,8 @@
 
         public static bool IsLoading(this IHasModelStatus model) =>
             null != model && ModelStatus.Loading == model.Status;
+
+        public static bool IsSuccess(this IHasModelStatus model) =>
+            null != model && ModelStatus.Success == model.Status;
     }
 }

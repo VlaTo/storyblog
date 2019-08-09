@@ -3,7 +3,9 @@ using Blazor.Fluxor;
 using IdentityModel;
 using Microsoft.AspNetCore.Blazor.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using StoryBlog.Web.Blazor.Client.Core;
 using StoryBlog.Web.Blazor.Client.Services;
+using StoryBlog.Web.Services.Shared.Common;
 
 namespace StoryBlog.Web.Blazor.Client
 {
@@ -43,7 +45,10 @@ namespace StoryBlog.Web.Blazor.Client
 
                     services
                         .AddSingleton<IBlogApiClient, BlogApiClient>()
-                        .AddSingleton<IIdentityApiClient, IdentityApiClient>();
+                        .AddSingleton<IIdentityApiClient, IdentityApiClient>()
+                        .AddSingleton<IPluralLocalizer, PluralLocalizer>()
+                        .AddSingleton<ITimeSpanLocalizer, TimeSpanLocalizer>()
+                        .AddSingleton<IDateTimeLocalizer, DateTimeLocalizer>();
                 })
                 .UseBlazorStartup<Startup>()
                 .Build();

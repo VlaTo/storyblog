@@ -37,7 +37,7 @@ namespace StoryBlog.Tests.Services.Data.Csv
         {
             //var include = EnumFlags.ToQueryString(TestFlags.Value1 | TestFlags.Value3);
             var value = String.Join(CultureInfo.InvariantCulture.TextInfo.ListSeparator, "value-1", "Value3");
-            var temp = Enums.Parse(typeof(TestFlags), value);
+            var temp = Flags.Parse(typeof(TestFlags), value);
             //Assert.IsNotNull(include);
         }
 

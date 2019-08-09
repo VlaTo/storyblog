@@ -63,7 +63,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         public Task<EntityListResult<FeedStory>> GetStoriesAsync(StoryFlags flags, CancellationToken cancellationToken)
         {
             var path = new Uri(baseUri, "stories");
-            var include = Enums.Format(typeof(StoryFlags), flags, "F");
+            var include = Flags.Format(typeof(StoryFlags), flags, "F");
             var query = QueryString.Create(nameof(include), include);
             var requestUri = new UriBuilder(path) {Query = query.ToUriComponent()}.Uri;
 
@@ -91,10 +91,8 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// <returns></returns>
         public async Task<Story> GetStoryAsync(string slug, StoryFlags flags, CancellationToken cancellationToken)
         {
-            const string mediaType = "application/json";
-
             var path = new Uri(baseUri, $"story/{slug}");
-            var include = Enums.Format(typeof(StoryFlags), flags, "G");
+            var include = Flags.Format(typeof(StoryFlags), flags, "F");
             var query = QueryString.Create(nameof(include), include);
             var requestUri = new UriBuilder(path) { Query = query.ToUriComponent() }.Uri;
             var request = new HttpRequestMessage
@@ -103,16 +101,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 RequestUri = requestUri
             };
 
-            /*authorizationOptions.AuthorizationToken
-            if (null != authorizationToken)
-            {
-                request.Headers.Authorization = new AuthenticationHeaderValue(
-                    authorizationToken.Scheme,
-                    authorizationToken.Payload
-                );
-            }*/
-
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(mediaType, 1.0d));
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(JsonMediaType));
 
             try
             {
@@ -122,8 +111,11 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
                     using (var stream = await httpResponse.Content.ReadAsStreamAsync())
                     {
-                        var result = await JsonSerializer.ReadAsync<StoryModel>(stream, cancellationToken: cancellationToken);
-                        return ProcessResult(result);
+                        var result = await JsonSerializer.ReadAsync<GetStoryActionModel>(
+                            stream,
+                            cancellationToken: cancellationToken
+                        );
+                        return ProcessStoryActionResult(result);
                     }
                 }
             }
@@ -202,7 +194,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
             {
                 using (var request = new HttpRequestMessage(HttpMethod.Get, requestUri))
                 {
-                    request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(JsonMediaType, 1.0d));
+                    request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(JsonMediaType));
 
                     using (var response = await client.SendAsync(request, cancellationToken))
                     {
@@ -210,7 +202,6 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
                         using (var stream = await message.Content.ReadAsStreamAsync())
                         {
-                            Console.WriteLine($"Stories content-stream size: \'{stream.Length}\'");
                             var data = await JsonSerializer.ReadAsync<GetStoriesActionModel>(
                                 stream,
                                 cancellationToken: cancellationToken
@@ -226,20 +217,69 @@ namespace StoryBlog.Web.Blazor.Client.Services
             }
         }
 
-        private static Story ProcessResult(StoryModel result)
+        private static Story ProcessStoryActionResult(GetStoryActionModel result)
         {
-            //new System.Text.Json.Serialization.JsonPropertyNameAttribute()
-            //return new EntityListResult<FeedStory>(Enumerable.Empty<FeedStory>());
-            return null;
+            var authors = CreateAuthors(result.Meta.Resources.Authors);
+            var story = new Story
+            {
+                Title = result.Data.Title,
+                Slug = result.Data.Slug,
+                Author = authors[result.Data.Author],
+                Content = result.Data.Content,
+                Published = GetPublishedDate(result.Data.Published, result.Data.Created),
+            };
+
+            Debug.WriteLine($"Story created, source comments: {result.Data.Comments.Length}");
+            CreateCommentsThree(story.Comments, result.Data.Comments, authors);
+
+            return story;
+        }
+
+        private static void CreateCommentsThree(
+            ICollection<Comment> comments, 
+            CommentModel[] plainComments, 
+            IReadOnlyDictionary<int, Author> authors)
+        {
+            void CreateChildComments(long parentId, Comment parent)
+            {
+                foreach (var source in plainComments.Where(comment => parentId == comment.Parent))
+                {
+                    var comment = new Comment(parent)
+                    {
+                        Content = source.Content,
+                        Author = authors[source.Author],
+                        Published = GetPublishedDate(source.Modified, source.Created)
+                    };
+
+                    parent.Comments.Add(comment);
+
+                    CreateChildComments(source.Id, comment);
+                }
+            }
+
+            foreach (var source in plainComments)
+            {
+                if (null != source.Parent)
+                {
+                    continue;
+                }
+
+                var comment = new Comment(null)
+                {
+                    Content = source.Content,
+                    Author = authors[source.Author],
+                    Published = GetPublishedDate(source.Modified, source.Created)
+                };
+
+                comments.Add(comment);
+
+                CreateChildComments(source.Id, comment);
+            }
         }
 
         private static EntityListResult<FeedStory> ProcessStoriesActionResult(GetStoriesActionModel result)
         {
-            var json = JsonSerializer.ToString(result);
-
-            Console.WriteLine($"Deserialized/serialized result: \'{json}\'");
-
-            var authors = GetAuthorIndex(result.Meta.Resources.Authors);
+            var authors = CreateAuthors(result.Meta.Resources.Authors);
 
             return new EntityListResult<FeedStory>(
                 result.Data.Select(story => new FeedStory
@@ -256,7 +296,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
             );
         }
 
-        private static IReadOnlyDictionary<int, Author> GetAuthorIndex(IEnumerable<AuthorModel> authors)
+        private static IReadOnlyDictionary<int, Author> CreateAuthors(IEnumerable<AuthorModel> authors)
         {
             var dictionary = new Dictionary<int, Author>();
             var index = 0;

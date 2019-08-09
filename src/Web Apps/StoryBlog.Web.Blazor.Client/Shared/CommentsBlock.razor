@@ -1,0 +1,45 @@
+﻿@using System.Collections.Generic
+@using System.Collections.ObjectModel
+@using StoryBlog.Web.Blazor.Client.Store.Models
+
+@foreach (var comment in Comments)
+{
+    <li class="media">
+        <img src="http://lorempixel.com/g/64/64/abstract" class="align-self-start rounded-circle mr-3" width="64" height="64" alt=@comment.Author.Name />
+        <div class="media-body">
+            <div class="mb-lg-3">
+                <h5 class="mt-0">
+                    <a href="#" class="">@comment.Author.Name</a>
+                </h5>
+                <p class="text-muted">
+                    <small>@comment.Published.ToString("f")</small>
+                </p>
+                @comment.Content
+            </div>
+            <CommentsBlock Comments=comment.Comments />
+        </div>
+    </li>
+}
+
+@code
+{
+    private ICollection<Comment> comments;
+
+    [Parameter]
+    protected ICollection<Comment> Comments
+    {
+        get
+        {
+            if (null == comments)
+            {
+                comments = new Collection<Comment>();
+            }
+
+            return comments;
+        }
+        set
+        {
+            comments = value;
+        }
+    }
+}

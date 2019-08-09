@@ -4,77 +4,80 @@
 @using StoryBlog.Web.Blazor.Client.Store
 @using StoryBlog.Web.Blazor.Client.Store.Actions
 @using StoryBlog.Web.Services.Blog.Interop.Includes
+@using StoryBlog.Web.Services.Shared.Common
 
 @inherits global::Blazor.Fluxor.Components.FluxorComponent
 
-@inject IState<StoryState> TheStory
+@inject IState<StoryState> StoryState
 @inject IState<UserState> TheUser
 @inject IDispatcher Dispatcher
+@inject IPluralLocalizer Pluralizer
 
-@if (null == TheStory)
+@if (null == StoryState)
 {
 
 }
-else if (TheStory.Value.IsNone())
+else if (StoryState.Value.IsNone())
 {
     <p class="text-muted">Loading...</p>
 }
 else
 {
-    var story = TheStory.Value;
-    var user = TheUser.Value.Principal ?? null;
+    //var story = StoryState.Value.Story;
+    //var user = TheUser.Value.Principal ?? null;
 
     <section>
         <div class="container">
             <div class="row">
                 <div class="col-lg-9">
-                    @if (null != story.Status.Error)
+                    @if (StoryState.Value.IsFailed())
                     {
-                        <p>@story.Status.Error</p>
+                        <p>@StoryState.Value.Status.Error</p>
                     }
 
-                    @if (null != story)
+                    @if (StoryState.Value.IsSuccess())
                     {
+                        var story = StoryState.Value.Story;
+
                         <article id="@story.Slug" class="">
                             <div class="mb-5">
                                 <h2 class="">@story.Title</h2>
                                 <ul class="list-unstyled list-inline">
                                     <li class="list-inline-item">
                                         <i class="mdi mdi-calendar"></i>
-                                        <TimeLabel DateTime=@story.Published/>
+                                        <TimeLabel DateTime=@story.Published />
                                     </li>
                                     <li class="list-inline-item">
                                         <i class="mdi mdi-comment-multiple-outline"></i>
-                                        @story.AllCommentsCount Comments
+                                        @story.Comments.Count @Pluralizer["комментарий", story.Comments.Count]
                                     </li>
                                 </ul>
-                                <div class="justify-content-md-start">@story.Content</div>
-                            </div>
 
-                            @if (0 == story.AllCommentsCount)
-                            {
-                                <div class="alert alert-secondary" role="alert">
-                                    <h4>No comments yet</h4>
-                                </div>
-                            }
-                            else
-                            {
-                                if (story.Closed)
+                                <div class="justify-content-md-start">@story.Content</div>
+
+                                @if (false == story.Comments.Any())
                                 {
-                                    <div class="alert alert-warning" role="alert">
-                                        <h4>Comments are closed</h4>
+                                    <div class="alert alert-secondary" role="alert">
+                                        <h4>No comments yet</h4>
                                     </div>
                                 }
 
-                                <div class="m-lg-2">
-                                    <ul class="list-unstyled">
-                                        @foreach (var comment in story.Comments)
-                                        {
-                                            <StoryBlogComment Comment=@comment Level=0/>
-                                        }
-                                    </ul>
+                                <div class="">
+                                    <form id="new-id" name="new-id" novalidate>
+                                        <button type="button" onclick=OnSubmitButtonClick></button>
+                                    </form>
+                                    <textarea></textarea>
                                 </div>
-                            }
+
+                                @if (story.Comments.Any())
+                                {
+                                    <div class="m-lg-2">
+                                        <ul class="list-unstyled">
+                                            <CommentsBlock Comments=@story.Comments />
+                                        </ul>
+                                    </div>
+                                }
+                            </div>
                         </article>
                     }
                 </div>
@@ -86,7 +89,7 @@ else
     </section>
 }
 
-@functions
+@code
 {
 
     [Parameter]
@@ -100,5 +103,10 @@ else
     {
         const StoryFlags includes = StoryFlags.Authors | StoryFlags.Comments;
         Dispatcher.Dispatch(new GetStoryAction(Slug, includes));
+    }
+
+    private void OnSubmitButtonClick(UIMouseEvent e)
+    {
+
     }
 }

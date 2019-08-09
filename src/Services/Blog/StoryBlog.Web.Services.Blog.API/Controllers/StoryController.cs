@@ -26,6 +26,7 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using IdentityServer4.Validation;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
+using StoryBlog.Web.Services.Blog.Interop.Models;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -72,16 +73,13 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         // GET api/v1/story/<slug>
         [AllowAnonymous]
         [HttpGet("{slug:required}")]
-        [ProducesResponseType(typeof(Result<Models.StoryModel, ResourcesMetaInfo<AuthorsResource>>), (int) HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(string slug, [FromQuery(Name = "include")] IEnumerable<string> includes)
+        [ProducesResponseType(typeof(GetStoryActionModel), (int) HttpStatusCode.OK)]
+        public async Task<IActionResult> Get(string slug, [FromQuery(Name = "include")] StoryFlags includes)
         {
-            //var flags = Enums.Parse<StoryFlags>(includes);
             var query = new GetStoryQuery(User, slug)
             {
-                //WithAuthors = StoryFlags.Authors == (flags & StoryFlags.Authors),
-                WithAuthors = true,
-                //WithComments = StoryFlags.Comments == (flags & StoryFlags.Comments)
-                WithComments = true
+                IncludeAuthors = StoryFlags.Authors == (includes & StoryFlags.Authors),
+                IncludeComments = StoryFlags.Comments == (includes & StoryFlags.Comments)
             };
 
             var result = await mediator.Send(query, HttpContext.RequestAborted);
@@ -106,15 +104,15 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return index;
             }
 
-            Models.StoryModel MapStory(Story story)
+            Interop.Models.StoryModel MapStory(Story story)
             {
-                var storyModel = mapper.Map<Models.StoryModel>(story);
+                var storyModel = mapper.Map<Interop.Models.StoryModel>(story);
 
                 storyModel.Author = FindAuthorIndex(story.Author);
                 storyModel.Comments = story.Comments
                     .Select(comment =>
                     {
-                        var commentModel = mapper.Map<Models.CommentModel>(comment);
+                        var commentModel = mapper.Map<Interop.Models.CommentModel>(comment);
 
                         commentModel.Author = FindAuthorIndex(comment.Author);
 
@@ -125,14 +123,16 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return storyModel;
             }
 
-            return Ok(new Result<Models.StoryModel, ResourcesMetaInfo<AuthorsResource>>
+            return Ok(new GetStoryActionModel
             {
                 Data = MapStory(result.Entity),
-                Meta = new ResourcesMetaInfo<AuthorsResource>
+                Meta = new MetaInfo
                 {
-                    Resources = new AuthorsResource
+                    Resources = new StoryResources
                     {
-                        Authors = authors.Select(author => mapper.Map<Models.AuthorModel>(author))
+                        Authors = authors
+                            .Select(mapper.Map<Interop.Models.AuthorModel>)
+                            .ToArray()
                     }
                 }
             });

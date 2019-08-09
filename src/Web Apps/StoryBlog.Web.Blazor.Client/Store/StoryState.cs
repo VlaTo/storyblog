@@ -1,7 +1,5 @@
 ﻿using Blazor.Fluxor;
 using StoryBlog.Web.Blazor.Client.Store.Models;
-using System;
-using System.Collections.Generic;
 
 namespace StoryBlog.Web.Blazor.Client.Store
 {
@@ -26,63 +24,15 @@ namespace StoryBlog.Web.Blazor.Client.Store
             get;
         }
 
-        public string Title
-        {
-            get;
-            set;
-        }
-
-        public string Slug
-        {
-            get;
-            set;
-        }
-
-        public string Content
-        {
-            get;
-            set;
-        }
-
-        public DateTime Published
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Author Author
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool Closed
-        {
-            get;
-            set;
-        }
-
-        public int AllCommentsCount
-        {
-            get;
-            set;
-        }
-
-        public IList<Comment> Comments
+        public Story Story
         {
             get;
         }
 
-        public StoryState(ModelStatus status)
+        public StoryState(ModelStatus status, Story value = null)
         {
             Status = status;
-            Comments = new List<Comment>();
+            Story = value;
         }
     }
 }

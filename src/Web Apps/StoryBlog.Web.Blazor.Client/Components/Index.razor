@@ -1,16 +1,19 @@
 ﻿@page "/"
 
 @using global::Blazor.Fluxor
-@using System.Diagnostics;
 @using StoryBlog.Web.Blazor.Client.Store
 @using StoryBlog.Web.Blazor.Client.Store.Actions
 @using StoryBlog.Web.Services.Blog.Interop.Includes
+@using StoryBlog.Web.Services.Shared.Common
 
 @inherits global::Blazor.Fluxor.Components.FluxorComponent
 
 @inject IState<StoriesState> State
 @inject IDispatcher Dispatcher
 @inject IUriHelper UriHelper
+@inject IPluralLocalizer Pluralizer
+@inject IDateTimeLocalizer DateTimeLocalizer
+@inject ITimeSpanLocalizer TimeSpanLocalizer
 
 <div class="row">
     @if (State.Value.IsLoading())
@@ -48,7 +51,7 @@
                         <ul class="card-subtitle text-muted list-unstyled list-inline">
                             <li class="list-inline-item">
                                 <i class="mdi mdi-calendar"></i>
-                                <TimeLabel DateTime=@story.Published />
+                                <TimeLabel DateTime=@story.Published ConvertTimeSpan=@((label, span) => OnConvertTimeSpan(span, story.Published)) />
                             </li>
                             <li class="list-inline-item">
                                 <i class="mdi mdi-account-outline"></i>
@@ -56,7 +59,7 @@
                             </li>
                             <li class="list-inline-item">
                                 <i class="mdi mdi-comment-multiple-outline"></i>
-                                @story.CommentsCount комментариев(ия)
+                                @story.CommentsCount @Pluralizer["комментарий", story.CommentsCount]
                             </li>
                         </ul>
                     </div>
@@ -128,12 +131,23 @@
     protected override void OnInit()
     {
         base.OnInit();
-        Debug.WriteLine("Index.OnInit()");
         Dispatcher.Dispatch(new GetStoriesAction(StoryFlags.Authors | StoryFlags.Comments));
     }
 
     private void OnPaginationClick(IAction action)
     {
         Dispatcher.Dispatch(action);
+    }
+
+    private string OnConvertTimeSpan(TimeSpan span, DateTime dateTime)
+    {
+        if (span < TimeSpan.FromDays(1.0d))
+        {
+            return TimeSpanLocalizer[TimeSpan.FromHours(span.TotalHours)];
+        }
+
+        //System.Diagnostics.Debug.WriteLine($"{System.Globalization.CultureInfo.CurrentUICulture.DisplayName}");
+
+        return DateTimeLocalizer[dateTime];
     }
 }

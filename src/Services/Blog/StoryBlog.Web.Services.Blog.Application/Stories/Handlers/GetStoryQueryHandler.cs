@@ -48,9 +48,9 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
             var authenticated = request.User.Identity.IsAuthenticated;
             var queryable = context.Stories.AsNoTracking();
 
-            if (request.WithAuthors)
+            if (request.IncludeAuthors)
             {
-                if (request.WithComments)
+                if (request.IncludeComments)
                 {
                     queryable = queryable
                         .Include(entity => entity.Comments)
@@ -60,7 +60,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
                 queryable = queryable.Include(entity => entity.Author);
             }
 
-            if (request.WithComments)
+            if (request.IncludeComments)
             {
                 queryable = queryable.Include(entity => entity.Comments);
             }

@@ -33,7 +33,7 @@ namespace StoryBlog.Web.Services.Blog.Interop.Core.Converters
 
             if (value is string str)
             {
-                if (Enums.TryParse(str, out StoryFlags result))
+                if (Flags.TryParse(str, out StoryFlags result))
                 {
                     return result;
                 }

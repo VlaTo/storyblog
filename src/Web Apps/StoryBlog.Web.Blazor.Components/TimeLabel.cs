@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Components.RenderTree;
 
 namespace StoryBlog.Web.Blazor.Components
 {
+    public delegate string ConvertTimeSpanCallback(TimeLabel label, TimeSpan span);
+
     /// <summary>
     /// Time label class.
     /// </summary>
@@ -14,10 +16,12 @@ namespace StoryBlog.Web.Blazor.Components
     {
         internal delegate void ContentUpdaterCallback(DateTime dateTime);
 
-        private static readonly TimeSpan defaultTimeout = TimeSpan.FromSeconds(20.0d);
+        private static readonly TimeSpan defaultTimeout;
+        private static readonly TimeSpan spanUpdateDuration;
         private static readonly ContentUpdater updater;
 
         private DateTime dateTime;
+        private ConvertTimeSpanCallback convertTimeSpan;
         private IDisposable subscription;
         private string content;
 
@@ -41,21 +45,40 @@ namespace StoryBlog.Web.Blazor.Components
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        [Parameter]
+        protected ConvertTimeSpanCallback ConvertTimeSpan
+        {
+            get => convertTimeSpan;
+            set
+            {
+                convertTimeSpan = value;
+                StateHasChanged();
+            }
+        }
+
         static TimeLabel()
         {
+            defaultTimeout = TimeSpan.FromSeconds(20.0d);
+            spanUpdateDuration = TimeSpan.FromDays(1.0d);
             updater = new ContentUpdater(defaultTimeout);
         }
 
+        public string FormatTimeSpanContent(TimeSpan span) => String.Format($"at {dateTime.Date:g}");
+
         void IDisposable.Dispose()
         {
-            subscription.Dispose();
+            subscription?.Dispose();
         }
 
         protected override void OnInit()
         {
             base.OnInit();
 
-            subscription = updater.Register(OnTimerCallback);
+            subscription = updater.Subscribe(OnTimerCallback);
+
             UpdateContent(DateTime.Now, false);
         }
 
@@ -64,7 +87,7 @@ namespace StoryBlog.Web.Blazor.Components
             base.BuildRenderTree(builder);
 
             builder.OpenElement(0, "time");
-            builder.AddAttribute(1, "datetime", DateTime.Now.ToString("u"));
+            builder.AddAttribute(1, "datetime", dateTime.ToString("u"));
             builder.AddContent(2, content);
             builder.CloseElement();
         }
@@ -76,7 +99,27 @@ namespace StoryBlog.Web.Blazor.Components
 
         private void UpdateContent(DateTime now, bool invalidateContent)
         {
-            content = GetTimeContent(now);
+            var span = now - DateTime;
+
+            if (span < TimeSpan.Zero)
+            {
+                return;
+            }
+
+            if (null == subscription)
+            {
+                return;
+            }
+
+            content = null == convertTimeSpan
+                ? FormatTimeSpanContent(span)
+                : convertTimeSpan.Invoke(this, span);
+
+            if (span > spanUpdateDuration)
+            {
+                subscription.Dispose();
+                subscription = null;
+            }
 
             if (invalidateContent)
             {
@@ -84,38 +127,8 @@ namespace StoryBlog.Web.Blazor.Components
             }
         }
 
-        private string GetTimeContent(DateTime dateTime)
-        {
-            var interval = dateTime - DateTime;
-
-            if (interval < TimeSpan.FromSeconds(3.0d))
-            {
-                return "just second ago";
-            }
-
-            if (interval < TimeSpan.FromMinutes(1.0d))
-            {
-                var seconds = (int)interval.TotalSeconds;
-                return String.Format($"a {seconds} seconds ago");
-            }
-
-            if (interval < TimeSpan.FromHours(1.0d))
-            {
-                var minutes = interval.TotalMinutes;
-                return String.Format($"a {minutes:F1} minutes ago");
-            }
-
-            if (interval < TimeSpan.FromDays(1.0d))
-            {
-                var hours = interval.TotalHours;
-                return String.Format($"a {hours:F1} hours ago");
-            }
-
-            return String.Format($"at {DateTime.Date:d}");
-        }
-
         /// <summary>
-        /// 
+        /// Content updater by timer.
         /// </summary>
         private class ContentUpdater : IDisposable
         {
@@ -131,7 +144,7 @@ namespace StoryBlog.Web.Blazor.Components
                 subscriptions = new List<Subscription>();
             }
 
-            public IDisposable Register(ContentUpdaterCallback callback)
+            public IDisposable Subscribe(ContentUpdaterCallback callback)
             {
                 var subscription = new Subscription(this, callback);
 
