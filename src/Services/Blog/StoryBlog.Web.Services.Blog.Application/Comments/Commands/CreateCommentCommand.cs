@@ -29,6 +29,15 @@ namespace StoryBlog.Web.Services.Blog.Application.Comments.Commands
         /// <summary>
         /// 
         /// </summary>
+        public long? ParentId
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public string Content
         {
             get;
@@ -47,12 +56,14 @@ namespace StoryBlog.Web.Services.Blog.Application.Comments.Commands
         /// </summary>
         /// <param name="user"></param>
         /// <param name="slug"></param>
+        /// <param name="parentId"></param>
         /// <param name="content"></param>
         /// <param name="isPublic"></param>
-        public CreateCommentCommand(IPrincipal user, string slug, string content, bool isPublic)
+        public CreateCommentCommand(IPrincipal user, string slug, long? parentId, string content, bool isPublic)
         {
             User = user;
             Slug = slug;
+            ParentId = parentId;
             Content = content;
             IsPublic = isPublic;
         }

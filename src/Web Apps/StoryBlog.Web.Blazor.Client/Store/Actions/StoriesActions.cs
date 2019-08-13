@@ -1,5 +1,4 @@
-﻿using Blazor.Fluxor;
-using StoryBlog.Web.Blazor.Client.Store.Models;
+﻿using StoryBlog.Web.Blazor.Client.Store.Models;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using System;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoriesAction : IAction
+    public sealed class GetStoriesAction
     {
         public StoryFlags Flags
         {
@@ -25,7 +24,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoriesBackwardAction : IAction
+    public sealed class GetStoriesBackwardAction
     {
         public Uri RequestUri
         {
@@ -41,7 +40,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoriesForwardAction : IAction
+    public sealed class GetStoriesForwardAction
     {
         public Uri RequestUri
         {
@@ -57,7 +56,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetRubricStoriesAction : IAction
+    public sealed class GetRubricStoriesAction
     {
         public StoryFlags Flags
         {
@@ -79,7 +78,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoriesSuccessAction : IAction
+    public sealed class GetStoriesSuccessAction
     {
         public IEnumerable<FeedStory> Stories
         {
@@ -107,7 +106,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoriesFailedAction : IAction
+    public sealed class GetStoriesFailedAction
     {
         public string Error
         {

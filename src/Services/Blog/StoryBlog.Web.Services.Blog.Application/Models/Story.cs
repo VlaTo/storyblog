@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace StoryBlog.Web.Services.Blog.Application.Models
 {
@@ -19,9 +20,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Models
         /// <summary>
         /// 
         /// </summary>
-        public IList<Comment> Comments
+        public ICollection<Comment> Comments
         {
             get;
+            set;
         }
 
         /// <summary>
@@ -31,7 +33,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Models
         public Story(long id)
             : base(id)
         {
-            Comments = new List<Comment>();
+            Comments = new Collection<Comment>();
         }
-    }
+}
 }

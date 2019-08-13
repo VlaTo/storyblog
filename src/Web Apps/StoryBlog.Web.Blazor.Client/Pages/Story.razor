@@ -2,6 +2,7 @@
 
 @using global::Blazor.Fluxor
 @using StoryBlog.Web.Blazor.Client.Store
+@using StoryBlog.Web.Blazor.Client.Controls
 @using StoryBlog.Web.Blazor.Client.Store.Actions
 @using StoryBlog.Web.Services.Blog.Interop.Includes
 @using StoryBlog.Web.Services.Shared.Common
@@ -9,7 +10,7 @@
 @inherits global::Blazor.Fluxor.Components.FluxorComponent
 
 @inject IState<StoryState> StoryState
-@inject IState<UserState> TheUser
+@inject IState<UserState> UserState
 @inject IDispatcher Dispatcher
 @inject IPluralLocalizer Pluralizer
 
@@ -42,10 +43,10 @@ else
                         <article id="@story.Slug" class="">
                             <div class="mb-5">
                                 <h2 class="">@story.Title</h2>
-                                <ul class="list-unstyled list-inline">
+                                <ul class="list-unstyled list-inline text-muted mt-2">
                                     <li class="list-inline-item">
                                         <i class="mdi mdi-calendar"></i>
-                                        <TimeLabel DateTime=@story.Published />
+                                        <TimeLabel DateTime=story.Published />
                                     </li>
                                     <li class="list-inline-item">
                                         <i class="mdi mdi-comment-multiple-outline"></i>
@@ -53,21 +54,26 @@ else
                                     </li>
                                 </ul>
 
-                                <div class="justify-content-md-start">@story.Content</div>
+                                <div class="justify-content-md-start my-4">@((MarkupString)story.Content)</div>
 
-                                @if (false == story.Comments.Any())
+                                @if (story.IsCommentsClosed)
                                 {
-                                    <div class="alert alert-secondary" role="alert">
-                                        <h4>No comments yet</h4>
+                                    <div class="alert alert-warning my-2" role="alert">
+                                        <h5>Возможность комментировать заблокирована</h5>
                                     </div>
                                 }
+                                else
+                                {
 
-                                <div class="">
-                                    <form id="new-id" name="new-id" novalidate>
-                                        <button type="button" onclick=OnSubmitButtonClick></button>
-                                    </form>
-                                    <textarea></textarea>
-                                </div>
+                                    @if (false == story.Comments.Any())
+                                     {
+                                         <div class="alert alert-secondary my-4" role="alert">
+                                             <h5>Добавь комментарий первым</h5>
+                                         </div>
+                                     }
+
+                                    <CommentBox OnSubmitComment=OnSubmitComment />
+                                }
 
                                 @if (story.Comments.Any())
                                 {
@@ -91,6 +97,7 @@ else
 
 @code
 {
+    protected ElementRef editor;
 
     [Parameter]
     protected string Slug
@@ -105,8 +112,8 @@ else
         Dispatcher.Dispatch(new GetStoryAction(Slug, includes));
     }
 
-    private void OnSubmitButtonClick(UIMouseEvent e)
+    private void OnSubmitComment(string message)
     {
-
+        Dispatcher.Dispatch(new CreateNewComment(message))
     }
 }

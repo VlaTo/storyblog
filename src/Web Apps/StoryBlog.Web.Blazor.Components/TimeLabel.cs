@@ -7,12 +7,18 @@ using Microsoft.AspNetCore.Components.RenderTree;
 
 namespace StoryBlog.Web.Blazor.Components
 {
-    public delegate string ConvertTimeSpanCallback(TimeLabel label, TimeSpan span);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="label"></param>
+    /// <param name="span"></param>
+    /// <returns></returns>
+    public delegate string ConvertCallback(TimeLabel label, TimeSpan span);
 
     /// <summary>
     /// Time label class.
     /// </summary>
-    public class TimeLabel : ComponentBase, IDisposable
+    public class TimeLabel : BootstrapComponentBase, IDisposable
     {
         internal delegate void ContentUpdaterCallback(DateTime dateTime);
 
@@ -21,7 +27,7 @@ namespace StoryBlog.Web.Blazor.Components
         private static readonly ContentUpdater updater;
 
         private DateTime dateTime;
-        private ConvertTimeSpanCallback convertTimeSpan;
+        private ConvertCallback convertFallback;
         private IDisposable subscription;
         private string content;
 
@@ -49,12 +55,12 @@ namespace StoryBlog.Web.Blazor.Components
         /// 
         /// </summary>
         [Parameter]
-        protected ConvertTimeSpanCallback ConvertTimeSpan
+        protected ConvertCallback ConvertFallback
         {
-            get => convertTimeSpan;
+            get => convertFallback;
             set
             {
-                convertTimeSpan = value;
+                convertFallback = value;
                 StateHasChanged();
             }
         }
@@ -65,8 +71,6 @@ namespace StoryBlog.Web.Blazor.Components
             spanUpdateDuration = TimeSpan.FromDays(1.0d);
             updater = new ContentUpdater(defaultTimeout);
         }
-
-        public string FormatTimeSpanContent(TimeSpan span) => String.Format($"at {dateTime.Date:g}");
 
         void IDisposable.Dispose()
         {
@@ -87,8 +91,10 @@ namespace StoryBlog.Web.Blazor.Components
             base.BuildRenderTree(builder);
 
             builder.OpenElement(0, "time");
+
             builder.AddAttribute(1, "datetime", dateTime.ToString("u"));
             builder.AddContent(2, content);
+
             builder.CloseElement();
         }
 
@@ -111,9 +117,9 @@ namespace StoryBlog.Web.Blazor.Components
                 return;
             }
 
-            content = null == convertTimeSpan
-                ? FormatTimeSpanContent(span)
-                : convertTimeSpan.Invoke(this, span);
+            content = null == convertFallback
+                ? String.Format($"at {DateTime.Date:g}")
+                : convertFallback.Invoke(this, span);
 
             if (span > spanUpdateDuration)
             {

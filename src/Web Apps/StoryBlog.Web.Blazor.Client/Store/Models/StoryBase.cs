@@ -48,9 +48,5 @@ namespace StoryBlog.Web.Blazor.Client.Store.Models
             get;
             set;
         }
-
-        protected StoryBase()
-        {
-        }
     }
 }

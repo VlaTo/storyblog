@@ -4,8 +4,21 @@ using System.Collections.ObjectModel;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Models
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TComment"></typeparam>
     public abstract class CommentBase<TComment>
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        public long Id
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -47,6 +60,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Models
         public ICollection<TComment> Comments
         {
             get;
+            set;
         }
 
         /// <summary>

@@ -1,47 +1,48 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace StoryBlog.Web.Services.Blog.API.Models
 {
     [DataContract(Namespace = "http://storyblog.org/schemas/json/models/comment")]
     public sealed class CommentModel : IEquatable<CommentModel>
     {
-        [DataMember(Name = "id")]
+        [JsonPropertyName("id")]
         public long Id
         {
             get;
             set;
         }
 
-        [DataMember(Name = "parent")]
+        [JsonPropertyName("parent")]
         public long? Parent
         {
             get;
             set;
         }
 
-        [DataMember(Name = "content")]
+        [JsonPropertyName("content")]
         public string Content
         {
             get;
             set;
         }
 
-        [DataMember(Name = "author")]
+        [JsonPropertyName("author")]
         public int Author
         {
             get;
             set;
         }
 
-        [DataMember(Name = "created")]
+        [JsonPropertyName("created")]
         public DateTime Created
         {
             get;
             set;
         }
 
-        [DataMember(Name = "modified")]
+        [JsonPropertyName("modified")]
         public DateTime? Modified
         {
             get;

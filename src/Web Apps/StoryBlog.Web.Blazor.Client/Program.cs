@@ -40,7 +40,7 @@ namespace StoryBlog.Web.Blazor.Client
                         .AddOptions<BlogApiOptions>()
                         .Configure(options =>
                         {
-                            options.Host = new Uri("http://localhost:3000");
+                            options.Host = new Uri("http://localhost:3000/api/v1");
                         });
 
                     services

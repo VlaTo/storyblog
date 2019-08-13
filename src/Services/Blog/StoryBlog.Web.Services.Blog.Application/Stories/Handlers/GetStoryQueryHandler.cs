@@ -74,7 +74,8 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
                 return null;
             }
 
-            return RequestResult.Success(mapper.Map<Application.Models.Story>(story));
+            var data = mapper.Map<Application.Models.Story>(story);
+            return RequestResult.Success(data);
         }
     }
 }

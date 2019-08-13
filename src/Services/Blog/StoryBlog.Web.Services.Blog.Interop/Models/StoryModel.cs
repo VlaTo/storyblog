@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
@@ -57,7 +59,7 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
         }
 
         [JsonPropertyName("comments")]
-        public CommentModel[] Comments
+        public ICollection<CommentModel> Comments
         {
             get;
             set;
@@ -65,7 +67,7 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
 
         public StoryModel()
         {
-            Comments = new CommentModel[0];
+            Comments = new Collection<CommentModel>();
         }
     }
 }

@@ -104,12 +104,12 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return index;
             }
 
-            Interop.Models.StoryModel MapStory(Story story)
+            Interop.Models.StoryModel MapStory()
             {
-                var storyModel = mapper.Map<Interop.Models.StoryModel>(story);
+                var storyModel = mapper.Map<Interop.Models.StoryModel>(result.Entity);
 
-                storyModel.Author = FindAuthorIndex(story.Author);
-                storyModel.Comments = story.Comments
+                storyModel.Author = FindAuthorIndex(result.Entity.Author);
+                storyModel.Comments = result.Entity.Comments
                     .Select(comment =>
                     {
                         var commentModel = mapper.Map<Interop.Models.CommentModel>(comment);
@@ -125,7 +125,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
             return Ok(new GetStoryActionModel
             {
-                Data = MapStory(result.Entity),
+                Data = MapStory(),
                 Meta = new MetaInfo
                 {
                     Resources = new StoryResources

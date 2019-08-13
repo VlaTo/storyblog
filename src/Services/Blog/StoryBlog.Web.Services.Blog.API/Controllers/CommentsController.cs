@@ -54,12 +54,13 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
             blogSettings = storyBlogSettings.Value;
         }
 
-        // POST api/v1/comments/<story-slug>
+        // POST api/v1/comments/<story-slug>/<parentId?>
         //[Authorize]
         [AllowAnonymous]
-        [HttpPost("{slug:required}")]
-        [ProducesResponseType(typeof(Models.CommentModel), (int) HttpStatusCode.OK)]
-        public async Task<IActionResult> Create(string slug, [FromBody] CreateCommentModel model)
+        [HttpPost("{slug:required}/{parentId:long?}")]
+        [ProducesResponseType(typeof(CreatedResult), (int) HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(BadRequestResult), (int) HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> Create(string slug, long? parentId, [FromBody] CreateCommentModel model)
         {
             if (false == ModelState.IsValid)
             {
@@ -67,7 +68,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
             }
 
             var result = await mediator.Send(
-                new CreateCommentCommand(User, slug, model.Content, model.IsPublic),
+                new CreateCommentCommand(User, slug, parentId, model.Content, model.IsPublic),
                 HttpContext.RequestAborted
             );
 
@@ -88,7 +89,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
             return Created(
                 Url.Action("Get", "Comment", new {id = result.Entity.Id}),
-                mapper.Map<Models.CommentModel>(result.Entity)
+                mapper.Map<Interop.Models.CommentModel>(result.Entity)
             );
         }
     }

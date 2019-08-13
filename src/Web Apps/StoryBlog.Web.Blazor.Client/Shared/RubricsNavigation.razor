@@ -1,6 +1,7 @@
 ﻿@using global::Blazor.Fluxor
 @using StoryBlog.Web.Blazor.Client.Store
 @using StoryBlog.Web.Blazor.Client.Store.Actions
+@using StoryBlog.Web.Blazor.Client.Store.Models
 
 @inherits global::Blazor.Fluxor.Components.FluxorComponent
 
@@ -37,17 +38,52 @@
             </div>
         }
     }*@
+
+    <div class="storyblog-nav-scroller py-1 mb-2">
+        <nav class="nav d-flex justify-content-between">
+            @foreach (var category in categories)
+            {
+                <a class="p-2 text-muted" href="#" onclick=@(e => OnRubricClick(category.Slug))>@category.Name</a>
+            }
+        </nav>
+    </div>
 </div>
 
 @functions
 {
+    private Category[] categories;
+
     protected override void OnInit()
     {
         base.OnInit();
+        categories = new[]
+        {
+            new Category
+            {
+                Slug = "computers",
+                Name = "Computers"
+            },
+            new Category
+            {
+                Slug = "programming",
+                Name = "Programming"
+            },
+            new Category
+            {
+                Slug = "science",
+                Name = "Science"
+            },
+            new Category
+            {
+                Slug = "images",
+                Name = "Images"
+            }
+        };
+
         /*Dispatcher.Dispatch(new GetRubricsAction());*/
     }
 
-    private void OnRubricClick(string slug, UIMouseEventArgs e)
+    private void OnRubricClick(string slug)
     {
         Uri.NavigateTo($"/rubric/{slug}");
     }

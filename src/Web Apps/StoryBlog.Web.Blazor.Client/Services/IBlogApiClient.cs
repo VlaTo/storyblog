@@ -33,5 +33,15 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<Story> GetStoryAsync(string slug, StoryFlags flags, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="slug"></param>
+        /// <param name="parentId"></param>
+        /// <param name="message"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<Comment> CreateCommentAsync(string slug, long? parentId, string message, CancellationToken cancellationToken);
     }
 }

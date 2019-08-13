@@ -1,12 +1,11 @@
-﻿using Blazor.Fluxor;
-using System.Security.Principal;
+﻿using System.Security.Principal;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Actions
 {
     /// <summary>
     /// 
     /// </summary>
-    public sealed class SigninRequestAction : IAction
+    public sealed class SigninRequestAction
     {
         public SigninRequestAction()
         {
@@ -16,7 +15,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class SigninRequestFailedAction : IAction
+    public sealed class SigninRequestFailedAction
     {
         public string Error
         {
@@ -32,7 +31,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class SigninRequestSuccessAction : IAction
+    public sealed class SigninRequestSuccessAction
     {
         public IPrincipal Principal
         {
@@ -48,7 +47,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class SigninRequestCallbackFailedAction : IAction
+    public sealed class SigninRequestCallbackFailedAction
     {
         public string Error
         {

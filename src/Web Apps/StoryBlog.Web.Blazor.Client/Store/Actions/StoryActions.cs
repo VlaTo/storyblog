@@ -1,5 +1,4 @@
-﻿using Blazor.Fluxor;
-using StoryBlog.Web.Blazor.Client.Store.Models;
+﻿using StoryBlog.Web.Blazor.Client.Store.Models;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using System;
 
@@ -8,7 +7,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoryAction : IAction
+    public sealed class GetStoryAction
     {
         /// <summary>
         /// 
@@ -41,7 +40,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStoryFailedAction : IAction
+    public sealed class GetStoryFailedAction
     {
         /// <summary>
         /// 
@@ -64,7 +63,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class GetStorySuccessAction : IAction
+    public sealed class GetStorySuccessAction
     {
         /// <summary>
         /// 

@@ -5,10 +5,12 @@ using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Shared.Common;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,15 +23,16 @@ namespace StoryBlog.Web.Blazor.Client.Services
         private const string JsonMediaType = "application/json";
 
         private readonly HttpClient client;
-        private readonly Uri baseUri = new Uri("http://localhost:3000/api/v1/");
+        private readonly BlogApiOptions options;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="client"></param>
-        public BlogApiClient(HttpClient client)
+        public BlogApiClient(HttpClient client, BlogApiOptions options)
         {
             this.client = client;
+            this.options = options;
         }
 
         /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync" />
@@ -62,7 +65,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync(StoryFlags, CancellationToken)" />
         public Task<EntityListResult<FeedStory>> GetStoriesAsync(StoryFlags flags, CancellationToken cancellationToken)
         {
-            var path = new Uri(baseUri, "stories");
+            var path = new Uri(options.Host, "stories");
             var include = Flags.Format(typeof(StoryFlags), flags, "F");
             var query = QueryString.Create(nameof(include), include);
             var requestUri = new UriBuilder(path) {Query = query.ToUriComponent()}.Uri;
@@ -78,7 +81,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 throw new ArgumentNullException(nameof(requestUri));
             }
 
-            var path = new Uri(baseUri, requestUri);
+            var path = new Uri(options.Host, requestUri);
 
             return GetStoriesInternalAsync(path, cancellationToken);
         }
@@ -91,7 +94,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// <returns></returns>
         public async Task<Story> GetStoryAsync(string slug, StoryFlags flags, CancellationToken cancellationToken)
         {
-            var path = new Uri(baseUri, $"story/{slug}");
+            var path = new Uri(options.Host, $"story/{slug}");
             var include = Flags.Format(typeof(StoryFlags), flags, "F");
             var query = QueryString.Create(nameof(include), include);
             var requestUri = new UriBuilder(path) { Query = query.ToUriComponent() }.Uri;
@@ -111,7 +114,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
                     using (var stream = await httpResponse.Content.ReadAsStreamAsync())
                     {
-                        var result = await JsonSerializer.ReadAsync<GetStoryActionModel>(
+                        var result = await JsonSerializer.DeserializeAsync<GetStoryActionModel>(
                             stream,
                             cancellationToken: cancellationToken
                         );
@@ -132,7 +135,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// <returns></returns>
         public async Task<bool> CreateStoryAsync(StoryModel story)
         {
-            var requestUri = new Uri(baseUri, "stories");
+            var requestUri = new Uri(options.Host, "stories");
 
             try
             {
@@ -143,6 +146,33 @@ namespace StoryBlog.Web.Blazor.Client.Services
                     using (var response = await client.SendAsync(request, CancellationToken.None))
                     {
                         response.EnsureSuccessStatusCode();
+                    }
+
+                    return true;
+                }
+            }
+            catch (HttpRequestException)
+            {
+                return false;
+            }
+        }
+
+        /// <inheritdoc cref="IBlogApiClient.CreateCommentAsync" />
+        public async Task<Comment> CreateCommentAsync(string slug, long? parentId, string message, CancellationToken cancellationToken)
+        {
+            var requestUri = new Uri(options.Host, "comments");
+
+            try
+            {
+                using (var request = new HttpRequestMessage(HttpMethod.Post, requestUri))
+                {
+                    request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(JsonMediaType));
+
+                    using (var response = await client.SendAsync(request, CancellationToken.None))
+                    {
+                        var temp = response.EnsureSuccessStatusCode();
+
+                        temp.Content
                     }
 
                     return true;
@@ -202,10 +232,11 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
                         using (var stream = await message.Content.ReadAsStreamAsync())
                         {
-                            var data = await JsonSerializer.ReadAsync<GetStoriesActionModel>(
+                            var data = await JsonSerializer.DeserializeAsync<GetStoriesActionModel>(
                                 stream,
                                 cancellationToken: cancellationToken
                             );
+
                             return ProcessStoriesActionResult(data);
                         }
                     }
@@ -220,25 +251,19 @@ namespace StoryBlog.Web.Blazor.Client.Services
         private static Story ProcessStoryActionResult(GetStoryActionModel result)
         {
             var authors = CreateAuthors(result.Meta.Resources.Authors);
-            var story = new Story
+            return new Story
             {
                 Title = result.Data.Title,
                 Slug = result.Data.Slug,
                 Author = authors[result.Data.Author],
                 Content = result.Data.Content,
                 Published = GetPublishedDate(result.Data.Published, result.Data.Created),
+                IsCommentsClosed = result.Data.Closed,
+                Comments = CreateCommentsThree(result.Data.Comments, authors)
             };
-
-            Debug.WriteLine($"Story created, source comments: {result.Data.Comments.Length}");
-            CreateCommentsThree(story.Comments, result.Data.Comments, authors);
-
-            return story;
         }
 
-        private static void CreateCommentsThree(
-            ICollection<Comment> comments, 
-            CommentModel[] plainComments, 
-            IReadOnlyDictionary<int, Author> authors)
+        private static ICollection<Comment> CreateCommentsThree(ICollection<CommentModel> plainComments, IReadOnlyDictionary<int, Author> authors)
         {
             void CreateChildComments(long parentId, Comment parent)
             {
@@ -246,6 +271,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 {
                     var comment = new Comment(parent)
                     {
+                        Id = source.Id,
                         Content = source.Content,
                         Author = authors[source.Author],
                         Published = GetPublishedDate(source.Modified, source.Created)
@@ -257,24 +283,23 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 }
             }
 
-            foreach (var source in plainComments)
-            {
-                if (null != source.Parent)
-                {
-                    continue;
-                }
+            var comments = new Collection<Comment>();
 
+            foreach (var source in plainComments.Where(comment => null == comment.Parent))
+            {
                 var comment = new Comment(null)
                 {
+                    Id = source.Id,
                     Content = source.Content,
                     Author = authors[source.Author],
                     Published = GetPublishedDate(source.Modified, source.Created)
                 };
 
                 comments.Add(comment);
-
                 CreateChildComments(source.Id, comment);
             }
+
+            return comments;
         }
 
         private static EntityListResult<FeedStory> ProcessStoriesActionResult(GetStoriesActionModel result)
@@ -289,7 +314,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
                     Author = authors[story.Author],
                     Content = story.Content,
                     Published = GetPublishedDate(story.Published, story.Created),
-                    CommentsCount = story.Comments.Length
+                    CommentsCount = story.Comments.Count
                 }),
                 GetNavigationUri(result.Meta.Navigation.Previous),
                 GetNavigationUri(result.Meta.Navigation.Next)
