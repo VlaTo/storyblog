@@ -3,6 +3,7 @@ using StoryBlog.Web.Services.Blog.Interop.Includes;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using StoryBlog.Web.Services.Blog.Interop.Models;
 
 namespace StoryBlog.Web.Blazor.Client.Services
 {
@@ -39,9 +40,9 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// </summary>
         /// <param name="slug"></param>
         /// <param name="parentId"></param>
-        /// <param name="message"></param>
+        /// <param name="text"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Comment> CreateCommentAsync(string slug, long? parentId, string message, CancellationToken cancellationToken);
+        Task<CommentCreated> CreateCommentAsync(string slug, long? parentId, string text, CancellationToken cancellationToken);
     }
 }

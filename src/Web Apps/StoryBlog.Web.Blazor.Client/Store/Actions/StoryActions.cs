@@ -84,4 +84,70 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
             Story = story;
         }
     }
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class CreateNewCommentAction
+    {
+        public string Slug
+        {
+            get;
+        }
+
+        public string Text
+        {
+            get;
+        }
+
+        public CreateNewCommentAction(string slug, string text)
+        {
+            Slug = slug;
+            Text = text;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class CommentCreatedAction
+    {
+        public string Slug
+        {
+            get;
+        }
+
+        public CommentCreated Comment
+        {
+            get;
+        }
+
+        public CommentCreatedAction(string slug, CommentCreated comment)
+        {
+            Slug = slug;
+            Comment = comment;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class CommentCreationFailedAction
+    {
+        public string Slug
+        {
+            get;
+        }
+
+        public string Error
+        {
+            get;
+        }
+
+        public CommentCreationFailedAction(string slug, string error)
+        {
+            Slug = slug;
+            Error = error;
+        }
+    }
 }

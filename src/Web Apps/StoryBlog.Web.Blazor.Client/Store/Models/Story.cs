@@ -5,7 +5,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Models
     /// <summary>
     /// 
     /// </summary>
-    public class Story : StoryBase
+    public sealed class Story : StoryBase
     {
         /// <summary>
         /// 
@@ -25,6 +25,14 @@ namespace StoryBlog.Web.Blazor.Client.Store.Models
             set;
         }
 
+        /// <summary>
+        /// Gets or sets all comments count.
+        /// </summary>
+        public int CommentsCount { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public Story()
         {
             Comments = new List<Comment>();

@@ -201,6 +201,33 @@ namespace StoryBlog.Web.Services.Blog.API
                                         mapping => mapping.MapFrom(source => source.Modified)
                                     );
 
+                                config
+                                    .CreateMap<Comment, CommentCreatedModel>()
+                                    .ForMember(
+                                        story => story.Id,
+                                        mapping => mapping.MapFrom(source => source.Id)
+                                    )
+                                    .ForMember(
+                                        story => story.Parent,
+                                        mapping => mapping.MapFrom(source => source.ParentId)
+                                    )
+                                    .ForMember(
+                                        story => story.Content,
+                                        mapping => mapping.MapFrom(source => source.Content)
+                                    )
+                                    .ForMember(
+                                        story => story.Author,
+                                        mapping => mapping.MapFrom(source => source.Author)
+                                    )
+                                    .ForMember(
+                                        story => story.Created,
+                                        mapping => mapping.MapFrom(source => source.Created)
+                                    )
+                                    .ForMember(
+                                        story => story.Modified,
+                                        mapping => mapping.MapFrom(source => source.Modified)
+                                    );
+
                                 /*config
                                     .CreateMap<Application.Landing.Models.HeroStory, HeroStoryModel>()
                                     .ForMember(

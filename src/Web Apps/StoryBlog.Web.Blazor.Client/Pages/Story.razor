@@ -50,7 +50,7 @@ else
                                     </li>
                                     <li class="list-inline-item">
                                         <i class="mdi mdi-comment-multiple-outline"></i>
-                                        @story.Comments.Count @Pluralizer["комментарий", story.Comments.Count]
+                                        @story.CommentsCount @Pluralizer["комментарий", story.CommentsCount]
                                     </li>
                                 </ul>
 
@@ -58,21 +58,23 @@ else
 
                                 @if (story.IsCommentsClosed)
                                 {
-                                    <div class="alert alert-warning my-2" role="alert">
+                                    <div class="alert alert-warning mt-4" role="alert">
                                         <h5>Возможность комментировать заблокирована</h5>
                                     </div>
                                 }
                                 else
                                 {
 
-                                    @if (false == story.Comments.Any())
+                                    @if (0 == story.Comments.Count)
                                      {
-                                         <div class="alert alert-secondary my-4" role="alert">
+                                         <div class="alert alert-secondary mt-4" role="alert">
                                              <h5>Добавь комментарий первым</h5>
                                          </div>
                                      }
 
-                                    <CommentBox OnSubmitComment=OnSubmitComment />
+                                    <div class="mt-4">
+                                        <CommentBox OnSubmitComment=OnSubmitComment />
+                                    </div>
                                 }
 
                                 @if (story.Comments.Any())
@@ -114,6 +116,6 @@ else
 
     private void OnSubmitComment(string message)
     {
-        Dispatcher.Dispatch(new CreateNewComment(message))
+        Dispatcher.Dispatch(new CreateNewCommentAction(Slug, message));
     }
 }

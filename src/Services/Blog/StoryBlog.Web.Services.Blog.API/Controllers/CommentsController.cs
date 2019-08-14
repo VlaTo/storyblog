@@ -89,7 +89,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
 
             return Created(
                 Url.Action("Get", "Comment", new {id = result.Entity.Id}),
-                mapper.Map<Interop.Models.CommentModel>(result.Entity)
+                mapper.Map<CommentCreatedModel>(result.Entity)
             );
         }
     }

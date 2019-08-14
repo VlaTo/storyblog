@@ -7,13 +7,17 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using StoryBlog.Web.Blazor.Client.Models;
 using StoryBlog.Web.Blazor.Client.Store.Effects;
 
 namespace StoryBlog.Web.Blazor.Client.Services
@@ -29,10 +33,13 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// 
         /// </summary>
         /// <param name="client"></param>
-        public BlogApiClient(HttpClient client, BlogApiOptions options)
+        /// <param name="options"></param>
+        public BlogApiClient(
+            HttpClient client,
+            IOptions<BlogApiOptions> options)
         {
             this.client = client;
-            this.options = options;
+            this.options = options.Value;
         }
 
         /// <inheritdoc cref="IBlogApiClient.GetStoriesAsync" />
@@ -158,29 +165,58 @@ namespace StoryBlog.Web.Blazor.Client.Services
         }
 
         /// <inheritdoc cref="IBlogApiClient.CreateCommentAsync" />
-        public async Task<Comment> CreateCommentAsync(string slug, long? parentId, string message, CancellationToken cancellationToken)
+        public async Task<CommentCreated> CreateCommentAsync(string slug, long? parentId, string text, CancellationToken cancellationToken)
         {
-            var requestUri = new Uri(options.Host, "comments");
+            var path = $"comments/{slug}";
+
+            if (parentId.HasValue)
+            {
+                path += ("/" + parentId.Value);
+            }
+
+            var requestUri = new Uri(options.Host, path);
 
             try
             {
+                CommentCreated comment;
+
                 using (var request = new HttpRequestMessage(HttpMethod.Post, requestUri))
                 {
+                    request.Method = HttpMethod.Post;
                     request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(JsonMediaType));
+                    request.Content = await CreateCommentPostContentAsync(text, true, cancellationToken);
 
                     using (var response = await client.SendAsync(request, CancellationToken.None))
                     {
-                        var temp = response.EnsureSuccessStatusCode();
+                        var message = response.EnsureSuccessStatusCode();
 
-                        temp.Content
+                        using (var stream = await message.Content.ReadAsStreamAsync())
+                        {
+                            var result = await JsonSerializer.DeserializeAsync<CommentCreatedModel>(
+                                stream,
+                                cancellationToken: cancellationToken
+                            );
+
+                            comment = new CommentCreated
+                            {
+                                Id = result.Id,
+                                Content = result.Content,
+                                Parent = result.Parent,
+                                Author = new Author
+                                {
+                                    Name = result.Author.Name
+                                },
+                                Published = GetPublishedDate(result.Modified, result.Created)
+                            };
+                        }
                     }
-
-                    return true;
                 }
+
+                return comment;
             }
             catch (HttpRequestException)
             {
-                return false;
+                return null;
             }
         }
 
@@ -248,6 +284,27 @@ namespace StoryBlog.Web.Blazor.Client.Services
             }
         }
 
+        private async Task<HttpContent> CreateCommentPostContentAsync(string text, bool isPublic, CancellationToken cancellationToken)
+        {
+            var model = new CreateCommentModel
+            {
+                Content = text,
+                IsPublic = isPublic
+            };
+
+            var encoding = Encoding.UTF8;
+
+            using (var stream = new MemoryStream())
+            {
+                await JsonSerializer.SerializeAsync(stream, model, cancellationToken: cancellationToken);
+
+                var bytes = stream.ToArray();
+                var content = encoding.GetString(bytes);
+
+                return new StringContent(content, encoding, JsonMediaType);
+            }
+        }
+
         private static Story ProcessStoryActionResult(GetStoryActionModel result)
         {
             var authors = CreateAuthors(result.Meta.Resources.Authors);
@@ -259,7 +316,8 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 Content = result.Data.Content,
                 Published = GetPublishedDate(result.Data.Published, result.Data.Created),
                 IsCommentsClosed = result.Data.Closed,
-                Comments = CreateCommentsThree(result.Data.Comments, authors)
+                Comments = CreateCommentsThree(result.Data.Comments, authors),
+                CommentsCount = result.Data.Comments.Count
             };
         }
 

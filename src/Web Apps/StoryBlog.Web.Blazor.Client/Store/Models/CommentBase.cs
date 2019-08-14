@@ -7,8 +7,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Models
     /// <summary>
     /// 
     /// </summary>
-    /// <typeparam name="TComment"></typeparam>
-    public abstract class CommentBase<TComment>
+    public abstract class CommentBase
     {
         /// <summary>
         /// 
@@ -45,7 +44,14 @@ namespace StoryBlog.Web.Blazor.Client.Store.Models
             get;
             set;
         }
+    }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TComment"></typeparam>
+    public abstract class CommentBase<TComment> : CommentBase
+    {
         /// <summary>
         /// 
         /// </summary>

@@ -10,11 +10,11 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
     /// <summary>
     /// 
     /// </summary>
-    internal sealed class StoryEffect : Effect<GetStoryAction>
+    internal sealed class GetStoryActionEffect : Effect<GetStoryAction>
     {
         private readonly IBlogApiClient client;
 
-        public StoryEffect(IBlogApiClient client)
+        public GetStoryActionEffect(IBlogApiClient client)
         {
             this.client = client;
         }
@@ -37,6 +37,40 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
             catch (Exception exception)
             {
                 dispatcher.Dispatch(new GetStoryFailedAction(exception.Message));
+            }
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    internal sealed class CreateNewCommentActionEffect : Effect<CreateNewCommentAction>
+    {
+        private readonly IBlogApiClient client;
+
+        public CreateNewCommentActionEffect(IBlogApiClient client)
+        {
+            this.client = client;
+        }
+
+        protected override async Task HandleAsync(CreateNewCommentAction action, IDispatcher dispatcher)
+        {
+            try
+            {
+                var comment = await client.CreateCommentAsync(action.Slug, null, action.Text, CancellationToken.None);
+
+                if (null == comment)
+                {
+                    throw new Exception("");
+                }
+
+                var result = new CommentCreatedAction(action.Slug, comment);
+
+                dispatcher.Dispatch(result);
+            }
+            catch (Exception exception)
+            {
+                dispatcher.Dispatch(new CommentCreationFailedAction(action.Slug, exception.Message));
             }
         }
     }

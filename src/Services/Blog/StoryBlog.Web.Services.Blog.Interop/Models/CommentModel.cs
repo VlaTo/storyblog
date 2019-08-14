@@ -1,33 +1,16 @@
 ﻿using System;
-using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace StoryBlog.Web.Services.Blog.Interop.Models
 {
-    [DataContract(Namespace = "http://storyblog.org/schemas/json/models/comment")]
-    public sealed class CommentModel : IEquatable<CommentModel>
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class CommentModel : CommentModelBase, IEquatable<CommentModel>
     {
-        [JsonPropertyName("id")]
-        public long Id
-        {
-            get;
-            set;
-        }
-
-        [JsonPropertyName("parent")]
-        public long? Parent
-        {
-            get;
-            set;
-        }
-
-        [JsonPropertyName("content")]
-        public string Content
-        {
-            get;
-            set;
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
         [JsonPropertyName("author")]
         public int Author
         {
@@ -35,20 +18,7 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
             set;
         }
 
-        [JsonPropertyName("created")]
-        public DateTime Created
-        {
-            get;
-            set;
-        }
-
-        [JsonPropertyName("modified")]
-        public DateTime? Modified
-        {
-            get;
-            set;
-        }
-
+        /// <inheritdoc cref="IEquatable{T}.Equals(T)" />
         public bool Equals(CommentModel other)
         {
             if (ReferenceEquals(null, other))
@@ -68,6 +38,7 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
                    && Modified.Equals(other.Modified);
         }
 
+        /// <inheritdoc cref="object.Equals(object)" />
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj))
@@ -83,6 +54,7 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
             return obj is CommentModel other && Equals(other);
         }
 
+        /// <inheritdoc cref="object.GetHashCode" />
         public override int GetHashCode()
         {
             unchecked

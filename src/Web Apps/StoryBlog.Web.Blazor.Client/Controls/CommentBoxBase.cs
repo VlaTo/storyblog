@@ -1,5 +1,4 @@
-﻿using System;
-using Blazor.Fluxor;
+﻿using Blazor.Fluxor;
 using Microsoft.AspNetCore.Components;
 using StoryBlog.Web.Services.Shared.Common;
 
@@ -8,30 +7,6 @@ namespace StoryBlog.Web.Blazor.Client.Controls
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    public delegate void SubmitCommentEventHandler(CommentBoxBase sender, SubmitCommentEventArgs e);
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public sealed class SubmitCommentEventArgs : EventArgs
-    {
-        public string Message
-        {
-            get;
-        }
-
-        public SubmitCommentEventArgs(string message)
-        {
-            Message = message;
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    //[EventHandler("e", typeof(SubmitCommentEventArgs))]
     public class CommentBoxBase : ComponentBase
     {
         [Inject]
