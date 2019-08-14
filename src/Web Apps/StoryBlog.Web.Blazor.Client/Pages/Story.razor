@@ -31,62 +31,69 @@ else
         <div class="container">
             <div class="row">
                 <div class="col-lg-9">
+                    @if (StoryState.Value.IsLoading())
+                    {
+                        <p>Loading...</p>
+                    }
+
                     @if (StoryState.Value.IsFailed())
                     {
                         <p>@StoryState.Value.Status.Error</p>
                     }
-
-                    @if (StoryState.Value.IsSuccess())
+                    else
                     {
-                        var story = StoryState.Value.Story;
+                        var story = StoryState.Value?.Story;
 
-                        <article id="@story.Slug" class="">
-                            <div class="mb-5">
-                                <h2 class="">@story.Title</h2>
-                                <ul class="list-unstyled list-inline text-muted mt-2">
-                                    <li class="list-inline-item">
-                                        <i class="mdi mdi-calendar"></i>
-                                        <TimeLabel DateTime=story.Published />
-                                    </li>
-                                    <li class="list-inline-item">
-                                        <i class="mdi mdi-comment-multiple-outline"></i>
-                                        @story.CommentsCount @Pluralizer["комментарий", story.CommentsCount]
-                                    </li>
-                                </ul>
+                        if (null != story)
+                        {
+                            <article id="@story.Slug" class="">
+                                <div class="mb-5">
+                                    <h2 class="">@story.Title</h2>
+                                    <ul class="list-unstyled list-inline text-muted mt-2">
+                                        <li class="list-inline-item">
+                                            <i class="mdi mdi-calendar"></i>
+                                            <TimeLabel DateTime=story.Published />
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <i class="mdi mdi-comment-multiple-outline"></i>
+                                            @story.CommentsCount @Pluralizer["комментарий", story.CommentsCount]
+                                        </li>
+                                    </ul>
 
-                                <div class="justify-content-md-start my-4">@((MarkupString)story.Content)</div>
+                                    <div class="justify-content-md-start my-4">@((MarkupString)story.Content)</div>
 
-                                @if (story.IsCommentsClosed)
-                                {
-                                    <div class="alert alert-warning mt-4" role="alert">
-                                        <h5>Возможность комментировать заблокирована</h5>
-                                    </div>
-                                }
-                                else
-                                {
+                                    @if (story.IsCommentsClosed)
+                                    {
+                                        <div class="alert alert-warning mt-4" role="alert">
+                                            <h5>Возможность комментировать заблокирована</h5>
+                                        </div>
+                                    }
+                                    else
+                                    {
 
-                                    @if (0 == story.Comments.Count)
-                                     {
-                                         <div class="alert alert-secondary mt-4" role="alert">
-                                             <h5>Добавь комментарий первым</h5>
-                                         </div>
-                                     }
+                                        @if (0 == story.Comments.Count)
+                                        {
+                                            <div class="alert alert-secondary mt-4" role="alert">
+                                                <h5>Добавь комментарий первым</h5>
+                                            </div>
+                                        }
 
-                                    <div class="mt-4">
-                                        <CommentBox OnSubmitComment=OnSubmitComment />
-                                    </div>
-                                }
+                                        <div class="mt-4">
+                                            <CommentBox OnSubmitComment=OnSubmitComment />
+                                        </div>
+                                    }
 
-                                @if (story.Comments.Any())
-                                {
-                                    <div class="m-lg-2">
-                                        <ul class="list-unstyled">
-                                            <CommentsBlock Comments=@story.Comments />
-                                        </ul>
-                                    </div>
-                                }
-                            </div>
-                        </article>
+                                    @if (story.Comments.Any())
+                                    {
+                                        <div class="m-lg-2">
+                                            <ul class="list-unstyled">
+                                                <CommentsBlock Comments=@story.Comments />
+                                            </ul>
+                                        </div>
+                                    }
+                                </div>
+                            </article>
+                        }
                     }
                 </div>
                 <aside class="col-lg-3">
