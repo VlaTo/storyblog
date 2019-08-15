@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.RenderTree;
 using StoryBlog.Web.Blazor.Components.Attributes;
 
 namespace StoryBlog.Web.Blazor.Components
@@ -80,78 +81,78 @@ namespace StoryBlog.Web.Blazor.Components
     /// <summary>
     /// 
     /// </summary>
-    public class BootstrapButtonComponent : BootstrapComponentBase
+    public class BootstrapButton : BootstrapComponentBase
     {
-        private static readonly ClassBuilder<BootstrapButtonComponent> classNameBuilder;
+        private static readonly ClassBuilder<BootstrapButton> classNameBuilder;
 
         private bool firstRender;
-        protected ElementRef button;
+        protected ElementReference button;
 
         [Parameter]
-        protected BootstrapButtonTypes Type
+        public BootstrapButtonTypes Type
         {
             get;
             set;
         }
 
         [Parameter]
-        protected BootstrapButtonSizes Size
+        public BootstrapButtonSizes Size
         {
             get;
             set;
         }
 
         [Parameter]
-        protected bool Active
+        public bool Active
         {
             get;
             set;
         }
 
         [Parameter]
-        protected bool Outline
+        public bool Outline
         {
             get;
             set;
         }
 
         [Parameter]
-        protected bool Block
+        public bool Block
         {
             get;
             set;
         }
 
         [Parameter]
-        protected bool Disabled
+        public bool Disabled
         {
             get;
             set;
         }
 
         [Parameter]
-        protected Action<UIMouseEventArgs> OnClick
+        public EventCallback<UIMouseEventArgs> OnClick
         {
             get;
             set;
         }
 
         [Parameter]
-        protected RenderFragment ChildContent
+        public RenderFragment ChildContent
         {
             get;
             set;
         }
 
         [Parameter]
-        protected string Style
+        public string Style
         {
             get;
             set;
         }
 
         [Parameter]
-        protected int TabIndex
+        public int TabIndex
         {
             get;
             set;
@@ -163,7 +164,7 @@ namespace StoryBlog.Web.Blazor.Components
             private set;
         }
 
-        public BootstrapButtonComponent()
+        public BootstrapButton()
         {
             firstRender = true;
             Type = BootstrapButtonTypes.Default;
@@ -175,9 +176,9 @@ namespace StoryBlog.Web.Blazor.Components
             TabIndex = 0;
         }
 
-        static BootstrapButtonComponent()
+        static BootstrapButton()
         {
-            classNameBuilder = new ClassBuilder<BootstrapButtonComponent>("btn")
+            classNameBuilder = new ClassBuilder<BootstrapButton>("btn")
                 .DefineClass(@class => @class
                     .Modifier("outline", component => component.Outline)
                     .Name(component => EnumHelper.GetClassName(component.Type))
@@ -189,9 +190,27 @@ namespace StoryBlog.Web.Blazor.Components
                 .DefineClass(@class => @class.NoPrefix().Name("active").Condition(component => component.Active));
         }
 
-        protected override void OnInit()
+        protected override void OnInitialized()
         {
             ClassString = classNameBuilder.Build(this, Class);
+        }
+
+        protected override void BuildRenderTree(RenderTreeBuilder builder)
+        {
+            base.BuildRenderTree(builder);
+
+            builder.OpenElement(0, "button");
+
+            builder.AddAttribute(1, "type", "button");
+            builder.AddAttribute(2, "class", ClassString);
+            builder.AddAttribute(3, "style", Style);
+            builder.AddAttribute(4, "tabindex", TabIndex);
+            builder.AddAttribute(5, "disabled", Disabled);
+            builder.AddAttribute(6, "onclick", OnClick);
+
+            builder.AddContent(7, ChildContent);
+
+            builder.CloseElement();
         }
 
         protected override Task OnAfterRenderAsync()

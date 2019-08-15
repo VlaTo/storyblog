@@ -5,7 +5,7 @@
 @foreach (var comment in Comments)
 {
     <li class="media">
-        <img src="http://lorempixel.com/g/64/64/abstract" class="align-self-start rounded-circle mr-3" width="64" height="64" alt=@comment.Author.Name />
+        <img src="img/abstract.jpg" class="align-self-start rounded-circle mr-3" width="64" height="64" alt=@comment.Author.Name />
         <div class="media-body">
             <div class="mb-lg-3">
                 <h5 class="mt-0">
@@ -30,7 +30,7 @@
     private ICollection<Comment> comments;
 
     [Parameter]
-    protected ICollection<Comment> Comments
+    public ICollection<Comment> Comments
     {
         get
         {

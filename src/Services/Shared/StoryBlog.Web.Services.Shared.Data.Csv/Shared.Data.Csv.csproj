@@ -6,10 +6,4 @@
     <RootNamespace>StoryBlog.Web.Services.Shared.Data.Csv</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Reference Include="System">
-      <HintPath>System</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

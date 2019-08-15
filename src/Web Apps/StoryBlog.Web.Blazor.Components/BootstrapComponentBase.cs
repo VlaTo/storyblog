@@ -11,7 +11,7 @@ namespace StoryBlog.Web.Blazor.Components
         private bool disposed;
 
         [Parameter]
-        protected string Class
+        public string Class
         {
             get;
             set;

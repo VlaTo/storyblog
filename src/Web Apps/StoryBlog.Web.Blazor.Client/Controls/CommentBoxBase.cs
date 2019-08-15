@@ -31,14 +31,14 @@ namespace StoryBlog.Web.Blazor.Client.Controls
         }
 
         [Parameter]
-        protected string Message
+        public string Message
         {
             get;
             set;
         }
 
         [Parameter]
-        protected EventCallback<string> OnSubmitComment
+        public EventCallback<string> OnSubmitComment
         {
             get;
             set;

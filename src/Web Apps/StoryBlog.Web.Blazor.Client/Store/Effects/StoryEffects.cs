@@ -66,6 +66,8 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
 
                 var result = new CommentCreatedAction(action.Slug, comment);
 
+                await Task.Delay(TimeSpan.FromSeconds(10.0d));
+
                 dispatcher.Dispatch(result);
             }
             catch (Exception exception)

@@ -97,7 +97,6 @@ else
                     }
                 </div>
                 <aside class="col-lg-3">
-                    <StoryBlogAboutAuthor />
                 </aside>
             </div>
         </div>
@@ -106,10 +105,8 @@ else
 
 @code
 {
-    protected ElementRef editor;
-
     [Parameter]
-    protected string Slug
+    public string Slug
     {
         get;
         set;

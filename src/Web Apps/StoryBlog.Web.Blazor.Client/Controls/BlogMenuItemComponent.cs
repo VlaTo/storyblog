@@ -13,28 +13,28 @@ namespace StoryBlog.Web.Blazor.Client.Controls
         private bool firstRender;
 
         [Parameter]
-        protected bool IsBlock
+        public bool IsBlock
         {
             get;
             set;
         }
 
         [Parameter]
-        protected string Style
+        public string Style
         {
             get;
             set;
         }
 
         [Parameter]
-        protected string Title
+        public string Title
         {
             get;
             set;
         }
 
         [Parameter]
-        protected string Link
+        public string Link
         {
             get;
             set;
@@ -79,7 +79,7 @@ namespace StoryBlog.Web.Blazor.Client.Controls
                 .DefineClass(@class => @class.NoPrefix().Name("active").Condition(component => component.IsActive));
         }
 
-        protected override void OnInit()
+        protected override void OnInitialized()
         {
             RefreshStyles();
             ClassString = classNameBuilder.Build(this, Class);

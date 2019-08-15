@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using Microsoft.AspNetCore.Components;
@@ -7,14 +8,6 @@ using Microsoft.AspNetCore.Components.RenderTree;
 
 namespace StoryBlog.Web.Blazor.Components
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="label"></param>
-    /// <param name="span"></param>
-    /// <returns></returns>
-    public delegate string ConvertCallback(TimeLabel label, TimeSpan span);
-
     /// <summary>
     /// Time label class.
     /// </summary>
@@ -26,8 +19,6 @@ namespace StoryBlog.Web.Blazor.Components
         private static readonly TimeSpan spanUpdateDuration;
         private static readonly ContentUpdater updater;
 
-        private DateTime dateTime;
-        private ConvertCallback convertFallback;
         private IDisposable subscription;
         private string content;
 
@@ -35,34 +26,20 @@ namespace StoryBlog.Web.Blazor.Components
         /// 
         /// </summary>
         [Parameter]
-        protected DateTime DateTime
+        public DateTime DateTime
         {
-            get => dateTime;
-            set
-            {
-                if (dateTime == value)
-                {
-                    return;
-                }
-
-                dateTime = value;
-
-                StateHasChanged();
-            }
+            get;
+            set;
         }
 
         /// <summary>
         /// 
         /// </summary>
         [Parameter]
-        protected ConvertCallback ConvertFallback
+        public Func<TimeLabel, TimeSpan, string> ConvertFallback
         {
-            get => convertFallback;
-            set
-            {
-                convertFallback = value;
-                StateHasChanged();
-            }
+            get;
+            set;
         }
 
         static TimeLabel()
@@ -77,9 +54,9 @@ namespace StoryBlog.Web.Blazor.Components
             subscription?.Dispose();
         }
 
-        protected override void OnInit()
+        protected override void OnInitialized()
         {
-            base.OnInit();
+            base.OnInitialized();
 
             subscription = updater.Subscribe(OnTimerCallback);
 
@@ -92,7 +69,7 @@ namespace StoryBlog.Web.Blazor.Components
 
             builder.OpenElement(0, "time");
 
-            builder.AddAttribute(1, "datetime", dateTime.ToString("u"));
+            builder.AddAttribute(1, "datetime", DateTime.ToString("u"));
             builder.AddContent(2, content);
 
             builder.CloseElement();
@@ -117,9 +94,9 @@ namespace StoryBlog.Web.Blazor.Components
                 return;
             }
 
-            content = null == convertFallback
-                ? String.Format($"at {DateTime.Date:g}")
-                : convertFallback.Invoke(this, span);
+            content = null == ConvertFallback
+                ? DateTime.ToString("f", CultureInfo.CurrentUICulture)
+                : ConvertFallback.Invoke(this, span);
 
             if (span > spanUpdateDuration)
             {

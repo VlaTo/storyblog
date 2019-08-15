@@ -19,12 +19,12 @@ namespace StoryBlog.Web.Blazor.Client.Controls
             set;
         }
 
-        public void Configure(RenderHandle renderHandle)
+        public void Attach(RenderHandle renderHandle)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task SetParametersAsync(ParameterCollection parameters)
+        public Task SetParametersAsync(ParameterView parameters)
         {
             throw new System.NotImplementedException();
         }

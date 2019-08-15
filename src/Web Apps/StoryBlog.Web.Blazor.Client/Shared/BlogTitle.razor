@@ -18,7 +18,7 @@
             <span class="text-dark font-weight-bolder storyblog-blog-logo">@Title</span>
         </div>
         <div class="col-auto d-flex justify-content-end align-items-center">
-            <a class="text-muted" onclick=@OnSearchButtonClick>
+            <a class="text-muted" @onclick=OnSearchButtonClick>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24" focusable="false">
                     <title>Search</title>
                     <circle cx="10.5" cy="10.5" r="7.5"></circle>
@@ -39,21 +39,21 @@
     </div>
 </header>
 
-@functions
+@code
 {
     [Parameter]
-    protected string Title
+    public string Title
     {
         get;
         set;
     }
 
-    private void OnSignInButtonClick(UIMouseEventArgs e)
+    private void OnSignInButtonClick(UIEventArgs e)
     {
         Dispatcher.Dispatch(new SigninRequestAction());
     }
 
-    private void OnSearchButtonClick(UIMouseEventArgs e)
+    private void OnSearchButtonClick(UIEventArgs e)
     {
         Console.WriteLine("OnSearchButtonClick");
     }

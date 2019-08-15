@@ -38,7 +38,7 @@
                         <ul class="card-subtitle text-muted list-unstyled list-inline">
                             <li class="list-inline-item">
                                 <i class="mdi mdi-calendar"></i>
-                                <TimeLabel DateTime=@story.Published ConvertFallback=@((label, span) => OnConvertTimeSpan(span, story.Published)) />
+                                <TimeLabel DateTime=@story.Published ConvertFallback=OnConvertTimeSpan />
                             </li>
                             <li class="list-inline-item">
                                 <i class="mdi mdi-account-outline"></i>
@@ -65,11 +65,11 @@
                     <nav aria-label="pages">
                         <ul class="pagination">
                             <li class=@("page-item" + (null == State.Value.BackwardUri ? " disabled" : String.Empty))>
-                                <a href="#" class="page-link" onclick=@(e => OnPaginationClick(new GetStoriesBackwardAction(State.Value.BackwardUri)))>Назад</a>
+                                <a href="#" class="page-link" @onclick=OnPreviousPageClick>Назад</a>
                             </li>
 
                             <li class=@("page-item" + (null == State.Value.ForwardUri ? " disabled" : String.Empty))>
-                                <a href="#" class="page-link" onclick=@(e => OnPaginationClick(new GetStoriesForwardAction(State.Value.ForwardUri)))>Вперед</a>
+                                <a href="#" class="page-link" @onclick=OnNextPageClick>Вперед</a>
                             </li>
                         </ul>
                     </nav>
@@ -129,18 +129,23 @@
 
 @code
 {
-    protected override void OnInit()
+    protected override void OnInitialized()
     {
-        base.OnInit();
+        base.OnInitialized();
         Dispatcher.Dispatch(new GetStoriesAction(StoryFlags.Authors | StoryFlags.Comments));
     }
 
-    private void OnPaginationClick(object action)
+    private void OnPreviousPageClick(UIMouseEventArgs e)
     {
-        Dispatcher.Dispatch(action);
+        Dispatcher.Dispatch(new GetStoriesBackwardAction(State.Value.BackwardUri));
     }
 
-    private string OnConvertTimeSpan(TimeSpan span, DateTime dateTime)
+    private void OnNextPageClick(UIMouseEventArgs e)
+    {
+        Dispatcher.Dispatch(new GetStoriesForwardAction(State.Value.ForwardUri));
+    }
+
+    private string OnConvertTimeSpan(TimeLabel label, TimeSpan span)
     {
         if (span < TimeSpan.FromDays(1.0d))
         {
@@ -149,6 +154,6 @@
 
         //System.Diagnostics.Debug.WriteLine($"{System.Globalization.CultureInfo.CurrentUICulture.DisplayName}");
 
-        return DateTimeLocalizer[dateTime];
+        return DateTimeLocalizer[label.DateTime];
     }
 }
