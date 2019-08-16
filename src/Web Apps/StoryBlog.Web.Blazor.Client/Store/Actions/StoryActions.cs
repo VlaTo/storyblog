@@ -1,6 +1,7 @@
 ﻿using StoryBlog.Web.Blazor.Client.Store.Models;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using System;
+using System.Collections.Generic;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Actions
 {
@@ -68,42 +69,108 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
         /// <summary>
         /// 
         /// </summary>
-        public Story Story
+        public string Slug
         {
             get;
             set;
         }
 
-        public GetStorySuccessAction(Story story)
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Title
         {
-            if (null == story)
-            {
-                throw new ArgumentNullException(nameof(story));
-            }
+            get;
+            set;
+        }
 
-            Story = story;
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Content
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Author Author
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime Published
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsCommentsClosed
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ICollection<Models.Data.Comment> Comments
+        {
+            get;
+            set;
         }
     }
     
     /// <summary>
     /// 
     /// </summary>
-    public sealed class CreateNewCommentAction
+    public sealed class CreatePendingCommentAction
     {
-        public string Slug
+        /// <summary>
+        /// 
+        /// </summary>
+        public string StorySlug
         {
             get;
         }
 
-        public string Text
+        /// <summary>
+        /// 
+        /// </summary>
+        public long? ParentId
         {
             get;
         }
 
-        public CreateNewCommentAction(string slug, string text)
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Content
         {
-            Slug = slug;
-            Text = text;
+            get; 
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="storySlug"></param>
+        /// <param name="parentId"></param>
+        /// <param name="content"></param>
+        public CreatePendingCommentAction(string storySlug, long? parentId, string content)
+        {
+            StorySlug = storySlug;
+            ParentId = parentId;
+            Content = content;
         }
     }
 
@@ -112,20 +179,62 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// </summary>
     public sealed class CommentCreatedAction
     {
-        public string Slug
+        /// <summary>
+        /// 
+        /// </summary>
+        public long Id
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string StorySlug
         {
             get;
         }
 
-        public CommentCreated Comment
+        /// <summary>
+        /// 
+        /// </summary>
+        public long? ParentId
         {
             get;
+            set;
         }
 
-        public CommentCreatedAction(string slug, CommentCreated comment)
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Content
         {
-            Slug = slug;
-            Comment = comment;
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Author Author
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime Published
+        {
+            get;
+            set;
+        }
+
+        public CommentCreatedAction(string storySlug)
+        {
+            StorySlug = storySlug;
         }
     }
 

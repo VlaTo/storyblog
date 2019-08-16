@@ -1,36 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using Blazor.Fluxor;
-using StoryBlog.Web.Blazor.Client.Store.Models;
-using StoryBlog.Web.Blazor.Client.Store.Models.Data;
 
-namespace StoryBlog.Web.Blazor.Client.Store
+namespace StoryBlog.Web.Blazor.Client.Store.Models.Data
 {
     /// <summary>
     /// 
     /// </summary>
-    // ReSharper disable once UnusedMember.Global
-    public sealed class StoryFeature : Feature<StoryState>
+    public sealed class StoryResult
     {
-        public override string GetName() => nameof(StoryState);
-
-        protected override StoryState GetInitialState() => new StoryState(ModelStatus.None);
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class StoryState : IHasModelStatus
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public ModelStatus Status
-        {
-            get;
-        }
-
         /// <summary>
         /// 
         /// </summary>
@@ -88,25 +65,18 @@ namespace StoryBlog.Web.Blazor.Client.Store
         /// <summary>
         /// 
         /// </summary>
-        public IReadOnlyCollection<CommentBase> Comments
+        public ICollection<Comment> Comments
         {
             get;
             set;
         }
 
         /// <summary>
-        /// Gets or sets all comments count.
+        /// 
         /// </summary>
-        public int CommentsCount
+        public StoryResult()
         {
-            get; 
-            set;
-        }
-
-        public StoryState(ModelStatus status)
-        {
-            Status = status;
-            Comments = new CommentBase[0];
+            Comments = new List<Comment>();
         }
     }
 }

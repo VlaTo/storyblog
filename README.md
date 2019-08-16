@@ -8,6 +8,7 @@
 
 * Quick summary
 * Version
+* [Color palette](http://colormind.io/)
 * [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 * https://getbootstrap.com/docs/4.0/examples/blog/
 * http://zoyothemes.com/blogezy/
@@ -16,6 +17,8 @@
 * [Base for the OIDC Client](https://github.com/IdentityModel/IdentityModel2)
 * [Material Kit](https://demos.creative-tim.com/marketplace/material-kit-pro/index.html)
 * [MDBootstrap](https://mdbootstrap.com/docs/jquery/components/demo/)
+* [Start Bootstrap blog post](https://blackrockdigital.github.io/startbootstrap-blog-post/)
+* [Start Bootstrap blog](https://blackrockdigital.github.io/startbootstrap-blog-home/)
 
 ### Работа с .NET Core Entity Framework ###
 

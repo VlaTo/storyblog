@@ -45,14 +45,14 @@ namespace StoryBlog.Web.Services.Blog.Interop.Models
         }
 
         [JsonPropertyName("created")]
-        public DateTimeOffset Created
+        public DateTime Created
         {
             get;
             set;
         }
 
         [JsonPropertyName("published")]
-        public DateTimeOffset? Published
+        public DateTime? Published
         {
             get;
             set;

@@ -24,9 +24,6 @@ else if (StoryState.Value.IsNone())
 }
 else
 {
-    //var story = StoryState.Value.Story;
-    //var user = TheUser.Value.Principal ?? null;
-
     <section>
         <div class="container">
             <div class="row">
@@ -42,27 +39,27 @@ else
                     }
                     else
                     {
-                        var story = StoryState.Value?.Story;
+                        var model = StoryState.Value;
 
-                        if (null != story)
+                        if (null != model)
                         {
-                            <article id="@story.Slug" class="">
+                            <article id="@model.Slug" class="">
                                 <div class="mb-5">
-                                    <h2 class="">@story.Title</h2>
+                                    <h2 class="">@model.Title</h2>
                                     <ul class="list-unstyled list-inline text-muted mt-2">
                                         <li class="list-inline-item">
                                             <i class="mdi mdi-calendar"></i>
-                                            <TimeLabel DateTime=story.Published />
+                                            <TimeLabel DateTime="@model.Published" />
                                         </li>
                                         <li class="list-inline-item">
                                             <i class="mdi mdi-comment-multiple-outline"></i>
-                                            @story.CommentsCount @Pluralizer["комментарий", story.CommentsCount]
+                                            @model.CommentsCount @Pluralizer["комментарий", model.CommentsCount]
                                         </li>
                                     </ul>
 
-                                    <div class="justify-content-md-start my-4">@((MarkupString)story.Content)</div>
+                                    <div class="justify-content-md-start my-4">@((MarkupString)model.Content)</div>
 
-                                    @if (story.IsCommentsClosed)
+                                    @if (model.IsCommentsClosed)
                                     {
                                         <div class="alert alert-warning mt-4" role="alert">
                                             <h5>Возможность комментировать заблокирована</h5>
@@ -71,7 +68,7 @@ else
                                     else
                                     {
 
-                                        @if (0 == story.Comments.Count)
+                                        @if (0 == model.Comments.Count)
                                         {
                                             <div class="alert alert-secondary mt-4" role="alert">
                                                 <h5>Добавь комментарий первым</h5>
@@ -79,15 +76,15 @@ else
                                         }
 
                                         <div class="mt-4">
-                                            <CommentBox OnSubmitComment=OnSubmitComment />
+                                            <CommentBox OnSubmitComment="OnSubmitComment" />
                                         </div>
                                     }
 
-                                    @if (story.Comments.Any())
+                                    @if (model.Comments.Any())
                                     {
                                         <div class="m-lg-2">
                                             <ul class="list-unstyled">
-                                                <CommentsBlock Comments=@story.Comments />
+                                                <CommentsBlock Comments="@model.Comments" />
                                             </ul>
                                         </div>
                                     }
@@ -118,8 +115,8 @@ else
         Dispatcher.Dispatch(new GetStoryAction(Slug, includes));
     }
 
-    private void OnSubmitComment(string message)
+    private void OnSubmitComment(string content)
     {
-        Dispatcher.Dispatch(new CreateNewCommentAction(Slug, message));
+        Dispatcher.Dispatch(new CreatePendingCommentAction(Slug, null, content));
     }
 }

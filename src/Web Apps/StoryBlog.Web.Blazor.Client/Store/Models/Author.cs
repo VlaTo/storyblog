@@ -11,7 +11,15 @@
         public string Name
         {
             get;
-            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        public Author(string name)
+        {
+            Name = name;
         }
     }
 }

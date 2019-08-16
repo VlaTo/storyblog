@@ -2,41 +2,55 @@
 @using System.Collections.ObjectModel
 @using StoryBlog.Web.Blazor.Client.Store.Models
 
-@foreach (var comment in Comments)
+@foreach (var child in Comments)
 {
-    <li class="media">
-        <img src="img/abstract.jpg" class="align-self-start rounded-circle mr-3" width="64" height="64" alt=@comment.Author.Name />
-        <div class="media-body">
-            <div class="mb-lg-3">
-                <h5 class="mt-0">
-                    <a href="#" class="">@comment.Author.Name</a>
-                </h5>
-                <ul class="list-unstyled list-inline text-muted">
-                    <li class="list-inline-item">
-                        <i class="mdi mdi-calendar"></i>
-                        <TimeLabel DateTime=comment.Published.Date />
-                    </li>
-                </ul>
-                @((MarkupString)comment.Content)
+    <li @key=child class="media">
+        @if (child is Comment comment)
+        {
+            <img src="img/abstract.jpg" class="align-self-start rounded-circle mr-3" width="64" height="64" alt=@comment.Author.Name />
+            <div class="media-body">
+                <div class="mb-lg-3">
+                    <h5 class="mt-0">
+                        <a href="#" class="">@comment.Author.Name</a>
+                    </h5>
+                    <ul class="list-unstyled list-inline text-muted">
+                        <li class="list-inline-item">
+                            <i class="mdi mdi-calendar"></i>
+                            <TimeLabel DateTime=comment.Published.Date />
+                        </li>
+                    </ul>
+                    @((MarkupString)comment.Content)
+                </div>
+                @*<CommentBox ParentId=comment.Id />*@
+                <CommentsBlock Comments=comment.Comments />
             </div>
-            @*<CommentBox ParentId=comment.Id />*@
-            <CommentsBlock Comments=comment.Comments />
-        </div>
+        }
+        else if (child is PendingComment pending)
+        {
+            <div class="media-body">
+                <div class="mb-lg-3">
+                    <h5 class="mt-0">
+                        <a href="#" class="">author</a>
+                    </h5>
+                </div>
+                <p>pending</p>
+            </div>
+        }
     </li>
 }
 
 @code
 {
-    private ICollection<Comment> comments;
+    private IReadOnlyCollection<CommentBase> comments;
 
     [Parameter]
-    public ICollection<Comment> Comments
+    public IReadOnlyCollection<CommentBase> Comments
     {
         get
         {
             if (null == comments)
             {
-                comments = new Collection<Comment>();
+                comments = new CommentBase[0];
             }
 
             return comments;

@@ -1,13 +1,13 @@
 ﻿using System;
 
-namespace StoryBlog.Web.Blazor.Client.Store.Models
+namespace StoryBlog.Web.Blazor.Client.Store.Models.Data
 {
-    public abstract class StoryBase
+    public sealed class Comment
     {
         /// <summary>
         /// 
         /// </summary>
-        public string Slug
+        public long Id
         {
             get;
             set;
@@ -16,16 +16,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Models
         /// <summary>
         /// 
         /// </summary>
-        public string Title
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Content
+        public long? ParentId
         {
             get;
             set;
@@ -43,10 +34,20 @@ namespace StoryBlog.Web.Blazor.Client.Store.Models
         /// <summary>
         /// 
         /// </summary>
+        public string Content
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public DateTime Published
         {
             get;
             set;
         }
+
     }
 }

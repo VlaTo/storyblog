@@ -3,6 +3,7 @@ using StoryBlog.Web.Blazor.Client.Store.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using StoryBlog.Web.Blazor.Client.Store.Models.Data;
 
 namespace StoryBlog.Web.Blazor.Client.Store
 {

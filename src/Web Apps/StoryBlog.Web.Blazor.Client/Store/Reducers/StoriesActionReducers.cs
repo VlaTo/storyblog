@@ -2,6 +2,7 @@
 using StoryBlog.Web.Blazor.Client.Store.Actions;
 using StoryBlog.Web.Blazor.Client.Store.Models;
 using System.Linq;
+using StoryBlog.Web.Blazor.Client.Store.Models.Data;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Reducers
 {

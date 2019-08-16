@@ -1,4 +1,7 @@
-﻿using StoryBlog.Web.Blazor.Client.Store.Models;
+﻿using Microsoft.Extensions.Options;
+using StoryBlog.Web.Blazor.Client.Models;
+using StoryBlog.Web.Blazor.Client.Store.Models;
+using StoryBlog.Web.Blazor.Client.Store.Models.Data;
 using StoryBlog.Web.Services.Blog.Interop.Core;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
@@ -6,19 +9,14 @@ using StoryBlog.Web.Services.Shared.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using StoryBlog.Web.Blazor.Client.Models;
-using StoryBlog.Web.Blazor.Client.Store.Effects;
 
 namespace StoryBlog.Web.Blazor.Client.Services
 {
@@ -99,7 +97,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// <param name="slug"></param>
         /// <param name="flags"></param>
         /// <returns></returns>
-        public async Task<Story> GetStoryAsync(string slug, StoryFlags flags, CancellationToken cancellationToken)
+        public async Task<StoryResult> GetStoryAsync(string slug, StoryFlags flags, CancellationToken cancellationToken)
         {
             var path = new Uri(options.Host, $"story/{slug}");
             var include = Flags.Format(typeof(StoryFlags), flags, "F");
@@ -165,7 +163,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         }
 
         /// <inheritdoc cref="IBlogApiClient.CreateCommentAsync" />
-        public async Task<CommentCreated> CreateCommentAsync(string slug, long? parentId, string text, CancellationToken cancellationToken)
+        public async Task<CommentCreatedResult> CreateCommentAsync(string slug, long? parentId, string text, CancellationToken cancellationToken)
         {
             var path = $"comments/{slug}";
 
@@ -178,7 +176,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
             try
             {
-                CommentCreated comment;
+                CommentCreatedResult comment;
 
                 using (var request = new HttpRequestMessage(HttpMethod.Post, requestUri))
                 {
@@ -197,15 +195,12 @@ namespace StoryBlog.Web.Blazor.Client.Services
                                 cancellationToken: cancellationToken
                             );
 
-                            comment = new CommentCreated
+                            comment = new CommentCreatedResult
                             {
                                 Id = result.Id,
                                 Content = result.Content,
                                 Parent = result.Parent,
-                                Author = new Author
-                                {
-                                    Name = result.Author.Name
-                                },
+                                Author = new Author(result.Author.Name),
                                 Published = GetPublishedDate(result.Modified, result.Created)
                             };
                         }
@@ -284,7 +279,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
             }
         }
 
-        private async Task<HttpContent> CreateCommentPostContentAsync(string text, bool isPublic, CancellationToken cancellationToken)
+        private static async Task<HttpContent> CreateCommentPostContentAsync(string text, bool isPublic, CancellationToken cancellationToken)
         {
             var model = new CreateCommentModel
             {
@@ -305,10 +300,29 @@ namespace StoryBlog.Web.Blazor.Client.Services
             }
         }
 
-        private static Story ProcessStoryActionResult(GetStoryActionModel result)
+        private static StoryResult ProcessStoryActionResult(GetStoryActionModel result)
         {
             var authors = CreateAuthors(result.Meta.Resources.Authors);
-            return new Story
+
+            ICollection<Store.Models.Data.Comment> CreateComments(IEnumerable<CommentModel> comments)
+            {
+                var collection = new Collection<Store.Models.Data.Comment>();
+
+                foreach (var comment in comments)
+                {
+                    collection.Add(new Store.Models.Data.Comment
+                    {
+                        Id = comment.Id,
+                        Author = authors[comment.Author],
+                        Content = comment.Content,
+                        Published = GetPublishedDate(comment.Modified, comment.Created)
+                    });
+                }
+
+                return collection;
+            }
+
+            return new StoryResult
             {
                 Title = result.Data.Title,
                 Slug = result.Data.Slug,
@@ -316,48 +330,8 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 Content = result.Data.Content,
                 Published = GetPublishedDate(result.Data.Published, result.Data.Created),
                 IsCommentsClosed = result.Data.Closed,
-                Comments = CreateCommentsThree(result.Data.Comments, authors),
-                CommentsCount = result.Data.Comments.Count
+                Comments = CreateComments(result.Data.Comments)
             };
-        }
-
-        private static ICollection<Comment> CreateCommentsThree(ICollection<CommentModel> plainComments, IReadOnlyDictionary<int, Author> authors)
-        {
-            void CreateChildComments(long parentId, Comment parent)
-            {
-                foreach (var source in plainComments.Where(comment => parentId == comment.Parent))
-                {
-                    var comment = new Comment(parent)
-                    {
-                        Id = source.Id,
-                        Content = source.Content,
-                        Author = authors[source.Author],
-                        Published = GetPublishedDate(source.Modified, source.Created)
-                    };
-
-                    parent.Comments.Add(comment);
-
-                    CreateChildComments(source.Id, comment);
-                }
-            }
-
-            var comments = new Collection<Comment>();
-
-            foreach (var source in plainComments.Where(comment => null == comment.Parent))
-            {
-                var comment = new Comment(null)
-                {
-                    Id = source.Id,
-                    Content = source.Content,
-                    Author = authors[source.Author],
-                    Published = GetPublishedDate(source.Modified, source.Created)
-                };
-
-                comments.Add(comment);
-                CreateChildComments(source.Id, comment);
-            }
-
-            return comments;
         }
 
         private static EntityListResult<FeedStory> ProcessStoriesActionResult(GetStoriesActionModel result)
@@ -386,10 +360,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
             foreach (var author in authors)
             {
-                dictionary[index++] = new Author
-                {
-                    Name = author.Name
-                };
+                dictionary[index++] = new Author(author.Name);
             }
 
             return dictionary;

@@ -10,6 +10,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     internal sealed class GetStoryActionEffect : Effect<GetStoryAction>
     {
         private readonly IBlogApiClient client;
@@ -30,7 +31,15 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
                     throw new Exception("");
                 }
 
-                var result = new GetStorySuccessAction(story);
+                var result = new GetStorySuccessAction
+                {
+                    Slug = story.Slug,
+                    Title = story.Title,
+                    Author = story.Author,
+                    Content = story.Content,
+                    Published = story.Published,
+                    Comments = story.Comments
+                };
 
                 dispatcher.Dispatch(result);
             }
@@ -44,35 +53,39 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
     /// <summary>
     /// 
     /// </summary>
-    internal sealed class CreateNewCommentActionEffect : Effect<CreateNewCommentAction>
+    // ReSharper disable once UnusedMember.Global
+    internal sealed class CreatePendingCommentActionEffect : Effect<CreatePendingCommentAction>
     {
         private readonly IBlogApiClient client;
 
-        public CreateNewCommentActionEffect(IBlogApiClient client)
+        public CreatePendingCommentActionEffect(IBlogApiClient client)
         {
             this.client = client;
         }
 
-        protected override async Task HandleAsync(CreateNewCommentAction action, IDispatcher dispatcher)
+        protected override async Task HandleAsync(CreatePendingCommentAction action, IDispatcher dispatcher)
         {
             try
             {
-                var comment = await client.CreateCommentAsync(action.Slug, null, action.Text, CancellationToken.None);
+                var result = await client.CreateCommentAsync(action.StorySlug,  action.ParentId, action.Content, CancellationToken.None);
 
-                if (null == comment)
+                if (null == result)
                 {
                     throw new Exception("");
                 }
 
-                var result = new CommentCreatedAction(action.Slug, comment);
-
-                await Task.Delay(TimeSpan.FromSeconds(10.0d));
-
-                dispatcher.Dispatch(result);
+                dispatcher.Dispatch(new CommentCreatedAction(action.StorySlug)
+                {
+                    Id = result.Id,
+                    Author = result.Author,
+                    ParentId = result.Parent,
+                    Content = result.Content,
+                    Published = result.Published.ToLocalTime()
+                });
             }
             catch (Exception exception)
             {
-                dispatcher.Dispatch(new CommentCreationFailedAction(action.Slug, exception.Message));
+                dispatcher.Dispatch(new CommentCreationFailedAction(action.StorySlug, exception.Message));
             }
         }
     }

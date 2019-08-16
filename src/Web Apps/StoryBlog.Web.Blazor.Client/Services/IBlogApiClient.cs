@@ -3,6 +3,7 @@ using StoryBlog.Web.Services.Blog.Interop.Includes;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using StoryBlog.Web.Blazor.Client.Store.Models.Data;
 using StoryBlog.Web.Services.Blog.Interop.Models;
 
 namespace StoryBlog.Web.Blazor.Client.Services
@@ -33,7 +34,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// <param name="flags"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Story> GetStoryAsync(string slug, StoryFlags flags, CancellationToken cancellationToken);
+        Task<StoryResult> GetStoryAsync(string slug, StoryFlags flags, CancellationToken cancellationToken);
 
         /// <summary>
         /// 
@@ -43,6 +44,6 @@ namespace StoryBlog.Web.Blazor.Client.Services
         /// <param name="text"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<CommentCreated> CreateCommentAsync(string slug, long? parentId, string text, CancellationToken cancellationToken);
+        Task<CommentCreatedResult> CreateCommentAsync(string slug, long? parentId, string text, CancellationToken cancellationToken);
     }
 }

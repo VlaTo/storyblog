@@ -33,12 +33,12 @@
             {
                 var linkSrc = "story/" + story.Slug;
 
-                <article @key="story" id=@story.Slug class="card storyblog-story">
+                <article @key="story" id="@story.Slug" class="card storyblog-story">
                     <div class="card-header">
                         <ul class="card-subtitle text-muted list-unstyled list-inline">
                             <li class="list-inline-item">
                                 <i class="mdi mdi-calendar"></i>
-                                <TimeLabel DateTime=@story.Published ConvertFallback=OnConvertTimeSpan />
+                                <TimeLabel DateTime="@story.Published" ConvertFallback="OnConvertTimeSpan" />
                             </li>
                             <li class="list-inline-item">
                                 <i class="mdi mdi-account-outline"></i>
@@ -52,10 +52,10 @@
                     </div>
                     <div class=" card-body storyblog-story-header">
                         <h5 class="card-title storyblog-story-title">
-                            <a href=@linkSrc>@story.Title</a>
+                            <a href="@linkSrc">@story.Title</a>
                         </h5>
                         <div class="card-text mt-2">@story.Content</div>
-                        <BootstrapButton Type=BootstrapButtonTypes.Primary Size=BootstrapButtonSizes.Small Outline=true Class="mt-4" OnClick=@(e => UriHelper.NavigateTo(linkSrc))>Читать полностью<i class="mdi mdi-arrow-right"></i></BootstrapButton>
+                        <BootstrapButton Type="@BootstrapButtonTypes.Primary" Size="@BootstrapButtonSizes.Small" Outline=true Class="mt-4" OnClick=@(e => UriHelper.NavigateTo(linkSrc))>Читать полностью<i class="mdi mdi-arrow-right"></i></BootstrapButton>
                     </div>
                 </article>
             }
@@ -65,11 +65,11 @@
                     <nav aria-label="pages">
                         <ul class="pagination">
                             <li class=@("page-item" + (null == State.Value.BackwardUri ? " disabled" : String.Empty))>
-                                <a href="#" class="page-link" @onclick=OnPreviousPageClick>Назад</a>
+                                <a href="#" class="page-link" @onclick="OnPreviousPageClick">Назад</a>
                             </li>
 
                             <li class=@("page-item" + (null == State.Value.ForwardUri ? " disabled" : String.Empty))>
-                                <a href="#" class="page-link" @onclick=OnNextPageClick>Вперед</a>
+                                <a href="#" class="page-link" @onclick="OnNextPageClick">Вперед</a>
                             </li>
                         </ul>
                     </nav>
