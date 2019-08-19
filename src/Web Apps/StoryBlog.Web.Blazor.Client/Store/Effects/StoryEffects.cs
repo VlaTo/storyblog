@@ -74,6 +74,8 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
                     throw new Exception("");
                 }
 
+                await Task.Delay(TimeSpan.FromSeconds(10.0d));
+
                 dispatcher.Dispatch(new CommentCreatedAction(action.StorySlug)
                 {
                     Id = result.Id,

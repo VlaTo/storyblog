@@ -28,10 +28,11 @@ else
         <div class="container">
             <div class="row">
                 <div class="col-lg-9">
-                    @if (StoryState.Value.IsLoading())
+
+                    @*if (StoryState.Value.IsLoading())
                     {
                         <p>Loading...</p>
-                    }
+                    }*@
 
                     @if (StoryState.Value.IsFailed())
                     {
@@ -67,7 +68,6 @@ else
                                     }
                                     else
                                     {
-
                                         @if (0 == model.Comments.Count)
                                         {
                                             <div class="alert alert-secondary mt-4" role="alert">
@@ -76,22 +76,23 @@ else
                                         }
 
                                         <div class="mt-4">
-                                            <CommentBox OnSubmitComment="OnSubmitComment" />
+                                            <CommentBox OnSubmit="OnSubmitComment" />
                                         </div>
                                     }
 
                                     @if (model.Comments.Any())
                                     {
-                                        <div class="m-lg-2">
-                                            <ul class="list-unstyled">
-                                                <CommentsBlock Comments="@model.Comments" />
-                                            </ul>
+                                        <div class="mt-4">
+                                            <CommentsBlock Comments="@model.Comments" />
                                         </div>
                                     }
                                 </div>
                             </article>
                         }
                     }
+
+                    <FullPageSpinner IsActive="@StoryState.Value.IsLoading()" />
+
                 </div>
                 <aside class="col-lg-3">
                 </aside>

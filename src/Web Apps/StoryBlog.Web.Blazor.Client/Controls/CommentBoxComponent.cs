@@ -7,7 +7,7 @@ namespace StoryBlog.Web.Blazor.Client.Controls
     /// <summary>
     /// 
     /// </summary>
-    public class CommentBoxBase : ComponentBase
+    public class CommentBoxComponent : ComponentBase
     {
         [Inject]
         protected IDispatcher Dispatcher
@@ -38,7 +38,7 @@ namespace StoryBlog.Web.Blazor.Client.Controls
         }
 
         [Parameter]
-        public EventCallback<string> OnSubmitComment
+        public EventCallback<string> OnSubmit
         {
             get;
             set;
@@ -46,7 +46,7 @@ namespace StoryBlog.Web.Blazor.Client.Controls
 
         protected void OnSubmitButtonClick(UIMouseEventArgs e)
         {
-            OnSubmitComment.InvokeAsync(Message);
+            OnSubmit.InvokeAsync(Message);
         }
     }
 }

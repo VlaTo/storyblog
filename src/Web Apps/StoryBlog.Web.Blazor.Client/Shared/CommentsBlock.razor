@@ -2,6 +2,7 @@
 @using System.Collections.ObjectModel
 @using StoryBlog.Web.Blazor.Client.Store.Models
 
+<ul class="list-unstyled">
 @foreach (var child in Comments)
 {
     <li @key=child class="media">
@@ -21,7 +22,6 @@
                     </ul>
                     @((MarkupString)comment.Content)
                 </div>
-                @*<CommentBox ParentId=comment.Id />*@
                 <CommentsBlock Comments=comment.Comments />
             </div>
         }
@@ -38,6 +38,7 @@
         }
     </li>
 }
+</ul>
 
 @code
 {

@@ -244,10 +244,12 @@ namespace StoryBlog.Web.Blazor.Components
                     false == noPrefix ? prefix : null,
                     accessor,
                     modifiers,
-                    condition,
+                    condition ?? True,
                     DashSeparator
                 );
             }
+
+            private static bool True(TComponent _) => true;
         }
     }
 }

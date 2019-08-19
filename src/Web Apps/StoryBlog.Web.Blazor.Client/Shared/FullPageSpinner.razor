@@ -1,0 +1,13 @@
+﻿@inherits StoryBlog.Web.Blazor.Client.Controls.FullPageSpinnerComponent
+
+<div class="storyblog-loading @ClassString" style="display: @(IsActive ? "block" : "none")" tabindex="-1" role="dialog">
+    <div class="modal-dialog storyblog-spinner" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
