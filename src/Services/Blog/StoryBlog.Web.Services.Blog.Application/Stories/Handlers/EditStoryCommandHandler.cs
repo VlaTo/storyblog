@@ -70,7 +70,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
             }
 
             story.Content = request.Content;
-            story.Modified = dateTimeProvider.Now;
+            story.Modified = dateTimeProvider.UtcNow;
 
             await context.SaveChangesAsync(cancellationToken);
 

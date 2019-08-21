@@ -313,6 +313,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
                     collection.Add(new Store.Models.Data.Comment
                     {
                         Id = comment.Id,
+                        ParentId = comment.Parent,
                         Author = authors[comment.Author],
                         Content = comment.Content,
                         Published = GetPublishedDate(comment.Modified, comment.Created)

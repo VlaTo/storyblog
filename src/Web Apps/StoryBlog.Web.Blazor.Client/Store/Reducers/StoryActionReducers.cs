@@ -4,6 +4,7 @@ using StoryBlog.Web.Blazor.Client.Store.Actions;
 using StoryBlog.Web.Blazor.Client.Store.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using Newtonsoft.Json.Converters;
 
@@ -38,39 +39,48 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
 
         private static IReadOnlyCollection<CommentBase> CreateCommentsThree(GetStorySuccessAction action)
         {
-            CommentBase Project(Models.Data.Comment comment, Comment parent)
+            List<CommentBase> Project(Comment parent)
             {
-                var model = new Comment(action.Slug, parent)
+                var session = Guid.NewGuid();
+                var collection = new List<CommentBase>();
+
+                foreach (var comment in action.Comments)
                 {
-                    Id = comment.Id,
-                    Author = comment.Author,
-                    Content = comment.Content,
-                    Published = comment.Published
-                };
+                    Debug.WriteLine($"[{session}] id: {comment.Id}; parent: {comment.ParentId}");
 
-                model.Comments = ProjectChildComments(model);
+                    var shouldSkip = null != parent
+                        ? comment.ParentId != parent.Id
+                        : comment.ParentId.HasValue;
 
-                return model;
+                    if (shouldSkip)
+                    {
+                        continue;
+                    }
+
+                    var model = new Comment(action.Slug, parent)
+                    {
+                        Id = comment.Id,
+                        Author = comment.Author,
+                        Content = comment.Content,
+                        Published = comment.Published
+                    };
+
+                    model.Comments = Project(model).AsReadOnly();
+
+                    collection.Add(model);
+                }
+
+                return collection;
             }
 
-            IReadOnlyCollection<CommentBase> ProjectChildComments(Comment parent) =>
-                action.Comments
-                    .Where(y => y.ParentId.HasValue && parent.Id == y.ParentId.Value)
-                    .Select(comment => Project(comment, parent))
-                    .ToList()
-                    .AsReadOnly();
-
-            var comments = action.Comments
-                .Select(comment => Project(comment, null))
-                .ToList();
+            var list = Project(null);
 
             if (false == action.IsCommentsClosed)
             {
-                var reference = Guid.NewGuid();
-                comments.Add(new ComposeComment(action.Slug, null, reference));
+                list.Add(new ComposeComment(action.Slug, null, Guid.NewGuid()));
             }
 
-            return comments.AsReadOnly();
+            return list.AsReadOnly();
         }
     }
 
@@ -86,10 +96,10 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     /// <summary>
     /// 
     /// </summary>
-    public sealed class ComposeCommentReplyActionReducer : Reducer<StoryState, ComposeCommentReplyAction>
+    public sealed class ComposeReplyActionReducer : Reducer<StoryState, ComposeReplyAction>
     {
         /// <inheritdoc cref="Reducer{TState,TAction}.Reduce" />
-        public override StoryState Reduce(StoryState state, ComposeCommentReplyAction action) =>
+        public override StoryState Reduce(StoryState state, ComposeReplyAction action) =>
             new StoryState(state.Status)
             {
                 Slug = state.Slug,
@@ -104,7 +114,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
 
         private static IReadOnlyCollection<CommentBase> AddComposingComment(
             IEnumerable<CommentBase> comments,
-            ComposeCommentReplyAction action)
+            ComposeReplyAction action)
         {
             IList<CommentBase> Project(IEnumerable<CommentBase> collection)
             {
@@ -126,7 +136,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
 
                         var children = Project(comment.Comments);
 
-                        if (action.ParentId.HasValue && comment.Id == action.ParentId.Value)
+                        if (action.ParentId.Equals(comment.Id))
                         {
                             children.Add(new ComposeComment(action.StorySlug, comment, action.Reference));
                         }
@@ -164,9 +174,9 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     /// <summary>
     /// 
     /// </summary>
-    public sealed class SaveNewCommentActionReducer : Reducer<StoryState, SaveNewCommentAction>
+    public sealed class SaveReplyActionReducer : Reducer<StoryState, SaveReplyAction>
     {
-        public override StoryState Reduce(StoryState state, SaveNewCommentAction action) =>
+        public override StoryState Reduce(StoryState state, SaveReplyAction action) =>
             new StoryState(ModelStatus.Loading)
             {
                 Slug = state.Slug,
@@ -181,26 +191,8 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
 
         private static IReadOnlyCollection<CommentBase> ReplaceComposingComment(
             IEnumerable<CommentBase> comments,
-            SaveNewCommentAction action)
+            SaveReplyAction action)
         {
-            if (false == action.ParentId.HasValue)
-            {
-                var result = new List<CommentBase>();
-
-                foreach (var child in comments)
-                {
-                    if (child is ComposeComment compose && action.Reference == compose.Reference)
-                    {
-                        result.Add(new SavingComment(action.StorySlug, compose.Parent, action.Reference));
-                        continue;
-                    }
-
-                    result.Add(child);
-                }
-
-                return result.AsReadOnly();
-            }
-
             IReadOnlyCollection<CommentBase> Project(IEnumerable<CommentBase> collection)
             {
                 var result = new List<CommentBase>();
@@ -209,7 +201,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
                 {
                     if (child is Comment comment)
                     {
-                        result.Add(new Comment(action.StorySlug, comment.Parent)
+                        result.Add(new Comment(comment.StorySlug, comment.Parent)
                         {
                             Id = comment.Id,
                             Author = comment.Author,
@@ -239,9 +231,9 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     /// <summary>
     /// 
     /// </summary>
-    public sealed class PendingCommentCreatedActionReducer : Reducer<StoryState, PendingCommentCreatedAction>
+    public sealed class ReplyPublishedActionReducer : Reducer<StoryState, ReplyPublishedAction>
     {
-        public override StoryState Reduce(StoryState state, PendingCommentCreatedAction action) =>
+        public override StoryState Reduce(StoryState state, ReplyPublishedAction action) =>
             new StoryState(ModelStatus.Success)
             {
                 Slug = state.Slug,
@@ -251,31 +243,13 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
                 Published = state.Published,
                 IsCommentsClosed = state.IsCommentsClosed,
                 CommentsCount = state.CommentsCount + 1,
-                Comments = ReplacePendingComments(state.Comments, action)
+                Comments = ReplaceSavingComment(state.Comments, action)
             };
 
-        private static IReadOnlyCollection<CommentBase> ReplacePendingComments(
+        private static IReadOnlyCollection<CommentBase> ReplaceSavingComment(
             IEnumerable<CommentBase> comments,
-            PendingCommentCreatedAction action)
+            ReplyPublishedAction action)
         {
-            if (false == action.ParentId.HasValue)
-            {
-                var result = new List<CommentBase>();
-
-                foreach (var child in comments)
-                {
-                    if (child is SavingComment saving && action.Reference == saving.Reference)
-                    {
-                        result.Add(new PendingComment(action.StorySlug, saving.Parent, action.Reference));
-                        continue;
-                    }
-
-                    result.Add(child);
-                }
-
-                return result.AsReadOnly();
-            }
-
             IReadOnlyCollection<CommentBase> Project(IEnumerable<CommentBase> collection)
             {
                 var result = new List<CommentBase>();
@@ -284,20 +258,27 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
                 {
                     if (child is Comment comment)
                     {
-                        result.Add(new Comment(action.StorySlug, comment.Parent)
+                        result.Add(new Comment(comment.StorySlug, comment.Parent)
                         {
-                            Id = action.Id,
-                            Content = action.Content,
-                            Author = action.Author,
-                            Published = action.Published,
+                            Id = comment.Id,
+                            Content = comment.Content,
+                            Author = comment.Author,
+                            Published = comment.Published,
                             Comments = Project(comment.Comments)
                         });
+
                         continue;
                     }
 
-                    if(child is SavingComment saving && action.Reference == saving.Reference)
+                    if (child is SavingComment saving && action.Reference == saving.Reference)
                     {
-                        result.Add(new PendingComment(action.StorySlug, saving.Parent, action.Reference));
+                        result.Add(new Comment(saving.StorySlug, saving.Parent)
+                        {
+                            Id = action.Id,
+                            Author = action.Author,
+                            Content = action.Content,
+                            Published = action.Published
+                        });
                         continue;
                     }
 

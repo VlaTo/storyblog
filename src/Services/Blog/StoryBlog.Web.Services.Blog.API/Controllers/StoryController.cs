@@ -163,7 +163,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
             {
                 Id = Guid.NewGuid(),
                 StoryId = result.Entity.Id,
-                Sent = dateTimeProvider.Now
+                Sent = dateTimeProvider.UtcNow
             });
 
             logger.StoryUpdated(result.Entity.Id);
@@ -197,7 +197,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
             {
                 Id = Guid.NewGuid(),
                 StoryId = 1L,
-                Sent = dateTimeProvider.Now
+                Sent = dateTimeProvider.UtcNow
             });
 
             logger.StoryDeleted(1L);

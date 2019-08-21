@@ -1,4 +1,4 @@
-﻿@inherits StoryBlog.Web.Blazor.Client.Controls.CommentBoxComponent
+﻿@inherits StoryBlog.Web.Blazor.Client.Controls.ReplyComposerComponent
 
 <div class="card">
     <div class="card-header">Оставьте ваш комментарий</div>
@@ -7,6 +7,6 @@
             <label for="new-comment">Сообщение:</label>
             <textarea id="new-comment" class="form-control" rows="3" @bind=Message></textarea>
         </div>
-        <button type="button" class="btn btn-primary small mt-2" @onclick=OnSubmit>Отправить</button>
+        <button type="button" class="btn btn-primary small mt-2" @onclick=onClick>Отправить</button>
     </div>
 </div>

@@ -51,7 +51,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Stories.Handlers
                 Content = request.Content,
                 Status = StoryStatus.Draft,
                 IsPublic = request.IsPublic,
-                Created = dateTimeProvider.Now,
+                Created = dateTimeProvider.UtcNow,
                 Author = author
             };
 

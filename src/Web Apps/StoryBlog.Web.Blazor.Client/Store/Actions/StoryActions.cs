@@ -133,7 +133,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class ComposeCommentReplyAction
+    public sealed class ComposeReplyAction
     {
         /// <summary>
         /// 
@@ -165,7 +165,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
         /// <param name="storySlug"></param>
         /// <param name="parentId"></param>
         /// <param name="reference"></param>
-        public ComposeCommentReplyAction(string storySlug, long? parentId, Guid reference)
+        public ComposeReplyAction(string storySlug, long? parentId, Guid reference)
         {
             StorySlug = storySlug;
             ParentId = parentId;
@@ -176,7 +176,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class SaveNewCommentAction
+    public sealed class SaveReplyAction
     {
         /// <summary>
         /// 
@@ -218,7 +218,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
         /// <param name="parentId"></param>
         /// <param name="reference"></param>
         /// <param name="content"></param>
-        public SaveNewCommentAction(string storySlug, long? parentId, Guid reference, string content)
+        public SaveReplyAction(string storySlug, long? parentId, Guid reference, string content)
         {
             StorySlug = storySlug;
             ParentId = parentId;
@@ -303,7 +303,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class CommentCreatedAction
+    public sealed class ReplyPublishedAction
     {
         /// <summary>
         /// 
@@ -367,7 +367,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
             set;
         }
 
-        public CommentCreatedAction(string storySlug)
+        public ReplyPublishedAction(string storySlug)
         {
             StorySlug = storySlug;
         }

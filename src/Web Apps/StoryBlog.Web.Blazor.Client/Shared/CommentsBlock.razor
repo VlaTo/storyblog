@@ -4,17 +4,21 @@
 @using StoryBlog.Web.Blazor.Client.Store.Actions
 @using StoryBlog.Web.Blazor.Client.Store.Models
 
+@inherits StoryBlog.Web.Blazor.Client.Controls.CommentsBlockComponent
+
 @inject IDispatcher Dispatcher
 
 <ul class="list-unstyled">
     @foreach (var child in Comments)
     {
-        <li @key=child class="media">
+        <li class="media mb-4">
             @if (child is Comment comment)
             {
-                <img src="img/abstract.jpg" class="align-self-start rounded-circle mr-3" width="64" height="64" alt=@comment.Author.Name />
+                var reply = GetReplyCompose(comment.Comments);
+
+                <img src="img/abstract.jpg" class="align-self-start rounded-circle mr-3" width="50" height="50" alt=@comment.Author.Name />
                 <div class="media-body">
-                    <div class="my-4">
+                    <div class="mb-2">
                         <h5 class="mt-0">
                             <a href="#" class="">@comment.Author.Name</a>
                         </h5>
@@ -27,17 +31,13 @@
                         @((MarkupString)comment.Content)
                     </div>
 
-                    @{
-                        var composer = GetComposeComment(comment.Comments);
-                    }
-
-                    @if (null != composer)
+                    @if (null != reply)
                     {
                         <div class="mt-4">
-                            <CommentBox OnSubmit=OnSubmitComment />
+                            <ReplyComposer OnSubmit=@(sender => OnSubmitComment(sender, reply)) />
                         </div>
                     }
-                    else
+                    else if (1 > Level)
                     {
                         <ul class="list-unstyled list-inline">
                             <li class="list-inline-item">
@@ -52,7 +52,7 @@
                         </ul>
                     }
 
-                    <CommentsBlock Comments=comment.Comments />
+                    <CommentsBlock Comments=comment.Comments Level=@(Level + 1) />
                 </div>
             }
             else if (child is SavingComment saving)
@@ -66,62 +66,20 @@
                     <p>saving</p>
                 </div>
             }
-            else if (child is PendingComment pending)
-            {
-                <div class="media-body">
-                    <div class="mb-lg-3">
-                        <h5 class="mt-0">
-                            <a href="#" class="">author</a>
-                        </h5>
-                    </div>
-                    <p>pending</p>
-                </div>
-            }
         </li>
     }
 </ul>
 
 @code
 {
-    private IReadOnlyCollection<CommentBase> comments;
-
-    [Parameter]
-    public IReadOnlyCollection<CommentBase> Comments
-    {
-        get
-        {
-            if (null == comments)
-            {
-                comments = new CommentBase[0];
-            }
-
-            return comments;
-        }
-        set
-        {
-            comments = value;
-        }
-    }
-
-    private ComposeComment GetComposeComment(IReadOnlyCollection<CommentBase> comments)
-    {
-        if (0 < comments.Count)
-        {
-            return comments
-                .OfType<ComposeComment>()
-                .FirstOrDefault();
-        }
-
-        return null;
-    }
-
     private void DoComposeComment(Comment comment)
     {
-        Dispatcher.Dispatch(new ComposeCommentReplyAction(comment.StorySlug, comment.Id, Guid.NewGuid()));
+        Dispatcher.Dispatch(new ComposeReplyAction(comment.StorySlug, comment.Id, Guid.NewGuid()));
     }
 
-    private void OnSubmitComment()
+    private void OnSubmitComment(object sender, ComposeComment comment)
     {
-        ;
+        var composer = (ReplyComposer) sender;
+        Dispatcher.Dispatch(new SaveReplyAction(comment.StorySlug, comment.Parent.Id, comment.Reference, composer.Message));
     }
 }

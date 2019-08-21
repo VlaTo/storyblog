@@ -8,7 +8,7 @@ namespace StoryBlog.Web.Services.Blog.API.Infrastructure
     /// </summary>
     public sealed class DateTimeProvider : IDateTimeProvider
     {
-        /// <inheritdoc cref="IDateTimeProvider.Now" />
-        public DateTime Now => DateTime.Now;
+        /// <inheritdoc cref="IDateTimeProvider.UtcNow" />
+        public DateTime UtcNow => DateTime.UtcNow;
     }
 }

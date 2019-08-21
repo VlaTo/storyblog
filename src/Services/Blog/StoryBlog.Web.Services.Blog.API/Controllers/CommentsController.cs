@@ -55,7 +55,6 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         }
 
         // POST api/v1/comments/<story-slug>/<parentId?>
-        //[Authorize]
         [AllowAnonymous]
         [HttpPost("{slug:required}/{parentId:long?}")]
         [ProducesResponseType(typeof(CreatedResult), (int) HttpStatusCode.Created)]

@@ -10,7 +10,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Infrastructure
         /// <summary>
         /// 
         /// </summary>
-        DateTime Now
+        DateTime UtcNow
         {
             get;
         }

@@ -2,6 +2,7 @@
 using StoryBlog.Web.Blazor.Client.Services;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -54,17 +55,18 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
     /// 
     /// </summary>
     // ReSharper disable once UnusedMember.Global
-    internal sealed class SaveNewCommentActionEffect : Effect<SaveNewCommentAction>
+    internal sealed class SaveReplyActionEffect : Effect<SaveReplyAction>
     {
         private readonly IBlogApiClient client;
 
-        public SaveNewCommentActionEffect(IBlogApiClient client)
+        public SaveReplyActionEffect(IBlogApiClient client)
         {
             this.client = client;
         }
 
-        protected override async Task HandleAsync(SaveNewCommentAction action, IDispatcher dispatcher)
+        protected override async Task HandleAsync(SaveReplyAction action, IDispatcher dispatcher)
         {
+            Debug.WriteLine($"Saving comment for: \'{action.StorySlug}\' parent: {action.ParentId} ref: {action.Reference}");
             try
             {
                 var result = await client.CreateCommentAsync(action.StorySlug,  action.ParentId, action.Content, CancellationToken.None);
@@ -74,7 +76,17 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
                     throw new Exception("");
                 }
 
-                dispatcher.Dispatch(new PendingCommentCreatedAction(action.StorySlug)
+                /*dispatcher.Dispatch(new PendingCommentCreatedAction(action.StorySlug)
+                {
+                    Id = result.Id,
+                    Author = result.Author,
+                    ParentId = result.Parent,
+                    Reference = action.Reference,
+                    Content = result.Content,
+                    Published = result.Published.ToLocalTime()
+                });*/
+
+                dispatcher.Dispatch(new ReplyPublishedAction(action.StorySlug)
                 {
                     Id = result.Id,
                     Author = result.Author,

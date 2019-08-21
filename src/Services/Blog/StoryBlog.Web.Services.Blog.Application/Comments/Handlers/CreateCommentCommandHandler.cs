@@ -39,7 +39,7 @@ namespace StoryBlog.Web.Services.Blog.Application.Comments.Handlers
         /// <inheritdoc cref="IRequestHandler{TRequest,TResponse}.Handle" />
         public async Task<IRequestResult<Comment>> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
         {
-            //var name = request.User.Identity.Name;
+            var identity = request.User.Identity;
             var author = await context.Authors
                 .Where(user => user.Id == 1)
                 .FirstOrDefaultAsync(cancellationToken);
@@ -49,17 +49,26 @@ namespace StoryBlog.Web.Services.Blog.Application.Comments.Handlers
                 .Where(entity => entity.Slug == request.Slug)
                 .SingleAsync(cancellationToken);
 
+            var parent = request.ParentId.HasValue ? context.Comments.Find(request.ParentId.Value) : null;
+
             var comment = new Persistence.Models.Comment
             {
                 Author = author,
                 Content = request.Content,
                 StoryId = story.Id,
-                Created = dateTimeProvider.Now,
+                Parent = parent,
+                Created = dateTimeProvider.UtcNow,
                 IsPublic = request.IsPublic,
-                Status = CommentStatus.Draft
+                Status = identity.IsAuthenticated ? CommentStatus.Published : CommentStatus.Draft
             };
 
             await context.Comments.AddAsync(comment,cancellationToken);
+
+            if (null != parent)
+            {
+                parent.Comments.Add(comment);
+            }
+
             await context.SaveChangesAsync(cancellationToken);
 
             return RequestResult.Success(mapper.Map<Comment>(comment));

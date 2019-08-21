@@ -29,12 +29,6 @@ else
         <div class="container">
             <div class="row">
                 <div class="col-lg-9">
-
-                    @*if (StoryState.Value.IsLoading())
-                    {
-                        <p>Loading...</p>
-                    }*@
-
                     @if (StoryState.Value.IsFailed())
                     {
                         <p>@StoryState.Value.Status.Error</p>
@@ -76,20 +70,34 @@ else
                                             </div>
                                         }
 
-                                        var composeComment = GetComposeComment();
+                                        var comment = GetComposeComment();
 
-                                        if (null != composeComment)
+                                        if (null != comment)
                                         {
                                             <div class="mt-4">
-                                                <CommentBox OnSubmit=OnSubmitComment />
+                                                <ReplyComposer OnSubmit=@(sender => OnSubmitComment(sender, comment)) />
                                             </div>
+                                        }
+                                        else
+                                        {
+                                            <ul class="list-unstyled list-inline">
+                                                <li class="list-inline-item">
+                                                    <BootstrapButton Type=BootstrapButtonTypes.Link
+                                                                     Outline=true
+                                                                     Size=BootstrapButtonSizes.Small
+                                                                     Class="text-muted"
+                                                                     OnClick=OnComposeComment>
+                                                        <i class="mdi mdi-reply"></i>&nbsp;Ответить
+                                                    </BootstrapButton>
+                                                </li>
+                                            </ul>
                                         }
                                     }
 
                                     @if (model.Comments.Any())
                                     {
                                         <div class="mt-4">
-                                            <CommentsBlock Comments="@model.Comments" />
+                                            <CommentsBlock Comments="@model.Comments" Level="0" />
                                         </div>
                                     }
                                 </div>
@@ -139,9 +147,14 @@ else
         return null;
     }
 
-    private void OnSubmitComment()
+    private void OnComposeComment(UIEventArgs e)
     {
-        var comment = GetComposeComment();
-        Dispatcher.Dispatch(new SaveNewCommentAction(Slug, null, comment.Reference, String.Empty));
+        Dispatcher.Dispatch(new ComposeReplyAction(StoryState.Value.Slug, null, Guid.NewGuid()));
+    }
+
+    private void OnSubmitComment(object sender, ComposeComment comment)
+    {
+        var composer = (ReplyComposer) sender;
+        Dispatcher.Dispatch(new SaveReplyAction(comment.StorySlug, null, comment.Reference, composer.Message));
     }
 }
