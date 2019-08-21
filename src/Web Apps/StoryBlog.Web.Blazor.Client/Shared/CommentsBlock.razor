@@ -1,43 +1,84 @@
-﻿@using System.Collections.Generic
+﻿@using global::Blazor.Fluxor
+@using System.Collections.Generic
 @using System.Collections.ObjectModel
+@using StoryBlog.Web.Blazor.Client.Store.Actions
 @using StoryBlog.Web.Blazor.Client.Store.Models
 
+@inject IDispatcher Dispatcher
+
 <ul class="list-unstyled">
-@foreach (var child in Comments)
-{
-    <li @key=child class="media">
-        @if (child is Comment comment)
-        {
-            <img src="img/abstract.jpg" class="align-self-start rounded-circle mr-3" width="64" height="64" alt=@comment.Author.Name />
-            <div class="media-body">
-                <div class="mb-lg-3">
-                    <h5 class="mt-0">
-                        <a href="#" class="">@comment.Author.Name</a>
-                    </h5>
-                    <ul class="list-unstyled list-inline text-muted">
-                        <li class="list-inline-item">
-                            <i class="mdi mdi-calendar"></i>
-                            <TimeLabel DateTime=comment.Published.Date />
-                        </li>
-                    </ul>
-                    @((MarkupString)comment.Content)
+    @foreach (var child in Comments)
+    {
+        <li @key=child class="media">
+            @if (child is Comment comment)
+            {
+                <img src="img/abstract.jpg" class="align-self-start rounded-circle mr-3" width="64" height="64" alt=@comment.Author.Name />
+                <div class="media-body">
+                    <div class="my-4">
+                        <h5 class="mt-0">
+                            <a href="#" class="">@comment.Author.Name</a>
+                        </h5>
+                        <ul class="list-unstyled list-inline text-muted">
+                            <li class="list-inline-item">
+                                <i class="mdi mdi-calendar"></i>
+                                <TimeLabel DateTime=comment.Published.Date />
+                            </li>
+                        </ul>
+                        @((MarkupString)comment.Content)
+                    </div>
+
+                    @{
+                        var composer = GetComposeComment(comment.Comments);
+                    }
+
+                    @if (null != composer)
+                    {
+                        <div class="mt-4">
+                            <CommentBox OnSubmit=OnSubmitComment />
+                        </div>
+                    }
+                    else
+                    {
+                        <ul class="list-unstyled list-inline">
+                            <li class="list-inline-item">
+                                <BootstrapButton Type=BootstrapButtonTypes.Link
+                                                 Outline=true
+                                                 Size=BootstrapButtonSizes.Small
+                                                 Class="text-muted"
+                                                 OnClick=@(() => DoComposeComment(comment))>
+                                    <i class="mdi mdi-reply"></i>&nbsp;Ответить
+                                </BootstrapButton>
+                            </li>
+                        </ul>
+                    }
+
+                    <CommentsBlock Comments=comment.Comments />
                 </div>
-                <CommentsBlock Comments=comment.Comments />
-            </div>
-        }
-        else if (child is PendingComment pending)
-        {
-            <div class="media-body">
-                <div class="mb-lg-3">
-                    <h5 class="mt-0">
-                        <a href="#" class="">author</a>
-                    </h5>
+            }
+            else if (child is SavingComment saving)
+            {
+                <div class="media-body">
+                    <div class="mb-lg-3">
+                        <h5 class="mt-0">
+                            <a href="#" class="">author</a>
+                        </h5>
+                    </div>
+                    <p>saving</p>
                 </div>
-                <p>pending</p>
-            </div>
-        }
-    </li>
-}
+            }
+            else if (child is PendingComment pending)
+            {
+                <div class="media-body">
+                    <div class="mb-lg-3">
+                        <h5 class="mt-0">
+                            <a href="#" class="">author</a>
+                        </h5>
+                    </div>
+                    <p>pending</p>
+                </div>
+            }
+        </li>
+    }
 </ul>
 
 @code
@@ -60,5 +101,27 @@
         {
             comments = value;
         }
+    }
+
+    private ComposeComment GetComposeComment(IReadOnlyCollection<CommentBase> comments)
+    {
+        if (0 < comments.Count)
+        {
+            return comments
+                .OfType<ComposeComment>()
+                .FirstOrDefault();
+        }
+
+        return null;
+    }
+
+    private void DoComposeComment(Comment comment)
+    {
+        Dispatcher.Dispatch(new ComposeCommentReplyAction(comment.StorySlug, comment.Id, Guid.NewGuid()));
+    }
+
+    private void OnSubmitComment()
+    {
+        ;
     }
 }

@@ -133,7 +133,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
     /// <summary>
     /// 
     /// </summary>
-    public sealed class CreatePendingCommentAction
+    public sealed class ComposeCommentReplyAction
     {
         /// <summary>
         /// 
@@ -154,6 +154,57 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
         /// <summary>
         /// 
         /// </summary>
+        public Guid Reference
+        {
+            get;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="storySlug"></param>
+        /// <param name="parentId"></param>
+        /// <param name="reference"></param>
+        public ComposeCommentReplyAction(string storySlug, long? parentId, Guid reference)
+        {
+            StorySlug = storySlug;
+            ParentId = parentId;
+            Reference = reference;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class SaveNewCommentAction
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public string StorySlug
+        {
+            get;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public long? ParentId
+        {
+            get;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Guid Reference
+        {
+            get;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public string Content
         {
             get; 
@@ -165,12 +216,87 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
         /// </summary>
         /// <param name="storySlug"></param>
         /// <param name="parentId"></param>
+        /// <param name="reference"></param>
         /// <param name="content"></param>
-        public CreatePendingCommentAction(string storySlug, long? parentId, string content)
+        public SaveNewCommentAction(string storySlug, long? parentId, Guid reference, string content)
         {
             StorySlug = storySlug;
             ParentId = parentId;
+            Reference = reference;
             Content = content;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class PendingCommentCreatedAction
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public long Id
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string StorySlug
+        {
+            get;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public long? ParentId
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Guid Reference
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Content
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Author Author
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime Published
+        {
+            get;
+            set;
+        }
+
+        public PendingCommentCreatedAction(string storySlug)
+        {
+            StorySlug = storySlug;
         }
     }
 
@@ -200,6 +326,15 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
         /// 
         /// </summary>
         public long? ParentId
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Guid Reference
         {
             get;
             set;

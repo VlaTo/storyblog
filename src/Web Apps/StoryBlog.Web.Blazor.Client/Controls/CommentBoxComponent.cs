@@ -38,15 +38,10 @@ namespace StoryBlog.Web.Blazor.Client.Controls
         }
 
         [Parameter]
-        public EventCallback<string> OnSubmit
+        public EventCallback OnSubmit
         {
             get;
             set;
-        }
-
-        protected void OnSubmitButtonClick(UIMouseEventArgs e)
-        {
-            OnSubmit.InvokeAsync(Message);
         }
     }
 }

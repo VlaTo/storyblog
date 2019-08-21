@@ -131,7 +131,7 @@ namespace StoryBlog.Web.Blazor.Components
         }
 
         [Parameter]
-        public EventCallback<UIMouseEventArgs> OnClick
+        public EventCallback<UIEventArgs> OnClick
         {
             get;
             set;
@@ -167,6 +167,7 @@ namespace StoryBlog.Web.Blazor.Components
         public BootstrapButton()
         {
             firstRender = true;
+
             Type = BootstrapButtonTypes.Default;
             Size = BootstrapButtonSizes.Default;
             Outline = false;

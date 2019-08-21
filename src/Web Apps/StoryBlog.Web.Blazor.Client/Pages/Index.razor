@@ -55,7 +55,14 @@
                             <a href="@linkSrc">@story.Title</a>
                         </h5>
                         <div class="card-text mt-2">@story.Content</div>
-                        <BootstrapButton Type="@BootstrapButtonTypes.Primary" Size="@BootstrapButtonSizes.Small" Outline=true Class="mt-4" OnClick=@(e => UriHelper.NavigateTo(linkSrc))>Читать полностью<i class="mdi mdi-arrow-right"></i></BootstrapButton>
+                        <BootstrapButton 
+                            Type="@BootstrapButtonTypes.Primary"
+                            Size="@BootstrapButtonSizes.Small"
+                            Outline=true
+                            Class="mt-4"
+                            OnClick=@(() => UriHelper.NavigateTo(linkSrc))>
+                            Читать полностью&nbsp;<i class="mdi mdi-arrow-right"></i>
+                        </BootstrapButton>
                     </div>
                 </article>
             }

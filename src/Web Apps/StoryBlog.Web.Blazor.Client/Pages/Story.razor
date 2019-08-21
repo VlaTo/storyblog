@@ -2,6 +2,7 @@
 
 @using global::Blazor.Fluxor
 @using StoryBlog.Web.Blazor.Client.Store
+@using StoryBlog.Web.Blazor.Client.Store.Models
 @using StoryBlog.Web.Blazor.Client.Controls
 @using StoryBlog.Web.Blazor.Client.Store.Actions
 @using StoryBlog.Web.Services.Blog.Interop.Includes
@@ -68,16 +69,21 @@ else
                                     }
                                     else
                                     {
-                                        @if (0 == model.Comments.Count)
+                                        if (0 == model.Comments.Count)
                                         {
                                             <div class="alert alert-secondary mt-4" role="alert">
                                                 <h5>Добавь комментарий первым</h5>
                                             </div>
                                         }
 
-                                        <div class="mt-4">
-                                            <CommentBox OnSubmit="OnSubmitComment" />
-                                        </div>
+                                        var composeComment = GetComposeComment();
+
+                                        if (null != composeComment)
+                                        {
+                                            <div class="mt-4">
+                                                <CommentBox OnSubmit=OnSubmitComment />
+                                            </div>
+                                        }
                                     }
 
                                     @if (model.Comments.Any())
@@ -91,7 +97,7 @@ else
                         }
                     }
 
-                    <FullPageSpinner IsActive="@StoryState.Value.IsLoading()" />
+                    <FullPageSpinner IsActive=StoryState.Value.IsLoading() />
 
                 </div>
                 <aside class="col-lg-3">
@@ -116,8 +122,26 @@ else
         Dispatcher.Dispatch(new GetStoryAction(Slug, includes));
     }
 
-    private void OnSubmitComment(string content)
+    private ComposeComment GetComposeComment()
     {
-        Dispatcher.Dispatch(new CreatePendingCommentAction(Slug, null, content));
+        if (null == StoryState.Value)
+        {
+            return null;
+        }
+
+        if (StoryState.Value.IsSuccess() && 0 < StoryState.Value.Comments.Count)
+        {
+            return StoryState.Value.Comments
+                .OfType<ComposeComment>()
+                .FirstOrDefault();
+        }
+
+        return null;
+    }
+
+    private void OnSubmitComment()
+    {
+        var comment = GetComposeComment();
+        Dispatcher.Dispatch(new SaveNewCommentAction(Slug, null, comment.Reference, String.Empty));
     }
 }

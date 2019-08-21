@@ -54,16 +54,16 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
     /// 
     /// </summary>
     // ReSharper disable once UnusedMember.Global
-    internal sealed class CreatePendingCommentActionEffect : Effect<CreatePendingCommentAction>
+    internal sealed class SaveNewCommentActionEffect : Effect<SaveNewCommentAction>
     {
         private readonly IBlogApiClient client;
 
-        public CreatePendingCommentActionEffect(IBlogApiClient client)
+        public SaveNewCommentActionEffect(IBlogApiClient client)
         {
             this.client = client;
         }
 
-        protected override async Task HandleAsync(CreatePendingCommentAction action, IDispatcher dispatcher)
+        protected override async Task HandleAsync(SaveNewCommentAction action, IDispatcher dispatcher)
         {
             try
             {
@@ -74,13 +74,12 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
                     throw new Exception("");
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(10.0d));
-
-                dispatcher.Dispatch(new CommentCreatedAction(action.StorySlug)
+                dispatcher.Dispatch(new PendingCommentCreatedAction(action.StorySlug)
                 {
                     Id = result.Id,
                     Author = result.Author,
                     ParentId = result.Parent,
+                    Reference = action.Reference,
                     Content = result.Content,
                     Published = result.Published.ToLocalTime()
                 });

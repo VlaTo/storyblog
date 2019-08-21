@@ -13,12 +13,18 @@
             get;
         }
 
+        public string StorySlug
+        {
+            get; 
+        }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="parent"></param>
-        protected CommentBase(Comment parent)
+        protected CommentBase(string storySlug, Comment parent)
         {
+            StorySlug = storySlug;
             Parent = parent;
         }
     }
