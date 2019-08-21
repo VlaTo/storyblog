@@ -135,7 +135,15 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
 
                         continue;
                     }
-                    
+
+                    if (child is ComposeComment compose)
+                    {
+                        if (compose.Parent?.Id != action.ParentId)
+                        {
+                            continue;
+                        }
+                    }
+
                     result.Add(child);
                 }
 
