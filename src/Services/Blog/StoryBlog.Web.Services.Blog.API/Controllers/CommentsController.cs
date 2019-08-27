@@ -14,6 +14,7 @@ using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using StoryBlog.Web.Services.Blog.API.Models;
+using StoryBlog.Web.Services.Blog.Domain.ValueObjects;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -66,8 +67,15 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return BadRequest(ModelState);
             }
 
+            string content = null;
+
+            if (BBCodeDocument.TryParse(model.Content, out var document))
+            {
+                content = document.ToString();
+            }
+
             var result = await mediator.Send(
-                new CreateCommentCommand(User, slug, parentId, model.Content, model.IsPublic),
+                new CreateCommentCommand(User, slug, parentId, content, model.IsPublic),
                 HttpContext.RequestAborted
             );
 
@@ -80,15 +88,15 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
             {
                 Id = Guid.NewGuid(),
                 StorySlug = slug,
-                CommentId = result.Entity.Id,
-                Sent = result.Entity.Created
+                CommentId = result.Comment.Id,
+                Sent = result.Comment.Created
             });
 
-            logger.CommentCreated(slug, result.Entity.Id);
+            logger.CommentCreated(slug, result.Comment.Id);
 
             return Created(
-                Url.Action("Get", "Comment", new {id = result.Entity.Id}),
-                mapper.Map<CommentCreatedModel>(result.Entity)
+                Url.Action("Get", "Comment", new {id = result.Comment.Id}),
+                mapper.Map<CommentCreatedModel>(result.Comment)
             );
         }
     }

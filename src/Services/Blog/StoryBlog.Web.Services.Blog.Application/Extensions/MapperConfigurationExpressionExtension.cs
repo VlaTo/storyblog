@@ -79,6 +79,10 @@ namespace StoryBlog.Web.Services.Blog.Application.Extensions
                     mapping => mapping.MapFrom(source => source.Author)
                 )
                 .ForMember(
+                    story => story.IsCommentsClosed,
+                    mapping => mapping.MapFrom(source => source.IsCommentsClosed)
+                )
+                .ForMember(
                     story => story.Comments,
                     mapping => mapping.MapFrom(source => source.Comments)
                 );

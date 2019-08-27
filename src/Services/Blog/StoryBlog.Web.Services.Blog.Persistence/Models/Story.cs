@@ -137,6 +137,15 @@ namespace StoryBlog.Web.Services.Blog.Persistence.Models
         }
 
         /// <summary>
+        /// Gets or sets the <see cref="IsCommentsClosed" /> of the <see cref="Story" /> object.
+        /// </summary>
+        public bool IsCommentsClosed
+        {
+            get; 
+            set;
+        }
+
+        /// <summary>
         /// Gets the <see cref="Comments"/> of the <see cref="Story" /> object.
         /// </summary>
         public IList<Comment> Comments

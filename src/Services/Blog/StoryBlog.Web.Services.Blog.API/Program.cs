@@ -276,7 +276,7 @@ namespace StoryBlog.Web.Services.Blog.API
                                     })
                                     .ForMember(
                                         story => story.Closed,
-                                        mapping => mapping.MapFrom((source, dest) => false)
+                                        mapping => mapping.MapFrom(source => source.IsCommentsClosed)
                                     )
                                     .ForMember(
                                         story => story.Author, 

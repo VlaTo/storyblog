@@ -29,6 +29,15 @@ namespace StoryBlog.Web.Services.Blog.Application.Models
         /// <summary>
         /// 
         /// </summary>
+        public bool IsCommentsClosed
+        {
+            get; 
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="id"></param>
         public Story(long id)
             : base(id)
