@@ -15,6 +15,7 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using StoryBlog.Web.Services.Blog.API.Models;
 using StoryBlog.Web.Services.Blog.Domain.ValueObjects;
+using StoryBlog.Web.Services.Blog.Interop.Markups;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -67,15 +68,15 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            string content = null;
+            /*string content = BBCodeMarkup.Parse(model.Content);
 
-            if (BBCodeDocument.TryParse(model.Content, out var document))
+            if ()
             {
                 content = document.ToString();
-            }
+            }*/
 
             var result = await mediator.Send(
-                new CreateCommentCommand(User, slug, parentId, content, model.IsPublic),
+                new CreateCommentCommand(User, slug, parentId, model.Content, model.IsPublic),
                 HttpContext.RequestAborted
             );
 

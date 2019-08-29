@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Documents;
+using System.Text;
 
-namespace LibraProgramming.Windows.UI.Xaml.Core.Markups
+namespace StoryBlog.Web.Services.Blog.Interop.Markups
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class MarkupNodeVisitor : MarkupVisitor
+    public class MarkupNodeVisitor : MarkupVisitor
     {
         public override void Visit(MarkupNode node)
         {
@@ -16,7 +16,7 @@ namespace LibraProgramming.Windows.UI.Xaml.Core.Markups
 
         protected virtual void VisitNode(MarkupNode node)
         {
-            var span = node as SpanNode;
+            var span = node as TagNode;
 
             if (null != span)
             {
@@ -24,7 +24,7 @@ namespace LibraProgramming.Windows.UI.Xaml.Core.Markups
                 return;
             }
 
-            var run = node as RunNode;
+            var run = node as TextNode;
 
             if (null != run)
             {
@@ -33,66 +33,70 @@ namespace LibraProgramming.Windows.UI.Xaml.Core.Markups
             }
         }
 
-        protected virtual void VisitSpan(SpanNode span)
+        protected virtual void VisitSpan(TagNode tag)
         {
-            foreach (var node in span.Inlines)
+            foreach (var node in tag.Inlines)
             {
                 VisitNode(node);
             }
         }
 
-        protected virtual void VisitRun(RunNode run)
+        protected virtual void VisitRun(TextNode text)
         {
         }
     }
 
-    internal sealed class TextBlockInlineComposer : MarkupNodeVisitor
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class BBCodeComposer : MarkupNodeVisitor
     {
-        private readonly InlineCollection inlines;
-        private readonly Stack<InlineCollection> collections;
+        private readonly StringBuilder builder;
+        //private readonly Stack<InlineCollection> collections;
 
-        public TextBlockInlineComposer(InlineCollection inlines)
+        public BBCodeComposer(StringBuilder builder)
         {
-            collections = new Stack<InlineCollection>();
-            this.inlines = inlines;
+            this.builder = builder;
+            //collections = new Stack<InlineCollection>();
+            //this.inlines = inlines;
         }
 
         public override void Visit(MarkupNode node)
         {
-            collections.Push(inlines);
+            //collections.Push(inlines);
 
             base.Visit(node);
 
-            collections.Pop();
+            //collections.Pop();
         }
 
-        protected override void VisitSpan(SpanNode span)
+        protected override void VisitSpan(TagNode tag)
         {
-            var collection = collections.Peek();
-            var inline = CreateInline(span);
+            //var collection = collections.Peek();
+            //var inline = CreateInline(span);
 
-            collection.Add(inline);
-            collections.Push(inline.Inlines);
+            //collection.Add(inline);
+            //collections.Push(inline.Inlines);
 
-            base.VisitSpan(span);
+            base.VisitSpan(tag);
 
-            collections.Pop();
+            //collections.Pop();
         }
 
-        protected override void VisitRun(RunNode run)
+        protected override void VisitRun(TextNode text)
         {
-            var collection = collections.Peek();
+            //var collection = collections.Peek();
 
-            collection.Add(
+            /*collection.Add(
                 new Run
                 {
                     Text = run.Text
-                });
+                });*/
 
-            base.VisitRun(run);
+            base.VisitRun(text);
         }
 
-        private static Span CreateInline(SpanNode span)
+        /*private static Span CreateInline(SpanNode span)
         {
             if (null == span.Tag)
             {
@@ -118,6 +122,6 @@ namespace LibraProgramming.Windows.UI.Xaml.Core.Markups
             }
 
             throw new InvalidOperationException();
-        }
+        }*/
     }
 }
