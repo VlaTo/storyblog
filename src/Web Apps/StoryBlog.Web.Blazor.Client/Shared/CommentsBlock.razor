@@ -3,6 +3,7 @@
 @using System.Collections.ObjectModel
 @using StoryBlog.Web.Blazor.Client.Store.Actions
 @using StoryBlog.Web.Blazor.Client.Store.Models
+@using StoryBlog.Web.Services.Blog.Interop.Markups.Parsing
 
 @inherits StoryBlog.Web.Blazor.Client.Controls.CommentsBlockComponent
 
@@ -28,6 +29,16 @@
                                 <TimeLabel DateTime=comment.Published.Date />
                             </li>
                         </ul>
+                        @{
+                            var content = new BulletingBoardDocument();
+
+                            content.Parse(comment.Content);
+
+                            using (ExecuteAsync())
+                            {
+                                
+                            }
+                        }
                         @((MarkupString)comment.Content)
                     </div>
 

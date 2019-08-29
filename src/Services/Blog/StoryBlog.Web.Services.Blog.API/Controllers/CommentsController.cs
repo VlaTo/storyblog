@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using StoryBlog.Web.Services.Blog.API.Models;
 using StoryBlog.Web.Services.Blog.Domain.ValueObjects;
 using StoryBlog.Web.Services.Blog.Interop.Markups;
+using StoryBlog.Web.Services.Blog.Interop.Markups.Parsing;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {
@@ -63,17 +64,15 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         [ProducesResponseType(typeof(BadRequestResult), (int) HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Create(string slug, long? parentId, [FromBody] CreateCommentModel model)
         {
+            if (false == TryValidateContent(model))
+            {
+                ModelState.AddModelError(nameof(CreateCommentModel.Content), "BBCode");
+            }
+
             if (false == ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            /*string content = BBCodeMarkup.Parse(model.Content);
-
-            if ()
-            {
-                content = document.ToString();
-            }*/
 
             var result = await mediator.Send(
                 new CreateCommentCommand(User, slug, parentId, model.Content, model.IsPublic),
@@ -99,6 +98,22 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
                 Url.Action("Get", "Comment", new {id = result.Comment.Id}),
                 mapper.Map<CommentCreatedModel>(result.Comment)
             );
+        }
+
+        private static bool TryValidateContent(CreateCommentModel model)
+        {
+            try
+            {
+                var document = new BulletingBoardDocument();
+
+                document.Parse(model.Content);
+
+                return true;
+            }
+            catch (BulletingBoardMarkupException)
+            {
+                return false;
+            }
         }
     }
 }

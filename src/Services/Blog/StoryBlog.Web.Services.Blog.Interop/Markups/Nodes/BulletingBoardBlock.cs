@@ -1,0 +1,262 @@
+﻿using StoryBlog.Web.Services.Blog.Interop.Markups.Parsing;
+using System;
+using System.Collections.Generic;
+
+namespace StoryBlog.Web.Services.Blog.Interop.Markups.Nodes
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public enum BulletingBoardBlockType
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        Document,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        Span,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        Strong,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        Underline,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        Hyperlink
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public abstract class BulletingBoardBlock : BulletingBoardElement
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public BulletingBoardBlockType BlockType
+        {
+            get;
+        }
+
+        public string Argument
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsClosing
+        {
+            get;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ICollection<BulletingBoardElement> Elements
+        {
+            get;
+        }
+
+        protected BulletingBoardBlock(BulletingBoardBlockType type, bool closing)
+        {
+            BlockType = type;
+            IsClosing = closing;
+            Elements = new List<BulletingBoardElement>();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        public static BulletingBoardBlock ReadBlockTag(string text, ref int start, int end)
+        {
+            if (Terminals.OpenBracket != text[start])
+            {
+                return null;
+            }
+
+            start++;
+
+            var closing = false;
+
+            if (start < end && Terminals.Slash == text[start])
+            {
+                closing = true;
+                start++;
+            }
+
+            var position = start;
+
+            while (position < end)
+            {
+                var ch = text[position];
+
+                if (Char.IsLetterOrDigit(ch) || '-' == ch)
+                {
+                    position++;
+                    continue;
+                }
+
+                break;
+            }
+
+            var count = position - start;
+
+            if (0 >= count)
+            {
+                return null;
+            }
+
+            var block = CreateBlockFromText(text.Substring(start, count), closing);
+
+            if (false == closing)
+            {
+                block.Argument = ReadArgument(text, ref position, end);
+            }
+
+            start = position;
+
+            return block;
+        }
+
+        private static string ReadArgument(string text, ref int start, int end)
+        {
+            if (start >= end || '=' != text[start])
+            {
+                return null;
+            }
+
+            var current = start + 1;
+
+            if (Terminals.Quote == text[current])
+            {
+                if (++current >= end)
+                {
+                    throw new BulletingBoardMarkupException();
+                }
+
+                var last = text.IndexOf(text[current - 1], current, end - current);
+
+                if (last > current && last <= end)
+                {
+                    start = last + 1;
+
+                    return text.Substring(current, last - current);
+                }
+
+                throw new BulletingBoardMarkupException();
+            }
+
+            var position = text.IndexOf(Terminals.CloseBracket, current, end - current);
+
+            if (position <= current || position > end)
+            {
+                throw new BulletingBoardMarkupException();
+            }
+
+            start = position;
+
+            return text.Substring(current, position - current);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="block"></param>
+        /// <returns></returns>
+        public bool MatchOpen(BulletingBoardBlock block)
+        {
+            if (null == block)
+            {
+                throw new BulletingBoardMarkupException();
+            }
+
+            return IsClosing && BlockType == block.BlockType && false == block.IsClosing;
+        }
+
+        private static BulletingBoardBlock CreateBlockFromText(string tag, bool closing)
+        {
+            if (String.IsNullOrEmpty(tag))
+            {
+                throw new ArgumentNullException(nameof(tag));
+            }
+
+            switch (tag)
+            {
+                case "strong":
+                {
+                    return new BulletingBoardBold(closing);
+                }
+
+                case "underline":
+                {
+                    return new BulletingBoardUnderline(closing);
+                }
+
+                case "link":
+                {
+                    return new BulletingBoardHyperlink(closing);
+                }
+            }
+
+            throw new BulletingBoardMarkupException();
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class BulletingBoardBold : BulletingBoardBlock
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="closing"></param>
+        public BulletingBoardBold(bool closing)
+            : base(BulletingBoardBlockType.Strong, closing)
+        {
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class BulletingBoardUnderline : BulletingBoardBlock
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="closing"></param>
+        public BulletingBoardUnderline(bool closing)
+            : base(BulletingBoardBlockType.Underline, closing)
+        {
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class BulletingBoardHyperlink : BulletingBoardBlock
+    {
+        public BulletingBoardHyperlink(bool closing)
+            : base(BulletingBoardBlockType.Hyperlink, closing)
+        {
+        }
+    }
+}
