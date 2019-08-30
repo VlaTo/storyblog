@@ -12,9 +12,34 @@ namespace StoryBlog.Web.Services.Blog.Interop.Markups.Composing
             RenderDocument(obj);
         }
 
-        protected virtual void RenderBold(BulletingBoardBold block)
+        protected virtual void RenderStrong(BulletingBoardStrong strong)
         {
-            RenderBlockElements(block.Elements);
+            RenderBlockElements(strong.Elements);
+        }
+
+        protected virtual void RenderEmphasized(BulletingBoardEmphasized em)
+        {
+            RenderBlockElements(em.Elements);
+        }
+
+        protected virtual void RenderCite(BulletingBoardCite cite)
+        {
+            RenderBlockElements(cite.Elements);
+        }
+
+        protected virtual void RenderAbbr(BulletingBoardAbbr abbr)
+        {
+            RenderBlockElements(abbr.Elements);
+        }
+
+        protected virtual void RenderTerm(BulletingBoardTerm term)
+        {
+            RenderBlockElements(term.Elements);
+        }
+
+        protected virtual void RenderItalic(BulletingBoardItalic italic)
+        {
+            RenderBlockElements(italic.Elements);
         }
 
         protected virtual void RenderUnderline(BulletingBoardUnderline underline)
@@ -51,9 +76,40 @@ namespace StoryBlog.Web.Services.Blog.Interop.Markups.Composing
         {
             switch (block.BlockType)
             {
+                case BulletingBoardBlockType.Em:
+                {
+                    RenderEmphasized((BulletingBoardEmphasized) block);
+                    break;
+                }
+
+                case BulletingBoardBlockType.Cite:
+                {
+                    RenderCite((BulletingBoardCite) block);
+                    break;
+                }
+
+                case BulletingBoardBlockType.Abbr:
+                {
+                    RenderAbbr((BulletingBoardAbbr) block);
+                    break;
+                }
+
+                case BulletingBoardBlockType.Dfn:
+                {
+                    RenderTerm((BulletingBoardTerm) block);
+                    break;
+                }
+
+
+                case BulletingBoardBlockType.Italic:
+                {
+                    RenderItalic((BulletingBoardItalic) block);
+                    break;
+                }
+
                 case BulletingBoardBlockType.Strong:
                 {
-                    RenderBold((BulletingBoardBold) block);
+                    RenderStrong((BulletingBoardStrong) block);
                     break;
                 }
 

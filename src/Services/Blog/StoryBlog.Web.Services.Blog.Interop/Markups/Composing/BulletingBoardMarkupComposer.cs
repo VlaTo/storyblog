@@ -27,11 +27,11 @@ namespace StoryBlog.Web.Services.Blog.Interop.Markups.Composing
             base.Visit(obj);
         }
 
-        protected override void RenderBold(BulletingBoardBold block)
+        protected override void RenderStrong(BulletingBoardStrong block)
         {
             using (writer.OpenTag(block.BlockType))
             {
-                base.RenderBold(block);
+                base.RenderStrong(block);
             }
         }
 

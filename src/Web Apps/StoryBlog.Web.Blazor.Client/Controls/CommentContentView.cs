@@ -38,7 +38,6 @@ namespace StoryBlog.Web.Blazor.Client.Controls
         {
             var composer = new RenderTreeHtmlComposer(builder);
             composer.Visit(document);
-            //base.BuildRenderTree(builder);
         }
 
         /// <summary>
@@ -59,9 +58,15 @@ namespace StoryBlog.Web.Blazor.Client.Controls
             {
                 tags = new Dictionary<BulletingBoardBlockType, string>
                 {
+                    {BulletingBoardBlockType.Em, "em"},
+                    {BulletingBoardBlockType.Abbr, "abbr"},
+                    {BulletingBoardBlockType.Cite, "cite"},
+                    {BulletingBoardBlockType.Dfn, "dfn"},
+                    {BulletingBoardBlockType.Italic, "i"},
+                    {BulletingBoardBlockType.Marked, "mark"},
                     {BulletingBoardBlockType.Hyperlink, "a"},
-                    {BulletingBoardBlockType.Strong, "b"},
-                    {BulletingBoardBlockType.Underline, "i"}
+                    {BulletingBoardBlockType.Strong, "strong"},
+                    {BulletingBoardBlockType.Underline, "u"}
                 };
             }
 
@@ -77,10 +82,46 @@ namespace StoryBlog.Web.Blazor.Client.Controls
                 base.Visit(obj);
             }
 
-            protected override void RenderBold(BulletingBoardBold block)
+            protected override void RenderStrong(BulletingBoardStrong strong)
             {
-                builder.OpenElement(sequence++, GetElementName(block.BlockType));
-                base.RenderBold(block);
+                builder.OpenElement(sequence++, GetElementName(strong.BlockType));
+                base.RenderStrong(strong);
+                builder.CloseElement();
+            }
+
+            protected override void RenderEmphasized(BulletingBoardEmphasized em)
+            {
+                builder.OpenElement(sequence++, GetElementName(em.BlockType));
+                base.RenderEmphasized(em);
+                builder.CloseElement();
+            }
+
+            protected override void RenderCite(BulletingBoardCite cite)
+            {
+                builder.OpenElement(sequence++, GetElementName(cite.BlockType));
+                base.RenderCite(cite);
+                builder.CloseElement();
+            }
+
+            protected override void RenderAbbr(BulletingBoardAbbr abbr)
+            {
+                builder.OpenElement(sequence++, GetElementName(abbr.BlockType));
+                builder.AddAttribute(sequence++, "title", abbr.Argument);
+                base.RenderAbbr(abbr);
+                builder.CloseElement();
+            }
+
+            protected override void RenderTerm(BulletingBoardTerm term)
+            {
+                builder.OpenElement(sequence++, GetElementName(term.BlockType));
+                base.RenderTerm(term);
+                builder.CloseElement();
+            }
+
+            protected override void RenderItalic(BulletingBoardItalic italic)
+            {
+                builder.OpenElement(sequence++, GetElementName(italic.BlockType));
+                base.RenderItalic(italic);
                 builder.CloseElement();
             }
 

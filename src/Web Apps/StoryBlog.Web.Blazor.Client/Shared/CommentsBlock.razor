@@ -10,7 +10,73 @@
 @inject IDispatcher Dispatcher
 
 <ul class="list-unstyled">
-    @foreach (var child in Comments)
+    <GenericComponent Items="@Comments" TItem="CommentBase">
+        <ItemTemplate Context="child">
+            <li class="media mb-4">
+            @if (child is Comment comment)
+            {
+                var reply = GetReplyCompose(comment.Comments);
+
+                <img src="img/abstract.jpg" class="align-self-start rounded-circle mr-3" width="50" height="50" alt=@comment.Author.Name />
+                <div class="media-body">
+                    <div class="mb-2">
+                        <h5 class="mt-0">
+                            <a href="#" class="">@comment.Author.Name</a>
+                        </h5>
+                        <ul class="list-unstyled list-inline text-muted">
+                            <li class="list-inline-item">
+                                <i class="mdi mdi-calendar"></i>
+                                <TimeLabel DateTime="@comment.Published.Date" />
+                            </li>
+                        </ul>
+                        <div class="text-wrap">
+                            <CommentContentView Content="@comment.Content" />
+                        </div>
+                    </div>
+
+                    @if (null != reply)
+                    {
+                        <div class="my-4">
+                            <ReplyComposer OnSubmit=@(sender => OnSubmitComment(sender, reply)) />
+                        </div>
+                    }
+                    else if (1 > Level)
+                    {
+                        <div class="media-footer">
+                            <BootstrapButton Type="@BootstrapButtonTypes.Link"
+                                             Outline=true
+                                             Size="@BootstrapButtonSizes.Small"
+                                             Class="text-muted"
+                                             OnClick=@(() => DoComposeComment(comment))>
+                                <i class="mdi mdi-reply"></i><text class="ml-1">Ответить</text>
+                            </BootstrapButton>
+                            <BootstrapButton Type="@BootstrapButtonTypes.Link"
+                                             Outline=true
+                                             Size="@BootstrapButtonSizes.Small"
+                                             Class="text-muted float-right">
+                                <i class="mdi mdi-link"></i><text class="ml-1">Постоянная ссылка</text>
+                            </BootstrapButton>
+                        </div>
+                    }
+
+                    <CommentsBlock Comments="@comment.Comments" Level=@(Level + 1) />
+                </div>
+            }
+            else if (child is SavingComment saving)
+            {
+                <div class="media-body">
+                    <div class="mb-lg-3">
+                        <h5 class="mt-0">
+                            <a href="#" class="">author</a>
+                        </h5>
+                    </div>
+                    <p>saving</p>
+                </div>
+            }
+            </li>
+        </ItemTemplate>
+    </GenericComponent>
+    @*foreach (var child in Comments)
     {
         <li class="media mb-4">
             @if (child is Comment comment)
@@ -68,7 +134,7 @@
                 </div>
             }
         </li>
-    }
+    }*@
 </ul>
 
 @code

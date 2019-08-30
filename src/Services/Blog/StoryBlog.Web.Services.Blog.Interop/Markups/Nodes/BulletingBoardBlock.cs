@@ -17,7 +17,7 @@ namespace StoryBlog.Web.Services.Blog.Interop.Markups.Nodes
         /// <summary>
         /// 
         /// </summary>
-        Span,
+        Em,
 
         /// <summary>
         /// 
@@ -32,7 +32,12 @@ namespace StoryBlog.Web.Services.Blog.Interop.Markups.Nodes
         /// <summary>
         /// 
         /// </summary>
-        Hyperlink
+        Hyperlink,
+        Marked,
+        Cite,
+        Dfn,
+        Abbr,
+        Italic
     }
 
     /// <summary>
@@ -199,14 +204,44 @@ namespace StoryBlog.Web.Services.Blog.Interop.Markups.Nodes
 
             switch (tag)
             {
+                case "em":
+                {
+                    return new BulletingBoardEmphasized(closing);
+                }
+
                 case "strong":
                 {
-                    return new BulletingBoardBold(closing);
+                    return new BulletingBoardStrong(closing);
+                }
+
+                case "mark":
+                {
+                    return new BulletingBoardMarked(closing);
+                }
+
+                case "cite":
+                {
+                    return new BulletingBoardCite(closing);
+                }
+
+                case "italic":
+                {
+                    return new BulletingBoardItalic(closing);
                 }
 
                 case "underline":
                 {
                     return new BulletingBoardUnderline(closing);
+                }
+
+                case "dnf":
+                {
+                    return new BulletingBoardTerm(closing);
+                }
+
+                case "abbr":
+                {
+                    return new BulletingBoardAbbr(closing);
                 }
 
                 case "link":
@@ -222,14 +257,104 @@ namespace StoryBlog.Web.Services.Blog.Interop.Markups.Nodes
     /// <summary>
     /// 
     /// </summary>
-    public class BulletingBoardBold : BulletingBoardBlock
+    public class BulletingBoardStrong : BulletingBoardBlock
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="closing"></param>
-        public BulletingBoardBold(bool closing)
+        public BulletingBoardStrong(bool closing)
             : base(BulletingBoardBlockType.Strong, closing)
+        {
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class BulletingBoardEmphasized : BulletingBoardBlock
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="closing"></param>
+        public BulletingBoardEmphasized(bool closing)
+            : base(BulletingBoardBlockType.Em, closing)
+        {
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class BulletingBoardMarked : BulletingBoardBlock
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="closing"></param>
+        public BulletingBoardMarked(bool closing)
+            : base(BulletingBoardBlockType.Marked, closing)
+        {
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class BulletingBoardCite : BulletingBoardBlock
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="closing"></param>
+        public BulletingBoardCite(bool closing)
+            : base(BulletingBoardBlockType.Cite, closing)
+        {
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class BulletingBoardTerm : BulletingBoardBlock
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="closing"></param>
+        public BulletingBoardTerm(bool closing)
+            : base(BulletingBoardBlockType.Dfn, closing)
+        {
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class BulletingBoardAbbr : BulletingBoardBlock
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="closing"></param>
+        public BulletingBoardAbbr(bool closing)
+            : base(BulletingBoardBlockType.Abbr, closing)
+        {
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class BulletingBoardItalic : BulletingBoardBlock
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="closing"></param>
+        public BulletingBoardItalic(bool closing)
+            : base(BulletingBoardBlockType.Italic, closing)
         {
         }
     }

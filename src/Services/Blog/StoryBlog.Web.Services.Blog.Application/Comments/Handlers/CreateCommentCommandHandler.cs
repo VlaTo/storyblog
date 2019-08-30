@@ -98,7 +98,6 @@ namespace StoryBlog.Web.Services.Blog.Application.Comments.Handlers
 
                 var commentId = comment.Id;
 
-                //comment = await context.Comments.FindAsync(new object[] {comment.Id}, cancellationToken: cancellationToken);
                 comment = await context.Comments
                     .AsNoTracking()
                     .Include(entry => entry.Author)

@@ -3,6 +3,15 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
+      "library": "twitter-bootstrap@4.3.1",
+      "destination": "wwwroot/lib/twitter-bootstrap",
+      "files": [
+        "css/bootstrap.css",
+        "css/bootstrap.css.map",
+        "css/bootstrap.min.css"
+      ]
+    },
+    {
       "library": "MaterialDesign-Webfont@3.6.95",
       "destination": "wwwroot/lib/materialdesignicons",
       "files": [
