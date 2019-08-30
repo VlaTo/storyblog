@@ -233,8 +233,10 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     /// </summary>
     public sealed class ReplyPublishedActionReducer : Reducer<StoryState, ReplyPublishedAction>
     {
-        public override StoryState Reduce(StoryState state, ReplyPublishedAction action) =>
-            new StoryState(ModelStatus.Success)
+        public override StoryState Reduce(StoryState state, ReplyPublishedAction action)
+        {
+            Debug.WriteLine($"[ReplyPublishedActionReducer.Reduce] Comment for: \'{action.StorySlug}\' parent: {action.ParentId} ref: {action.Reference}");
+            return new StoryState(ModelStatus.Success)
             {
                 Slug = state.Slug,
                 Title = state.Title,
@@ -245,6 +247,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
                 CommentsCount = state.CommentsCount + 1,
                 Comments = ReplaceSavingComment(state.Comments, action)
             };
+        }
 
         private static IReadOnlyCollection<CommentBase> ReplaceSavingComment(
             IEnumerable<CommentBase> comments,
@@ -272,6 +275,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
 
                     if (child is SavingComment saving && action.Reference == saving.Reference)
                     {
+                        Debug.WriteLine($"[ReplyPublishedActionReducer.Reduce] Replacing comment for: \'{action.StorySlug}\' parent: {action.ParentId} ref: {action.Reference}");
                         result.Add(new Comment(saving.StorySlug, saving.Parent)
                         {
                             Id = action.Id,

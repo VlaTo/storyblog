@@ -15,6 +15,7 @@ namespace StoryBlog.Web.Services.Blog.Interop.Markups.Parsing
         {
             var blocks = new Stack<BulletingBoardBlock>();
 
+            Elements.Clear();
             blocks.Push(this);
 
             Parse(text, 0, text.Length, blocks);

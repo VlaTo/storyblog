@@ -26,20 +26,10 @@
                         <ul class="list-unstyled list-inline text-muted">
                             <li class="list-inline-item">
                                 <i class="mdi mdi-calendar"></i>
-                                <TimeLabel DateTime=comment.Published.Date />
+                                <TimeLabel DateTime="@comment.Published.Date" />
                             </li>
                         </ul>
-                        @{
-                            var content = new BulletingBoardDocument();
-
-                            content.Parse(comment.Content);
-
-                            using (ExecuteAsync())
-                            {
-                                
-                            }
-                        }
-                        @((MarkupString)comment.Content)
+                        <CommentContentView Content="@comment.Content" />
                     </div>
 
                     @if (null != reply)
@@ -52,9 +42,9 @@
                     {
                         <ul class="list-unstyled list-inline">
                             <li class="list-inline-item">
-                                <BootstrapButton Type=BootstrapButtonTypes.Link
+                                <BootstrapButton Type="@BootstrapButtonTypes.Link"
                                                  Outline=true
-                                                 Size=BootstrapButtonSizes.Small
+                                                 Size="@BootstrapButtonSizes.Small"
                                                  Class="text-muted"
                                                  OnClick=@(() => DoComposeComment(comment))>
                                     <i class="mdi mdi-reply"></i>&nbsp;Ответить
@@ -63,7 +53,7 @@
                         </ul>
                     }
 
-                    <CommentsBlock Comments=comment.Comments Level=@(Level + 1) />
+                    <CommentsBlock Comments="@comment.Comments" Level=@(Level + 1) />
                 </div>
             }
             else if (child is SavingComment saving)

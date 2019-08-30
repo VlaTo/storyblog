@@ -27,7 +27,12 @@ namespace StoryBlog.Web.Services.Blog.Application.Comments.Commands
         /// <summary>
         /// 
         /// </summary>
-        CommentsClosed
+        CommentsClosed,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        SpecifiedParentNotFound
     }
 
     /// <summary>
