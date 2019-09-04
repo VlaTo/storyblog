@@ -1,10 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using Blazor.Fluxor;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using StoryBlog.Web.Services.Shared.Common;
 
-namespace StoryBlog.Web.Blazor.Client.Controls
+namespace StoryBlog.Web.Blazor.Client.Components
 {
     /// <summary>
     /// 

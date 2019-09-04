@@ -1,9 +1,9 @@
 ﻿@page "/Story/{Slug}"
 
 @using global::Blazor.Fluxor
+@using StoryBlog.Web.Blazor.Client.Services
 @using StoryBlog.Web.Blazor.Client.Store
 @using StoryBlog.Web.Blazor.Client.Store.Models
-@using StoryBlog.Web.Blazor.Client.Controls
 @using StoryBlog.Web.Blazor.Client.Store.Actions
 @using StoryBlog.Web.Services.Blog.Interop.Includes
 @using StoryBlog.Web.Services.Shared.Common
@@ -14,6 +14,7 @@
 @inject IState<UserState> UserState
 @inject IDispatcher Dispatcher
 @inject IPluralLocalizer Pluralizer
+@inject IModalService ModalService
 
 @if (null == StoryState)
 {
@@ -39,6 +40,8 @@ else
 
                         if (null != model)
                         {
+                            <button type="button" @onclick="@ShowDialog">Show Dialog</button>
+
                             <article id="@model.Slug" class="">
                                 <div class="mb-5">
                                     <h2 class="">@model.Title</h2>
@@ -157,4 +160,10 @@ else
         var composer = (ReplyComposer) sender;
         Dispatcher.Dispatch(new SaveReplyAction(comment.StorySlug, null, comment.Reference, composer.Message));
     }
+
+    private void ShowDialog(UIMouseEventArgs e)
+    {
+        ModalService.Show("Sample Dialog", typeof(TestDialog));
+    }
+
 }

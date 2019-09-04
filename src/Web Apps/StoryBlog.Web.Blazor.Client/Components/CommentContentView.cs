@@ -6,7 +6,7 @@ using StoryBlog.Web.Services.Blog.Interop.Markups.Composing;
 using StoryBlog.Web.Services.Blog.Interop.Markups.Nodes;
 using StoryBlog.Web.Services.Blog.Interop.Markups.Parsing;
 
-namespace StoryBlog.Web.Blazor.Client.Controls
+namespace StoryBlog.Web.Blazor.Client.Components
 {
     public sealed class CommentContentView : ComponentBase
     {

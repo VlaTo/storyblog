@@ -49,6 +49,9 @@ namespace StoryBlog.Web.Blazor.Client
                         .AddSingleton<IPluralLocalizer, PluralLocalizer>()
                         .AddSingleton<ITimeSpanLocalizer, TimeSpanLocalizer>()
                         .AddSingleton<IDateTimeLocalizer, DateTimeLocalizer>();
+
+                    services
+                        .AddScoped<IModalService, BlazorModalService>();
                 })
                 .UseBlazorStartup<Startup>()
                 .Build();

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using StoryBlog.Web.Blazor.Components;
 
-namespace StoryBlog.Web.Blazor.Client.Controls
+namespace StoryBlog.Web.Blazor.Client.Components
 {
     public class FullPageSpinnerComponent : BootstrapComponentBase
     {
