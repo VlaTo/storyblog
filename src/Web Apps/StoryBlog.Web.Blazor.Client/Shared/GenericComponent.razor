@@ -2,7 +2,7 @@
 
 @foreach (var item in Items)
 {
-    @ItemTemplate(item)
+    @ItemTemplate.Invoke(item)
 }
 
 @code {

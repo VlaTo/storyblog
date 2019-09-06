@@ -2,7 +2,6 @@
 using StoryBlog.Web.Blazor.Client.Services;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
 using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,7 +29,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
         {
             try
             {
-                Debug.WriteLine($"{nameof(GetStoriesActionEffect)}.{nameof(HandleAsync)}");
+                //Debug.WriteLine($"{nameof(GetStoriesActionEffect)}.{nameof(HandleAsync)}");
                 var result = await client.GetStoriesAsync(action.Flags, CancellationToken.None);
 
                 if (null == result)

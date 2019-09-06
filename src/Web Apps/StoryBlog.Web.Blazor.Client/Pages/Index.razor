@@ -11,7 +11,7 @@
 @inject IState<StoriesState> State
 @inject IDispatcher Dispatcher
 @inject IUriHelper UriHelper
-@inject IPluralLocalizer Pluralizer
+@inject IPluralService Pluralizer
 @inject IDateTimeLocalizer DateTimeLocalizer
 @inject ITimeSpanLocalizer TimeSpanLocalizer
 
@@ -46,7 +46,7 @@
                             </li>
                             <li class="list-inline-item">
                                 <i class="mdi mdi-comment-multiple-outline"></i>
-                                @story.CommentsCount @Pluralizer["комментарий", story.CommentsCount]
+                                @story.CommentsCount @Pluralizer["Comment", story.CommentsCount]
                             </li>
                         </ul>
                     </div>

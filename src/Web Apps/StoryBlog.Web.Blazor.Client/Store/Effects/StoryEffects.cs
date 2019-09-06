@@ -2,7 +2,6 @@
 using StoryBlog.Web.Blazor.Client.Services;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
 using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -66,7 +65,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
 
         protected override async Task HandleAsync(SaveReplyAction action, IDispatcher dispatcher)
         {
-            Debug.WriteLine($"[SaveReplyActionEffect.HandleAsync] Saving comment for: \'{action.StorySlug}\' parent: {action.ParentId} ref: {action.Reference}");
+            //Debug.WriteLine($"[SaveReplyActionEffect.HandleAsync] Saving comment for: \'{action.StorySlug}\' parent: {action.ParentId} ref: {action.Reference}");
             try
             {
                 var result = await client.CreateCommentAsync(action.StorySlug,  action.ParentId, action.Content, CancellationToken.None);
@@ -76,7 +75,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
                     throw new Exception("");
                 }
 
-                Debug.WriteLine($"[SaveReplyActionEffect.HandleAsync] Dispatching action: \'{nameof(ReplyPublishedAction)}\'");
+                //Debug.WriteLine($"[SaveReplyActionEffect.HandleAsync] Dispatching action: \'{nameof(ReplyPublishedAction)}\'");
 
                 dispatcher.Dispatch(new ReplyPublishedAction(action.StorySlug)
                 {
@@ -90,7 +89,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Effects
             }
             catch (Exception exception)
             {
-                Debug.WriteLine($"[SaveReplyActionEffect.HandleAsync] Failed: \"{exception}\"");
+                //Debug.WriteLine($"[SaveReplyActionEffect.HandleAsync] Failed: \"{exception}\"");
                 dispatcher.Dispatch(new CommentCreationFailedAction(action.StorySlug, exception.Message));
             }
         }

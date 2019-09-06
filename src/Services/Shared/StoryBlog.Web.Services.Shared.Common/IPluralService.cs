@@ -1,8 +1,8 @@
 ﻿namespace StoryBlog.Web.Services.Shared.Common
 {
-    public interface IPluralLocalizer
+    public interface IPluralService
     {
-        string this[string noun, int numerator]
+        string this[string noun, long numerator]
         {
             get;
         }

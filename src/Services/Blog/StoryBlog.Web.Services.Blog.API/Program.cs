@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +15,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using StoryBlog.Web.Services.Blog.API.Infrastructure;
 using StoryBlog.Web.Services.Blog.API.Infrastructure.Filters;
+using StoryBlog.Web.Services.Blog.API.Models;
 using StoryBlog.Web.Services.Blog.Application.Extensions;
 using StoryBlog.Web.Services.Blog.Application.Infrastructure;
 using StoryBlog.Web.Services.Blog.Application.Models;
+using StoryBlog.Web.Services.Blog.Domain.Exceptions;
 using StoryBlog.Web.Services.Blog.Interop.Models;
 using StoryBlog.Web.Services.Blog.Persistence;
 using StoryBlog.Web.Services.Shared.Common;
@@ -28,10 +31,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Mime;
 using System.Reflection;
-using Microsoft.AspNetCore.Localization;
-using StoryBlog.Web.Services.Blog.API.Models;
-using StoryBlog.Web.Services.Blog.Domain.Exceptions;
-using StoryBlog.Web.Services.Shared.Infrastructure;
 
 namespace StoryBlog.Web.Services.Blog.API
 {
@@ -388,7 +387,7 @@ namespace StoryBlog.Web.Services.Blog.API
                         {
                             options.ResourcesPath = "Resources";
                         })
-                        .AddTransient<IPluralLocalizer, PluralLocalizer>();
+                        .AddTransient<IPluralService, PluralService1>();
 
                     services
                         .AddOptions<StoryBlogSettings>()

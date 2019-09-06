@@ -40,7 +40,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
         private readonly IMapper mapper;
         private readonly ICommandBus commandBus;
         private readonly IStringLocalizer<StoriesController> localizer;
-        private readonly IPluralLocalizer pluralizer;
+        private readonly IPluralService pluralService;
         private readonly StoryBlogSettings blogSettings;
         private readonly ILogger<StoriesController> logger;
 
@@ -58,7 +58,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
             IMapper mapper,
             ICommandBus commandBus,
             IStringLocalizer<StoriesController> localizer,
-            IPluralLocalizer pluralizer,
+            IPluralService pluralService,
             IOptionsSnapshot<StoryBlogSettings> settingsAccessor,
             ILogger<StoriesController> logger)
         {
@@ -66,7 +66,7 @@ namespace StoryBlog.Web.Services.Blog.API.Controllers
             this.mapper = mapper;
             this.commandBus = commandBus;
             this.localizer = localizer;
-            this.pluralizer = pluralizer;
+            this.pluralService = pluralService;
             this.logger = logger;
 
             blogSettings = settingsAccessor.Value;

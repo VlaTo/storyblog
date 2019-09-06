@@ -53,6 +53,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Core\" />
     <Folder Include="Models\Flags\" />
+    <Folder Include="Resources\Views\" />
   </ItemGroup>
 
 </Project>

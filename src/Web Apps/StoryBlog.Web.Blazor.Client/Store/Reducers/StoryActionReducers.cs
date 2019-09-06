@@ -1,12 +1,9 @@
-﻿using System;
-using Blazor.Fluxor;
+﻿using Blazor.Fluxor;
 using StoryBlog.Web.Blazor.Client.Store.Actions;
 using StoryBlog.Web.Blazor.Client.Store.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using Newtonsoft.Json.Converters;
 
 namespace StoryBlog.Web.Blazor.Client.Store.Reducers
 {
@@ -46,8 +43,6 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
 
                 foreach (var comment in action.Comments)
                 {
-                    Debug.WriteLine($"[{session}] id: {comment.Id}; parent: {comment.ParentId}");
-
                     var shouldSkip = null != parent
                         ? comment.ParentId != parent.Id
                         : comment.ParentId.HasValue;
@@ -235,7 +230,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     {
         public override StoryState Reduce(StoryState state, ReplyPublishedAction action)
         {
-            Debug.WriteLine($"[ReplyPublishedActionReducer.Reduce] Comment for: \'{action.StorySlug}\' parent: {action.ParentId} ref: {action.Reference}");
+            //Debug.WriteLine($"[ReplyPublishedActionReducer.Reduce] Comment for: \'{action.StorySlug}\' parent: {action.ParentId} ref: {action.Reference}");
             return new StoryState(ModelStatus.Success)
             {
                 Slug = state.Slug,
@@ -275,7 +270,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
 
                     if (child is SavingComment saving && action.Reference == saving.Reference)
                     {
-                        Debug.WriteLine($"[ReplyPublishedActionReducer.Reduce] Replacing comment for: \'{action.StorySlug}\' parent: {action.ParentId} ref: {action.Reference}");
+                        //Debug.WriteLine($"[ReplyPublishedActionReducer.Reduce] Replacing comment for: \'{action.StorySlug}\' parent: {action.ParentId} ref: {action.Reference}");
                         result.Add(new Comment(saving.StorySlug, saving.Parent)
                         {
                             Id = action.Id,
