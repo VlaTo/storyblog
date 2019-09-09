@@ -10,8 +10,6 @@ namespace StoryBlog.Web.Blazor.Client.Components
     {
         private static readonly ClassBuilder<BlogMenuItemComponent> classNameBuilder;
 
-        private bool firstRender;
-
         [Parameter]
         public bool IsBlock
         {
@@ -41,7 +39,7 @@ namespace StoryBlog.Web.Blazor.Client.Components
         }
 
         [Inject]
-        protected IUriHelper UriHelper
+        protected NavigationManager NavigationManager
         {
             get;
             set;
@@ -61,7 +59,6 @@ namespace StoryBlog.Web.Blazor.Client.Components
 
         public BlogMenuItemComponent()
         {
-            firstRender = true;
             IsBlock = false;
         }
 
@@ -83,23 +80,22 @@ namespace StoryBlog.Web.Blazor.Client.Components
         {
             RefreshStyles();
             ClassString = classNameBuilder.Build(this, Class);
-            UriHelper.OnLocationChanged += OnLocationChanged;
+            NavigationManager.LocationChanged += OnLocationChanged;
         }
 
-        protected override Task OnAfterRenderAsync()
+        protected override Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
-                firstRender = false;
                 //await Task.Delay(TimeSpan.FromMilliseconds(100.0d));
             }
 
-            return base.OnAfterRenderAsync();
+            return base.OnAfterRenderAsync(firstRender);
         }
 
         protected override void OnDispose()
         {
-            UriHelper.OnLocationChanged -= OnLocationChanged;
+            NavigationManager.LocationChanged -= OnLocationChanged;
         }
 
         private void OnLocationChanged(object sender, LocationChangedEventArgs e)
@@ -110,19 +106,11 @@ namespace StoryBlog.Web.Blazor.Client.Components
 
         private void RefreshStyles()
         {
-            var uri = new Uri(UriHelper.GetAbsoluteUri());
+            var uri = new Uri(NavigationManager.Uri);
             var path = uri.LocalPath;
             //var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
 
-            if (String.Equals(Link, path, StringComparison.InvariantCultureIgnoreCase))
-            {
-                IsActive = true;
-            }
-            else
-            {
-                IsActive = false;
-            }
-
+            IsActive = String.Equals(Link, path, StringComparison.InvariantCultureIgnoreCase);
             ClassString = classNameBuilder.Build(this, Class);
         }
     }

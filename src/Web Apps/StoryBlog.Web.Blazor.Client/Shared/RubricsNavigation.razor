@@ -7,7 +7,7 @@
 
 @*@inject IState<RubricsState> State*@
 @inject IDispatcher Dispatcher
-@inject IUriHelper Uri
+@inject NavigationManager NavigationManager
 
 <div>
     @*@if (State.Value.IsNone())
@@ -85,6 +85,6 @@
 
     private void OnRubricClick(string slug)
     {
-        Uri.NavigateTo($"/rubric/{slug}");
+        NavigationManager.NavigateTo($"/rubric/{slug}");
     }
 }

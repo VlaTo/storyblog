@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
+using StoryBlog.Web.Blazor.Client.Core;
+using StoryBlog.Web.Blazor.Components;
 
-namespace StoryBlog.Web.Blazor.Components
+namespace StoryBlog.Web.Blazor.Client.Components
 {
     /// <inheritdoc cref="IModalService" />
     public sealed class BootstrapModalService : IModalService
@@ -12,15 +14,11 @@ namespace StoryBlog.Web.Blazor.Components
         /// <inheritdoc cref="OnClose" />
         public event Action OnClose;
         
-        public Task ShowAsync(string title, Type contentType)
+        public Task<ModalButton> ShowAsync(string title, Type contentType, params ModalButton[] buttons)
         {
-            modalContext = new ModalContext(modalContent.Title, modalContent.Content, () =>
-            {
-                modalContent.OnCallback();
-                CloseModal();
-            });
-
+            var content = new ModalContent(title, contentType, buttons);
             OnShow?.Invoke(content);
+            return content.WaitForComplete();
         }
 
         public void Close()

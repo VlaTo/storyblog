@@ -6,7 +6,7 @@
 
 @inject IIdentityApiClient Api
 @inject IDispatcher Dispatcher
-@inject IUriHelper Uri
+@inject NavigationManager NavigationManager
 
 @functions
 {
@@ -18,7 +18,7 @@
             var principal = await Api.SigninCallbackAsync();
 
             Dispatcher.Dispatch(new SigninRequestSuccessAction(principal));
-            Uri.NavigateTo("/");
+            NavigationManager.NavigateTo("/");
         }
         //catch (HttpRequestException exception)
         catch (Exception exception)

@@ -1,4 +1,5 @@
 ﻿@using global::Blazor.Fluxor
+@using StoryBlog.Web.Blazor.Client.Components
 @using StoryBlog.Web.Blazor.Client.Store
 @using StoryBlog.Web.Blazor.Client.Store.Actions
 
@@ -31,7 +32,7 @@
             }
             else
             {
-                <BootstrapButton Type=BootstrapButtonTypes.Dark Size=BootstrapButtonSizes.Small Outline=true OnClick=OnSignInButtonClick>
+                <BootstrapButton Type="@BootstrapButtonTypes.Dark" Size="@BootstrapButtonSizes.Small" Outline="true" OnClick="@OnSignInButtonClick">
                     Sign in
                 </BootstrapButton>
             }
@@ -48,12 +49,12 @@
         set;
     }
 
-    private void OnSignInButtonClick(UIEventArgs e)
+    private void OnSignInButtonClick(EventArgs e)
     {
         Dispatcher.Dispatch(new SigninRequestAction());
     }
 
-    private void OnSearchButtonClick(UIEventArgs e)
+    private void OnSearchButtonClick(EventArgs e)
     {
         Console.WriteLine("OnSearchButtonClick");
     }

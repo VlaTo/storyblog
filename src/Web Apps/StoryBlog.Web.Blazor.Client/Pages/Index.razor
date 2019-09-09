@@ -1,6 +1,7 @@
 ﻿@page "/"
 
 @using global::Blazor.Fluxor
+@using StoryBlog.Web.Blazor.Client.Components
 @using StoryBlog.Web.Blazor.Client.Store
 @using StoryBlog.Web.Blazor.Client.Store.Actions
 @using StoryBlog.Web.Services.Blog.Interop.Includes
@@ -10,7 +11,7 @@
 
 @inject IState<StoriesState> State
 @inject IDispatcher Dispatcher
-@inject IUriHelper UriHelper
+@inject NavigationManager NavigationManager
 @inject IPluralService Pluralizer
 @inject IDateTimeLocalizer DateTimeLocalizer
 @inject ITimeSpanLocalizer TimeSpanLocalizer
@@ -60,7 +61,7 @@
                             Size="@BootstrapButtonSizes.Small"
                             Outline=true
                             Class="mt-4"
-                            OnClick=@(() => UriHelper.NavigateTo(linkSrc))>
+                            OnClick=@(() => NavigationManager.NavigateTo(linkSrc))>
                             Читать полностью&nbsp;<i class="mdi mdi-arrow-right"></i>
                         </BootstrapButton>
                     </div>
@@ -72,11 +73,11 @@
                     <nav aria-label="pages">
                         <ul class="pagination">
                             <li class=@("page-item" + (null == State.Value.BackwardUri ? " disabled" : String.Empty))>
-                                <a href="#" class="page-link" @onclick="OnPreviousPageClick">Назад</a>
+                                <a href="#" class="page-link" @onclick="@OnPreviousPageClick">Назад</a>
                             </li>
 
                             <li class=@("page-item" + (null == State.Value.ForwardUri ? " disabled" : String.Empty))>
-                                <a href="#" class="page-link" @onclick="OnNextPageClick">Вперед</a>
+                                <a href="#" class="page-link" @onclick="@OnNextPageClick">Вперед</a>
                             </li>
                         </ul>
                     </nav>
@@ -138,16 +139,16 @@
 {
     protected override void OnInitialized()
     {
-        base.OnInitialized();
+        //base.OnInitialized();
         Dispatcher.Dispatch(new GetStoriesAction(StoryFlags.Authors | StoryFlags.Comments));
     }
 
-    private void OnPreviousPageClick(UIMouseEventArgs e)
+    private void OnPreviousPageClick(MouseEventArgs e)
     {
         Dispatcher.Dispatch(new GetStoriesBackwardAction(State.Value.BackwardUri));
     }
 
-    private void OnNextPageClick(UIMouseEventArgs e)
+    private void OnNextPageClick(MouseEventArgs e)
     {
         Dispatcher.Dispatch(new GetStoriesForwardAction(State.Value.ForwardUri));
     }

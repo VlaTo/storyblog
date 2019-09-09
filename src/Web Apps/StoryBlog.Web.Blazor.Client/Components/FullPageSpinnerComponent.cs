@@ -1,15 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using StoryBlog.Web.Blazor.Components;
+using System;
 
 namespace StoryBlog.Web.Blazor.Client.Components
 {
     public class FullPageSpinnerComponent : BootstrapComponentBase
     {
         private static readonly ClassBuilder<FullPageSpinnerComponent> classNameBuilder;
-
-        private bool firstRender;
 
         [Parameter]
         public bool IsCentered
@@ -29,11 +26,6 @@ namespace StoryBlog.Web.Blazor.Client.Components
         {
             get;
             private set;
-        }
-
-        public FullPageSpinnerComponent()
-        {
-            firstRender = true;
         }
 
         static FullPageSpinnerComponent()
@@ -56,16 +48,6 @@ namespace StoryBlog.Web.Blazor.Client.Components
         protected override void OnInitialized()
         {
             ClassString = classNameBuilder.Build(this, Class);
-        }
-
-        protected override Task OnAfterRenderAsync()
-        {
-            if (firstRender)
-            {
-                firstRender = false;
-            }
-
-            return base.OnAfterRenderAsync();
         }
 
         protected override bool ShouldRender()

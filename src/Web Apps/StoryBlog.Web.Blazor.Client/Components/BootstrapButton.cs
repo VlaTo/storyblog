@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.RenderTree;
-using StoryBlog.Web.Blazor.Components.Attributes;
+using Microsoft.AspNetCore.Components.Rendering;
+using StoryBlog.Web.Blazor.Client.Components.Attributes;
+using StoryBlog.Web.Blazor.Client.Core;
+using StoryBlog.Web.Blazor.Components;
 
-namespace StoryBlog.Web.Blazor.Components
+namespace StoryBlog.Web.Blazor.Client.Components
 {
     /// <summary>
     /// 
@@ -85,7 +87,6 @@ namespace StoryBlog.Web.Blazor.Components
     {
         private static readonly ClassBuilder<BootstrapButton> classNameBuilder;
 
-        private bool firstRender;
         protected ElementReference button;
 
         [Parameter]
@@ -131,7 +132,7 @@ namespace StoryBlog.Web.Blazor.Components
         }
 
         [Parameter]
-        public EventCallback<UIEventArgs> OnClick
+        public EventCallback<EventArgs> OnClick
         {
             get;
             set;
@@ -166,8 +167,6 @@ namespace StoryBlog.Web.Blazor.Components
 
         public BootstrapButton()
         {
-            firstRender = true;
-
             Type = BootstrapButtonTypes.Default;
             Size = BootstrapButtonSizes.Default;
             Outline = false;
@@ -214,15 +213,14 @@ namespace StoryBlog.Web.Blazor.Components
             builder.CloseElement();
         }
 
-        protected override Task OnAfterRenderAsync()
+        protected override Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
-                firstRender = false;
                 //await Task.Delay(TimeSpan.FromMilliseconds(100.0d));
             }
 
-            return base.OnAfterRenderAsync();
+            return base.OnAfterRenderAsync(firstRender);
         }
     }
 }

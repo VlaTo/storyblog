@@ -7,7 +7,7 @@ namespace StoryBlog.Web.Blazor.Client.Components
     public class TestControl : IComponent
     {
         [Inject]
-        public IUriHelper UrlHelper
+        public NavigationManager NavigationManager
         {
             get;
             set;

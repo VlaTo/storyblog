@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Components;
 
-namespace StoryBlog.Web.Blazor.Components
+namespace StoryBlog.Web.Blazor.Client.Components
 {
     /// <summary>
     /// 

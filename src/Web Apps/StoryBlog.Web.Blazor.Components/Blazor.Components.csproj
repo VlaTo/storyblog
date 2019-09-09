@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <Folder Include="Content\" />
+    <Folder Include="Extensions\" />
   </ItemGroup>
 
 </Project>

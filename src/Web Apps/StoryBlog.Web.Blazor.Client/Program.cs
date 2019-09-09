@@ -1,13 +1,13 @@
-﻿using System;
-using System.Globalization;
-using Blazor.Fluxor;
+﻿using Blazor.Fluxor;
 using IdentityModel;
 using Microsoft.AspNetCore.Blazor.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using StoryBlog.Web.Blazor.Client.Core;
+using StoryBlog.Web.Blazor.Client.Extensions;
 using StoryBlog.Web.Blazor.Client.Services;
-using StoryBlog.Web.Blazor.Components.Extensions;
 using StoryBlog.Web.Services.Shared.Common;
+using System;
+using System.Globalization;
 
 namespace StoryBlog.Web.Blazor.Client
 {
@@ -57,6 +57,7 @@ namespace StoryBlog.Web.Blazor.Client
                         });
 
                     services
+                        .AddSingleton<IIdManager, IdManager>()
                         .AddBootstrapModalService();
                 })
                 .UseBlazorStartup<Startup>()

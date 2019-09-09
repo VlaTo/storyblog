@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StoryBlog.Web.Blazor.Components.Attributes
+namespace StoryBlog.Web.Blazor.Client.Components.Attributes
 {
     /// <summary>
     /// 

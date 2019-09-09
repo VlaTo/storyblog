@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace StoryBlog.Web.Blazor.Client.Components
 {
@@ -8,7 +9,7 @@ namespace StoryBlog.Web.Blazor.Client.Components
     /// </summary>
     public class ReplyComposerComponent : ComponentBase
     {
-        protected readonly EventCallback<UIMouseEventArgs> onClick;
+        protected readonly EventCallback<MouseEventArgs> onClick;
 
         [Parameter]
         public string Message
@@ -26,9 +27,9 @@ namespace StoryBlog.Web.Blazor.Client.Components
 
         public ReplyComposerComponent()
         {
-            onClick = EventCallback.Factory.Create<UIMouseEventArgs>(this, DoClick);
+            onClick = EventCallback.Factory.Create<MouseEventArgs>(this, DoClick);
         }
 
-        private Task DoClick(UIMouseEventArgs e) => OnSubmit.InvokeAsync(this);
+        private Task DoClick(MouseEventArgs e) => OnSubmit.InvokeAsync(this);
     }
 }

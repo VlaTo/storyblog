@@ -16,18 +16,18 @@ namespace StoryBlog.Web.Blazor.Client.Services
 {
     internal sealed class IdentityApiClient : IIdentityApiClient
     {
-        private readonly IUriHelper uri;
+        private readonly NavigationManager navigationManager;
         private readonly HttpClient client;
         private readonly IdentityApiOptions options;
         private readonly DiscoveryCache disco;
         private readonly CryptoHelper crypto;
 
         public IdentityApiClient(
-            IUriHelper uri,
+            NavigationManager navigationManager,
             HttpClient client,
             IOptions<IdentityApiOptions> options)
         {
-            this.uri = uri;
+            this.navigationManager = navigationManager;
             this.client = client;
             this.options = options.Value;
             var authority = this.options.Host.ToString();
@@ -53,7 +53,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
                 uiLocales: CultureInfo.CurrentUICulture.EnglishName
             );
 
-            uri.NavigateTo(auth);
+            navigationManager.NavigateTo(auth);
         }
 
         /// <inheritdoc cref="IIdentityApiClient.SigninCallbackAsync" />
@@ -91,7 +91,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
         private async Task<string> RetrieveTokenAsync(DiscoveryDocumentResponse discovery)
         {
-            var path = new Uri(uri.GetAbsoluteUri());
+            var path = new Uri(navigationManager.Uri);
             var query = QueryHelpers.ParseQuery(path.Query);
 
             if (false == query.TryGetValue("code", out var code))

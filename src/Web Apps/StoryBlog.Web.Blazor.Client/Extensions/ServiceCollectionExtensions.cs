@@ -1,9 +1,11 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
+using StoryBlog.Web.Blazor.Client.Components;
+using StoryBlog.Web.Blazor.Client.Core;
 
-namespace StoryBlog.Web.Blazor.Components.Extensions
+namespace StoryBlog.Web.Blazor.Client.Extensions
 {
-    public static class ServiceCollectionExtensions
+    internal static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddBootstrapModalService(this IServiceCollection services)
         {

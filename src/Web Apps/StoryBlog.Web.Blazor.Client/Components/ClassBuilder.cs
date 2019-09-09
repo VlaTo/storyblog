@@ -2,9 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using StoryBlog.Web.Blazor.Components;
 
-namespace StoryBlog.Web.Blazor.Components
+namespace StoryBlog.Web.Blazor.Client.Components
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TComponent"></typeparam>
     public class ClassBuilder<TComponent>
         where TComponent : BootstrapComponentBase
     {

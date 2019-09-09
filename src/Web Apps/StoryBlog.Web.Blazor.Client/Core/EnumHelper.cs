@@ -1,11 +1,20 @@
 ﻿using System;
 using System.Reflection;
-using StoryBlog.Web.Blazor.Components.Attributes;
+using StoryBlog.Web.Blazor.Client.Components.Attributes;
 
-namespace StoryBlog.Web.Blazor.Components
+namespace StoryBlog.Web.Blazor.Client.Core
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class EnumHelper
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static string GetClassName<TEnum>(TEnum value) 
             where TEnum : struct
         {

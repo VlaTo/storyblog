@@ -4,9 +4,9 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.RenderTree;
+using Microsoft.AspNetCore.Components.Rendering;
 
-namespace StoryBlog.Web.Blazor.Components
+namespace StoryBlog.Web.Blazor.Client.Components
 {
     /// <summary>
     /// Time label class.

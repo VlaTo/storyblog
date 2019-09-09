@@ -1,6 +1,6 @@
-﻿using System;
-using System.Diagnostics;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
+using System;
+using System.Threading.Tasks;
 
 namespace StoryBlog.Web.Blazor.Components
 {
@@ -9,12 +9,19 @@ namespace StoryBlog.Web.Blazor.Components
     /// </summary>
     public sealed class ModalContent : IModalContent
     {
+        private TaskCompletionSource<ModalButton> tcs;
+
         public string Title
         {
             get;
         }
 
         public RenderFragment Content
+        {
+            get;
+        }
+
+        public ModalButton[] Buttons
         {
             get;
         }
@@ -31,11 +38,13 @@ namespace StoryBlog.Web.Blazor.Components
                 throw new ArgumentNullException(nameof(content));
             }
 
+            tcs = new TaskCompletionSource<ModalButton>();
+
             Title = title;
             Content = content;
         }
 
-        public ModalContent(string title, Type contentType)
+        public ModalContent(string title, Type contentType, params ModalButton[] buttons)
         {
             if (null == title)
             {
@@ -52,7 +61,10 @@ namespace StoryBlog.Web.Blazor.Components
                 throw new ArgumentException("", nameof(contentType));
             }
 
+            tcs = new TaskCompletionSource<ModalButton>();
+
             Title = title;
+            Buttons = buttons;
             Content = target =>
             {
                 target.OpenComponent(1, contentType);
@@ -60,9 +72,24 @@ namespace StoryBlog.Web.Blazor.Components
             };
         }
 
-        public void OnCallback()
+        public Task<ModalButton> WaitForComplete() => tcs.Task;
+
+        public void SetResult(ModalButton button) => tcs.SetResult(button);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class ModalButton
+    {
+        public string Title
         {
-            Debug.WriteLine("ModelContent.OnCallback");
+            get;
+        }
+
+        public ModalButton(string title)
+        {
+            Title = title;
         }
     }
 }

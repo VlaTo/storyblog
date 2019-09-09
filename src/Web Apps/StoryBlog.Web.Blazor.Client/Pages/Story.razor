@@ -1,6 +1,7 @@
 ﻿@page "/Story/{Slug}"
 
 @using global::Blazor.Fluxor
+@using StoryBlog.Web.Blazor.Client.Core
 @using StoryBlog.Web.Blazor.Client.Services
 @using StoryBlog.Web.Blazor.Client.Store
 @using StoryBlog.Web.Blazor.Client.Store.Models
@@ -150,7 +151,7 @@ else
         return null;
     }
 
-    private void OnComposeComment(UIEventArgs e)
+    private void OnComposeComment(EventArgs e)
     {
         Dispatcher.Dispatch(new ComposeReplyAction(StoryState.Value.Slug, null, Guid.NewGuid()));
     }
@@ -161,9 +162,18 @@ else
         Dispatcher.Dispatch(new SaveReplyAction(comment.StorySlug, null, comment.Reference, composer.Message));
     }
 
-    private void ShowDialog(UIMouseEventArgs e)
+    private async void ShowDialog(MouseEventArgs e)
     {
-        ModalService.Show(new ModalContent("Sample Dialog", typeof(TestDialog)));
-    }
+        System.Diagnostics.Debug.WriteLine("ShowDialog starts");
+        var button = await ModalService.ShowAsync("Sample Dialog", typeof(TestDialog), ModalButtons.OkCancel());
 
+        if (ModalButtons.CancelButton == button)
+        {
+            System.Diagnostics.Debug.WriteLine("ShowDialog cancelled");
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine($"ShowDialog completes: {button.Title}");
+        }
+    }
 }

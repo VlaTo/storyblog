@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using StoryBlog.Web.Blazor.Components;
 
-namespace StoryBlog.Web.Blazor.Components
+namespace StoryBlog.Web.Blazor.Client.Core
 {
     /// <summary>
     /// 
@@ -21,7 +22,7 @@ namespace StoryBlog.Web.Blazor.Components
         /// <summary>
         /// 
         /// </summary>
-        Task ShowAsync(string title, Type contentType);
+        Task<ModalButton> ShowAsync(string title, Type contentType, params ModalButton[] buttons);
 
         /// <summary>
         /// 
