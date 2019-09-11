@@ -13,20 +13,21 @@ namespace StoryBlog.Web.Blazor.Client.Components
             set;
         }
 
+        [Parameter]
         public int Number
         {
             get;
             set;
         }
 
-        public void Attach(RenderHandle renderHandle)
+
+        void IComponent.Attach(RenderHandle renderHandle)
         {
-            throw new System.NotImplementedException();
         }
 
-        public Task SetParametersAsync(ParameterView parameters)
+        Task IComponent.SetParametersAsync(ParameterView parameters)
         {
-            throw new System.NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }

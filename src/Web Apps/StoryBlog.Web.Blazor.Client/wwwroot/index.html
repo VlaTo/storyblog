@@ -10,8 +10,16 @@
     <link href="https://fonts.googleapis.com/css?family=Playfair+Display" rel="stylesheet" />
     <link href="css/site.min.css" rel="stylesheet" />
 </head>
-<body class="">
+<body>
     <app>Loading...</app>
     <script src="_framework/blazor.webassembly.js"></script>
+<script type="text/javascript">
+    (function(window, document) {
+        window.toggleBody = function (toggle) {
+            var element = document.getElementsByTagName('body')[0];
+            element.className = !!toggle ? 'modal-open' : null;
+        };
+    })(window, document);
+</script>
 </body>
 </html>

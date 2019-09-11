@@ -1,5 +1,24 @@
-﻿namespace StoryBlog.Web.Blazor.Components
+﻿namespace StoryBlog.Web.Blazor.Client.Components
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class ModalButton
+    {
+        public string Title
+        {
+            get;
+        }
+
+        public ModalButton(string title)
+        {
+            Title = title;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
     public static class ModalButtons
     {
         public static ModalButton OkButton

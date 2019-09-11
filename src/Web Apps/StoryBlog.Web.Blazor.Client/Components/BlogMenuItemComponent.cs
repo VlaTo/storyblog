@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
-using StoryBlog.Web.Blazor.Components;
 
 namespace StoryBlog.Web.Blazor.Client.Components
 {

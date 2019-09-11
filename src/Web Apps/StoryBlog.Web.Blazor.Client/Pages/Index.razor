@@ -139,7 +139,7 @@
 {
     protected override void OnInitialized()
     {
-        //base.OnInitialized();
+        base.OnInitialized();
         Dispatcher.Dispatch(new GetStoriesAction(StoryFlags.Authors | StoryFlags.Comments));
     }
 

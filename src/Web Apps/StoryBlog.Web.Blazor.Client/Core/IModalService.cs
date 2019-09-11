@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
-using StoryBlog.Web.Blazor.Components;
+using StoryBlog.Web.Blazor.Client.Components;
 
 namespace StoryBlog.Web.Blazor.Client.Core
 {
+    public interface IModalContentObserver
+    {
+        void ShowContent(IModalContent content, TaskCompletionSource<ModalButton> completion, CancellationToken cancellationToken = default);
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -12,21 +18,13 @@ namespace StoryBlog.Web.Blazor.Client.Core
         /// <summary>
         /// 
         /// </summary>
-        event Action<IModalContent> OnShow;
+        Task<ModalButton> ShowAsync(IModalContent modalContent, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 
         /// </summary>
-        event Action OnClose;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        Task<ModalButton> ShowAsync(string title, Type contentType, params ModalButton[] buttons);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        void Close();
+        /// <param name="observer"></param>
+        /// <returns></returns>
+        IDisposable Subscribe<T>(IModalContentObserver observer) where T : IModalContent;
     }
 }

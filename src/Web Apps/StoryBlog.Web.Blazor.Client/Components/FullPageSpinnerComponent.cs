@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using StoryBlog.Web.Blazor.Components;
 using System;
 
 namespace StoryBlog.Web.Blazor.Client.Components

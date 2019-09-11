@@ -11,7 +11,14 @@
     <BlogTitle Title="Sample Blog" />
     <RubricsNavigation />
 
-    <BootstrapModalPresenter ButtonSize="@BootstrapButtonSizes.Default" />
+    <BootstrapModalPresenter Class="storyblog-modal-background" ButtonSize="@BootstrapButtonSizes.Default">
+        <Information Context="Info">
+            <span>@Info.Description</span>
+        </Information>
+        <Loading>
+            Loading...
+        </Loading>
+    </BootstrapModalPresenter>
     
     <main class="container mt-4" role="main">
         @Body

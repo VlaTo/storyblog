@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using StoryBlog.Web.Blazor.Client.Components.Attributes;
 using StoryBlog.Web.Blazor.Client.Core;
-using StoryBlog.Web.Blazor.Components;
 
 namespace StoryBlog.Web.Blazor.Client.Components
 {
