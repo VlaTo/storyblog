@@ -15,7 +15,6 @@
 @implements IDisposable
 
 @inject IState<StoryState> StoryState
-@inject IState<UserState> UserState
 @inject IDispatcher Dispatcher
 @inject IPluralService Pluralizer
 @inject IModalService ModalService
@@ -150,8 +149,9 @@ else
 
     protected override void OnInitialized()
     {
-        StoryState.StateChanged += OnStoryStateChanged;
         base.OnInitialized();
+
+        StoryState.StateChanged += OnStoryStateChanged;
     }
 
     private ComposeComment GetComposeComment()
@@ -161,14 +161,9 @@ else
             return null;
         }
 
-        if (StoryState.Value.IsSuccess() && 0 < StoryState.Value.Comments.Count)
-        {
-            return StoryState.Value.Comments
-                .OfType<ComposeComment>()
-                .FirstOrDefault();
-        }
+        var comments = StoryState.Value.IsSuccess() ? StoryState.Value.Comments : Array.Empty<CommentBase>();
 
-        return null;
+        return StoryState.Value.Comments.OfType<ComposeComment>().FirstOrDefault();
     }
 
     private void OnComposeComment(EventArgs e)
@@ -185,16 +180,17 @@ else
     private async void ShowDialog(MouseEventArgs e)
     {
         System.Diagnostics.Debug.WriteLine("ShowDialog starts");
-        var button = await ModalService.ShowAsync(new InformationContent("Sample Dialog", "Lorem Ipsum dolor sit amet", ModalButtons.OkCancel()));
+        //var button = await ModalService.ShowAsync(new InformationContent("Sample Dialog", "Lorem Ipsum dolor sit amet", ModalButtons.OkCancel()));
+        await ModalService.ShowAsync(new LoadingContent());
 
-        if (ModalButtons.CancelButton == button)
+        /*if (ModalButtons.CancelButton == button)
         {
             System.Diagnostics.Debug.WriteLine("ShowDialog cancelled");
         }
         else
         {
             System.Diagnostics.Debug.WriteLine($"ShowDialog completes: {button.Title}");
-        }
+        }*/
     }
 
     private void OnStoryStateChanged(object sender, StoryState storyState)

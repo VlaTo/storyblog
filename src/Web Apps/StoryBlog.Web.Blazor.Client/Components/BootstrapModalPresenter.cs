@@ -17,8 +17,7 @@ namespace StoryBlog.Web.Blazor.Client.Components
     public class BootstrapModalPresenter : BootstrapComponentBase, IModalContentObserver
     {
         private static readonly ClassBuilder<BootstrapModalPresenter> ClassNameBuilder;
-        private IDisposable subscription1;
-        private IDisposable subscription2;
+        private IDisposable subscription;
         private ModalContext modalContext;
         private string classString;
         private string titleLabelId;
@@ -151,8 +150,10 @@ namespace StoryBlog.Web.Blazor.Client.Components
         /// <inheritdoc cref="ComponentBase.OnInitialized" />
         protected override void OnInitialized()
         {
-            subscription1 = ModalService.Subscribe<InformationContent>(this);
-            subscription2 = ModalService.Subscribe<LoadingContent>(this);
+            subscription = new CombinedDisposable(
+                ModalService.Subscribe<InformationContent>(this),
+                ModalService.Subscribe<LoadingContent>(this)
+            );
 
             Refresh();
         }
@@ -160,8 +161,7 @@ namespace StoryBlog.Web.Blazor.Client.Components
         /// <inheritdoc cref="BootstrapComponentBase.OnDispose" />
         protected override void OnDispose()
         {
-            subscription1.Dispose();
-            subscription2.Dispose();
+            subscription.Dispose();
         }
 
         /// <inheritdoc cref="ComponentBase.BuildRenderTree" />
@@ -177,8 +177,119 @@ namespace StoryBlog.Web.Blazor.Client.Components
             builder.AddAttribute(5, "aria-modal", true);
             builder.AddAttribute(6, "aria-labelledby", titleLabelId);
 
-            BuildDialog(7, builder);
+            BuildDialog(builder);
             
+            builder.CloseElement();
+        }
+
+        private void BuildDialog(RenderTreeBuilder builder)
+        {
+            builder.OpenElement(7, "div");
+            builder.AddAttribute(8, "class", "modal-dialog modal-ld modal-dialog-centered");
+            builder.AddAttribute(9, "role", "document");
+
+            if (null != modalContext && IsVisible)
+            {
+                BuildModal(builder);
+            }
+
+            builder.CloseElement();
+        }
+
+        private void BuildModal(RenderTreeBuilder builder)
+        {
+            builder.OpenElement(10, "div");
+            builder.AddAttribute(11, "class", "modal-content");
+
+            if (false == String.IsNullOrEmpty(modalContext.Title))
+            {
+                BuildModalHeader(builder);
+            }
+
+            BuildModalContent(builder);
+
+            if (0 < modalContext.Buttons.Length)
+            {
+                BuildModalFooter(builder);
+            }
+
+            builder.CloseElement();
+        }
+
+        private void BuildModalHeader(RenderTreeBuilder builder)
+        {
+            builder.OpenElement(12, "div");
+            builder.AddAttribute(13, "class", "modal-header");
+            {
+                builder.OpenElement(14, "h5");
+                builder.AddAttribute(15, "id", titleLabelId);
+                builder.AddAttribute(16, "class", "modal-title");
+                builder.AddContent(17, modalContext.Title);
+                builder.CloseElement();
+                {
+                    builder.OpenElement(18, "button");
+                    builder.AddAttribute(19, "type", "button");
+                    builder.AddAttribute(20, "class", "close");
+                    builder.AddAttribute(21, "aria-label", "Close");
+
+                    var callback = EventCallback.Factory.Create<ModalButton>(
+                        this, () => DoCloseModal(ModalButtons.CancelButton)
+                    );
+
+                    builder.AddAttribute(22, "onclick", callback);
+                    {
+                        builder.OpenElement(23, "span");
+                        builder.AddAttribute(24, "aria-hidden", true);
+                        builder.AddContent(25, new MarkupString("&times;"));
+                        builder.CloseElement();
+                    }
+                    builder.CloseElement();
+                }
+            }
+            builder.CloseElement();
+        }
+
+        private void BuildModalContent(RenderTreeBuilder builder)
+        {
+            builder.OpenElement(26, "div");
+            builder.AddAttribute(27, "class", "modal-body");
+
+            if (modalContext.Content is InformationContent info)
+            {
+                builder.AddContent(28, Information, info);
+            }
+            else if (modalContext.Content is LoadingContent loading)
+            {
+                builder.AddContent(29, Loading, loading);
+            }
+            else if (modalContext.Content is ModalContent modal)
+            {
+                builder.AddContent(30, modal.Content);
+            }
+
+            builder.CloseElement();
+        }
+
+        private void BuildModalFooter(RenderTreeBuilder builder)
+        {
+
+            builder.OpenElement(31, "div");
+            builder.AddAttribute(32, "class", "modal-footer");
+
+            foreach (var button in modalContext.Buttons)
+            {
+                var callback = EventCallback.Factory.Create<ModalButton>(this, () => DoCloseModal(button));
+
+                builder.OpenElement(33, "button");
+                builder.AddAttribute(34, "type", "button");
+                builder.AddAttribute(35, "class", GetButtonClass(button));
+                builder.AddAttribute(36, "onclick", callback);
+
+                builder.AddContent(37, button.Title);
+
+                builder.CloseElement();
+            }
+
             builder.CloseElement();
         }
 
@@ -224,119 +335,6 @@ namespace StoryBlog.Web.Blazor.Client.Components
             {
                 titleLabelId = IdManager.GenerateId("modalPrefixId");
             }
-        }
-
-        private void BuildDialog(int sequence, RenderTreeBuilder builder)
-        {
-            builder.OpenElement(sequence++, "div");
-            builder.AddAttribute(sequence++, "class", "modal-dialog modal-ld modal-dialog-centered");
-            builder.AddAttribute(sequence++, "role", "document");
-
-            if (null != modalContext && IsVisible)
-            {
-                BuildModalContent(sequence, builder);
-            }
-
-            builder.CloseElement();
-        }
-
-        private void BuildModalContent(int sequence, RenderTreeBuilder builder)
-        {
-            builder.OpenElement(sequence++, "div");
-            builder.AddAttribute(sequence++, "class", "modal-content");
-
-            BuildModalHeader(ref sequence, builder);
-
-            BuildModalContent(ref sequence, builder);
-
-            BuildModalFooter(ref sequence, builder);
-
-            builder.CloseElement();
-        }
-
-        private void BuildModalHeader(ref int sequence, RenderTreeBuilder builder)
-        {
-            builder.OpenElement(sequence++, "div");
-            builder.AddAttribute(sequence++, "class", "modal-header");
-
-            if (false == String.IsNullOrEmpty(modalContext.Title))
-            {
-                builder.OpenElement(sequence++, "h5");
-                builder.AddAttribute(sequence++, "id", titleLabelId);
-                builder.AddAttribute(sequence++, "class", "modal-title");
-                builder.AddContent(sequence++, modalContext.Title);
-                builder.CloseElement();
-            }
-
-            {
-                builder.OpenElement(sequence++, "button");
-                builder.AddAttribute(sequence++, "type", "button");
-                builder.AddAttribute(sequence++, "class", "close");
-                builder.AddAttribute(sequence++, "aria-label", "Close");
-
-                var callback =
-                    EventCallback.Factory.Create<ModalButton>(this, () => DoCloseModal(ModalButtons.CancelButton));
-                builder.AddAttribute(sequence++, "onclick", callback);
-
-                {
-                    builder.OpenElement(sequence++, "span");
-                    builder.AddAttribute(sequence++, "aria-hidden", true);
-                    builder.AddContent(sequence++, new MarkupString("&times;"));
-                    builder.CloseElement();
-                }
-
-                builder.CloseElement();
-            }
-
-            builder.CloseElement();
-        }
-
-        private void BuildModalContent(ref int sequence, RenderTreeBuilder builder)
-        {
-            builder.OpenElement(sequence++, "div");
-            builder.AddAttribute(sequence++, "class", "modal-body");
-
-            if (modalContext.Content is InformationContent info)
-            {
-                builder.AddContent(sequence++, Information, info);
-            }
-            else if (modalContext.Content is LoadingContent loading)
-            {
-                builder.AddContent(sequence++, Loading, loading);
-            }
-            else if (modalContext.Content is ModalContent modal)
-            {
-                builder.AddContent(sequence++, modal.Content);
-            }
-
-            builder.CloseElement();
-        }
-
-        private void BuildModalFooter(ref int sequence, RenderTreeBuilder builder)
-        {
-            if (ModalButtons.NoButtons == modalContext.Buttons || 0 == modalContext.Buttons.Length)
-            {
-                return;
-            }
-
-            builder.OpenElement(sequence++, "div");
-            builder.AddAttribute(sequence++, "class", "modal-footer");
-
-            foreach (var button in modalContext.Buttons)
-            {
-                var callback = EventCallback.Factory.Create<ModalButton>(this, () => DoCloseModal(button));
-
-                builder.OpenElement(sequence++, "button");
-                builder.AddAttribute(sequence++, "type", "button");
-                builder.AddAttribute(sequence++, "class", GetButtonClass(button));
-                builder.AddAttribute(sequence++, "onclick", callback);
-
-                builder.AddContent(sequence++, button.Title);
-
-                builder.CloseElement();
-            }
-
-            builder.CloseElement();
         }
 
         private string GetButtonClass(ModalButton button)

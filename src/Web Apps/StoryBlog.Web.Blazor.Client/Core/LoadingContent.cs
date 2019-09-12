@@ -5,7 +5,7 @@ namespace StoryBlog.Web.Blazor.Client.Core
 {
     public sealed class LoadingContent : IModalContent
     {
-        public string Title { get; } = "Loading";
+        public string Title => null;
 
         public ModalButton[] Buttons => ModalButtons.NoButtons;
     }
