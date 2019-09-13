@@ -1,134 +1,106 @@
 ﻿@page "/Story/{Slug}"
 
-@using global::Blazor.Fluxor
-@using StoryBlog.Web.Blazor.Client.Components
-@using StoryBlog.Web.Blazor.Client.Core
-@using StoryBlog.Web.Blazor.Client.Extensions
-@using StoryBlog.Web.Blazor.Client.Services
-@using StoryBlog.Web.Blazor.Client.Store
-@using StoryBlog.Web.Blazor.Client.Store.Models
-@using StoryBlog.Web.Blazor.Client.Store.Actions
+@using StoryBlog.Web.Client.Store
+@using StoryBlog.Web.Client.Store.Actions
+@using StoryBlog.Web.Client.Store.Models
+@using StoryBlog.Web.Client.Core
 @using StoryBlog.Web.Services.Blog.Interop.Includes
 @using StoryBlog.Web.Services.Shared.Common
+@using StoryBlog.Web.Client.Extensions
 
-@inherits global::Blazor.Fluxor.Components.FluxorComponent
-@implements IDisposable
+@inherits Blazor.Fluxor.Components.FluxorComponent
 
-@inject IState<StoryState> StoryState
-@inject IDispatcher Dispatcher
+@inject Blazor.Fluxor.IState<StoryState> StoryState
+@inject Blazor.Fluxor.IDispatcher Dispatcher
 @inject IPluralService Pluralizer
 @inject IModalService ModalService
 
-@if (null != StoryState)
-{
-    if (StoryState.Value.IsSuccess())
-    {
-        <section>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-9">
-                        @if (StoryState.Value.IsFailed())
-                        {
-                            <p>@StoryState.Value.Status.Error</p>
-                        }
-                        else
-                        {
-                            var model = StoryState.Value;
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9">
+                <ContentPresenter Source="@StoryState" TSource="StoryBlog.Web.Client.Store.StoryState">
+                    <Content Context="Data">
+                        <article id="@Data.Slug" class="">
+                            <div class="mb-5">
+                                <h2 class="">@Data.Title</h2>
+                                <ul class="list-unstyled list-inline text-muted mt-2">
+                                    <li class="list-inline-item">
+                                        <i class="mdi mdi-calendar"></i>
+                                        <TimeLabel DateTime="@Data.Published" />
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <i class="mdi mdi-comment-multiple-outline"></i>
+                                        @Data.CommentsCount @Pluralizer["Comment", Data.CommentsCount]
+                                    </li>
+                                </ul>
 
-                            if (null != model)
-                            {
-                                <button type="button" @onclick="@ShowDialog">Show Dialog</button>
+                                <div class="justify-content-md-start my-4">@((MarkupString)Data.Content)</div>
 
-                                <article id="@model.Slug" class="">
-                                    <div class="mb-5">
-                                        <h2 class="">@model.Title</h2>
-                                        <ul class="list-unstyled list-inline text-muted mt-2">
+                                @if (Data.IsCommentsClosed)
+                                {
+                                    <div class="alert alert-warning mt-4" role="alert">
+                                        <h5>Возможность комментировать заблокирована</h5>
+                                    </div>
+                                }
+                                else
+                                {
+                                    if (0 == Data.Comments.Count)
+                                    {
+                                        <div class="alert alert-secondary mt-4" role="alert">
+                                            <h5>Добавь комментарий первым</h5>
+                                        </div>
+                                    }
+
+                                    var comment = GetComposeComment();
+
+                                    if (null != comment)
+                                    {
+                                        <div class="mt-4">
+                                            <ReplyComposer OnSubmit=@(sender => OnSubmitComment(sender, comment)) />
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <ul class="list-unstyled list-inline">
                                             <li class="list-inline-item">
-                                                <i class="mdi mdi-calendar"></i>
-                                                <TimeLabel DateTime="@model.Published"/>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <i class="mdi mdi-comment-multiple-outline"></i>
-                                                @model.CommentsCount @Pluralizer["Comment", model.CommentsCount]
+                                                <BootstrapButton Type=BootstrapButtonTypes.Link
+                                                                 Outline=true
+                                                                 Size=BootstrapButtonSizes.Small
+                                                                 Class="text-muted"
+                                                                 OnClick=OnComposeComment>
+                                                    <i class="mdi mdi-reply"></i>&nbsp;Ответить
+                                                </BootstrapButton>
                                             </li>
                                         </ul>
+                                    }
+                                }
 
-                                        <div class="justify-content-md-start my-4">@((MarkupString) model.Content)</div>
-
-                                        @if (model.IsCommentsClosed)
-                                        {
-                                            <div class="alert alert-warning mt-4" role="alert">
-                                                <h5>Возможность комментировать заблокирована</h5>
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            if (0 == model.Comments.Count)
-                                            {
-                                                <div class="alert alert-secondary mt-4" role="alert">
-                                                    <h5>Добавь комментарий первым</h5>
-                                                </div>
-                                            }
-
-                                            var comment = GetComposeComment();
-
-                                            if (null != comment)
-                                            {
-                                                <div class="mt-4">
-                                                    <ReplyComposer OnSubmit=@(sender => OnSubmitComment(sender, comment))/>
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <ul class="list-unstyled list-inline">
-                                                    <li class="list-inline-item">
-                                                        <BootstrapButton Type=BootstrapButtonTypes.Link
-                                                                         Outline=true
-                                                                         Size=BootstrapButtonSizes.Small
-                                                                         Class="text-muted"
-                                                                         OnClick=OnComposeComment>
-                                                            <i class="mdi mdi-reply"></i>&nbsp;Ответить
-                                                        </BootstrapButton>
-                                                    </li>
-                                                </ul>
-                                            }
-                                        }
-
-                                        @if (model.Comments.Any())
-                                        {
-                                            <div class="mt-4">
-                                                <CommentsBlock Comments="@model.Comments" Level="0"/>
-                                            </div>
-                                        }
+                                @if (Data.Comments.Any())
+                                {
+                                    <div class="mt-4">
+                                        <CommentsBlock Comments="@Data.Comments" Level="0" />
                                     </div>
-                                </article>
-                            }
-                        }
-                    </div>
-                    <aside class="col-lg-3">
-                    </aside>
-                </div>
+                                }
+                            </div>
+                        </article>
+                    </Content>
+                    <NoContent>
+                        <p class="text-muted">No data</p>
+                    </NoContent>
+                    <Failure>
+                        <p class="text-muted">Failed</p>
+                    </Failure>
+                </ContentPresenter>
             </div>
-        </section>
-    }
-    else if (StoryState.Value.IsNone())
-    {
-        <p class="text-muted">Loading...</p>
-    }
-    else if (StoryState.Value.IsFailed())
-    {
-        <p class="text-muted">Failed</p>
-    }
-}
-else
-{
-    <p class="text-muted">No state</p>
-}
+            <aside class="col-lg-3">
+            </aside>
+        </div>
+    </div>
+</section>
 
 @code
 {
-    private System.Threading.CancellationTokenSource cts;
-
     [Parameter]
     public string Slug
     {
@@ -136,23 +108,14 @@ else
         set;
     }
 
-    void IDisposable.Dispose()
-    {
-        StoryState.StateChanged -= OnStoryStateChanged;
-    }
+    protected override void OnParametersSet() => 
+        Dispatcher.Dispatch(new GetStoryAction(Slug, StoryFlags.Authors | StoryFlags.Comments));
 
-    protected override void OnParametersSet()
-    {
-        const StoryFlags includes = StoryFlags.Authors | StoryFlags.Comments;
-        Dispatcher.Dispatch(new GetStoryAction(Slug, includes));
-    }
+    private void OnComposeComment(EventArgs e) => 
+        Dispatcher.Dispatch(new ComposeReplyAction(StoryState.Value.Slug, null, Guid.NewGuid()));
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-
-        StoryState.StateChanged += OnStoryStateChanged;
-    }
+    private void OnSubmitComment(object sender, ComposeComment comment) => 
+        Dispatcher.Dispatch(new SaveReplyAction(comment.StorySlug, null, comment.Reference, ((ReplyComposer)sender).Message));
 
     private ComposeComment GetComposeComment()
     {
@@ -166,53 +129,17 @@ else
         return StoryState.Value.Comments.OfType<ComposeComment>().FirstOrDefault();
     }
 
-    private void OnComposeComment(EventArgs e)
+    /*private async void ShowDialog(MouseEventArgs e)
     {
-        Dispatcher.Dispatch(new ComposeReplyAction(StoryState.Value.Slug, null, Guid.NewGuid()));
-    }
+        var button = await ModalService.ShowAsync(new InformationContent("Sample Dialog", "Lorem Ipsum dolor sit amet", ModalButtons.OkCancel()));
 
-    private void OnSubmitComment(object sender, ComposeComment comment)
-    {
-        var composer = (ReplyComposer)sender;
-        Dispatcher.Dispatch(new SaveReplyAction(comment.StorySlug, null, comment.Reference, composer.Message));
-    }
-
-    private async void ShowDialog(MouseEventArgs e)
-    {
-        System.Diagnostics.Debug.WriteLine("ShowDialog starts");
-        //var button = await ModalService.ShowAsync(new InformationContent("Sample Dialog", "Lorem Ipsum dolor sit amet", ModalButtons.OkCancel()));
-        await ModalService.ShowAsync(new LoadingContent());
-
-        /*if (ModalButtons.CancelButton == button)
+        if (ModalButtons.CancelButton == button)
         {
             System.Diagnostics.Debug.WriteLine("ShowDialog cancelled");
         }
         else
         {
             System.Diagnostics.Debug.WriteLine($"ShowDialog completes: {button.Title}");
-        }*/
-    }
-
-    private void OnStoryStateChanged(object sender, StoryState storyState)
-    {
-        if (storyState.IsLoading())
-        {
-            if (null != cts)
-            {
-                cts.Dispose();
-            }
-
-            cts = new System.Threading.CancellationTokenSource();
-
-            ModalService.ShowAsync(new LoadingContent(), cts.Token).RunAndForget();
-            System.Diagnostics.Debug.WriteLine("Loading started");
-
-            return;
         }
-
-        if (null != cts)
-        {
-            cts.Cancel();
-        }
-    }
+    }*/
 }

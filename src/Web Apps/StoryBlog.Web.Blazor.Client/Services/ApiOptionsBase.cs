@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StoryBlog.Web.Blazor.Client.Services
+namespace StoryBlog.Web.Client.Services
 {
     internal abstract class ApiOptionsBase
     {

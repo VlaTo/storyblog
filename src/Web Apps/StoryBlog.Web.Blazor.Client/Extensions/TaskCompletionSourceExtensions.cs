@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace StoryBlog.Web.Blazor.Client.Extensions
+namespace StoryBlog.Web.Client.Extensions
 {
     internal static class TaskCompletionSourceExtensions
     {

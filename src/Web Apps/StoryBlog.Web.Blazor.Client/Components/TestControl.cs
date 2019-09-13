@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
+using System.Threading.Tasks;
 
-namespace StoryBlog.Web.Blazor.Client.Components
+namespace StoryBlog.Web.Client.Components
 {
     [Route("/TestControl/{number}")]
     public class TestControl : IComponent

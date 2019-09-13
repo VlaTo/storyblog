@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
-using StoryBlog.Web.Blazor.Client.Components;
-using StoryBlog.Web.Blazor.Client.Core;
+﻿using Microsoft.Extensions.DependencyInjection;
+using StoryBlog.Web.Client.Core;
+using System;
 
-namespace StoryBlog.Web.Blazor.Client.Extensions
+namespace StoryBlog.Web.Client.Extensions
 {
     internal static class ServiceCollectionExtensions
     {

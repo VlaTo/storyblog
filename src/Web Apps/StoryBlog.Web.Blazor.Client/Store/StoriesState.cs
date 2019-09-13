@@ -1,11 +1,10 @@
 ﻿using Blazor.Fluxor;
-using StoryBlog.Web.Blazor.Client.Store.Models;
+using StoryBlog.Web.Client.Store.Models.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using StoryBlog.Web.Blazor.Client.Store.Models.Data;
 
-namespace StoryBlog.Web.Blazor.Client.Store
+namespace StoryBlog.Web.Client.Store
 {
     /// <summary>
     /// 

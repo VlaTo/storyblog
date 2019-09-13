@@ -1,7 +1,4 @@
-﻿using Blazor.Fluxor;
-using StoryBlog.Web.Blazor.Client.Store.Actions;
-
-namespace StoryBlog.Web.Blazor.Client.Store.Reducers
+﻿namespace StoryBlog.Web.Client.Store.Reducers
 {
 /*
     /// <summary>

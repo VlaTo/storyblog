@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StoryBlog.Web.Blazor.Client.Extensions
+namespace StoryBlog.Web.Client.Extensions
 {
     internal static class UriBuilderExtensions
     {

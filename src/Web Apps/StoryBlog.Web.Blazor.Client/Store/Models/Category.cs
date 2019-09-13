@@ -1,4 +1,4 @@
-﻿namespace StoryBlog.Web.Blazor.Client.Store.Models
+﻿namespace StoryBlog.Web.Client.Store.Models
 {
     /// <summary>
     /// 

@@ -1,10 +1,10 @@
-﻿using System;
+﻿using StoryBlog.Web.Services.Shared.Common;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using StoryBlog.Web.Services.Shared.Common;
 
-namespace StoryBlog.Web.Blazor.Client.Services
+namespace StoryBlog.Web.Client.Services
 {
     internal class PluralServiceFactory
     {

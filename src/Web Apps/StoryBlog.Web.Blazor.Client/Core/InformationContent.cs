@@ -1,6 +1,6 @@
-﻿using StoryBlog.Web.Blazor.Client.Components;
+﻿using StoryBlog.Web.Client.Components;
 
-namespace StoryBlog.Web.Blazor.Client.Core
+namespace StoryBlog.Web.Client.Core
 {
     /// <summary>
     /// 

@@ -1,7 +1,4 @@
-﻿using Blazor.Fluxor;
-using StoryBlog.Web.Services.Blog.Interop.Models;
-
-namespace StoryBlog.Web.Blazor.Client.Store
+﻿namespace StoryBlog.Web.Client.Store
 {
     /// <summary>
     /// 

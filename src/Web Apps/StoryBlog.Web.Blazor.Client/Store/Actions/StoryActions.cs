@@ -1,9 +1,10 @@
-﻿using StoryBlog.Web.Blazor.Client.Store.Models;
+﻿using StoryBlog.Web.Client.Store.Models;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using System;
 using System.Collections.Generic;
+using Comment = StoryBlog.Web.Client.Store.Models.Data.Comment;
 
-namespace StoryBlog.Web.Blazor.Client.Store.Actions
+namespace StoryBlog.Web.Client.Store.Actions
 {
     /// <summary>
     /// 
@@ -123,7 +124,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Actions
         /// <summary>
         /// 
         /// </summary>
-        public ICollection<Models.Data.Comment> Comments
+        public ICollection<Comment> Comments
         {
             get;
             set;

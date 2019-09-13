@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace StoryBlog.Web.Blazor.Client.Services
+namespace StoryBlog.Web.Client.Services
 {
     internal class EnglishPluralService : PluralService
     {

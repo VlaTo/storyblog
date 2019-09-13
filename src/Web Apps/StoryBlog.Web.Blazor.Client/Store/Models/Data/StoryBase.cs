@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StoryBlog.Web.Blazor.Client.Store.Models.Data
+namespace StoryBlog.Web.Client.Store.Models.Data
 {
     public abstract class StoryBase
     {

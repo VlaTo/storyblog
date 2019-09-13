@@ -1,7 +1,4 @@
-﻿using StoryBlog.Web.Blazor.Client.Store.Models;
-using System.Collections.Generic;
-
-namespace StoryBlog.Web.Blazor.Client.Store.Helpers
+﻿namespace StoryBlog.Web.Client.Store.Helpers
 {
     /*internal static class Comments
     {

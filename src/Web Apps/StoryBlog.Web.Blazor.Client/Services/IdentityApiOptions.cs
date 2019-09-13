@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace StoryBlog.Web.Blazor.Client.Services
+namespace StoryBlog.Web.Client.Services
 {
     internal sealed class IdentityApiOptions : ApiOptionsBase
     {

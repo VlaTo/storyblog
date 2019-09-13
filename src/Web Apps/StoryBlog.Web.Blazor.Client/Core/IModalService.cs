@@ -1,9 +1,9 @@
-﻿using System;
+﻿using StoryBlog.Web.Client.Components;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using StoryBlog.Web.Blazor.Client.Components;
 
-namespace StoryBlog.Web.Blazor.Client.Core
+namespace StoryBlog.Web.Client.Core
 {
     public interface IModalContentObserver
     {

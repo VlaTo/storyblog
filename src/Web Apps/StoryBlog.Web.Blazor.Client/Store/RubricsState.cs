@@ -1,9 +1,4 @@
-﻿using Blazor.Fluxor;
-using StoryBlog.Web.Services.Blog.Interop.Models;
-using System;
-using System.Collections.Generic;
-
-namespace StoryBlog.Web.Blazor.Client.Store
+﻿namespace StoryBlog.Web.Client.Store
 {
     // ReSharper disable once UnusedMember.Global
     /*public sealed class RubricsFeature : Feature<RubricsState>

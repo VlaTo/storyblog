@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components.Builder;
 
-namespace StoryBlog.Web.Blazor.Client
+namespace StoryBlog.Web.Client
 {
     public sealed class Startup
     {

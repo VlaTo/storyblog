@@ -1,5 +1,5 @@
 @using global::Blazor.Fluxor
-@using StoryBlog.Web.Blazor.Client.Components
+@using StoryBlog.Web.Client.Components
 
 @inherits LayoutComponentBase
 
@@ -27,10 +27,63 @@
         @Body
     </main>
 
-    <footer class="container border-top border-light storyblog-footer">
+    <footer class="container border-top border-light text-muted mt-4 p-4 storyblog-footer">
         <div class="row">
-            <div class="col-auto">
-                <span>footer</span>
+            <div class="col-2">
+                <h7 class="text-uppercase font-weight-bold">need help?</h7>
+                <ul class="list-unstyled">
+                    <li><small>lorem ipsum</small></li>
+                    <li><small>dolor dit amet</small></li>
+                    <li><small>consectetur adipiscing</small></li>
+                    <li><small>nunc et sem id</small></li>
+                    <li><small>rhoncus hendrerit</small></li>
+                    <li><small>phasellus gravida</small></li>
+                </ul>
+            </div>
+            <div class="col-2">
+                <h7 class="text-uppercase font-weight-bold">visit us</h7>
+                <ul class="list-unstyled">
+                    <li><small>lorem ipsum</small></li>
+                    <li><small>dolor dit amet</small></li>
+                    <li><small>consectetur adipiscing</small></li>
+                    <li><small>nunc et sem id</small></li>
+                    <li><small>rhoncus hendrerit</small></li>
+                    <li><small>phasellus gravida</small></li>
+                </ul>
+            </div>
+            <div class="col-2">
+                <h7 class="text-uppercase font-weight-bold">support</h7>
+                <ul class="list-unstyled">
+                    <li><small>lorem ipsum</small></li>
+                    <li><small>dolor dit amet</small></li>
+                    <li><small>consectetur adipiscing</small></li>
+                    <li><small>nunc et sem id</small></li>
+                    <li><small>rhoncus hendrerit</small></li>
+                    <li><small>phasellus gravida</small></li>
+                </ul>
+            </div>
+            <div class="col-6">
+                <h7 class="text-uppercase font-weight-bold">stay connected</h7>
+                <div class="text-muted">
+                    <small>
+                        Aliquam dignissim, nulla sit amet finibus efficitur, odio metus elementum ipsum, nec dictum mi lorem eget augue. Pellentesque aliquet fermentum massa ut molestie. Mauris imperdiet diam erat, eu posuere libero ornare sed.
+                    </small>
+                </div>
+                <form class="form-inline mt-4">
+                    <label class="sr-only" for="inlineFormEmailSubscribe">Email</label>
+                    <div class="input-group input-group-sm mb-2 mr-sm-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">@@</div>
+                        </div>
+                        <input type="text" class="form-control" id="inlineFormEmailSubscribe" placeholder="Email">
+                    </div>
+                    <button type="submit" class="btn btn-outline-secondary btn-sm mb-2">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="row border-top">
+            <div class="col-auto mt-2">
+                <small>Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Suspendisse viverra a sem sed dapibus.</small>
             </div>
         </div>
     </footer>

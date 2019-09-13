@@ -1,4 +1,4 @@
-﻿namespace StoryBlog.Web.Blazor.Client.Store
+﻿namespace StoryBlog.Web.Client.Store
 {
     public static class ModelStatusExtensions
     {

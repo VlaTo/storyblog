@@ -2,7 +2,7 @@
 using System;
 using System.Security.Principal;
 
-namespace StoryBlog.Web.Blazor.Client.Store
+namespace StoryBlog.Web.Client.Store
 {
     /// <summary>
     /// 

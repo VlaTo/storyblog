@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 
-namespace StoryBlog.Web.Blazor.Client.Components
+namespace StoryBlog.Web.Client.Components
 {
     /// <summary>
     /// 

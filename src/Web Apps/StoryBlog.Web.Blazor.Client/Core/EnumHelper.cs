@@ -1,8 +1,8 @@
-﻿using System;
+﻿using StoryBlog.Web.Client.Components.Attributes;
+using System;
 using System.Reflection;
-using StoryBlog.Web.Blazor.Client.Components.Attributes;
 
-namespace StoryBlog.Web.Blazor.Client.Core
+namespace StoryBlog.Web.Client.Core
 {
     /// <summary>
     /// 

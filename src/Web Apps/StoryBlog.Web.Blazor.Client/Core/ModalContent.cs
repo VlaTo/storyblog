@@ -1,8 +1,8 @@
-﻿using System;
-using Microsoft.AspNetCore.Components;
-using StoryBlog.Web.Blazor.Client.Components;
+﻿using Microsoft.AspNetCore.Components;
+using StoryBlog.Web.Client.Components;
+using System;
 
-namespace StoryBlog.Web.Blazor.Client.Core
+namespace StoryBlog.Web.Client.Core
 {
     public sealed class ModalContent : IModalContent
     {

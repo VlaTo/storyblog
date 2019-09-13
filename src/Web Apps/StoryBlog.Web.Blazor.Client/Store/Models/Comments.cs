@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace StoryBlog.Web.Blazor.Client.Store.Models
+namespace StoryBlog.Web.Client.Store.Models
 {
     /// <summary>
     /// Комментарий пользователя

@@ -2,14 +2,14 @@
 using IdentityModel;
 using Microsoft.AspNetCore.Blazor.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using StoryBlog.Web.Blazor.Client.Core;
-using StoryBlog.Web.Blazor.Client.Extensions;
-using StoryBlog.Web.Blazor.Client.Services;
+using StoryBlog.Web.Client.Core;
+using StoryBlog.Web.Client.Extensions;
+using StoryBlog.Web.Client.Services;
 using StoryBlog.Web.Services.Shared.Common;
 using System;
 using System.Globalization;
 
-namespace StoryBlog.Web.Blazor.Client
+namespace StoryBlog.Web.Client
 {
     public class Program
     {

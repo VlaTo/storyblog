@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using Microsoft.AspNetCore.Components.RenderTree;
 using StoryBlog.Web.Services.Blog.Interop.Markups.Composing;
 using StoryBlog.Web.Services.Blog.Interop.Markups.Nodes;
 using StoryBlog.Web.Services.Blog.Interop.Markups.Parsing;
+using System;
+using System.Collections.Generic;
 
-namespace StoryBlog.Web.Blazor.Client.Components
+namespace StoryBlog.Web.Client.Components
 {
     public sealed class CommentContentView : ComponentBase
     {

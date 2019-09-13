@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using Blazor.Fluxor;
-using StoryBlog.Web.Services.Blog.Interop.Models;
-
-namespace StoryBlog.Web.Blazor.Client.Store.Actions
+﻿namespace StoryBlog.Web.Client.Store.Actions
 {
     /// <summary>
     /// 

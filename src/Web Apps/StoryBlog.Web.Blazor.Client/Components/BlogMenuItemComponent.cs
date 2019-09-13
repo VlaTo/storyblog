@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
+using System;
+using System.Threading.Tasks;
 
-namespace StoryBlog.Web.Blazor.Client.Components
+namespace StoryBlog.Web.Client.Components
 {
     public class BlogMenuItemComponent : BootstrapComponentBase
     {

@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.JSInterop;
-using StoryBlog.Web.Blazor.Client.Core;
+using StoryBlog.Web.Client.Core;
+using StoryBlog.Web.Client.Extensions;
 using System;
-using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using StoryBlog.Web.Blazor.Client.Extensions;
 
-namespace StoryBlog.Web.Blazor.Client.Components
+namespace StoryBlog.Web.Client.Components
 {
     /// <summary>
     /// 
@@ -295,19 +294,13 @@ namespace StoryBlog.Web.Blazor.Client.Components
 
         private void DoCloseModal(ModalButton button)
         {
-            Debug.WriteLine("BootstrapModalPresenter.DoCloseModal executing");
-
             if (null != modalContext)
             {
-                Debug.WriteLine("BootstrapModalPresenter.DoCloseModal try to complete modal context");
                 modalContext.SetResult(button);
                 modalContext = null;
-                Debug.WriteLine("BootstrapModalPresenter.DoCloseModal completing modal context");
             }
 
             UpdateVisibility(false);
-
-            Debug.WriteLine("BootstrapModalPresenter.DoCloseModal executed");
         }
 
         private void UpdateVisibility(bool visible)
@@ -405,31 +398,21 @@ namespace StoryBlog.Web.Blazor.Client.Components
 
                 if (default != cancellationToken)
                 {
-                    Debug.WriteLine("ModalContext subscribe to cancellationToken");
                     registration = cancellationToken.Register(Cancel);
                 }
             }
 
             public void SetResult(ModalButton button)
             {
-                Debug.WriteLine("ModalContext.SetResult try to complete modal context");
                 if (default != cancellationToken)
                 {
-                    Debug.WriteLine("ModalContext.SetResult registration.Disposing");
                     registration.Dispose();
-                    Debug.WriteLine("ModalContext.SetResult registration.Disposed");
                 }
 
-                Debug.WriteLine("ModalContext.SetResult completion.SetResult start");
                 completion.SetResult(button);
-                Debug.WriteLine("ModalContext.SetResult completion.SetResult complete");
             }
 
-            private void Cancel()
-            {
-                Debug.WriteLine("CancellationToken.Cancel was detected");
-                presenter.DoCloseModal(null);
-            }
+            private void Cancel() => presenter.DoCloseModal(null);
         }
     }
 }

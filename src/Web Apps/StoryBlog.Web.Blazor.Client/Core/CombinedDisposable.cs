@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StoryBlog.Web.Blazor.Client.Core
+namespace StoryBlog.Web.Client.Core
 {
     internal class CombinedDisposable : IDisposable
     {

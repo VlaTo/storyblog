@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Components;
-using StoryBlog.Web.Blazor.Client.Store.Models;
+using StoryBlog.Web.Client.Store.Models;
 
-namespace StoryBlog.Web.Blazor.Client.Components
+namespace StoryBlog.Web.Client.Components
 {
     public class CommentsBlockComponent : ComponentBase
     {

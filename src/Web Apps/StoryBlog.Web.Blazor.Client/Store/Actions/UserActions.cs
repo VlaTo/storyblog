@@ -1,6 +1,6 @@
 ﻿using System.Security.Principal;
 
-namespace StoryBlog.Web.Blazor.Client.Store.Actions
+namespace StoryBlog.Web.Client.Store.Actions
 {
     /// <summary>
     /// 

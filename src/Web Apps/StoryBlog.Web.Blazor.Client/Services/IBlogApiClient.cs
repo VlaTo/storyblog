@@ -1,12 +1,11 @@
-﻿using StoryBlog.Web.Blazor.Client.Store.Models;
+﻿using StoryBlog.Web.Client.Store.Models;
+using StoryBlog.Web.Client.Store.Models.Data;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using StoryBlog.Web.Blazor.Client.Store.Models.Data;
-using StoryBlog.Web.Services.Blog.Interop.Models;
 
-namespace StoryBlog.Web.Blazor.Client.Services
+namespace StoryBlog.Web.Client.Services
 {
     /// <summary>
     /// 

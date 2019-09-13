@@ -1,28 +1,36 @@
 ﻿using Blazor.Fluxor;
-using StoryBlog.Web.Blazor.Client.Store.Actions;
-using StoryBlog.Web.Blazor.Client.Store.Models;
+using StoryBlog.Web.Client.Store.Actions;
+using StoryBlog.Web.Client.Store.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
-namespace StoryBlog.Web.Blazor.Client.Store.Reducers
+namespace StoryBlog.Web.Client.Store.Reducers
 {
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     public sealed class GetStoryActionReducer : Reducer<StoryState, GetStoryAction>
     {
-        public override StoryState Reduce(StoryState state, GetStoryAction action) =>
-            new StoryState(ModelStatus.Loading);
+        public override StoryState Reduce(StoryState state, GetStoryAction action)
+        {
+            Debug.WriteLine("GetStoryActionReducer.Reduce status: Loading");
+            return new StoryState(ModelStatus.Loading);
+        }
     }
 
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     public sealed class GetStorySuccessActionReducer : Reducer<StoryState, GetStorySuccessAction>
     {
-        public override StoryState Reduce(StoryState state, GetStorySuccessAction action) =>
-            new StoryState(ModelStatus.Success)
+        public override StoryState Reduce(StoryState state, GetStorySuccessAction action)
+        {
+            Debug.WriteLine("GetStorySuccessActionReducer.Reduce status: Success");
+            return new StoryState(ModelStatus.Success)
             {
                 Slug = action.Slug,
                 Title = action.Title,
@@ -33,6 +41,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
                 CommentsCount = action.Comments.Count,
                 Comments = CreateCommentsThree(action)
             };
+        }
 
         private static IReadOnlyCollection<CommentBase> CreateCommentsThree(GetStorySuccessAction action)
         {
@@ -82,6 +91,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     public sealed class GetStoryFailedActionReducer : Reducer<StoryState, GetStoryFailedAction>
     {
         public override StoryState Reduce(StoryState state, GetStoryFailedAction action) =>
@@ -91,11 +101,14 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     public sealed class ComposeReplyActionReducer : Reducer<StoryState, ComposeReplyAction>
     {
         /// <inheritdoc cref="Reducer{TState,TAction}.Reduce" />
-        public override StoryState Reduce(StoryState state, ComposeReplyAction action) =>
-            new StoryState(state.Status)
+        public override StoryState Reduce(StoryState state, ComposeReplyAction action)
+        {
+            Debug.WriteLine($"ComposeReplyActionReducer.Reduce status: {state.Status.State}");
+            return new StoryState(state.Status)
             {
                 Slug = state.Slug,
                 Title = state.Title,
@@ -106,6 +119,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
                 CommentsCount = state.CommentsCount,
                 Comments = AddComposingComment(state.Comments, action)
             };
+        }
 
         private static IReadOnlyCollection<CommentBase> AddComposingComment(
             IEnumerable<CommentBase> comments,
@@ -169,6 +183,7 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     public sealed class SaveReplyActionReducer : Reducer<StoryState, SaveReplyAction>
     {
         public override StoryState Reduce(StoryState state, SaveReplyAction action) =>
@@ -226,11 +241,12 @@ namespace StoryBlog.Web.Blazor.Client.Store.Reducers
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     public sealed class ReplyPublishedActionReducer : Reducer<StoryState, ReplyPublishedAction>
     {
         public override StoryState Reduce(StoryState state, ReplyPublishedAction action)
         {
-            //Debug.WriteLine($"[ReplyPublishedActionReducer.Reduce] Comment for: \'{action.StorySlug}\' parent: {action.ParentId} ref: {action.Reference}");
+            Debug.WriteLine("ReplyPublishedActionReducer.Reduce: status: Success");
             return new StoryState(ModelStatus.Success)
             {
                 Slug = state.Slug,

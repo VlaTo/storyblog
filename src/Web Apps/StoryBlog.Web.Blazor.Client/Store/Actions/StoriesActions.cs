@@ -1,10 +1,9 @@
-﻿using StoryBlog.Web.Blazor.Client.Store.Models;
+﻿using StoryBlog.Web.Client.Store.Models.Data;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using System;
 using System.Collections.Generic;
-using StoryBlog.Web.Blazor.Client.Store.Models.Data;
 
-namespace StoryBlog.Web.Blazor.Client.Store.Actions
+namespace StoryBlog.Web.Client.Store.Actions
 {
     /// <summary>
     /// 

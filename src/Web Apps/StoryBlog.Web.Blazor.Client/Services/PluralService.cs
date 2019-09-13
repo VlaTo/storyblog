@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Resources;
 
-namespace StoryBlog.Web.Blazor.Client.Services
+namespace StoryBlog.Web.Client.Services
 {
     public abstract class PluralService : IPluralService
     {
@@ -38,7 +38,7 @@ namespace StoryBlog.Web.Blazor.Client.Services
 
         protected PluralService(CultureInfo culture)
         {
-            resourceManager = new ResourceManager("StoryBlog.Web.Blazor.Client.Resources", typeof(PluralService).Assembly);
+            resourceManager = new ResourceManager("StoryBlog.Web.Client.Resources", typeof(PluralService).Assembly);
             Culture = culture;
         }
 

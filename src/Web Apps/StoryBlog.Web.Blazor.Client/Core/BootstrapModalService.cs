@@ -1,11 +1,10 @@
-﻿using System;
+﻿using StoryBlog.Web.Client.Components;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using StoryBlog.Web.Blazor.Client.Components;
-using StoryBlog.Web.Blazor.Client.Extensions;
 
-namespace StoryBlog.Web.Blazor.Client.Core
+namespace StoryBlog.Web.Client.Core
 {
     /// <summary>
     /// 

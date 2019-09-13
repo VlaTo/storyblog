@@ -1,11 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using StoryBlog.Web.Blazor.Client.Components.Attributes;
-using StoryBlog.Web.Blazor.Client.Core;
+using StoryBlog.Web.Client.Components.Attributes;
+using StoryBlog.Web.Client.Core;
+using System;
+using System.Threading.Tasks;
 
-namespace StoryBlog.Web.Blazor.Client.Components
+namespace StoryBlog.Web.Client.Components
 {
     /// <summary>
     /// 

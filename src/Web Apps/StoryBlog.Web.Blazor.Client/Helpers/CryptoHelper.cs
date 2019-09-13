@@ -1,9 +1,9 @@
-﻿using System;
+﻿using IdentityModel;
+using System;
 using System.Security.Cryptography;
 using System.Text;
-using IdentityModel;
 
-namespace StoryBlog.Web.Blazor.Client.Helpers
+namespace StoryBlog.Web.Client.Helpers
 {
     public sealed class CryptoHelper
     {

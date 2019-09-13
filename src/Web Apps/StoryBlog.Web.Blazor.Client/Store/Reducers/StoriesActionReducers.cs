@@ -1,9 +1,9 @@
 ﻿using Blazor.Fluxor;
-using StoryBlog.Web.Blazor.Client.Store.Actions;
-using StoryBlog.Web.Blazor.Client.Store.Models.Data;
+using StoryBlog.Web.Client.Store.Actions;
+using StoryBlog.Web.Client.Store.Models.Data;
 using System.Linq;
 
-namespace StoryBlog.Web.Blazor.Client.Store.Reducers
+namespace StoryBlog.Web.Client.Store.Reducers
 {
     /// <summary>
     /// 

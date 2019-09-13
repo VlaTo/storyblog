@@ -1,11 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Blazor.Fluxor;
-using StoryBlog.Web.Blazor.Client.Services;
-using StoryBlog.Web.Blazor.Client.Store.Actions;
-
-namespace StoryBlog.Web.Blazor.Client.Store.Effects
+﻿namespace StoryBlog.Web.Client.Store.Effects
 {
 /*
     /// <summary>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace StoryBlog.Web.Blazor.Client.Extensions
+namespace StoryBlog.Web.Client.Extensions
 {
     internal static class StringBuilderExtensions
     {

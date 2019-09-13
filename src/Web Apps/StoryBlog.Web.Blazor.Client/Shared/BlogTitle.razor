@@ -1,9 +1,9 @@
-﻿@using global::Blazor.Fluxor
-@using StoryBlog.Web.Blazor.Client.Components
-@using StoryBlog.Web.Blazor.Client.Store
-@using StoryBlog.Web.Blazor.Client.Store.Actions
+﻿@using Blazor.Fluxor
+@using StoryBlog.Web.Client.Components
+@using StoryBlog.Web.Client.Store
+@using StoryBlog.Web.Client.Store.Actions
 
-@inherits global::Blazor.Fluxor.Components.FluxorComponent
+@inherits Blazor.Fluxor.Components.FluxorComponent
 
 @inject IState<UserState> State
 @inject IDispatcher Dispatcher
@@ -49,10 +49,7 @@
         set;
     }
 
-    private void OnSignInButtonClick(EventArgs e)
-    {
-        Dispatcher.Dispatch(new SigninRequestAction());
-    }
+    private void OnSignInButtonClick(EventArgs e) => Dispatcher.Dispatch(new SigninRequestAction());
 
     private void OnSearchButtonClick(EventArgs e)
     {

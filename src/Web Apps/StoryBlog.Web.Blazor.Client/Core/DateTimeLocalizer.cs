@@ -1,8 +1,8 @@
-﻿using System;
+﻿using StoryBlog.Web.Services.Shared.Common;
+using System;
 using System.Globalization;
-using StoryBlog.Web.Services.Shared.Common;
 
-namespace StoryBlog.Web.Blazor.Client.Core
+namespace StoryBlog.Web.Client.Core
 {
     internal sealed class DateTimeLocalizer : IDateTimeLocalizer
     {

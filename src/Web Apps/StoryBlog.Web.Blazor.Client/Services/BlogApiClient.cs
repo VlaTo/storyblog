@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
-using StoryBlog.Web.Blazor.Client.Models;
-using StoryBlog.Web.Blazor.Client.Store.Models;
-using StoryBlog.Web.Blazor.Client.Store.Models.Data;
+using StoryBlog.Web.Client.Models;
+using StoryBlog.Web.Client.Store.Models;
+using StoryBlog.Web.Client.Store.Models.Data;
 using StoryBlog.Web.Services.Blog.Interop.Core;
 using StoryBlog.Web.Services.Blog.Interop.Includes;
 using StoryBlog.Web.Services.Blog.Interop.Models;
@@ -17,8 +17,9 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Comment = StoryBlog.Web.Client.Store.Models.Data.Comment;
 
-namespace StoryBlog.Web.Blazor.Client.Services
+namespace StoryBlog.Web.Client.Services
 {
     internal sealed class BlogApiClient : IBlogApiClient, IDisposable
     {
@@ -304,13 +305,13 @@ namespace StoryBlog.Web.Blazor.Client.Services
         {
             var authors = CreateAuthors(result.Meta.Resources.Authors);
 
-            ICollection<Store.Models.Data.Comment> CreateComments(IEnumerable<CommentModel> comments)
+            ICollection<Comment> CreateComments(IEnumerable<CommentModel> comments)
             {
-                var collection = new Collection<Store.Models.Data.Comment>();
+                var collection = new Collection<Comment>();
 
                 foreach (var comment in comments)
                 {
-                    collection.Add(new Store.Models.Data.Comment
+                    collection.Add(new Comment
                     {
                         Id = comment.Id,
                         ParentId = comment.Parent,

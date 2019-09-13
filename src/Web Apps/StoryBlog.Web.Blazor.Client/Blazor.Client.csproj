@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>7.3</LangVersion>
-    <AssemblyName>StoryBlog.Web.Blazor.Client</AssemblyName>
-    <RootNamespace>StoryBlog.Web.Blazor.Client</RootNamespace>
+    <AssemblyName>StoryBlog.Web.Client</AssemblyName>
+    <RootNamespace>StoryBlog.Web.Client</RootNamespace>
     <RazorLangVersion>3.0</RazorLangVersion>
     <RestoreAdditionalProjectSources>
       https://dotnet.myget.org/F/aspnetcore-dev/api/v3/index.json;
@@ -44,7 +44,7 @@
   <ItemGroup>
     <EmbeddedResource Update="Resources.resx">
       <Generator></Generator>
-      <CustomToolNamespace>StoryBlog.Web.Blazor.Client.Resources</CustomToolNamespace>
+      <CustomToolNamespace>StoryBlog.Web.Client.Resources</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
 

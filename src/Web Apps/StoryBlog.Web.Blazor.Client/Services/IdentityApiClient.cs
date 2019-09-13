@@ -3,7 +3,7 @@ using IdentityModel.Client;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
-using StoryBlog.Web.Blazor.Client.Helpers;
+using StoryBlog.Web.Client.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -12,7 +12,7 @@ using System.Net.Http;
 using System.Security.Principal;
 using System.Threading.Tasks;
 
-namespace StoryBlog.Web.Blazor.Client.Services
+namespace StoryBlog.Web.Client.Services
 {
     internal sealed class IdentityApiClient : IIdentityApiClient
     {

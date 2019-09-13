@@ -1,4 +1,4 @@
-﻿namespace StoryBlog.Web.Blazor.Client.Core
+﻿namespace StoryBlog.Web.Client.Core
 {
     /// <summary>
     /// 

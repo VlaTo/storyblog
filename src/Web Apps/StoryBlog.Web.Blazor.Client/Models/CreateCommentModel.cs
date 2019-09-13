@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace StoryBlog.Web.Blazor.Client.Models
+namespace StoryBlog.Web.Client.Models
 {
     /// <summary>
     /// 

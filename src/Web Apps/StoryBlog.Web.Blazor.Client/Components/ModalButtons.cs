@@ -1,4 +1,4 @@
-﻿namespace StoryBlog.Web.Blazor.Client.Components
+﻿namespace StoryBlog.Web.Client.Components
 {
     /// <summary>
     /// 
