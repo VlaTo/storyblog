@@ -14,8 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Services\Blog\StoryBlog.Web.Services.Blog.Interop\Blog.Interop.csproj" />
-    <ProjectReference Include="..\..\..\src\Services\Shared\StoryBlog.Web.Services.Shared.BBCode\Shared.BBCode.csproj" />
+    <ProjectReference Include="..\..\..\src\Services\Shared\StoryBlog.Web.Services.Shared.MarkDown\Shared.MarkDown.csproj" />
   </ItemGroup>
 
 </Project>

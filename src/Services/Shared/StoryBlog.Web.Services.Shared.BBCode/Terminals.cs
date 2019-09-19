@@ -1,4 +1,4 @@
-﻿namespace StoryBlog.Web.Services.Blog.Interop.Markups
+﻿namespace StoryBlog.Web.Services.Shared.BBCode
 {
     internal static class Terminals
     {

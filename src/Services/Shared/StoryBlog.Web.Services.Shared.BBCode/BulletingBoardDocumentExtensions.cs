@@ -1,9 +1,9 @@
-﻿using System;
+﻿using StoryBlog.Web.Services.Shared.BBCode.Composing;
+using StoryBlog.Web.Services.Shared.BBCode.Parsing;
+using System;
 using System.Text;
-using StoryBlog.Web.Services.Blog.Interop.Markups.Composing;
-using StoryBlog.Web.Services.Blog.Interop.Markups.Parsing;
 
-namespace StoryBlog.Web.Services.Blog.Interop.Markups
+namespace StoryBlog.Web.Services.Shared.BBCode
 {
     public static class BulletingBoardDocumentExtensions
     {

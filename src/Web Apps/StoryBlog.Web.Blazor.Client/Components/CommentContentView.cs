@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using StoryBlog.Web.Services.Blog.Interop.Markups.Composing;
-using StoryBlog.Web.Services.Blog.Interop.Markups.Nodes;
-using StoryBlog.Web.Services.Blog.Interop.Markups.Parsing;
+using StoryBlog.Web.Services.Shared.BBCode.Composing;
+using StoryBlog.Web.Services.Shared.BBCode.Nodes;
+using StoryBlog.Web.Services.Shared.BBCode.Parsing;
 using System;
 using System.Collections.Generic;
 

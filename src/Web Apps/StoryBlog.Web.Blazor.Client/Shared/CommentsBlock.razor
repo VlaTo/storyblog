@@ -3,7 +3,6 @@
 @using System.Collections.ObjectModel
 @using StoryBlog.Web.Client.Store.Actions
 @using StoryBlog.Web.Client.Store.Models
-@using StoryBlog.Web.Services.Blog.Interop.Markups.Parsing
 @using StoryBlog.Web.Client.Components
 
 @inherits CommentsBlockComponent
@@ -77,65 +76,6 @@
             </li>
         </ItemTemplate>
     </GenericComponent>
-    @*foreach (var child in Comments)
-    {
-        <li class="media mb-4">
-            @if (child is Comment comment)
-            {
-                var reply = GetReplyCompose(comment.Comments);
-
-                <img src="img/abstract.jpg" class="align-self-start rounded-circle mr-3" width="50" height="50" alt=@comment.Author.Name />
-                <div class="media-body">
-                    <div class="mb-2">
-                        <h5 class="mt-0">
-                            <a href="#" class="">@comment.Author.Name</a>
-                        </h5>
-                        <ul class="list-unstyled list-inline text-muted">
-                            <li class="list-inline-item">
-                                <i class="mdi mdi-calendar"></i>
-                                <TimeLabel DateTime="@comment.Published.Date" />
-                            </li>
-                        </ul>
-                        <CommentContentView Content="@comment.Content" />
-                    </div>
-
-                    @if (null != reply)
-                    {
-                        <div class="my-4">
-                            <ReplyComposer OnSubmit=@(sender => OnSubmitComment(sender, reply)) />
-                        </div>
-                    }
-                    else if (1 > Level)
-                    {
-                        <ul class="list-unstyled list-inline">
-                            <li class="list-inline-item">
-                                <BootstrapButton Type="@BootstrapButtonTypes.Link"
-                                                 Outline=true
-                                                 Size="@BootstrapButtonSizes.Small"
-                                                 Class="text-muted"
-                                                 OnClick=@(() => DoComposeComment(comment))>
-                                    <i class="mdi mdi-reply"></i>&nbsp;Ответить
-                                </BootstrapButton>
-                            </li>
-                        </ul>
-                    }
-
-                    <CommentsBlock Comments="@comment.Comments" Level=@(Level + 1) />
-                </div>
-            }
-            else if (child is SavingComment saving)
-            {
-                <div class="media-body">
-                    <div class="mb-lg-3">
-                        <h5 class="mt-0">
-                            <a href="#" class="">author</a>
-                        </h5>
-                    </div>
-                    <p>saving</p>
-                </div>
-            }
-        </li>
-    }*@
 </ul>
 
 @code

@@ -1,4 +1,4 @@
-﻿namespace StoryBlog.Web.Services.Blog.Interop.Markups.Nodes
+﻿namespace StoryBlog.Web.Services.Shared.BBCode.Nodes
 {
     public abstract class BulletingBoardElement
     {

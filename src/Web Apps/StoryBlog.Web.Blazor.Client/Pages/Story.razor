@@ -21,7 +21,7 @@
             <div class="col-lg-9">
                 <ContentPresenter Source="@StoryState" TSource="StoryBlog.Web.Client.Store.StoryState">
                     <Content Context="Data">
-                        <article id="@Data.Slug" class="">
+                        <article id="@Data.Slug">
                             <div class="mb-5">
                                 <h2 class="">@Data.Title</h2>
                                 <ul class="list-unstyled list-inline text-muted mt-2">
@@ -93,7 +93,16 @@
                     </Failure>
                 </ContentPresenter>
             </div>
-            <aside class="col-lg-3">
+            <aside class="col-3 col-lg-3 col-sm-4 storyblog-aside">
+                <div class="list-group">
+                    @*<a href="#" class="list-group-item list-group-item-action active">
+                        Cras justo odio
+                    </a>*@
+                    <a href="javascript:void(0);" class="list-group-item list-group-item-action" @onclick="@OnEditStory">Edit story</a>
+                    <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
+                    <a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
+                    <a href="#" class="list-group-item list-group-item-action disabled" tabindex="-1" aria-disabled="true">Vestibulum at eros</a>
+                </div>
             </aside>
         </div>
     </div>
@@ -108,14 +117,19 @@
         set;
     }
 
-    protected override void OnParametersSet() => 
+    protected override void OnParametersSet() =>
         Dispatcher.Dispatch(new GetStoryAction(Slug, StoryFlags.Authors | StoryFlags.Comments));
 
-    private void OnComposeComment(EventArgs e) => 
+    private void OnComposeComment(EventArgs e) =>
         Dispatcher.Dispatch(new ComposeReplyAction(StoryState.Value.Slug, null, Guid.NewGuid()));
 
-    private void OnSubmitComment(object sender, ComposeComment comment) => 
+    private void OnSubmitComment(object sender, ComposeComment comment) =>
         Dispatcher.Dispatch(new SaveReplyAction(comment.StorySlug, null, comment.Reference, ((ReplyComposer)sender).Message));
+
+    private void OnEditStory(EventArgs e)
+    {
+        System.Diagnostics.Debug.WriteLine("Story.OnEditStory");
+    }
 
     private ComposeComment GetComposeComment()
     {
@@ -128,18 +142,4 @@
 
         return StoryState.Value.Comments.OfType<ComposeComment>().FirstOrDefault();
     }
-
-    /*private async void ShowDialog(MouseEventArgs e)
-    {
-        var button = await ModalService.ShowAsync(new InformationContent("Sample Dialog", "Lorem Ipsum dolor sit amet", ModalButtons.OkCancel()));
-
-        if (ModalButtons.CancelButton == button)
-        {
-            System.Diagnostics.Debug.WriteLine("ShowDialog cancelled");
-        }
-        else
-        {
-            System.Diagnostics.Debug.WriteLine($"ShowDialog completes: {button.Title}");
-        }
-    }*/
 }

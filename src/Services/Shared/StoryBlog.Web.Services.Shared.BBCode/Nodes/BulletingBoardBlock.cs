@@ -1,8 +1,8 @@
-﻿using StoryBlog.Web.Services.Blog.Interop.Markups.Parsing;
+﻿using StoryBlog.Web.Services.Shared.BBCode.Parsing;
 using System;
 using System.Collections.Generic;
 
-namespace StoryBlog.Web.Services.Blog.Interop.Markups.Nodes
+namespace StoryBlog.Web.Services.Shared.BBCode.Nodes
 {
     /// <summary>
     /// 

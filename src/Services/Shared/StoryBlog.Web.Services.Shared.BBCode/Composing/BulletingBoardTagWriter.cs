@@ -1,10 +1,9 @@
-﻿using System;
+﻿using StoryBlog.Web.Services.Shared.BBCode.Nodes;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using StoryBlog.Web.Services.Blog.Interop.Markups.Nodes;
-using StoryBlog.Web.Services.Blog.Interop.Extensions;
 
-namespace StoryBlog.Web.Services.Blog.Interop.Markups.Composing
+namespace StoryBlog.Web.Services.Shared.BBCode.Composing
 {
     internal class BulletingBoardTagWriter
     {

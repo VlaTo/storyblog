@@ -1,4 +1,4 @@
-﻿namespace StoryBlog.Web.Services.Shared.Common
+﻿namespace StoryBlog.Web.Services.Shared.BBCode
 {
     /// <summary>
     /// 

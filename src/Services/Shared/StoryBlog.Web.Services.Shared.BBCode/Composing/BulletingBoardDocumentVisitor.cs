@@ -1,9 +1,8 @@
-﻿using StoryBlog.Web.Services.Blog.Interop.Markups.Nodes;
-using StoryBlog.Web.Services.Blog.Interop.Markups.Parsing;
-using StoryBlog.Web.Services.Shared.Common;
+﻿using StoryBlog.Web.Services.Shared.BBCode.Nodes;
+using StoryBlog.Web.Services.Shared.BBCode.Parsing;
 using System.Collections.Generic;
 
-namespace StoryBlog.Web.Services.Blog.Interop.Markups.Composing
+namespace StoryBlog.Web.Services.Shared.BBCode.Composing
 {
     public class BulletingBoardDocumentVisitor : IVisitor<BulletingBoardDocument>
     {

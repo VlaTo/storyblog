@@ -16,7 +16,7 @@ namespace StoryBlog.Web.Client.Store.Reducers
     {
         public override StoryState Reduce(StoryState state, GetStoryAction action)
         {
-            Debug.WriteLine("GetStoryActionReducer.Reduce status: Loading");
+            //Debug.WriteLine("GetStoryActionReducer.Reduce status: Loading");
             return new StoryState(ModelStatus.Loading);
         }
     }
@@ -29,7 +29,7 @@ namespace StoryBlog.Web.Client.Store.Reducers
     {
         public override StoryState Reduce(StoryState state, GetStorySuccessAction action)
         {
-            Debug.WriteLine("GetStorySuccessActionReducer.Reduce status: Success");
+            //Debug.WriteLine("GetStorySuccessActionReducer.Reduce status: Success");
             return new StoryState(ModelStatus.Success)
             {
                 Slug = action.Slug,
@@ -107,7 +107,7 @@ namespace StoryBlog.Web.Client.Store.Reducers
         /// <inheritdoc cref="Reducer{TState,TAction}.Reduce" />
         public override StoryState Reduce(StoryState state, ComposeReplyAction action)
         {
-            Debug.WriteLine($"ComposeReplyActionReducer.Reduce status: {state.Status.State}");
+            //Debug.WriteLine($"ComposeReplyActionReducer.Reduce status: {state.Status.State}");
             return new StoryState(state.Status)
             {
                 Slug = state.Slug,
@@ -246,7 +246,7 @@ namespace StoryBlog.Web.Client.Store.Reducers
     {
         public override StoryState Reduce(StoryState state, ReplyPublishedAction action)
         {
-            Debug.WriteLine("ReplyPublishedActionReducer.Reduce: status: Success");
+            //Debug.WriteLine("ReplyPublishedActionReducer.Reduce: status: Success");
             return new StoryState(ModelStatus.Success)
             {
                 Slug = state.Slug,

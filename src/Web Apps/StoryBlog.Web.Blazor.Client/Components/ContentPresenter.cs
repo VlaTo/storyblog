@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Blazor.Fluxor;
+﻿using Blazor.Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using StoryBlog.Web.Client.Core;
@@ -16,7 +15,6 @@ namespace StoryBlog.Web.Client.Components
     public class ContentPresenter<TSource> : BootstrapComponentBase
     {
         private CancellationTokenSource cts;
-        private RenderFragment render;
         private readonly WeakEventManager eventManager;
 
         /// <summary>
@@ -80,32 +78,18 @@ namespace StoryBlog.Web.Client.Components
 
             eventManager.AddWeakEventListener<IState<TSource>, TSource>(
                 Source,
-                (source, handler) =>
-                {
-                    Debug.WriteLine("ContentPresenter.OnInitialized: Subscribe to StateChanged");
-                    source.StateChanged += handler;
-                },
-                (source, handler) =>
-                {
-                    Debug.WriteLine("ContentPresenter.OnInitialized: Subscribe to StateChanged");
-                    source.StateChanged -= handler;
-                },
+                (source, handler) => source.StateChanged += handler,
+                (source, handler) => source.StateChanged -= handler,
                 OnSourceStateChanged
             );
-
-            ToggleLoadingSpinner();
         }
 
-        private void OnSourceStateChanged(object sender, TSource e)
-        {
-            Debug.WriteLine("ContentPresenter.OnSourceStateChanged");
-            ToggleLoadingSpinner();
-        }
+        private void OnSourceStateChanged(object sender, TSource e) => ToggleLoadingSpinner();
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             builder.OpenElement(1, "div");
-            builder.AddContent(1, render);
+            BuildContent(2, builder);
             builder.CloseElement();
         }
 
@@ -117,36 +101,40 @@ namespace StoryBlog.Web.Client.Components
 
         private void ToggleLoadingSpinner()
         {
+            CancelExistingLoading();
+
             if (Source.Value is IHasModelStatus model)
             {
-                Debug.WriteLine($"ContentPresenter.ToggleLoadingSpinner status: {model.Status.State}");
-
-                CancelExistingLoading();
-
-                if (model.IsFailed())
-                {
-                    render = Failure;
-                    return;
-                }
-
-                if (model.IsNone())
-                {
-                    render = NoContent;
-                    return;
-                }
-
                 if (model.IsLoading())
                 {
                     cts = new CancellationTokenSource();
                     ModalService.ShowAsync(new LoadingContent(), cts.Token).RunAndForget();
                 }
+            }
+        }
 
-                render = Content.Invoke(Source.Value);
-            }
-            else
+        private void BuildContent(int sequence, RenderTreeBuilder builder)
+        {
+            if (Source.Value is IHasModelStatus model)
             {
-                Debug.WriteLine("ContentPresenter.ToggleLoadingSpinner no status");
+                if (model.IsFailed())
+                {
+                    builder.AddContent(sequence, Failure);
+                    return;
+                }
+
+                if (model.IsNone())
+                {
+                    builder.AddContent(sequence, NoContent);
+                    return;
+                }
+
+                builder.AddContent(sequence, Content, Source.Value);
+
+                return;
             }
+
+            builder.AddContent(sequence, NoContent);
         }
 
         private void CancelExistingLoading()

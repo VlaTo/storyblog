@@ -1,22 +1,20 @@
-﻿using StoryBlog.Web.Services.Blog.Interop.Markups.Nodes;
-using StoryBlog.Web.Services.Blog.Interop.Markups.Parsing;
+﻿using StoryBlog.Web.Services.Shared.BBCode.Nodes;
+using StoryBlog.Web.Services.Shared.BBCode.Parsing;
 using System;
 using System.Text;
 
-namespace StoryBlog.Web.Services.Blog.Interop.Markups.Composing
+namespace StoryBlog.Web.Services.Shared.BBCode.Composing
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public sealed class BulletingBoardMarkupComposer : BulletingBoardDocumentVisitor
+    public sealed class HtmlMarkupComposer : BulletingBoardDocumentVisitor, IDisposable
     {
-        private readonly BulletingBoardTagWriter writer;
+        private HtmlTagWriter writer;
+        private bool disposed;
 
-        public BulletingBoardMarkupComposer(StringBuilder stringBuilder)
+        public HtmlMarkupComposer(StringBuilder stringBuilder)
         {
-            writer = new BulletingBoardTagWriter(stringBuilder);
+            writer = new HtmlTagWriter(stringBuilder);
         }
-
+        
         public override void Visit(BulletingBoardDocument obj)
         {
             if (null == obj)
@@ -25,6 +23,11 @@ namespace StoryBlog.Web.Services.Blog.Interop.Markups.Composing
             }
 
             base.Visit(obj);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
         }
 
         protected override void RenderStrong(BulletingBoardStrong block)
@@ -54,6 +57,27 @@ namespace StoryBlog.Web.Services.Blog.Interop.Markups.Composing
         protected override void RenderText(BulletingBoardText inline)
         {
             writer.WriteText(inline.Text);
+        }
+
+        private void Dispose(bool dispose)
+        {
+            if (disposed)
+            {
+                return;
+            }
+
+            try
+            {
+                if (dispose)
+                {
+                    writer.Dispose();
+                    writer = null;
+                }
+            }
+            finally
+            {
+                disposed = true;
+            }
         }
     }
 }
