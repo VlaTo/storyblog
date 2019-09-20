@@ -1,68 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 
 namespace StoryBlog.Web.Services.Shared.MarkDown
 {
-    public sealed class HtmlTag
-    {
-        public string TagName
-        {
-            get;
-        }
-
-        public HtmlTag()
-        {
-        }
-
-        public void WriteOpen()
-        {
-
-        }
-
-        public void WriteClose()
-        {
-
-        }
-    }
-
-    public class HtmlTagWriter : IDisposable
+    /// <summary>
+    /// 
+    /// </summary>
+    public class HtmlWriter : IDisposable
     {
         private StreamWriter writer;
-        private Stack<ElementDisposable> scopes;
         private bool disposed;
 
-        public HtmlTagWriter(StreamWriter writer)
+        public HtmlWriter(StreamWriter writer)
         {
             this.writer = writer;
-            scopes = new Stack<ElementDisposable>();
         }
 
-        public HtmlTag OpenElement(string tag)
+        public void WriteTagStart(string tagName)
         {
             EnsureNotDisposed();
 
-            var disposable = new ElementDisposable(this, tag);
-
-            scopes.Push(disposable);
-            WriteTag(tag, false);
-
-            return null;
+            writer.Write('<');
+            writer.Write(tagName);
         }
 
-        public void AddContent(string content)
+        public void WriteTagClose(bool selfClosing)
         {
             EnsureNotDisposed();
 
-            if (0 == scopes.Count)
+            writer.Write(' ');
+
+            if (selfClosing)
             {
-                throw new Exception();
+                writer.Write('/');
             }
 
-            var text = WebUtility.HtmlEncode(content);
+            writer.Write('>');
+        }
 
-            writer.Write(text);
+        public void WriteTagEnd(string tagName)
+        {
+            EnsureNotDisposed();
+
+            writer.Write('<');
+            writer.Write('/');
+            writer.Write(tagName);
+            writer.Write('>');
+        }
+
+        public void WriteAttribute(string name, string value)
+        {
+            writer.Write(' ');
+            writer.Write(name);
+            writer.Write('=');
+            writer.Write('\"');
+            writer.Write(WebUtility.HtmlEncode(value));
+            writer.Write('\"');
+        }
+
+        public void WriteContent(string content)
+        {
+            EnsureNotDisposed();
+
+            writer.Write(WebUtility.HtmlEncode(content));
         }
 
         public void Dispose()
@@ -70,7 +73,7 @@ namespace StoryBlog.Web.Services.Shared.MarkDown
             Dispose(true);
         }
 
-        private void WriteTag(string tagName, bool closing)
+        private void WriteOpenTag(string tagName, bool closing)
         {
             writer.Write('<');
 
@@ -104,7 +107,7 @@ namespace StoryBlog.Web.Services.Shared.MarkDown
                 {
                     writer.Dispose();
                     writer = null;
-                    scopes = null;
+                    //scopes = null;
                 }
             }
             finally
@@ -116,12 +119,12 @@ namespace StoryBlog.Web.Services.Shared.MarkDown
         /// <summary>
         /// 
         /// </summary>
-        private sealed class ElementDisposable : IDisposable
+        /*private sealed class ElementDisposable : IDisposable
         {
-            private readonly HtmlTagWriter writer;
+            private readonly HtmlWriter writer;
             private readonly string tag;
 
-            public ElementDisposable(HtmlTagWriter writer, string tag)
+            public ElementDisposable(HtmlWriter writer, string tag)
             {
                 this.writer = writer;
                 this.tag = tag;
@@ -131,6 +134,6 @@ namespace StoryBlog.Web.Services.Shared.MarkDown
             {
                 writer.WriteTag(tag, true);
             }
-        }
+        }*/
     }
 }

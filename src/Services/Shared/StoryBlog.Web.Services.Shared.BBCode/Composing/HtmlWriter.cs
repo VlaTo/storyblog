@@ -1,24 +1,25 @@
 ﻿using StoryBlog.Web.Services.Shared.BBCode.Nodes;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace StoryBlog.Web.Services.Shared.BBCode.Composing
 {
-    internal sealed class HtmlTagWriter : IDisposable
+    public sealed class HtmlWriter : IDisposable
     {
-        private StringBuilder stringBuilder;
+        private StringWriter writer;
         private Stack<TagCloseToken> scopes;
         private static readonly Dictionary<BulletingBoardBlockType, string> tags;
         private bool disposed;
 
-        public HtmlTagWriter(StringBuilder stringBuilder)
+        public HtmlWriter(StringWriter writer)
         {
-            this.stringBuilder = stringBuilder;
+            this.writer = writer;
             scopes = new Stack<TagCloseToken>();
         }
 
-        static HtmlTagWriter()
+        static HtmlWriter()
         {
             tags = new Dictionary<BulletingBoardBlockType, string>
             {
@@ -40,7 +41,7 @@ namespace StoryBlog.Web.Services.Shared.BBCode.Composing
 
         public void WriteText(string text)
         {
-            stringBuilder.Append(text);
+            writer.Write(text);
         }
 
         public void Dispose()
@@ -50,10 +51,19 @@ namespace StoryBlog.Web.Services.Shared.BBCode.Composing
 
         private void WriteTag(BulletingBoardBlockType blockType, string argument, bool closing)
         {
-            stringBuilder
+            writer.Write('<');
+
+            if (closing)
+            {
+                writer.Write(Terminals.Slash);
+            }
+
+            writer.Write(GetTag(blockType));
+
+            /*writer
                 .Append('<')
                 .AppendIf(Terminals.Slash, closing)
-                .Append(GetTag(blockType));
+                .Append(GetTag(blockType));*/
 
             if (false == closing && false == String.IsNullOrEmpty(argument))
             {
@@ -61,11 +71,17 @@ namespace StoryBlog.Web.Services.Shared.BBCode.Composing
                 {
                     case BulletingBoardBlockType.Hyperlink:
                     {
-                        stringBuilder
+                        writer.Write(" href=");
+                        writer.Write(Terminals.Quote);
+                        writer.Write(argument);
+                        writer.Write(Terminals.Quote);
+
+                        /*writer
                             .Append(" href=")
                             .Append(Terminals.Quote)
                             .Append(argument)
-                            .Append(Terminals.Quote);
+                            .Append(Terminals.Quote);*/
+
                         break;
                     }
 
@@ -76,7 +92,8 @@ namespace StoryBlog.Web.Services.Shared.BBCode.Composing
                 }
             }
 
-            stringBuilder.Append('>');
+            writer.Write('>');
+            //writer.Append('>');
         }
 
         private void Dispose(bool dispose)
@@ -90,7 +107,7 @@ namespace StoryBlog.Web.Services.Shared.BBCode.Composing
             {
                 if (dispose)
                 {
-                    stringBuilder = null;
+                    writer = null;
                     scopes = null;
                 }
             }
@@ -108,10 +125,10 @@ namespace StoryBlog.Web.Services.Shared.BBCode.Composing
         /// </summary>
         private sealed class TagCloseToken : IDisposable
         {
-            private readonly HtmlTagWriter writer;
+            private readonly HtmlWriter writer;
             private readonly BulletingBoardBlockType blockType;
 
-            public TagCloseToken(HtmlTagWriter writer, BulletingBoardBlockType blockType)
+            public TagCloseToken(HtmlWriter writer, BulletingBoardBlockType blockType)
             {
                 this.writer = writer;
                 this.blockType = blockType;

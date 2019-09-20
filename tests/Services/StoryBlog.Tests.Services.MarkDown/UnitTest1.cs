@@ -29,8 +29,8 @@ namespace StoryBlog.Tests.Services.MarkDown
 
             var stream = new MemoryStream();
             var stringWriter = new StreamWriter(stream, Encoding.UTF8);
-            using var writer = new HtmlTagWriter(stringWriter);
-            var composer = new HtmlContentComposer(writer);
+            using var writer = new HtmlWriter(stringWriter);
+            var composer = new HtmlContentComposer(HtmlTagFactory.Instance, writer);
 
             composer.AddDecorator<MarkDownDocument>(new HtmlMarkDownDocumentTagDecorator());
 

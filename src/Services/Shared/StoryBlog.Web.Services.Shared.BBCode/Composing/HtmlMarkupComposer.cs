@@ -1,18 +1,18 @@
 ﻿using StoryBlog.Web.Services.Shared.BBCode.Nodes;
 using StoryBlog.Web.Services.Shared.BBCode.Parsing;
 using System;
-using System.Text;
+using System.IO;
 
 namespace StoryBlog.Web.Services.Shared.BBCode.Composing
 {
     public sealed class HtmlMarkupComposer : BulletingBoardDocumentVisitor, IDisposable
     {
-        private HtmlTagWriter writer;
+        private HtmlWriter writer;
         private bool disposed;
 
-        public HtmlMarkupComposer(StringBuilder stringBuilder)
+        public HtmlMarkupComposer(StringWriter writer)
         {
-            writer = new HtmlTagWriter(stringBuilder);
+            this.writer = new HtmlWriter(writer);
         }
         
         public override void Visit(BulletingBoardDocument obj)

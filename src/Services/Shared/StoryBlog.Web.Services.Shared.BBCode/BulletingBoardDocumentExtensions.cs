@@ -1,6 +1,7 @@
 ﻿using StoryBlog.Web.Services.Shared.BBCode.Composing;
 using StoryBlog.Web.Services.Shared.BBCode.Parsing;
 using System;
+using System.IO;
 using System.Text;
 
 namespace StoryBlog.Web.Services.Shared.BBCode
@@ -16,7 +17,7 @@ namespace StoryBlog.Web.Services.Shared.BBCode
 
             var stringBuilder = new StringBuilder();
 
-            using (var composer = new HtmlMarkupComposer(stringBuilder))
+            using (var composer = new HtmlMarkupComposer(new StringWriter(stringBuilder)))
             {
                 composer.Visit(document);
             }

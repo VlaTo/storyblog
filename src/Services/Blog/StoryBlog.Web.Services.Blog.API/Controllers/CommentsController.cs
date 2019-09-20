@@ -14,9 +14,7 @@ using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using StoryBlog.Web.Services.Blog.API.Models;
-using StoryBlog.Web.Services.Blog.Domain.ValueObjects;
-using StoryBlog.Web.Services.Blog.Interop.Markups;
-using StoryBlog.Web.Services.Blog.Interop.Markups.Parsing;
+using StoryBlog.Web.Services.Shared.BBCode.Parsing;
 
 namespace StoryBlog.Web.Services.Blog.API.Controllers
 {

@@ -7,17 +7,21 @@ namespace StoryBlog.Web.Services.Shared.MarkDown
     public sealed class HtmlContentComposer : MarkDownDocumentVisitor
     {
         private readonly IDictionary<Type, IHtmlContentComposerDecorator> decorators;
-        private readonly HtmlTagWriter writer;
+        private readonly Stack<HtmlTag> scopes;
+        private readonly HtmlTagFactory factory;
+        private readonly HtmlWriter writer;
 
-        public HtmlContentComposer(HtmlTagWriter writer)
+        public HtmlContentComposer(HtmlTagFactory factory, HtmlWriter writer)
         {
-            if (null == writer)
+            if (null == factory)
             {
-                throw new ArgumentNullException(nameof(writer));
+                throw new ArgumentNullException(nameof(factory));
             }
 
             decorators = new Dictionary<Type, IHtmlContentComposerDecorator>();
+            scopes = new Stack<HtmlTag>();
 
+            this.factory = factory;
             this.writer = writer;
         }
 
@@ -46,36 +50,43 @@ namespace StoryBlog.Web.Services.Shared.MarkDown
 
         protected override void VisitTextElement(MarkDownTextElement textElement)
         {
-            writer.AddContent(textElement.Text);
+            var htmlTag = scopes.Peek();
+
+            if (null == htmlTag)
+            {
+                throw new Exception();
+            }
+
+            writer.WriteContent(textElement.Text);
         }
 
         protected override void VisitDocument(MarkDownDocument document)
         {
             var decorator = GetDecoratorFor<MarkDownDocument>();
-            var tag = writer.OpenElement("div");
+            var htmlTag = factory.CreateDiv();
 
-            decorator.Apply(tag, document);
+            decorator.Apply(htmlTag, document);
 
-            tag.WriteOpen();
+            htmlTag.WriteOpen(writer);
 
             base.VisitDocument(document);
 
-            tag.WriteClose();
+            htmlTag.WriteClose(writer);
         }
 
         protected override void VisitHeadingElement(MarkDownHeadingElement headingElement)
         {
             var decorator = GetDecoratorFor<MarkDownHeadingElement>();
             var level = Math.Max(1, Math.Min(headingElement.Level, 6));
-            var tag = writer.OpenElement($"h{level}");
+            var tag = factory.CreateHeading(level);
 
             decorator.Apply(tag, headingElement);
 
-            tag.WriteOpen();
+            tag.WriteOpen(writer);
 
             base.VisitHeadingElement(headingElement);
 
-            tag.WriteClose();
+            tag.WriteClose(writer);
         }
 
         private IHtmlContentComposerDecorator GetDecoratorFor<TElement>()
