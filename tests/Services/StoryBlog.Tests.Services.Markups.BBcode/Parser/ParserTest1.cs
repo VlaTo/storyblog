@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoryBlog.Web.Services.Blog.Interop.Markups.Nodes;
+using StoryBlog.Web.Services.Shared.BBCode.Nodes;
 
 namespace StoryBlog.Tests.Services.Markups.BBcode.Parser
 {

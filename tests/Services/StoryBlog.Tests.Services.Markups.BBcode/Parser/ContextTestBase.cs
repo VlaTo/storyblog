@@ -1,4 +1,4 @@
-using StoryBlog.Web.Services.Blog.Interop.Markups.Parsing;
+using StoryBlog.Web.Services.Shared.BBCode.Parsing;
 
 namespace StoryBlog.Tests.Services.Markups.BBcode.Parser
 {
