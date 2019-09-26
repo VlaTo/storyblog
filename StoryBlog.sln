@@ -67,11 +67,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBlog.Tests.Controllers
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBlog.Tests.Services.Markups.BBcode", "tests\Services\StoryBlog.Tests.Services.Markups.BBcode\StoryBlog.Tests.Services.Markups.BBcode.csproj", "{873C097F-228B-4E98-B8EE-095B1EF6B54E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.BBCode", "src\Services\Shared\StoryBlog.Web.Services.Shared.BBCode\Shared.BBCode.csproj", "{DF579DBD-E13C-42FA-B5E8-F9148FE19233}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.BBCode", "src\Services\Shared\StoryBlog.Web.Services.Shared.BBCode\Shared.BBCode.csproj", "{DF579DBD-E13C-42FA-B5E8-F9148FE19233}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.MarkDown", "src\Services\Shared\StoryBlog.Web.Services.Shared.MarkDown\Shared.MarkDown.csproj", "{BC019F20-B545-4E58-901A-2D0A0F32656E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.MarkDown", "src\Services\Shared\StoryBlog.Web.Services.Shared.MarkDown\Shared.MarkDown.csproj", "{BC019F20-B545-4E58-901A-2D0A0F32656E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBlog.Tests.Services.MarkDown", "tests\Services\StoryBlog.Tests.Services.MarkDown\StoryBlog.Tests.Services.MarkDown.csproj", "{A518C222-088F-4B8C-A50F-9B3F3F25154E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBlog.Tests.Services.MarkDown", "tests\Services\StoryBlog.Tests.Services.MarkDown\StoryBlog.Tests.Services.MarkDown.csproj", "{A518C222-088F-4B8C-A50F-9B3F3F25154E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -202,7 +202,7 @@ Global
 		{A518C222-088F-4B8C-A50F-9B3F3F25154E} = {B3B7FDEB-5908-420C-AC0A-1E6303E4A6BF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		LessCompiler = a3b52c4e-54ca-4233-83ea-a4baa2669f90,193bea1a-7151-46db-aed1-e5fafe14f3c3
 		SolutionGuid = {2BDF20E6-9CFF-444E-88D4-B67EF316084F}
+		LessCompiler = a3b52c4e-54ca-4233-83ea-a4baa2669f90,193bea1a-7151-46db-aed1-e5fafe14f3c3
 	EndGlobalSection
 EndGlobal

@@ -35,7 +35,9 @@
                                     </li>
                                 </ul>
 
-                                <div class="justify-content-md-start my-4">@((MarkupString)Data.Content)</div>
+                                <div class="justify-content-md-start my-4">
+                                    <TextEditor Text="@Data.Content" ReadOnly="@readOnly" />
+                                </div>
 
                                 @if (Data.IsCommentsClosed)
                                 {
@@ -110,6 +112,8 @@
 
 @code
 {
+    private bool readOnly;
+
     [Parameter]
     public string Slug
     {
@@ -128,7 +132,7 @@
 
     private void OnEditStory(EventArgs e)
     {
-        System.Diagnostics.Debug.WriteLine("Story.OnEditStory");
+        readOnly = true;
     }
 
     private ComposeComment GetComposeComment()

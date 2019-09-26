@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Globalization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoryBlog.Web.Blazor.Components;
 using StoryBlog.Web.Services.Blog.Interop.Core;
 using StoryBlog.Web.Services.Blog.Interop.Core.Annotations;
 
 namespace StoryBlog.Tests.Services.Data.Csv
 {
-    [TestClass]
+    /*[TestClass]
     public class TestClassForTest
     {
         [TestMethod]
@@ -99,5 +98,5 @@ namespace StoryBlog.Tests.Services.Data.Csv
         }
 
         string IComponentClassExposure.Class => Class;
-    }
+    }*/
 }
