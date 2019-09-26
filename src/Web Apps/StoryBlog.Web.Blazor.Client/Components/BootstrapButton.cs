@@ -86,7 +86,7 @@ namespace StoryBlog.Web.Client.Components
     {
         private static readonly ClassBuilder<BootstrapButton> classNameBuilder;
 
-        protected ElementReference button;
+        //protected ElementReference button;
 
         [Parameter]
         public BootstrapButtonTypes Type
@@ -127,6 +127,13 @@ namespace StoryBlog.Web.Client.Components
         public bool Disabled
         {
             get;
+            set;
+        }
+
+        [Parameter]
+        public string Tooltip
+        {
+            get; 
             set;
         }
 
@@ -205,21 +212,16 @@ namespace StoryBlog.Web.Client.Components
             builder.AddAttribute(3, "style", Style);
             builder.AddAttribute(4, "tabindex", TabIndex);
             builder.AddAttribute(5, "disabled", Disabled);
-            builder.AddAttribute(6, "onclick", OnClick);
 
-            builder.AddContent(7, ChildContent);
-
-            builder.CloseElement();
-        }
-
-        protected override Task OnAfterRenderAsync(bool firstRender)
-        {
-            if (firstRender)
+            if (false == String.IsNullOrEmpty(Tooltip))
             {
-                //await Task.Delay(TimeSpan.FromMilliseconds(100.0d));
+                builder.AddAttribute(6, "title", Tooltip);
             }
 
-            return base.OnAfterRenderAsync(firstRender);
+            builder.AddAttribute(7, "onclick", OnClick);
+            builder.AddContent(8, ChildContent);
+
+            builder.CloseElement();
         }
     }
 }

@@ -44,6 +44,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="wwwroot\scripts\site.js">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Update="Resources.resx">
       <Generator></Generator>
       <CustomToolNamespace>StoryBlog.Web.Client.Resources</CustomToolNamespace>

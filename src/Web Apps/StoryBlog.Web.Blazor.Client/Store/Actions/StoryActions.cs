@@ -395,4 +395,26 @@ namespace StoryBlog.Web.Client.Store.Actions
             Error = error;
         }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class SaveStoryAction
+    {
+        public string Slug
+        {
+            get;
+        }
+
+        public string Content
+        {
+            get;
+        }
+
+        public SaveStoryAction(string slug, string content)
+        {
+            Slug = slug;
+            Content = content;
+        }
+    }
 }

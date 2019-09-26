@@ -306,4 +306,24 @@ namespace StoryBlog.Web.Client.Store.Reducers
             return Project(comments);
         }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    // ReSharper disable once UnusedMember.Global
+    public sealed class SaveStoryActionReducer : Reducer<StoryState, SaveStoryAction>
+    {
+        public override StoryState Reduce(StoryState state, SaveStoryAction action)
+            => new StoryState(ModelStatus.Success)
+            {
+                Slug = state.Slug,
+                Title = state.Title,
+                Author = state.Author,
+                Content = action.Content,
+                Published = state.Published,
+                IsCommentsClosed = state.IsCommentsClosed,
+                CommentsCount = state.CommentsCount,
+                Comments = state.Comments
+            };
+    }
 }

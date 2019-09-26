@@ -5,21 +5,32 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using StoryBlog.Web.Client.Core;
+using StoryBlog.Web.Client.Extensions;
+using StoryBlog.Web.Client.Services;
 
 namespace StoryBlog.Web.Client.Components
 {
     public class TextEditorComponent : BootstrapComponentBase
     {
-        private static readonly ClassBuilder<TextEditorComponent> classNameBuilder;
+        private static readonly ClassBuilder<TextEditorComponent> ClassNameBuilder;
+        private const string EditorObjectNamePrefix = "contentEditor";
 
-        private Timer _timer;
+        protected const string HostElementId = "__inner_frame_editor_";
+
+        private ITimeout timeout;
         private bool hasRendered;
-        protected ElementReference InnerFrame;
 
         [Inject]
         public IJSRuntime JsRuntime
         {
             get;
+            set;
+        }
+
+        [Inject]
+        public ITimeoutManager TimeoutManager
+        {
+            get; 
             set;
         }
 
@@ -31,7 +42,7 @@ namespace StoryBlog.Web.Client.Components
         }
 
         [Parameter]
-        public bool ReadOnly
+        public EventCallback<string> OnCommit
         {
             get; 
             set;
@@ -43,13 +54,9 @@ namespace StoryBlog.Web.Client.Components
             private set;
         }
 
-        public TextEditorComponent()
-        {
-        }
-
         static TextEditorComponent()
         {
-            classNameBuilder = new ClassBuilder<TextEditorComponent>(String.Empty)
+            ClassNameBuilder = new ClassBuilder<TextEditorComponent>(String.Empty)
                 /*.DefineClass(@class => @class
                     .Modifier("outline", component => component.Outline)
                     .Name(component => EnumHelper.GetClassName(component.Type))
@@ -71,45 +78,69 @@ namespace StoryBlog.Web.Client.Components
             }
         }
 
-        protected void DoCommit()
-        {
-            //var text = "Lorem Ipsum dolor sit amet";
-            //await JsRuntime.InvokeVoidAsync("setContent", "__inner_frame_editor_", text);
-        }
-
         protected override void OnInitialized()
         {
-            ClassString = classNameBuilder.Build(this, Class);
+            ClassString = ClassNameBuilder.Build(this, Class);
         }
 
         protected override void OnAfterRender(bool firstRender)
         {
             if (firstRender)
             {
-                _timer = new Timer(OnTimerCallback, null, TimeSpan.FromMilliseconds(100), Period.Never);
+                timeout = TimeoutManager.CreateTimeout(OnTimerCallback, TimeSpan.FromMilliseconds(50));
             }
         }
 
         protected override void OnDispose()
         {
-            _timer?.Dispose();
+            timeout?.Dispose();
         }
 
-        private async void OnTimerCallback(object _)
+        protected async void DoCommit()
+        {
+            var text = await JsRuntime.InvokeAsync<string>(AddEditorPrefix("getContent"), HostElementId);
+            await OnCommit.InvokeAsync(text);
+        }
+
+        private async void OnTimerCallback()
         {
             hasRendered = true;
+            timeout = null;
 
-            _timer.Dispose();
-            _timer = null;
-
-            Debug.WriteLine($"Setting edit content: \'{Text}\'");
             await UpdateEditorContentAsync();
-            //await JsRuntime.InvokeVoidAsync("setContent", "__inner_frame_editor_", Text);
         }
 
         private async Task UpdateEditorContentAsync()
         {
-            await JsRuntime.InvokeVoidAsync("setContent", "__inner_frame_editor_", Text);
+            var content = Text;
+
+            if (String.IsNullOrEmpty(content))
+            {
+                content = "<p class=\"storyblog-content-p\"></p>";
+            }
+
+            await JsRuntime.InvokeVoidAsync(
+                AddEditorPrefix("setContent"),
+                HostElementId,
+                content
+            );
+        }
+
+        private static string AddEditorPrefix(string funcName)
+        {
+            if (String.IsNullOrEmpty(EditorObjectNamePrefix))
+            {
+                return funcName;
+            }
+
+            var name = EditorObjectNamePrefix;
+
+            if (false == EditorObjectNamePrefix.EndsWith('.'))
+            {
+                name += '.';
+            }
+
+            return name + funcName;
         }
     }
 }

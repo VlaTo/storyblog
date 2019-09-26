@@ -36,7 +36,14 @@
                                 </ul>
 
                                 <div class="justify-content-md-start my-4">
-                                    <TextEditor Text="@Data.Content" ReadOnly="@readOnly" />
+                                    @if (readOnly)
+                                    {
+                                        @((MarkupString)Data.Content)
+                                    }
+                                    else
+                                    {
+                                        <TextEditor Text="@Data.Content" OnCommit="@(value => OnSubmitStory(Data.Slug, value))" />
+                                    }
                                 </div>
 
                                 @if (Data.IsCommentsClosed)
@@ -112,7 +119,7 @@
 
 @code
 {
-    private bool readOnly;
+    private bool readOnly = true;
 
     [Parameter]
     public string Slug
@@ -132,7 +139,13 @@
 
     private void OnEditStory(EventArgs e)
     {
+        readOnly = false;
+    }
+
+    private void OnSubmitStory(string slug, string story)
+    {
         readOnly = true;
+        Dispatcher.Dispatch(new SaveStoryAction(slug, story));
     }
 
     private ComposeComment GetComposeComment()

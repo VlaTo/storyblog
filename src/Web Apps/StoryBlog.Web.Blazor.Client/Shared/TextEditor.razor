@@ -1,22 +1,27 @@
 ﻿@inherits TextEditorComponent
 
-<div class="@ClassString">
-    @if (ReadOnly)
-    {
-        @((MarkupString)Text)
-    }
-    else
-    {
-        <div class="rounded rounded-lg">
-            <iframe id="__inner_frame_editor_" @ref="InnerFrame" src="about:blank" style="border: none; width: 100%; height: 100%;"></iframe>
+<div class="card">
+    <div class="card-header">
+        <div class="btn-toolbar" role="toolbar" aria-label="Tools">
+            <div class="btn-group" role="group" aria-label="Format">
+                <BootstrapButton Type="@BootstrapButtonTypes.Secondary" Size="@BootstrapButtonSizes.Small" Outline=true Tooltip="Bold">
+                    <i class="mdi mdi-format-bold"></i>
+                </BootstrapButton>
+                <BootstrapButton Type="@BootstrapButtonTypes.Secondary" Size="@BootstrapButtonSizes.Small" Outline=true Tooltip="Underline">
+                    <i class="mdi mdi-format-underline"></i>
+                </BootstrapButton>
+                <BootstrapButton Type="@BootstrapButtonTypes.Secondary" Size="@BootstrapButtonSizes.Small" Outline=true Tooltip="Italic">
+                    <i class="mdi mdi-format-italic"></i>
+                </BootstrapButton>
+            </div>
         </div>
-        <BootstrapButton 
-            Type="@BootstrapButtonTypes.Primary"
-            Size="@BootstrapButtonSizes.Small"
-            Outline=true
-            Class="mt-4"
-            OnClick="@DoCommit">
-            <i class="mdi mdi-content-save-edit"></i>Сохранить
+    </div>
+    <div class="card-body">
+        <div class="form-group embed-responsive embed-responsive-21by9">
+            <iframe id="@HostElementId" src="about:blank" style="border: none; width: 100%; height: 100%;" bind="@Text"></iframe>
+        </div>
+        <BootstrapButton Type="@BootstrapButtonTypes.Primary" Size="@BootstrapButtonSizes.Small" Outline=true Class="mt-4" OnClick="@DoCommit">
+            <i class="mdi mdi-content-save"></i>Сохранить
         </BootstrapButton>
-    }
+    </div>
 </div>
