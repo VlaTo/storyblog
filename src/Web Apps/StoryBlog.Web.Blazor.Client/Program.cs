@@ -48,6 +48,7 @@ namespace StoryBlog.Web.Client
                     services
                         .AddSingleton<IBlogApiClient, BlogApiClient>()
                         .AddSingleton<IIdentityApiClient, IdentityApiClient>()
+                        .AddSingleton<ITimeoutManager, TimeoutManager>()
                         .AddSingleton<ITimeSpanLocalizer, TimeSpanLocalizer>()
                         .AddSingleton<IDateTimeLocalizer, DateTimeLocalizer>()
                         .AddSingleton(serviceProvider =>

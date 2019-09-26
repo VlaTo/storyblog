@@ -1,6 +1,7 @@
+using System.IO;
 using System.Text;
-using StoryBlog.Web.Services.Blog.Interop.Markups.Composing;
-using StoryBlog.Web.Services.Blog.Interop.Markups.Parsing;
+using StoryBlog.Web.Services.Shared.BBCode.Composing;
+using StoryBlog.Web.Services.Shared.BBCode.Parsing;
 
 namespace StoryBlog.Tests.Services.Markups.BBcode.Composer
 {
@@ -23,7 +24,8 @@ namespace StoryBlog.Tests.Services.Markups.BBcode.Composer
             Document.Parse(Content);
 
             //var composer = new BulletingBoardMarkupComposer(StringBuilder);
-            using var composer = new HtmlMarkupComposer(StringBuilder);
+            var writer = new StringWriter(StringBuilder);
+            using var composer = new HtmlMarkupComposer(writer);
             composer.Visit(Document);
         }
     }
